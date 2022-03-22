@@ -1,0 +1,39 @@
+.wrapper {
+    z-index: 1600;
+}
+
+.menuContainer {
+    top: 100%;
+    background-color: hsl(0, 0%, 100%);
+    border-radius: 4px;
+    box-shadow: 0 0 0 1px #00000038, 3px 7px 11px#00000038;
+    margin-bottom: 8px;
+    margin-top: 8px;
+    position: absolute;
+    width: 100%;
+    min-width: 400px;
+    white-space: nowrap;
+    height: fit-content;
+    z-index: 1;
+    box-sizing: border-box;
+    overflow: auto;
+
+    &.hidden {
+        display: none;
+    }
+
+    & .menuList {
+        padding-bottom: 4px;
+        padding-top: 4px;
+        -webkit-overflow-scrolling: touch;
+        box-sizing: border-box;
+    }
+}
+
+.scrollBlocker {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    top: 0;
+}

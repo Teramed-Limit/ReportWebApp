@@ -1,0 +1,37 @@
+.section-wrapper {
+    width: 100%;
+    height: fit-content;
+    display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 0 12px;
+
+    &.divider {
+        //border-bottom: 3px solid black;
+    }
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    padding: 4px 0;
+    height: 32px;
+
+    &:before {
+        content: '';
+        width: 4px;
+        height: 24px;
+        margin-right: 8px;
+        background-color: #71d2de;
+    }
+}
+
+.header-label {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 22px;
+    letter-spacing: 0.22px;
+    color: #3a464d;
+    white-space: nowrap;
+}

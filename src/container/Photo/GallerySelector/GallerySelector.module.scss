@@ -1,0 +1,49 @@
+.gallery-toolbar {
+    display: flex;
+    align-items: center;
+    flex-basis: 40px;
+    width: 100%;
+    min-height: 40px;
+
+    & button {
+        margin-right: 10px;
+    }
+}
+
+.gallery-wrapper {
+    width: 100%;
+    height: calc(100% - 40px - 50px);
+    user-select: none;
+    -webkit-user-drag: none;
+}
+
+.slider-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 8px;
+}
+
+.gallery-slider {
+    width: 35% !important;
+    margin: 0 8px !important;
+}
+
+.sliderButton {
+    background-color: rgba(63, 81, 181, 0.2) !important;
+    padding: 8px !important;
+
+    svg {
+        font-size: 18px !important;
+    }
+}
+
+.topBar {
+    display: flex;
+    flex-basis: 400px;
+    flex-direction: column;
+}
+
+.imageInfo {
+    font-weight: 600;
+}

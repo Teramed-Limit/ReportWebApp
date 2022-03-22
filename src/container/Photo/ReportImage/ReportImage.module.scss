@@ -1,0 +1,22 @@
+$bottom-container-height: 40px;
+
+.image-container {
+    flex-grow: 1;
+    width: 100%;
+    max-height: calc(100% - #{$bottom-container-height});
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bottom-container {
+    display: flex;
+    flex-basis: $bottom-container-height;
+    width: 100%;
+    min-height: $bottom-container-height;
+    padding: 4px;
+}
+
+.bottom-container button {
+    margin: 1px;
+}

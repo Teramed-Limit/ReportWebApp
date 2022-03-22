@@ -1,0 +1,36 @@
+@mixin halfContent {
+    flex: 1 1 50%;
+    width: 50%;
+}
+
+.body {
+    &.content {
+        @include halfContent;
+        margin: 8px;
+        display: flex;
+        flex-direction: column;
+    }
+}
+
+.footer {
+    &.content {
+        @include halfContent;
+        display: flex;
+        flex-direction: row;
+
+        &.right {
+            justify-content: flex-end;
+        }
+
+        &.left {
+            align-items: center;
+        }
+    }
+}
+
+.container {
+    height: inherit;
+    max-height: inherit;
+    display: flex;
+    flex-direction: row;
+}

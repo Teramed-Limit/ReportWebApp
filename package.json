@@ -1,0 +1,100 @@
+{
+    "name": "reportwebapp",
+    "version": "0.1.0",
+    "private": true,
+    "dependencies": {
+        "@material-ui/core": "^4.11.3",
+        "@material-ui/icons": "^4.11.2",
+        "@material-ui/lab": "^4.0.0-alpha.58",
+        "@testing-library/jest-dom": "^5.11.9",
+        "@testing-library/react": "^11.2.5",
+        "@testing-library/user-event": "^12.8.3",
+        "@types/react-beautiful-dnd": "^13.0.0",
+        "@types/react-color": "^3.0.5",
+        "@types/react-pdf": "^5.0.3",
+        "ag-grid-community": "^25.1.0",
+        "ag-grid-react": "^25.1.0",
+        "axios": "^0.21.1",
+        "axios-observable": "^1.1.6",
+        "classnames": "^2.2.6",
+        "http-proxy-middleware": "^2.0.1",
+        "konva": "^8.2.1",
+        "mobx": "^6.1.8",
+        "mobx-devtools-mst": "^0.9.30",
+        "mobx-react": "^7.1.0",
+        "mobx-state-tree": "^5.0.1",
+        "moment": "^2.29.1",
+        "mst-effect": "^1.2.0",
+        "node-sass": "^5.0.0",
+        "ramda": "^0.27.1",
+        "react": "^17.0.1",
+        "react-beautiful-dnd": "^13.1.0",
+        "react-color": "^2.19.3",
+        "react-dom": "^17.0.1",
+        "react-icons": "^4.2.0",
+        "react-konva": "^17.0.2-5",
+        "react-pdf": "^5.3.0",
+        "react-router-dom": "^5.2.0",
+        "react-scripts": "4.0.3",
+        "react-select": "^4.3.0",
+        "react-virtual": "^2.7.0",
+        "rxjs": "^6.6.7",
+        "typescript": "^4.2.3",
+        "use-image": "^1.0.8",
+        "web-vitals": "^1.1.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "build:stage": "env-cmd -f ./.env.staging npm run build && rm -rf build-uat && mv build build-uat",
+        "build:prod": "env-cmd -f ./.env.production npm run build && rm -rf build-prod && mv build build-prod",
+        "build:all": "npm run build:prod && npm run build:stage",
+        "test": "react-scripts test",
+        "eject": "react-scripts eject",
+        "gc": "npx generate-react-cli component",
+        "format": "prettier --write src/**/*.ts{,x}",
+        "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
+        "lint-fix": "tsc --noEmit && eslint --fix src/**/*.ts{,x}",
+        "cypress:open": "cypress open",
+        "cypress:open:headless": "cypress run --headless"
+    },
+    "eslintConfig": {
+        "extends": [
+            "react-app",
+            "react-app/jest"
+        ]
+    },
+    "browserslist": {
+        "production": [
+            ">0.2%",
+            "not dead",
+            "not op_mini all"
+        ],
+        "development": [
+            "last 1 chrome version",
+            "last 1 firefox version",
+            "last 1 safari version"
+        ]
+    },
+    "devDependencies": {
+        "@4tw/cypress-drag-drop": "^1.6.0",
+        "@types/jest": "^26.0.20",
+        "@types/node": "^12.20.5",
+        "@types/react": "^17.0.3",
+        "@types/react-dom": "^17.0.2",
+        "@types/react-router-dom": "^5.1.7",
+        "cypress": "^7.7.0",
+        "env-cmd": "^10.1.0",
+        "eslint": "^7.2.0",
+        "eslint-config-airbnb": "^18.2.1",
+        "eslint-config-airbnb-typescript": "^12.3.1",
+        "eslint-config-prettier": "^8.1.0",
+        "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-jsx-a11y": "^6.4.1",
+        "eslint-plugin-prettier": "^3.3.1",
+        "eslint-plugin-react": "^7.21.5",
+        "eslint-plugin-react-hooks": "^1.7.0",
+        "prettier": "^2.2.1",
+        "prettier-eslint": "^12.0.0"
+    }
+}

@@ -1,0 +1,69 @@
+$inputHeight: 30px;
+
+.container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+}
+
+.floatWrapper {
+    position: absolute !important;
+    margin: 4px;
+    z-index: 2;
+}
+
+.image {
+    max-height: calc(100% - #{$inputHeight});
+    margin: auto;
+}
+
+.label {
+    padding: 4px 4px;
+    height: $inputHeight;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    span {
+        flex: 1;
+    }
+}
+
+.lexicon-container {
+    width: 100%;
+    flex: 1 1 60%;
+    cursor: text;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    max-width: 100%;
+    min-height: 1rem;
+    border: 1px solid #babfc7;
+    padding: 0 4px;
+    background: white;
+}
+
+.lexicon-input {
+    width: 100%;
+    font: inherit;
+    padding: 0 8px 0 0;
+    min-height: 1rem;
+    line-height: 1rem;
+    outline: 0;
+    background: transparent;
+    border: 0;
+}
+
+.icon {
+    font-size: 20px;
+}
+
+.checkboxRoot {
+    span {
+        background-color: white !important;
+        border-radius: 5px !important;
+    }
+}

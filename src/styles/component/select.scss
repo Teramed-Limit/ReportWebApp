@@ -1,0 +1,57 @@
+.report__control {
+    border: 0 transparent !important;
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    min-height: 18px !important;
+
+    div {
+        border: 0 transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+    }
+
+    & .report__value-container {
+        .report__multi-value {
+            margin: 3px !important;
+            padding: 0 6px !important;
+            background-color: #eaedee !important;
+            -webkit-tap-highlight-color: transparent;
+            border-radius: 16px;
+        }
+
+        .report__multi-value__label {
+            font-size: inherit !important;
+            color: #485962;
+        }
+    }
+
+    & .report__single-value {
+        padding: 0 !important;
+        margin: 0 !important;
+        font: inherit;
+        color: #0c3b93;
+        border: 0;
+        outline: 0;
+        width: 100%;
+        background-color: transparent;
+    }
+
+    & .report__indicators {
+        height: 18px;
+
+        & .report__indicator-separator {
+            height: 18px;
+            margin: 0;
+            width: 0;
+        }
+
+        & .report__indicator {
+            svg {
+                height: 18px;
+                width: 18px;
+            }
+        }
+    }
+}

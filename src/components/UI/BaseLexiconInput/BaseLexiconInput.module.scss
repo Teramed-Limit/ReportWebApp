@@ -1,0 +1,39 @@
+.container {
+    position: relative;
+    display: flex;
+}
+
+.iconContainer {
+    width: 50px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.text-input {
+    font: inherit;
+    padding: 0 8px 0 0;
+    min-height: 18px;
+    line-height: 1rem;
+    color: #0c3b93;
+    border: 0;
+    outline: 0;
+    width: 100%;
+    background-color: transparent;
+}
+
+.icon {
+    font-size: 18px;
+
+    &.clickable {
+        cursor: pointer;
+        color: #929292;
+
+        &:hover {
+            color: black;
+        }
+    }
+
+    &.noEvent {
+        pointer-events: none;
+    }
+}

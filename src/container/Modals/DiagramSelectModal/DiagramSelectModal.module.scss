@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    margin: 10px 0;
+}
+
+.imageContainer {
+    border: 1px transparent solid;
+    flex: 1;
+    height: fit-content;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    &:hover {
+        border: 1px red solid;
+    }
+
+    &.selected {
+        border: 1px cornflowerblue solid !important;
+    }
+
+    img {
+        max-height: 500px;
+        min-height: 500px;
+    }
+}

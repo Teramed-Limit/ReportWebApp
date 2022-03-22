@@ -1,0 +1,78 @@
+.input-wrapper {
+    min-height: 24px;
+    letter-spacing: 0.2px;
+    display: flex;
+    width: 100%;
+
+    &.vertical {
+        flex-direction: column;
+    }
+}
+
+.section-field-label {
+    font-weight: bold;
+    flex: 0 0 30%;
+    width: 100%;
+    height: 100%;
+    padding: 4px;
+    color: #3a464d;
+    word-break: break-word;
+    align-self: center;
+}
+
+.input-field-container {
+    flex: 1 1 60%;
+    max-width: 100%;
+    min-height: 1rem;
+    border: 1px solid #babfc7;
+    margin: 2px;
+    position: relative;
+
+    &.disabled {
+        background-color: rgb(242, 242, 242);
+    }
+
+    &.readonly {
+        border: 1px solid transparent !important;
+        background-color: transparent !important;
+    }
+
+    &:hover {
+        background-color: rgba(169, 202, 235, 0.15);
+    }
+
+    &.noBorder {
+        border-color: transparent !important;
+    }
+
+    &.invalid {
+        background-color: #f7e9e9 !important;
+        border-color: red !important;
+    }
+
+    &:focus-within {
+        border-color: #4c8ff8;
+        outline: none;
+        z-index: 1;
+    }
+}
+
+.field-base {
+    min-height: 1rem;
+    padding: 4px 8px;
+    cursor: text;
+    height: 100%;
+    display: block;
+}
+
+.requiredStar:after {
+    content: '*';
+    color: red;
+    font-size: 16px;
+    line-height: 12px;
+}
+
+.inline {
+    display: inline;
+    cursor: help;
+}
