@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FormControlLabel, Radio } from '@material-ui/core';
+import { FormControlLabel, Radio } from '@mui/material';
 
 import classes from './BaseRadio.module.scss';
 

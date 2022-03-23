@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Badge, Checkbox } from '@material-ui/core';
+import { Badge, Checkbox } from '@mui/material';
 import { FaMapMarkerAlt } from 'react-icons/all';
 
 import { OptionSource } from '../../interface/selection-field';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 import cx from 'classnames';
 import { FaInfoCircle } from 'react-icons/fa';
 

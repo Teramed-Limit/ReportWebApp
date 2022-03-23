@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useCallback, useRef, useState } from 'react';
 
-import { Snackbar, SnackbarOrigin } from '@material-ui/core';
-import MuiAlert, { AlertProps } from '@material-ui/lab/Alert';
+import { Snackbar, SnackbarOrigin } from '@mui/material';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 
 import { MessageType, Notification } from '../interface/notification';
 

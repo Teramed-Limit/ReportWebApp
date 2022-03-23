@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 
-import { Tooltip } from '@material-ui/core';
+import { Tooltip } from '@mui/material';
 import classNames from 'classnames/bind';
 import { MdClear, RiBook3Line as BookIcon } from 'react-icons/all';
 

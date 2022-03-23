@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Divider, List, ListItem, ListItemText } from '@material-ui/core';
+import { Divider, List, ListItem, ListItemText } from '@mui/material';
 
 import { ReportFindingItemList } from '../../../../../interface/report-finding';
 import classes from './SectionContentListView.module.scss';

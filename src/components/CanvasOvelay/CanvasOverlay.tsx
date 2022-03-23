@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import cx from 'classnames';
 import Konva from 'konva';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 
-import { AppBar, IconButton, Tab, Tabs } from '@material-ui/core';
+import { AppBar, IconButton, Tab, Tabs } from '@mui/material';
 import { GridApi } from 'ag-grid-community';
 import { AxiosError } from 'axios';
 import { FaSearch } from 'react-icons/all';
@@ -99,7 +99,7 @@ const Admin = () => {
                     color="primary"
                     component="span"
                     onClick={onSearch}
-                >
+                    size="large">
                     <FaSearch />
                 </IconButton>
             </div>

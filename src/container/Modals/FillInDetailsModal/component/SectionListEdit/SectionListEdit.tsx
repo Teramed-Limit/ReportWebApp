@@ -1,6 +1,6 @@
 import React, { useCallback, useContext } from 'react';
 
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 import { AxiosError } from 'axios';
 import * as R from 'ramda';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
@@ -115,51 +115,49 @@ const SectionListEdit = ({ ersType, onCategoryFocus, onCancelFocus }: Props) => 
         onCancelFocus();
     };
 
-    return (
-        <>
-            <div className={classes.section}>
-                Sections
-                <IconButton onClick={onConfirm}>
-                    <FaCheck className={classes.iconCheck} />
-                </IconButton>
-                <IconButton onClick={onCancel}>
-                    <MdCancel className={classes.iconCancel} />
-                </IconButton>
-            </div>
+    return <>
+        <div className={classes.section}>
+            Sections
+            <IconButton onClick={onConfirm} size="large">
+                <FaCheck className={classes.iconCheck} />
+            </IconButton>
+            <IconButton onClick={onCancel} size="large">
+                <MdCancel className={classes.iconCancel} />
+            </IconButton>
+        </div>
 
-            <DragDropContext onDragEnd={onDragEnd}>
-                <Droppable droppableId="droppable">
-                    {(provided, snapshot) => (
-                        <div
-                            className={classes.list}
-                            {...provided.droppableProps}
-                            ref={provided.innerRef}
-                        >
-                            {findingList.map((item, index) => (
-                                <Section
-                                    key={item.ItemName}
-                                    index={index}
-                                    active={index === activeIndex}
-                                    itemName={item.ItemName}
-                                    autoFillDefaultWhenEmpty={item.AutoFillDefaultWhenEmpty}
-                                    toggleAutoFill={toggleAutoFill}
-                                    onDelete={onDelete}
-                                    onCancelFocus={onCancelFocus}
-                                    onCategoryFocus={onCategoryFocus}
-                                />
-                            ))}
-                            <SectionAdder
-                                itemNameList={findingList.map((item) => item.ItemName)}
-                                isDragging={snapshot.isDraggingOver}
-                                onAddSection={onAddSection}
+        <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="droppable">
+                {(provided, snapshot) => (
+                    <div
+                        className={classes.list}
+                        {...provided.droppableProps}
+                        ref={provided.innerRef}
+                    >
+                        {findingList.map((item, index) => (
+                            <Section
+                                key={item.ItemName}
+                                index={index}
+                                active={index === activeIndex}
+                                itemName={item.ItemName}
+                                autoFillDefaultWhenEmpty={item.AutoFillDefaultWhenEmpty}
+                                toggleAutoFill={toggleAutoFill}
+                                onDelete={onDelete}
+                                onCancelFocus={onCancelFocus}
+                                onCategoryFocus={onCategoryFocus}
                             />
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
-            </DragDropContext>
-        </>
-    );
+                        ))}
+                        <SectionAdder
+                            itemNameList={findingList.map((item) => item.ItemName)}
+                            isDragging={snapshot.isDraggingOver}
+                            onAddSection={onAddSection}
+                        />
+                        {provided.placeholder}
+                    </div>
+                )}
+            </Droppable>
+        </DragDropContext>
+    </>;
 };
 
 export default SectionListEdit;

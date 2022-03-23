@@ -8,7 +8,7 @@ import {
     List,
     ListItem,
     ListItemText,
-} from '@material-ui/core';
+} from '@mui/material';
 import * as R from 'ramda';
 import { RiDeleteBin6Fill } from 'react-icons/all';
 
@@ -61,49 +61,47 @@ const SectionContentListEdit = ({
         [activeIndex, updateFindingItems],
     );
 
-    return (
-        <>
-            <div className={classes.section}>Sections Content List</div>
-            {activeIndex === -1 ? (
-                <div className={classes.emptyList}>Please select a section</div>
-            ) : (
-                <List component="nav" className={classes.list}>
-                    <>
-                        {findingItems.map((item, index) => (
-                            <React.Fragment key={item.Content}>
-                                <ListItem>
-                                    <ListItemText primary={item.Content} />
-                                    <div>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    checked={item.IsDefault === '1'}
-                                                    onChange={() =>
-                                                        updateIsDefaultOnItemList(index)
-                                                    }
-                                                    color="primary"
-                                                />
-                                            }
-                                            label="default"
-                                        />
-                                        <IconButton onClick={() => onDelete(item.Content)}>
-                                            <RiDeleteBin6Fill />
-                                        </IconButton>
-                                    </div>
-                                </ListItem>
-                                <Divider />
-                            </React.Fragment>
-                        ))}
-                        <SectionAdder
-                            itemNameList={findingItems.map((item) => item.Content)}
-                            isDragging={false}
-                            onAddSection={onAddContent}
-                        />
-                    </>
-                </List>
-            )}
-        </>
-    );
+    return <>
+        <div className={classes.section}>Sections Content List</div>
+        {activeIndex === -1 ? (
+            <div className={classes.emptyList}>Please select a section</div>
+        ) : (
+            <List component="nav" className={classes.list}>
+                <>
+                    {findingItems.map((item, index) => (
+                        <React.Fragment key={item.Content}>
+                            <ListItem>
+                                <ListItemText primary={item.Content} />
+                                <div>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                checked={item.IsDefault === '1'}
+                                                onChange={() =>
+                                                    updateIsDefaultOnItemList(index)
+                                                }
+                                                color="primary"
+                                            />
+                                        }
+                                        label="default"
+                                    />
+                                    <IconButton onClick={() => onDelete(item.Content)} size="large">
+                                        <RiDeleteBin6Fill />
+                                    </IconButton>
+                                </div>
+                            </ListItem>
+                            <Divider />
+                        </React.Fragment>
+                    ))}
+                    <SectionAdder
+                        itemNameList={findingItems.map((item) => item.Content)}
+                        isDragging={false}
+                        onAddSection={onAddContent}
+                    />
+                </>
+            </List>
+        )}
+    </>;
 };
 
 export default SectionContentListEdit;

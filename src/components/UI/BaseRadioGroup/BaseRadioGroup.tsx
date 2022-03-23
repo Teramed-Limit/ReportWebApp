@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { RadioGroup } from '@material-ui/core';
+import { RadioGroup } from '@mui/material';
 
 import { Option } from '../../../interface/option';
 import BaseRadio from '../BaseRadio/BaseRadio';

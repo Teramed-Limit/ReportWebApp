@@ -1,12 +1,11 @@
 import React from 'react';
 
 import {
-    CheckBoxOutlineBlank as Square,
     FormatColorText,
+    CheckBoxOutlineBlank as Square,
     PanoramaFishEye as Circle,
-} from '@material-ui/icons';
-import ToggleButton from '@material-ui/lab/ToggleButton';
-import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
+} from '@mui/icons-material';
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import { BsArrowsMove, HiOutlineArrowRight, MdGesture } from 'react-icons/all';
 
 import { MarkerType } from '../../interface/canvas-maker-attribute';
