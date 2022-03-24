@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 10px 20px;
+}
+
+.tableHeader {
+    display: flex;
+}
+
+.tableContainer {
+    margin-top: 10px;
+    flex: 1 1 auto;
+}

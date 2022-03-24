@@ -4,7 +4,7 @@ import { ColDef, GridApi } from 'ag-grid-community';
 import { AxiosError } from 'axios';
 import { finalize, first } from 'rxjs/operators';
 
-import { fetchStudies, mergeStudy } from '../../../axios/api';
+import { fetchSamePatientStudies, mergeStudy } from '../../../axios/api';
 import GridTable from '../../../components/GridTable/GridTable';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
@@ -27,18 +27,18 @@ const colDef: ColDef[] = [
 const LoadStudyModal = () => {
     const setModal = useContext(ModalContext);
     const { setSuccessNotification, setErrorNotification } = useContext(NotificationContext);
-    const { user, studyInsUID, documentNumber } = useReportDataStore();
+    const { user, studyInsUID } = useReportDataStore();
     const { setReportImage } = useReportImageStore();
     const [studyList, setStudyList] = useState<Study[]>([]);
     const [selectedStudy, setSelectedStudy] = useState<Study | undefined>(undefined);
 
     useEffect(() => {
-        fetchStudies(documentNumber, studyInsUID)
+        fetchSamePatientStudies(studyInsUID)
             .pipe(first())
             .subscribe(({ data: studies }) => {
                 setStudyList(studies);
             });
-    }, [documentNumber, studyInsUID]);
+    }, [studyInsUID]);
 
     const onClose = () => {
         setModal(null);

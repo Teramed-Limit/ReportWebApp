@@ -3,6 +3,7 @@ import React, { createContext } from 'react';
 import { MobXProviderContext } from 'mobx-react';
 
 import { OptionStore } from './options-model';
+import { QueryStore } from './query-model';
 import { DataStore } from './report-data-model';
 import { DefineStore } from './report-define-model';
 import { ImageStore } from './report-image-model';
@@ -29,4 +30,8 @@ export function useReportDataStore(): DataStore {
 
 export function useReportImageStore(): ImageStore {
     return React.useContext(MobXProviderContext).store.imageStore;
+}
+
+export function useQueryStore(): QueryStore {
+    return React.useContext(MobXProviderContext).store.queryStore;
 }

@@ -1,23 +1,27 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CakeIcon from '@mui/icons-material/Cake';
+import ContactPageIcon from '@mui/icons-material/ContactPage';
+import WcIcon from '@mui/icons-material/Wc';
+import { Stack } from '@mui/material';
 import { observer } from 'mobx-react';
+import { AiOutlineFieldNumber } from 'react-icons/all';
 import { tap } from 'rxjs/operators';
 
 import { NotificationContext } from '../../context/notification-context';
-import { MessageType } from '../../interface/notification';
 import { useReportDataStore } from '../../models/useStore';
 import { generateUUID } from '../../utils/general';
 import ButtonGroup from '../UI/Button-Group/Button-Group';
 import Button from '../UI/Button/Button';
-import classes from './Header.module.css';
+import classes from './Header.module.scss';
 
 const Header = () => {
-    const { pdfFile } = useReportDataStore();
+    const { pdfFile, activeStudy } = useReportDataStore();
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [printable, setPrintable] = useState<boolean>(false);
-    const { setSuccessNotification, setErrorNotification } = useContext(NotificationContext);
+    const { setErrorNotification, showNotifyMsg } = useContext(NotificationContext);
     const {
-        patientHeaderInfo,
         saveReport,
         signOffReport,
         modify,
@@ -59,12 +63,6 @@ const Header = () => {
         e.target.contentWindow.print();
     };
 
-    const showNotifyMsg = (notification) => {
-        return notification.messageType === MessageType.Success
-            ? setSuccessNotification(notification.message)
-            : setErrorNotification(notification.message);
-    };
-
     const signOffReportRouteToPreviewPage = () => {
         signOffReport(null, (signal$) =>
             signal$.pipe(
@@ -95,7 +93,38 @@ const Header = () => {
                     onLoad={iframeOnLoad}
                 />
             ) : null}
-            <div className={classes.headerInfo}>{patientHeaderInfo}</div>
+            <Stack
+                className={classes.headerInfo}
+                direction="column"
+                spacing={1}
+                sx={{ display: 'flex', flexDirection: 'column' }}
+            >
+                {activeStudy && (
+                    <>
+                        <Stack direction="row" spacing={2}>
+                            <span className={classes.iconText}>
+                                <ContactPageIcon /> {activeStudy?.PatientId}
+                            </span>
+                            <span className={classes.iconText}>
+                                <AiOutlineFieldNumber style={{ fontSize: '24px' }} />
+                                {activeStudy?.AccessionNumber}
+                            </span>
+                        </Stack>
+                        <Stack direction="row" spacing={2}>
+                            <span className={classes.iconText}>
+                                <AccountCircleIcon /> {activeStudy?.PatientsName}
+                            </span>
+                            <span className={classes.iconText}>
+                                <CakeIcon /> {activeStudy?.PatientsBirthDate}
+                            </span>
+                            <span className={classes.iconText}>
+                                <WcIcon />
+                                {activeStudy?.PatientsSex}
+                            </span>
+                        </Stack>
+                    </>
+                )}
+            </Stack>
             <div className={classes.headerSidebar}>
                 <ButtonGroup>
                     <Button id="btn__save" icon="save" color="black" onClick={saveReportAndNotify}>

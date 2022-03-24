@@ -1,9 +1,6 @@
 import React from 'react';
 
 import {
-    Consumable,
-    Drug,
-    Lab,
     Modify,
     Photos,
     Preview,
@@ -12,15 +9,14 @@ import {
     Save,
     SignOff,
     SignOffBlue,
+    Query,
 } from '../../../assets';
 
 const fontIconCodes = {
     save: Save,
     modify: Modify,
     print: Print,
-    lab: Lab,
-    drug: Drug,
-    consumable: Consumable,
+    query: Query,
     reporting,
     preview: Preview,
     signOff: SignOff,

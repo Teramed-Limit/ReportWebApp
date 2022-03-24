@@ -1,0 +1,11 @@
+.container {
+    display: flex;
+    flex-direction: row;
+    max-height: inherit;
+    overflow: auto;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+}

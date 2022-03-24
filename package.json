@@ -15,8 +15,8 @@
         "@types/react-beautiful-dnd": "^13.0.0",
         "@types/react-color": "^3.0.5",
         "@types/react-pdf": "^5.0.3",
-        "ag-grid-community": "^25.1.0",
-        "ag-grid-react": "^25.1.0",
+        "ag-grid-community": "^27.1.0",
+        "ag-grid-react": "^27.1.0",
         "axios": "^0.21.1",
         "axios-observable": "^1.1.6",
         "classnames": "^2.2.6",
@@ -43,6 +43,7 @@
         "react-select": "^4.3.0",
         "react-virtual": "^2.7.0",
         "rxjs": "^6.6.7",
+        "sass": "^1.49.9",
         "typescript": "^4.2.3",
         "use-image": "^1.0.8",
         "web-vitals": "^1.1.1"

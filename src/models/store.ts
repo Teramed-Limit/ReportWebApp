@@ -11,6 +11,7 @@ export function createStore() {
             dataStore: { loading: false },
             imageStore: { images: [] },
             optionStore: {},
+            queryStore: { rowData: [] },
         },
         {
             reportDefineService: new ReportDefineService(),

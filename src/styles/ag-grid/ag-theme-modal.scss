@@ -21,9 +21,16 @@
 }
 
 .ag-theme-modal-black-header {
-    @include ag-theme-alpine(());
+    @include ag-theme-alpine(
+        (
+            borders: true,
+            border-radius: 6px,
+            border-color: transparent,
+            font-size: 14px,
+        )
+    );
 
-    .ag-root-wrapper {
-        border: none;
-    }
+    //.ag-root-wrapper {
+    //    border: none;
+    //}
 }

@@ -8,7 +8,6 @@ import { Subject } from 'rxjs';
 import { debounceTime, first, map } from 'rxjs/operators';
 
 import { deleteFindingsTemplate, retrieveFindingsTemplate } from '../../../axios/api';
-import { CellMapper } from '../../../components/GridTable/GridCell/cell-mapper';
 import GridTable from '../../../components/GridTable/GridTable';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';

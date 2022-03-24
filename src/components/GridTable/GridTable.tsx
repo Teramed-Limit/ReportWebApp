@@ -1,13 +1,14 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GetRowNodeIdFunc, RowNode } from 'ag-grid-community';
 import { GridReadyEvent } from 'ag-grid-community/dist/lib/events';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
 import cx from 'classnames';
 
+import { CellMapper } from './GridCell/cell-mapper';
 import classes from './GridTable.module.scss';
 
 interface TableProps {
@@ -15,9 +16,12 @@ interface TableProps {
     rowData: any[];
     onSelectionChanged?: (param) => void;
     onFirstDataRendered?: (param) => void;
-    disabled: boolean;
     rowSelection?: string;
-    frameworkComponents?: { [p: string]: any };
+    checkboxSelect?: boolean;
+    gridReady?: (gridReadyEvent: GridReadyEvent) => void;
+    getRowNodeId?: GetRowNodeIdFunc;
+    filterRowFunction?: (node: RowNode) => boolean;
+    isFilterActivate?: () => boolean;
 }
 
 function isFirstColumn(params) {
@@ -25,26 +29,24 @@ function isFirstColumn(params) {
     return displayedColumns[0] === params.column;
 }
 
-// TODO: performance issue
 function GridTable({
     columnDefs,
     rowData,
     onSelectionChanged,
     onFirstDataRendered,
-    disabled,
+    checkboxSelect = true,
     rowSelection = 'multiple',
-    frameworkComponents,
+    gridReady,
+    getRowNodeId,
+    filterRowFunction,
+    isFilterActivate,
 }: TableProps) {
-    const disabledState = useRef<boolean>(disabled);
     const gridApi = useRef<GridApi | null>(null);
 
-    disabledState.current = disabled;
-    const onGridReady = (params: GridReadyEvent) => (gridApi.current = params.api);
-
-    useEffect(() => {
-        gridApi.current?.refreshHeader();
-        gridApi.current?.refreshCells({ force: true });
-    });
+    const onGridReady = (params: GridReadyEvent) => {
+        gridApi.current = params.api;
+        gridReady?.(params);
+    };
 
     return (
         <AgGridReact
@@ -52,38 +54,39 @@ function GridTable({
             defaultColDef={{
                 resizable: true,
             }}
+            isExternalFilterPresent={isFilterActivate}
+            doesExternalFilterPass={filterRowFunction}
             onGridReady={onGridReady}
             rowData={rowData}
-            rowMultiSelectWithClick
+            rowMultiSelectWithClick={checkboxSelect}
             rowSelection={rowSelection}
-            suppressRowClickSelection={disabled}
             onFirstDataRendered={(event) =>
                 onFirstDataRendered ? onFirstDataRendered(event.api) : null
             }
             onSelectionChanged={(event) =>
                 onSelectionChanged ? onSelectionChanged(event.api) : null
             }
-            frameworkComponents={frameworkComponents}
+            getRowNodeId={getRowNodeId}
+            frameworkComponents={CellMapper}
             tooltipShowDelay={0}
         >
             {columnDefs.map((col) => (
                 <AgGridColumn
+                    key={col.field}
                     headerClass={classes.header}
                     headerName={col.headerName}
-                    key={col.field}
                     field={col.field}
                     sortable
                     resizable={col.resizable || true}
                     valueFormatter={col.valueFormatter}
-                    headerCheckboxSelection={
-                        !disabledState.current && rowSelection === 'multiple' && isFirstColumn
-                    }
+                    headerCheckboxSelection={rowSelection === 'multiple' && isFirstColumn}
                     checkboxSelection={rowSelection === 'multiple' && isFirstColumn}
-                    cellClassRules={{ [classes.disabled]: () => disabledState.current }}
                     hide={col.hide}
                     flex={col.flex}
                     width={col.width}
                     cellRenderer={col.cellRenderer}
+                    cellStyle={col.cellStyle}
+                    cellRendererParams={col.cellRendererParams}
                     tooltipField={col.tooltipField}
                     tooltipComponent={col.tooltipComponent}
                 />

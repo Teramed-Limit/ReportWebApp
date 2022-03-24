@@ -1,0 +1,12 @@
+.queryCondition {
+    display: flex;
+    flex-direction: row;
+
+    > :first-child {
+        margin: 0 !important;
+    }
+
+    > * {
+        margin: 0 4px !important;
+    }
+}

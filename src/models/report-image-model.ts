@@ -33,6 +33,10 @@ export const ImageModel = types
     })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
+        const initImages = (reportImageDataset: ReportImageDataset[]) => {
+            self.images.replace(reportImageDataset);
+        };
+
         const deleteMarker = (marker: Partial<ImageMarker>): ReportImageDataset[] => {
             return self.images.map((item) => {
                 const deletedMappingNum = +(marker.markerText || 0);
@@ -197,6 +201,7 @@ export const ImageModel = types
         };
 
         return {
+            initImages,
             onMarkerDelete,
             onMarkerPlace,
             onImageCheck,

@@ -108,3 +108,23 @@ export const reorder = <T>(list: Array<T>, startIndex, endIndex): Array<T> => {
     result.splice(endIndex, 0, removed);
     return result.slice();
 };
+
+export function dateToStr(date) {
+    let d = new Date();
+    if (date !== null) d = new Date(date);
+    let month = `${d.getMonth() + 1}`;
+    let day = `${d.getDate()}`;
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = `0${month}`;
+    if (day.length < 2) day = `0${day}`;
+
+    return `${year}${month}${day}`;
+}
+
+export function strToDate(dateString: string) {
+    const year = dateString.substring(0, 4);
+    const month = dateString.substring(4, 6);
+    const day = dateString.substring(6, 8);
+    return new Date(+year, +month - 1, +day);
+}

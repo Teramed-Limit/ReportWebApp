@@ -4,21 +4,14 @@ import * as R from 'ramda';
 import { forkJoin, of } from 'rxjs';
 import { catchError, concatMap, map, startWith, switchMap } from 'rxjs/operators';
 
-import {
-    fetchInstrumentList,
-    fetchNurse,
-    fetchPatientAndDoctor,
-    fetchReport,
-    fetchReportSetting,
-} from '../axios/api';
+import { fetchReport, fetchReportSetting } from '../axios/api';
 import { staticOptionType } from '../constant/static-options';
 import { DocumentData } from '../interface/document-data';
 import { MessageType, Notification } from '../interface/notification';
-import { Option } from '../interface/option';
-import { PatientProcedureInfo } from '../interface/procedure-info';
 import { ReportSetting } from '../interface/report-setting';
-import { dobToAge, formatDateTime, spiltDateTime, uniqBy } from '../utils/general';
+import { uniqBy } from '../utils/general';
 import { OptionStoreModel } from './options-model';
+import { QueryModel } from './query-model';
 import { DataModel } from './report-data-model';
 import { DefineModel } from './report-define-model';
 import { ImageModel } from './report-image-model';
@@ -29,6 +22,7 @@ export const RootStoreModel = types
         dataStore: DataModel,
         defineStore: DefineModel,
         imageStore: ImageModel,
+        queryStore: QueryModel,
     })
     /* eslint-disable no-param-reassign */
     .views((self) => ({
@@ -50,37 +44,18 @@ export const RootStoreModel = types
         };
 
         const fetchSuccess = ({
-            res: [dataRes, settingRes, nurseRes, patientAndDoctorRes, instrumentRes],
+            res: [dataRes, settingRes],
         }: {
-            res: [
-                AxiosResponse<DocumentData>,
-                AxiosResponse<ReportSetting>,
-                AxiosResponse<Option[]>,
-                AxiosResponse<PatientProcedureInfo[]>,
-                AxiosResponse<Option[]>,
-            ];
+            res: [AxiosResponse<DocumentData>, AxiosResponse<ReportSetting>];
         }) => {
-            const {
-                EndoDoctorList,
-                AnesDoctorList,
-                ChiefDoctorList,
-                LstHISPatientProcedure,
-                TimeStartHour,
-                TimeStartMin,
-                TimeEndHour,
-                TimeEndMin,
-            } = patientAndDoctorRes.data[0];
-            const { ProcedureCode, ProcedureDatetime, SedationType } = LstHISPatientProcedure[0];
-
             // patient info
-            self.dataStore.patientInfo = {
-                chineseName: patientAndDoctorRes.data[0].NameChinese,
-                otherName: patientAndDoctorRes.data[0].OtherName,
-                gender: patientAndDoctorRes.data[0].Sex,
-                age: dobToAge(patientAndDoctorRes.data[0].Birthdate),
-                birthdate: patientAndDoctorRes.data[0].Birthdate,
-                documentNumber: patientAndDoctorRes.data[0].DocumentNumber,
-            };
+            // self.dataStore.patientInfo = {
+            //     chineseName: patientAndDoctorRes.data[0].NameChinese,
+            //     otherName: patientAndDoctorRes.data[0].OtherName,
+            //     gender: patientAndDoctorRes.data[0].Sex,
+            //     age: dobToAge(patientAndDoctorRes.data[0].Birthdate),
+            //     birthdate: patientAndDoctorRes.data[0].Birthdate,
+            // };
 
             // selection options
             self.optionStore.optionMap.replace(
@@ -90,10 +65,6 @@ export const RootStoreModel = types
                     .set('ColonDetail', staticOptionType.ColonDetail)
                     .set('AdequateInadequate', staticOptionType.AdequateInadequate)
                     .set('YesNo', staticOptionType.YesNo)
-                    .set('Nurse', nurseRes.data)
-                    .set('Anesthesiologist', AnesDoctorList)
-                    .set('Endoscopist', EndoDoctorList)
-                    .set('Instrument', instrumentRes.data)
                     .set(
                         'ReportERSTypeList',
                         uniqBy(settingRes.data.ReportERSTypeList, R.path(['Name'])),
@@ -104,30 +75,16 @@ export const RootStoreModel = types
             self.imageStore.images.replace(dataRes.data.ReportImageDataset || []);
 
             // set initialize data
-            self.dataStore.documentNumber = patientAndDoctorRes.data[0].DocumentNumber;
             self.dataStore.formData.replace(dataRes.data);
-            // self.dataStore.formData.set('StaffCode', queryParams.staffCode);
-            // self.dataStore.formData.set('Author', queryParams.staffCode);
             self.dataStore.formData.set('OwnerId', 'Demo User');
-            self.dataStore.formData.set('ChiefEndoscopist', ChiefDoctorList[0].Name);
-            self.dataStore.formData.set(
-                'ProcedureDate',
-                formatDateTime('YYYY-MM-DD', spiltDateTime(ProcedureDatetime)),
-            );
+            // self.dataStore.formData.set('ChiefEndoscopist', ChiefDoctorList[0].Name);
+            // self.dataStore.formData.set(
+            //     'ProcedureDate',
+            //     formatDateTime('YYYY-MM-DD', spiltDateTime(ProcedureDatetime)),
+            // );
 
             // report not existed, auto set value
             if (dataRes.data.ReportStatus === 'newly') {
-                const defaultERSType = settingRes.data.ReportERSTypeList.find(
-                    (option) => option.ProcedureCode === ProcedureCode,
-                )?.Name;
-
-                self.dataStore.formData.set('ERSType', defaultERSType || '');
-                self.dataStore.formData.set('Sedation', SedationType);
-                self.dataStore.formData.set('StartTimeHour', TimeStartHour);
-                self.dataStore.formData.set('StartTimeMin', TimeStartMin);
-                self.dataStore.formData.set('EndTimeHour', TimeEndHour);
-                self.dataStore.formData.set('EndTimeMin', TimeEndMin);
-
                 // apply local storage data, when newly report
                 if (window.localStorage.getItem(self.dataStore.studyInsUID)) {
                     const tempData: DocumentData = JSON.parse(
@@ -149,24 +106,9 @@ export const RootStoreModel = types
         const initialize = dollEffect<any, Notification>(self, (payload$, dollSignal) =>
             payload$.pipe(
                 switchMap((queryParams: any) =>
-                    fetchReport(
-                        queryParams.episodeNo,
-                        queryParams.procedureId,
-                        queryParams.dept,
-                        queryParams.staffCode,
-                    ).pipe(
+                    fetchReport('').pipe(
                         concatMap((documentData) =>
-                            forkJoin([
-                                of(documentData),
-                                fetchReportSetting(),
-                                fetchNurse(queryParams.dept),
-                                fetchPatientAndDoctor(
-                                    queryParams.episodeNo,
-                                    queryParams.procedureId,
-                                    queryParams.dept,
-                                ),
-                                fetchInstrumentList(queryParams.episodeNo),
-                            ]),
+                            forkJoin([of(documentData), fetchReportSetting()]),
                         ),
                         map((res) => [
                             action(fetchSuccess, { res, queryParams }),

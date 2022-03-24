@@ -15,8 +15,19 @@
     font-size: 20px;
     border-radius: 8px;
     background-image: url('../../assets/images/Patient_name_bg.png');
+    justify-content: center;
 }
 
 .headerSidebar {
     flex-grow: 2;
+}
+
+.iconText {
+    display: flex;
+    align-items: center;
+    min-width: 240px;
+
+    svg {
+        margin-right: 3px;
+    }
 }

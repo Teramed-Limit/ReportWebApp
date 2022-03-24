@@ -11,19 +11,21 @@ interface Props {
 
 const messageFunc = {
     /* eslint-disable @typescript-eslint/no-unused-vars */
+    setNotification: (notification: Notification) => {},
     openNotification: (messageType: MessageType, message: string) => {},
     setInfoNotification: (message: string) => {},
     setSuccessNotification: (message: string) => {},
     setWarningNotification: (message: string) => {},
     setErrorNotification: (message: string) => {},
+    showNotifyMsg: (notification: Notification) => {},
     /* eslint-disable @typescript-eslint/no-unused-vars */
 };
 
 export const NotificationContext = createContext<typeof messageFunc>(messageFunc);
 
-function Alert(props: AlertProps) {
-    return <MuiAlert elevation={6} variant="filled" {...props} />;
-}
+const Alert = React.forwardRef((props: AlertProps, ref: any) => {
+    return <MuiAlert ref={ref} elevation={6} variant="filled" {...props} />;
+});
 
 export function NotificationProvider(props: Props) {
     const [open, setOpen] = useState(false);
@@ -57,6 +59,12 @@ export function NotificationProvider(props: Props) {
         setOpen(true);
     }, []);
 
+    const showNotifyMsg = (notify: Notification) => {
+        return notify.messageType === MessageType.Success
+            ? setSuccessNotification(notify.message)
+            : setErrorNotification(notify.message);
+    };
+
     const attribute = useRef<SnackbarOrigin>({
         vertical: 'bottom',
         horizontal: 'right',
@@ -67,11 +75,13 @@ export function NotificationProvider(props: Props) {
     return (
         <NotificationContext.Provider
             value={{
+                setNotification,
                 openNotification,
                 setSuccessNotification,
                 setInfoNotification,
                 setWarningNotification,
                 setErrorNotification,
+                showNotifyMsg,
             }}
         >
             <Snackbar

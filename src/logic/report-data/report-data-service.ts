@@ -13,10 +13,6 @@ export class ReportDataService implements ReportInjector {
     constructor() {
         this.factoryMapper.set('ERSType', new ERSType());
         this.factoryMapper.set('ReportTemplate', new ReportTemplate());
-        // this.factoryMapper.set('StartTimeHour', new StartTimeHour());
-        // this.factoryMapper.set('StartTimeMin', new StartTimeMin());
-        // this.factoryMapper.set('EndTimeHour', new EndTimeHour());
-        // this.factoryMapper.set('EndTimeMin', new EndTimeMin());
     }
 
     inject(id: string) {

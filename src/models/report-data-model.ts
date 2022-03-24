@@ -3,15 +3,15 @@ import { action, dollEffect, effect, getEnv, getRoot, Instance, types } from 'ms
 import { iif, interval, Observable, throwError } from 'rxjs';
 import { catchError, concatMap, filter, map, startWith, switchMap } from 'rxjs/operators';
 
-import { previewReport, saveReport, signOffReport } from '../axios/api';
+import { fetchReport, previewReport, saveReport, signOffReport } from '../axios/api';
 import { AnyObject } from '../interface/anyObject';
 import { DocumentData } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
-import { PatientInfo } from '../interface/patient-info';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
-import { formatDateTime, isEmptyOrNil, spiltDateTime } from '../utils/general';
+import { isEmptyOrNil } from '../utils/general';
+import { StudyData } from '../interface/study-data';
 
 const dateModel = types.union(types.frozen<DocumentData>());
 const formState = types.union(types.frozen<FormState>());
@@ -24,10 +24,9 @@ export const DataModel = types
         modifiable: types.optional(types.boolean, false),
         reportHasChanged: types.optional(types.boolean, false),
         loading: types.optional(types.boolean, false),
+        activeStudy: types.frozen<StudyData | undefined>(undefined),
         formData: types.map(dateModel),
         formState: types.map(formState),
-        patientInfo: types.frozen<PatientInfo | undefined>(undefined),
-        documentNumber: types.optional(types.string, ''),
         formValidation: types.optional(types.frozen<ReportValidation>(), {
             isValid: true,
             openModalName: '',
@@ -49,19 +48,6 @@ export const DataModel = types
                 }
 
                 return `${self.formData.get('PDFFilePath')}`;
-            },
-            get patientHeaderInfo() {
-                if (!self.patientInfo) {
-                    return '';
-                }
-
-                return `${self.patientInfo?.chineseName},
-                ${self.patientInfo?.otherName},
-                ${self.patientInfo?.gender}/${self.patientInfo?.age}y,
-                DOB: ${formatDateTime('YYYY-MM-DD', spiltDateTime(self.patientInfo?.birthdate))}, ${
-                    self.patientInfo?.documentNumber
-                },
-                ${self.formData.get('EpisodeNo')}`;
             },
             get qualityModelIsValid() {
                 return (
@@ -327,6 +313,83 @@ export const DataModel = types
                     ),
                 );
             }),
+        };
+    })
+    .actions((self) => {
+        const beforeFetch = () => (self.loading = true);
+
+        const fetchError = () => (self.loading = false);
+
+        const fetchSuccess = (res: {
+            response: AxiosResponse<DocumentData>;
+            selectedStudyData: StudyData;
+        }) => {
+            const { response, selectedStudyData } = res;
+            const { defineStore, imageStore } = getRoot(self);
+
+            self.loading = false;
+            self.reportHasChanged = false;
+
+            // register selected study
+            self.activeStudy = selectedStudyData;
+
+            // set initialize data
+            self.formData.replace(response.data);
+            imageStore.initImages(response.data?.ReportImageDataset || []);
+
+            // report not existed, auto set value
+            if (response.data.ReportStatus === 'newly') {
+                // apply local storage data, when newly report
+                if (window.localStorage.getItem(self.formData.get('StudyInstanceUID'))) {
+                    const tempData: DocumentData = JSON.parse(
+                        <string>window.localStorage.getItem(self.formData.get('StudyInstanceUID')),
+                    );
+                    self.formData.replace(tempData);
+                    imageStore.initImages(tempData.ReportImageDataset || []);
+                }
+            }
+
+            // initialize form control
+            defineStore.setFormDefine(self.formData.toJSON());
+            self.initialFormControl(self.formData.toJSON());
+            self.loading = false;
+            self.reportReady = 'success';
+        };
+
+        return {
+            fetchReport: dollEffect<StudyData, ReportResponseNotification>(
+                self,
+                (payload$, dollSignal) => {
+                    return payload$.pipe(
+                        switchMap((studyData: StudyData) =>
+                            fetchReport(studyData.StudyInstanceUID).pipe(
+                                map((response) => [
+                                    action(fetchSuccess, {
+                                        response,
+                                        selectedStudyData: studyData,
+                                    }),
+                                    action(dollSignal, {
+                                        notification: {
+                                            message: 'Fetch report success',
+                                            messageType: MessageType.Success,
+                                        },
+                                    }),
+                                ]),
+                                startWith(action(beforeFetch)),
+                                catchError((error: AxiosError) => [
+                                    action(fetchError),
+                                    action(dollSignal, {
+                                        notification: {
+                                            message: error.response?.data.Message,
+                                            messageType: MessageType.Error,
+                                        },
+                                    }),
+                                ]),
+                            ),
+                        ),
+                    );
+                },
+            ),
         };
     });
 
