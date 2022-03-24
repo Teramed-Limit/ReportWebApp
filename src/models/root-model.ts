@@ -17,18 +17,11 @@ import { MessageType, Notification } from '../interface/notification';
 import { Option } from '../interface/option';
 import { PatientProcedureInfo } from '../interface/procedure-info';
 import { ReportSetting } from '../interface/report-setting';
-import { dobToAge, formatDateTime, isEmptyOrNil, spiltDateTime, uniqBy } from '../utils/general';
+import { dobToAge, formatDateTime, spiltDateTime, uniqBy } from '../utils/general';
 import { OptionStoreModel } from './options-model';
 import { DataModel } from './report-data-model';
 import { DefineModel } from './report-define-model';
 import { ImageModel } from './report-image-model';
-
-export interface QueryParams {
-    episodeNo: string;
-    procedureId: string;
-    dept: string;
-    staffCode: string;
-}
 
 export const RootStoreModel = types
     .model('root', {
@@ -36,7 +29,6 @@ export const RootStoreModel = types
         dataStore: DataModel,
         defineStore: DefineModel,
         imageStore: ImageModel,
-        queryParams: types.frozen<QueryParams>(),
     })
     /* eslint-disable no-param-reassign */
     .views((self) => ({
@@ -46,19 +38,7 @@ export const RootStoreModel = types
         get formData() {
             return self.dataStore.formData;
         },
-        get isQueryParamsValid() {
-            return (
-                !isEmptyOrNil(self.queryParams.episodeNo) &&
-                !isEmptyOrNil(self.queryParams.procedureId) &&
-                !isEmptyOrNil(self.queryParams.staffCode) &&
-                !isEmptyOrNil(self.queryParams.dept)
-            );
-        },
     }))
-    .actions((self) => {
-        const setQueryParams = (queryParams: QueryParams) => (self.queryParams = queryParams);
-        return { setQueryParams };
-    })
     .actions((self) => {
         const beforeFetch = () => {
             self.dataStore.loading = true;
@@ -71,7 +51,6 @@ export const RootStoreModel = types
 
         const fetchSuccess = ({
             res: [dataRes, settingRes, nurseRes, patientAndDoctorRes, instrumentRes],
-            queryParams,
         }: {
             res: [
                 AxiosResponse<DocumentData>,
@@ -80,7 +59,6 @@ export const RootStoreModel = types
                 AxiosResponse<PatientProcedureInfo[]>,
                 AxiosResponse<Option[]>,
             ];
-            queryParams: QueryParams;
         }) => {
             const {
                 EndoDoctorList,
@@ -128,8 +106,8 @@ export const RootStoreModel = types
             // set initialize data
             self.dataStore.documentNumber = patientAndDoctorRes.data[0].DocumentNumber;
             self.dataStore.formData.replace(dataRes.data);
-            self.dataStore.formData.set('StaffCode', queryParams.staffCode);
-            self.dataStore.formData.set('Author', queryParams.staffCode);
+            // self.dataStore.formData.set('StaffCode', queryParams.staffCode);
+            // self.dataStore.formData.set('Author', queryParams.staffCode);
             self.dataStore.formData.set('OwnerId', 'Demo User');
             self.dataStore.formData.set('ChiefEndoscopist', ChiefDoctorList[0].Name);
             self.dataStore.formData.set(
@@ -155,7 +133,7 @@ export const RootStoreModel = types
                     const tempData: DocumentData = JSON.parse(
                         <string>window.localStorage.getItem(self.dataStore.studyInsUID),
                     );
-                    tempData.Author = queryParams.staffCode;
+                    // tempData.Author = queryParams.staffCode;
                     self.dataStore.formData.replace(tempData);
                     self.imageStore.images.replace(tempData.ReportImageDataset || []);
                 }
@@ -168,9 +146,9 @@ export const RootStoreModel = types
             self.dataStore.reportReady = 'success';
         };
 
-        const initialize = dollEffect<QueryParams, Notification>(self, (payload$, dollSignal) =>
+        const initialize = dollEffect<any, Notification>(self, (payload$, dollSignal) =>
             payload$.pipe(
-                switchMap((queryParams: QueryParams) =>
+                switchMap((queryParams: any) =>
                     fetchReport(
                         queryParams.episodeNo,
                         queryParams.procedureId,
@@ -209,20 +187,7 @@ export const RootStoreModel = types
                 ),
             ),
         );
-        return {
-            initialize,
-            afterCreate() {
-                if (window.location.pathname.includes('admin') && self.isQueryParamsValid) return;
-                initialize(<QueryParams>{
-                    episodeNo: self.queryParams.episodeNo,
-                    procedureId: self.queryParams.procedureId,
-                    dept: self.queryParams.dept,
-                    staffCode: self.queryParams.staffCode,
-                }).then(() => {
-                    self.dataStore.autoSaveToLocalStorage();
-                });
-            },
-        };
+        return { initialize };
     });
 
 export type RootStore = Instance<typeof RootStoreModel>;

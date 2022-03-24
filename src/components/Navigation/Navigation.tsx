@@ -28,6 +28,11 @@ const Navigation = () => {
     return (
         <div className={classes.nav}>
             <ul className={classes.navigationItems}>
+                <NavigationItem link="/query">
+                    <Button id="navigation__btn-query" iconPosition="left" icon="query">
+                        Query
+                    </Button>
+                </NavigationItem>
                 <NavigationItem link="/reporting">
                     <Button id="navigation__btn-reporting" iconPosition="left" icon="reporting">
                         Reporting
@@ -36,21 +41,6 @@ const Navigation = () => {
                 <NavigationItem link="/photos">
                     <Button id="navigation__btn-photo" iconPosition="left" icon="photos">
                         Photos
-                    </Button>
-                </NavigationItem>
-                <NavigationItem link="/drag">
-                    <Button id="navigation__btn-drug" iconPosition="left" icon="drug">
-                        Drug
-                    </Button>
-                </NavigationItem>
-                <NavigationItem link="/lab">
-                    <Button id="navigation__btn-lab" iconPosition="left" icon="lab">
-                        Lab
-                    </Button>
-                </NavigationItem>
-                <NavigationItem link="/consumable">
-                    <Button id="navigation__btn-consumable" iconPosition="left" icon="consumable">
-                        Consumable
                     </Button>
                 </NavigationItem>
                 <NavigationItem link="/preview">

@@ -133,10 +133,8 @@ const RetrieveTemplateModal = () => {
                 <GridTable
                     rowData={itemList}
                     columnDefs={colDef}
-                    disabled={false}
                     rowSelection="single"
                     onSelectionChanged={onSelectionChanged}
-                    frameworkComponents={CellMapper}
                 />
             </div>
         </div>

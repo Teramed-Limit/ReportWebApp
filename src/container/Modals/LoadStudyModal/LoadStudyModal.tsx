@@ -85,7 +85,6 @@ const LoadStudyModal = () => {
                 <GridTable
                     columnDefs={colDef}
                     rowData={studyList}
-                    disabled={false}
                     rowSelection="single"
                     onSelectionChanged={onSelectionChanged}
                 />

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
-import { Button, Popover } from '@mui/material';
 import { ArrowDropDown, FormatColorFill } from '@mui/icons-material';
+import { Button, Popover } from '@mui/material';
 import { ColorResult, SketchPicker } from 'react-color';
 
 import classes from './ColorPickerButton.module.scss';

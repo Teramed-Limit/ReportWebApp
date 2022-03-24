@@ -115,49 +115,51 @@ const SectionListEdit = ({ ersType, onCategoryFocus, onCancelFocus }: Props) => 
         onCancelFocus();
     };
 
-    return <>
-        <div className={classes.section}>
-            Sections
-            <IconButton onClick={onConfirm} size="large">
-                <FaCheck className={classes.iconCheck} />
-            </IconButton>
-            <IconButton onClick={onCancel} size="large">
-                <MdCancel className={classes.iconCancel} />
-            </IconButton>
-        </div>
+    return (
+        <>
+            <div className={classes.section}>
+                Sections
+                <IconButton onClick={onConfirm} size="large">
+                    <FaCheck className={classes.iconCheck} />
+                </IconButton>
+                <IconButton onClick={onCancel} size="large">
+                    <MdCancel className={classes.iconCancel} />
+                </IconButton>
+            </div>
 
-        <DragDropContext onDragEnd={onDragEnd}>
-            <Droppable droppableId="droppable">
-                {(provided, snapshot) => (
-                    <div
-                        className={classes.list}
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                    >
-                        {findingList.map((item, index) => (
-                            <Section
-                                key={item.ItemName}
-                                index={index}
-                                active={index === activeIndex}
-                                itemName={item.ItemName}
-                                autoFillDefaultWhenEmpty={item.AutoFillDefaultWhenEmpty}
-                                toggleAutoFill={toggleAutoFill}
-                                onDelete={onDelete}
-                                onCancelFocus={onCancelFocus}
-                                onCategoryFocus={onCategoryFocus}
+            <DragDropContext onDragEnd={onDragEnd}>
+                <Droppable droppableId="droppable">
+                    {(provided, snapshot) => (
+                        <div
+                            className={classes.list}
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            {findingList.map((item, index) => (
+                                <Section
+                                    key={item.ItemName}
+                                    index={index}
+                                    active={index === activeIndex}
+                                    itemName={item.ItemName}
+                                    autoFillDefaultWhenEmpty={item.AutoFillDefaultWhenEmpty}
+                                    toggleAutoFill={toggleAutoFill}
+                                    onDelete={onDelete}
+                                    onCancelFocus={onCancelFocus}
+                                    onCategoryFocus={onCategoryFocus}
+                                />
+                            ))}
+                            <SectionAdder
+                                itemNameList={findingList.map((item) => item.ItemName)}
+                                isDragging={snapshot.isDraggingOver}
+                                onAddSection={onAddSection}
                             />
-                        ))}
-                        <SectionAdder
-                            itemNameList={findingList.map((item) => item.ItemName)}
-                            isDragging={snapshot.isDraggingOver}
-                            onAddSection={onAddSection}
-                        />
-                        {provided.placeholder}
-                    </div>
-                )}
-            </Droppable>
-        </DragDropContext>
-    </>;
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </Droppable>
+            </DragDropContext>
+        </>
+    );
 };
 
 export default SectionListEdit;
