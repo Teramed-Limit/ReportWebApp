@@ -3,7 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Redirect, Route } from 'react-router-dom';
 
-import { useReportDataStore } from './models/useStore';
+import { useAuthStore } from './models/useStore';
 
 interface Props {
     exact: boolean;
@@ -12,13 +12,11 @@ interface Props {
 }
 
 function PrivateRoute({ component, ...rest }: Props) {
-    const { reportReady } = useReportDataStore();
+    const { isAuth } = useAuthStore();
     return (
         <Route
             {...rest}
-            render={() =>
-                reportReady !== 'error' ? component : <Redirect to={{ pathname: '/error' }} />
-            }
+            render={() => (isAuth ? component : <Redirect to={{ pathname: '/login' }} />)}
         />
     );
 }

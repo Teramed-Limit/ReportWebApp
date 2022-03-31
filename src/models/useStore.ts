@@ -2,6 +2,7 @@ import React, { createContext } from 'react';
 
 import { MobXProviderContext } from 'mobx-react';
 
+import { AuthStore } from './auth-model';
 import { OptionStore } from './options-model';
 import { QueryStore } from './query-model';
 import { DataStore } from './report-data-model';
@@ -34,4 +35,8 @@ export function useReportImageStore(): ImageStore {
 
 export function useQueryStore(): QueryStore {
     return React.useContext(MobXProviderContext).store.queryStore;
+}
+
+export function useAuthStore(): AuthStore {
+    return React.useContext(MobXProviderContext).store.authStore;
 }

@@ -28,7 +28,7 @@ const Navigation = () => {
     return (
         <div className={classes.nav}>
             <ul className={classes.navigationItems}>
-                <NavigationItem link="/query">
+                <NavigationItem link="/home">
                     <Button id="navigation__btn-query" iconPosition="left" icon="query">
                         Query
                     </Button>

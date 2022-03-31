@@ -2,6 +2,7 @@ import { AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
 
 import { AnyObject } from '../interface/anyObject';
+import { LoginResult } from '../interface/auth';
 import { Diagram } from '../interface/diagram';
 import { DocumentData, ReportImageDataset } from '../interface/document-data';
 import { HkcctCode } from '../interface/hkcct';
@@ -15,6 +16,21 @@ import { axiosIns } from './axios';
 // export function fetchReportDefine(): Observable<AxiosResponse> {
 //     return axiosIns.get(`getReportDefine`);
 // }
+
+export function login(username: string, password: string): Observable<AxiosResponse<LoginResult>> {
+    return axiosIns.post<LoginResult>(`api/login`, {
+        username,
+        password,
+    });
+}
+
+export function logout() {
+    return axiosIns.post(`api/logout`);
+}
+
+export function refreshToken(token: string) {
+    return axiosIns.post(`api/refreshtoken`, { refreshToken: token });
+}
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {
     return axiosIns.get<DocumentData>(`api/report/studyInstanceUID/${studyInsUid}`);

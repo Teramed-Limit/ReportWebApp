@@ -12,8 +12,8 @@ import PrivateRoute from './Private-route';
 function AppRoutes() {
     return (
         <Switch>
-            <Redirect exact from="/" to="/query" />
-            <PrivateRoute path="/query" component={<Query />} exact />
+            <Redirect exact from="/" to="/home" />
+            <PrivateRoute path="/home" component={<Query />} exact />
             <PrivateRoute path="/reporting" component={<Report />} exact />
             <PrivateRoute path="/photos" component={<Photo />} exact />
             <PrivateRoute path="/preview" component={<Preview />} exact />

@@ -1,9 +1,12 @@
 import DefaultImage from './icon/default-image.svg';
+import LoginBackground from './Main/login_bg.png';
 import Photos from './Main/TopFun/ic_CapturesMapping.png';
 import Consumable from './Main/TopFun/ic_Consumables.png';
 import Lab from './Main/TopFun/ic_LabRequests.png';
+import Logout from './Main/TopFun/ic_main_selected_exit.png';
 import Print from './Main/TopFun/ic_main_selected_preview.png';
 import Save from './Main/TopFun/ic_main_selected_save.png';
+import Settings from './Main/TopFun/ic_main_selected_setting.png';
 import Modify from './Main/TopFun/ic_main_unselected_edit.png';
 import Drug from './Main/TopFun/ic_Medication.png';
 import Query from './Main/TopFun/ic_New.png';
@@ -34,4 +37,7 @@ export {
     ColonQualityC,
     ColonQualityD,
     DefaultImage,
+    LoginBackground,
+    Logout,
+    Settings,
 };

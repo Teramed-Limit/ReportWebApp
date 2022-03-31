@@ -7,16 +7,19 @@ import WcIcon from '@mui/icons-material/Wc';
 import { Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 import { AiOutlineFieldNumber } from 'react-icons/all';
+import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
 import { NotificationContext } from '../../context/notification-context';
-import { useReportDataStore } from '../../models/useStore';
+import { useAuthStore, useReportDataStore } from '../../models/useStore';
 import { generateUUID } from '../../utils/general';
 import ButtonGroup from '../UI/Button-Group/Button-Group';
 import Button from '../UI/Button/Button';
 import classes from './Header.module.scss';
 
 const Header = () => {
+    const history = useHistory();
+    const { onLogout } = useAuthStore();
     const { pdfFile, activeStudy } = useReportDataStore();
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [printable, setPrintable] = useState<boolean>(false);
@@ -79,6 +82,10 @@ const Header = () => {
         saveReport(null, (signal$) =>
             signal$.pipe(tap(({ notification }) => showNotifyMsg(notification))),
         );
+    };
+
+    const logout = () => {
+        onLogout(null, (signal$) => signal$.pipe(tap(() => history.push({ pathname: `/login` }))));
     };
 
     return (
@@ -156,6 +163,9 @@ const Header = () => {
                         onClick={printPdf}
                     >
                         Print
+                    </Button>
+                    <Button id="btn__logout" icon="logout" color="black" onClick={logout}>
+                        Logout
                     </Button>
                 </ButtonGroup>
             </div>

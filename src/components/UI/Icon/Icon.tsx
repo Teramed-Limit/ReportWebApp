@@ -10,6 +10,8 @@ import {
     SignOff,
     SignOffBlue,
     Query,
+    Logout,
+    Settings,
 } from '../../../assets';
 
 const fontIconCodes = {
@@ -22,6 +24,8 @@ const fontIconCodes = {
     signOff: SignOff,
     signOffBlue: SignOffBlue,
     photos: Photos,
+    logout: Logout,
+    settings: Settings,
 };
 
 interface IconProps {

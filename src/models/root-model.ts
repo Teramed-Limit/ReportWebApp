@@ -10,6 +10,7 @@ import { DocumentData } from '../interface/document-data';
 import { MessageType, Notification } from '../interface/notification';
 import { ReportSetting } from '../interface/report-setting';
 import { uniqBy } from '../utils/general';
+import { AuthModel } from './auth-model';
 import { OptionStoreModel } from './options-model';
 import { QueryModel } from './query-model';
 import { DataModel } from './report-data-model';
@@ -18,6 +19,7 @@ import { ImageModel } from './report-image-model';
 
 export const RootStoreModel = types
     .model('root', {
+        authStore: AuthModel,
         optionStore: OptionStoreModel,
         dataStore: DataModel,
         defineStore: DefineModel,

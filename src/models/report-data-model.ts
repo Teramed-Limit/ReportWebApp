@@ -10,8 +10,8 @@ import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
-import { isEmptyOrNil } from '../utils/general';
 import { StudyData } from '../interface/study-data';
+import { isEmptyOrNil } from '../utils/general';
 
 const dateModel = types.union(types.frozen<DocumentData>());
 const formState = types.union(types.frozen<FormState>());
@@ -81,6 +81,13 @@ export const DataModel = types
         const { reportDataService, reportDefineService, validationService } = getEnv<RootService>(
             self,
         );
+
+        const init = () => {
+            self.activeStudy = undefined;
+            self.formData.replace({});
+            self.formState.replace({});
+            self.formValidation = { isValid: true, openModalName: '' };
+        };
 
         const modify = () => {
             self.modifiable = true;
@@ -157,6 +164,7 @@ export const DataModel = types
         };
 
         return {
+            init,
             modify,
             valueChanged,
             validate,
