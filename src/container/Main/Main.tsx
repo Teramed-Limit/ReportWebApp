@@ -7,7 +7,6 @@ import AppRoutes from '../../App-route';
 import classes from '../../App.module.scss';
 import Block from '../../components/Block/Block';
 import Header from '../../components/Header/Header';
-import Navigation from '../../components/Navigation/Navigation';
 import Spinner from '../../components/Spinner/Spinner';
 import { useModal } from '../../hooks/useModal';
 import { useReportDataStore } from '../../models/useStore';
@@ -35,7 +34,6 @@ const Main = () => {
 
             <div className={classes.container}>
                 <Header />
-                <Navigation />
                 <main className={classes.content}>
                     <AppRoutes />
                 </main>

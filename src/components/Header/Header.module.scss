@@ -3,7 +3,11 @@
     height: 103px;
     display: flex;
     padding: 8px;
-    background-color: #f0f8ff;
+    background: #f0f8ff;
+    background: -moz-linear-gradient(top, #f0f8ff 0%, #feffff 100%);
+    background: -webkit-linear-gradient(top, #f0f8ff 0%, #feffff 100%);
+    background: linear-gradient(to bottom, #f0f8ff 0%, #feffff 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f8ff', endColorstr='#feffff',GradientType=0 );
 }
 
 .headerInfo {
@@ -31,4 +35,9 @@
     svg {
         margin-right: 3px;
     }
+}
+
+.iconButton {
+    font-size: 40px !important;
+    color: #4eacf1;
 }

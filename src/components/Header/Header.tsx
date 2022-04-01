@@ -1,8 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import CakeIcon from '@mui/icons-material/Cake';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import SettingsIcon from '@mui/icons-material/Settings';
 import WcIcon from '@mui/icons-material/Wc';
 import { Stack } from '@mui/material';
 import { observer } from 'mobx-react';
@@ -16,6 +20,7 @@ import { generateUUID } from '../../utils/general';
 import ButtonGroup from '../UI/Button-Group/Button-Group';
 import Button from '../UI/Button/Button';
 import classes from './Header.module.scss';
+import NavigationItem from '../Navigation/NavigationItem/NavigationItem';
 
 const Header = () => {
     const history = useHistory();
@@ -134,39 +139,30 @@ const Header = () => {
             </Stack>
             <div className={classes.headerSidebar}>
                 <ButtonGroup>
-                    <Button id="btn__save" icon="save" color="black" onClick={saveReportAndNotify}>
-                        Save
-                    </Button>
-                    <Button
-                        id="btn__modify"
-                        disabled={!reportDisabled}
-                        icon="modify"
-                        color="black"
-                        onClick={modify}
-                    >
-                        Modify
-                    </Button>
-                    <Button
-                        id="btn__sign"
-                        disabled={reportDisabled}
-                        color="black"
-                        icon="signOffBlue"
-                        onClick={signOffReportRouteToPreviewPage}
-                    >
-                        SignOffs
-                    </Button>
-                    <Button
-                        id="btn__print"
-                        disabled={!reportDisabled}
-                        icon="print"
-                        color="black"
-                        onClick={printPdf}
-                    >
-                        Print
-                    </Button>
-                    <Button id="btn__logout" icon="logout" color="black" onClick={logout}>
-                        Logout
-                    </Button>
+                    <NavigationItem link="/">
+                        <Button id="btn__home" color="black">
+                            <HomeRoundedIcon className={classes.iconButton} />
+                            Home
+                        </Button>
+                    </NavigationItem>
+                    <NavigationItem link="/setting">
+                        <Button id="btn__setting" color="black">
+                            <SettingsIcon className={classes.iconButton} />
+                            Settings
+                        </Button>
+                    </NavigationItem>
+                    <NavigationItem link="/account">
+                        <Button id="btn__account" color="black">
+                            <AccountCircleSharpIcon className={classes.iconButton} />
+                            Account
+                        </Button>
+                    </NavigationItem>
+                    <NavigationItem link="/account">
+                        <Button id="btn__logout" color="black" onClick={logout}>
+                            <LogoutRoundedIcon className={classes.iconButton} />
+                            Logout
+                        </Button>
+                    </NavigationItem>
                 </ButtonGroup>
             </div>
         </div>

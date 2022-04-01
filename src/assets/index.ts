@@ -9,7 +9,7 @@ import Save from './Main/TopFun/ic_main_selected_save.png';
 import Settings from './Main/TopFun/ic_main_selected_setting.png';
 import Modify from './Main/TopFun/ic_main_unselected_edit.png';
 import Drug from './Main/TopFun/ic_Medication.png';
-import Query from './Main/TopFun/ic_New.png';
+import Query from './Main/TopFun/ic_New_Blue.png';
 import Preview from './Main/TopFun/ic_Preview.png';
 import reporting from './Main/TopFun/ic_Reporting.png';
 import SignOff from './Main/TopFun/ic_SignOffs.png';
