@@ -2,7 +2,8 @@ import React, { useRef } from 'react';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { ColDef, GetRowNodeIdFunc, RowNode } from 'ag-grid-community';
+import { ColDef, RowNode } from 'ag-grid-community';
+import { GetRowIdFunc } from 'ag-grid-community/dist/lib/entities/gridOptions';
 import { GridReadyEvent } from 'ag-grid-community/dist/lib/events';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { AgGridColumn, AgGridReact } from 'ag-grid-react';
@@ -19,7 +20,7 @@ interface TableProps {
     rowSelection?: string;
     checkboxSelect?: boolean;
     gridReady?: (gridReadyEvent: GridReadyEvent) => void;
-    getRowNodeId?: GetRowNodeIdFunc;
+    getRowId?: GetRowIdFunc;
     filterRowFunction?: (node: RowNode) => boolean;
     isFilterActivate?: () => boolean;
 }
@@ -37,7 +38,7 @@ function GridTable({
     checkboxSelect = true,
     rowSelection = 'multiple',
     gridReady,
-    getRowNodeId,
+    getRowId,
     filterRowFunction,
     isFilterActivate,
 }: TableProps) {
@@ -66,8 +67,8 @@ function GridTable({
             onSelectionChanged={(event) =>
                 onSelectionChanged ? onSelectionChanged(event.api) : null
             }
-            getRowNodeId={getRowNodeId}
-            frameworkComponents={CellMapper}
+            getRowId={getRowId}
+            components={{ ...CellMapper }}
             tooltipShowDelay={0}
         >
             {columnDefs.map((col) => (
@@ -84,11 +85,14 @@ function GridTable({
                     hide={col.hide}
                     flex={col.flex}
                     width={col.width}
-                    cellRenderer={col.cellRenderer}
                     cellStyle={col.cellStyle}
+                    cellRenderer={col.cellRenderer}
                     cellRendererParams={col.cellRendererParams}
+                    cellEditor={col.cellEditor}
+                    cellEditorParams={col.cellEditorParams}
                     tooltipField={col.tooltipField}
                     tooltipComponent={col.tooltipComponent}
+                    editable={col.editable}
                 />
             ))}
         </AgGridReact>

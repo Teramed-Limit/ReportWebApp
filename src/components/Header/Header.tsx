@@ -6,9 +6,8 @@ import CakeIcon from '@mui/icons-material/Cake';
 import ContactPageIcon from '@mui/icons-material/ContactPage';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import SettingsIcon from '@mui/icons-material/Settings';
 import WcIcon from '@mui/icons-material/Wc';
-import { Stack } from '@mui/material';
+import { Paper, Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 import { AiOutlineFieldNumber } from 'react-icons/all';
 import { useHistory } from 'react-router-dom';
@@ -17,10 +16,10 @@ import { tap } from 'rxjs/operators';
 import { NotificationContext } from '../../context/notification-context';
 import { useAuthStore, useReportDataStore } from '../../models/useStore';
 import { generateUUID } from '../../utils/general';
+import NavigationItem from '../Navigation/NavigationItem/NavigationItem';
 import ButtonGroup from '../UI/Button-Group/Button-Group';
 import Button from '../UI/Button/Button';
 import classes from './Header.module.scss';
-import NavigationItem from '../Navigation/NavigationItem/NavigationItem';
 
 const Header = () => {
     const history = useHistory();

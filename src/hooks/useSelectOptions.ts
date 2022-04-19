@@ -12,7 +12,7 @@ export interface OptionRetriever {
 
 const OptionRetrieverMapper: { [props: string]: OptionRetriever } = {
     http: {
-        retrieve: (source) => axiosIns.get(source).pipe(map((res) => res.data)),
+        retrieve: (source) => axiosIns.get(`api/${source}`).pipe(map((res) => res.data)),
     },
     static: {
         retrieve: (source) => of(staticOptionType[source]),

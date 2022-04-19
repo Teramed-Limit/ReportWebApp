@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import {
     Checkbox,
@@ -10,9 +10,8 @@ import {
     Select,
     SelectChangeEvent,
 } from '@mui/material';
-import { map } from 'rxjs/operators';
 
-import { axiosIns } from '../../../../axios/axios';
+import { useSelectOptions } from '../../../../hooks/useSelectOptions';
 import { SelectionField } from '../../../../interface/selection-field';
 import classes from './MultiSelect.module.scss';
 
@@ -25,27 +24,8 @@ interface Props {
 }
 
 const MultiSelect = ({ field, value, autoFocus, onValueChanged, readOnly = false }: Props) => {
-    const [selectOptions, setSelectOptions] = React.useState<string[]>(value);
-    const [options, setOptions] = React.useState<string[]>([]);
-
-    useEffect(() => {
-        const subscription = axiosIns
-            .get(field.optionSource.source)
-            .pipe(
-                map((res) =>
-                    res.data.map((item) =>
-                        field?.optionSource?.format ? item[field.optionSource.format] : item,
-                    ),
-                ),
-            )
-            .subscribe({
-                next: setOptions,
-            });
-
-        return () => {
-            subscription.unsubscribe();
-        };
-    }, [field.optionSource]);
+    const [selectOptions, setSelectOptions] = React.useState<string[]>(value || []);
+    const { options } = useSelectOptions(field.optionSource.type, field.optionSource.source);
 
     const handleChange = (event: SelectChangeEvent<string[]>) => {
         setSelectOptions(event.target.value as string[]);
@@ -60,7 +40,7 @@ const MultiSelect = ({ field, value, autoFocus, onValueChanged, readOnly = false
                 multiple
                 autoFocus={autoFocus}
                 disabled={readOnly}
-                value={value}
+                value={selectOptions}
                 onChange={handleChange}
                 inputProps={{
                     className: classes.input,
@@ -73,12 +53,19 @@ const MultiSelect = ({ field, value, autoFocus, onValueChanged, readOnly = false
                     </div>
                 )}
             >
-                {options.map((option) => (
-                    <MenuItem key={option} value={option}>
-                        <Checkbox checked={selectOptions.indexOf(option) > -1} />
-                        <ListItemText primary={option} />
-                    </MenuItem>
-                ))}
+                {options.map((item) => {
+                    const optionLabel = field.optionSource.labelKey
+                        ? item[field.optionSource.labelKey]
+                        : item;
+                    const optionKey = field.optionSource.key ? item[field.optionSource.key] : item;
+
+                    return (
+                        <MenuItem key={optionLabel} value={optionKey}>
+                            <Checkbox checked={selectOptions.indexOf(optionKey) > -1} />
+                            <ListItemText primary={optionKey} />
+                        </MenuItem>
+                    );
+                })}
             </Select>
         </FormControl>
     );

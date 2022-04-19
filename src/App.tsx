@@ -12,6 +12,7 @@ import { ModalProvider } from './context/modal-context';
 import { NotificationProvider } from './context/notification-context';
 import { createStore } from './models/store';
 import { rootTheme } from './theme/rootTheme';
+import './styles/ag-grid/ag-theme-modal.scss';
 
 const rootStore = createStore();
 

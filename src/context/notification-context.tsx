@@ -11,7 +11,6 @@ interface Props {
 
 const messageFunc = {
     /* eslint-disable @typescript-eslint/no-unused-vars */
-    setNotification: (notification: Notification) => {},
     openNotification: (messageType: MessageType, message: string) => {},
     setInfoNotification: (message: string) => {},
     setSuccessNotification: (message: string) => {},
@@ -75,7 +74,6 @@ export function NotificationProvider(props: Props) {
     return (
         <NotificationContext.Provider
             value={{
-                setNotification,
                 openNotification,
                 setSuccessNotification,
                 setInfoNotification,

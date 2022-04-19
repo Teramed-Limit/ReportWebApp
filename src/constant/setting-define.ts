@@ -26,6 +26,93 @@ export const define = {
             { field: 'StudyInstanceUID', headerName: 'StudyInstanceUID', hide: true, width: 120 },
         ],
     },
+    userRoleGroup: {
+        colDef: [
+            { field: 'RoleName', headerName: 'Role Name', width: 200 },
+            { field: 'Description', headerName: 'Description', width: 200 },
+        ],
+        formDef: {
+            sections: [
+                {
+                    fields: [
+                        {
+                            id: 'RoleName',
+                            label: 'Role Name',
+                            type: 'Text',
+                            readOnly: true,
+                            validate: { type: 'Required' },
+                        },
+                        { id: 'Description', label: 'Description', type: 'Text' },
+                    ],
+                },
+            ],
+        },
+    },
+    userAccount: {
+        colDef: [
+            {
+                field: 'UserID',
+                headerName: 'User Id',
+                width: 200,
+            },
+            {
+                field: 'UserPassword',
+                headerName: 'Password',
+                width: 200,
+            },
+            {
+                field: 'DoctorCName',
+                headerName: 'Doctor CName',
+                width: 200,
+            },
+            {
+                field: 'DoctorEName',
+                headerName: 'Doctor EName',
+                width: 200,
+            },
+            {
+                field: 'RoleList',
+                headerName: 'Role Group',
+                width: 200,
+                cellRenderer: 'chipRenderer',
+                flex: 1,
+            },
+        ],
+        formDef: {
+            sections: [
+                {
+                    fields: [
+                        {
+                            id: 'UserID',
+                            label: 'User Id',
+                            type: 'Text',
+                            readOnly: true,
+                            validate: { type: 'Required' },
+                        },
+                        {
+                            id: 'UserPassword',
+                            label: 'Password',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                        },
+                        { id: 'DoctorCName', label: 'User CName', type: 'Text' },
+                        { id: 'DoctorEName', label: 'User EName', type: 'Text' },
+                        {
+                            id: 'RoleList',
+                            label: 'Role Group',
+                            type: 'MultiSelect',
+                            optionSource: {
+                                type: 'http',
+                                source: 'role',
+                                key: 'RoleName',
+                                labelKey: 'RoleName',
+                            },
+                        },
+                    ],
+                },
+            ],
+        },
+    },
 };
 
 export const defaultQueryFields = ['PatientId', 'AccessionNumber', 'Modality', 'StudyDate'];

@@ -26,7 +26,7 @@ const Selection = React.forwardRef(
         ref,
     ) => {
         const { isMulti, optionSource, filterCondition } = field;
-        const { format = 'Name', key = 'Code', source } = optionSource;
+        const { labelKey = 'Name', key = 'Code', source } = optionSource;
         const selectedIsNotInOptions = useRef(false);
 
         useEffect(() => {
@@ -38,7 +38,7 @@ const Selection = React.forwardRef(
 
         const options = useOptionStore()
             .getOptions(source, filterCondition)
-            ?.map((option) => ({ ...option, value: option[key], label: option[format] }));
+            ?.map((option) => ({ ...option, value: option[key], label: option[labelKey] }));
 
         let formatValue = coerceArray(selectedOption);
         let formatSelectedOption;
@@ -53,7 +53,7 @@ const Selection = React.forwardRef(
         }
 
         const setSelectedOption = (option) =>
-            onSelectionChanged(isMulti ? option.map((opt) => opt[format]) : option[format]);
+            onSelectionChanged(isMulti ? option.map((opt) => opt[labelKey]) : option[labelKey]);
 
         return (
             <BaseSelection

@@ -3,7 +3,6 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import { ColDef } from 'ag-grid-community';
 import { GridReadyEvent } from 'ag-grid-community/dist/lib/events';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
-import { ICellRendererParams } from 'ag-grid-community/dist/lib/rendering/cellRenderers/iCellRenderer';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
@@ -49,8 +48,8 @@ const Query: React.FC = () => {
     }, [onResultChanged, queryPairData]);
 
     const onNavigateReport = useCallback(
-        (param: ICellRendererParams) => {
-            fetchReport(param.data as StudyData, (signal$) =>
+        (data: StudyData) => {
+            fetchReport(data, (signal$) =>
                 signal$.pipe(
                     tap(({ notification }) => {
                         showNotifyMsg(notification);

@@ -14,11 +14,11 @@ interface Props {
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Radio = React.forwardRef(({ field, value, onValueChange, disabled }: Props, ref) => {
     const { optionSource, filterCondition } = field;
-    const { format = 'Name', key = 'Code', source } = optionSource;
+    const { labelKey = 'Name', key = 'Code', source } = optionSource;
 
     const options = useOptionStore()
         .getOptions(source, filterCondition)
-        ?.map((option) => ({ ...option, value: option[key], label: option[format] }));
+        ?.map((option) => ({ ...option, value: option[key], label: option[labelKey] }));
 
     const onChecked = (isCheck: string) => onValueChange(isCheck);
 

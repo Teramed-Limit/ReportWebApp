@@ -17,7 +17,7 @@ const LexiconInput = React.forwardRef(({ field, value, onValueChange, disabled }
     const store = useOptionStore();
 
     const { optionSource } = field;
-    const { format = 'Name', key = 'Code', source } = optionSource;
+    const { labelKey = 'Name', key = 'Code', source } = optionSource;
     const options = store.getOptions(source) || [];
 
     return (
@@ -25,12 +25,12 @@ const LexiconInput = React.forwardRef(({ field, value, onValueChange, disabled }
             id={field.id}
             disabled={disabled || field.readOnly}
             value={value}
-            valueKey={format}
+            valueKey={labelKey}
             optionKey={key}
             maxLength={field.maxLength}
             onValueChange={onValueChange}
             initialLexiconList={options}
-            getOptionLabel={(option) => option[format]}
+            getOptionLabel={(option) => option[labelKey]}
             showTooltip={false}
         />
     );

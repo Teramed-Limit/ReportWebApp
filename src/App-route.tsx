@@ -3,8 +3,7 @@ import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
-import Photo from './container/Photo/Photo';
-import Preview from './container/Preview/Preview';
+import Account from './container/Account/Account';
 import Query from './container/Query/Query';
 import Report from './container/Report/Report';
 import PrivateRoute from './Private-route';
@@ -15,8 +14,7 @@ function AppRoutes() {
             <Redirect exact from="/" to="/home" />
             <PrivateRoute path="/home" component={<Query />} exact />
             <PrivateRoute path="/reporting" component={<Report />} exact />
-            <PrivateRoute path="/photos" component={<Photo />} exact />
-            <PrivateRoute path="/preview" component={<Preview />} exact />
+            <PrivateRoute path="/account" component={<Account />} exact />
             <Route path="*" component={NotFoundPage} />
         </Switch>
     );

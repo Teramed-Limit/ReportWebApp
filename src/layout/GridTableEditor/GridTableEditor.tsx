@@ -2,7 +2,9 @@ import React, { useEffect } from 'react';
 
 import { Button } from '@mui/material';
 import { ColDef, RowNode } from 'ag-grid-community';
+import { GetRowIdParams } from 'ag-grid-community/dist/lib/entities/gridOptions';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
+import { AxiosObservable } from 'axios-observable/dist/axios-observable.interface';
 
 import GridTable from '../../components/GridTable/GridTable';
 import { useGridTable } from '../../hooks/useGridTable';
@@ -11,6 +13,8 @@ import classes from './GridTableEditor.module.scss';
 
 interface Props {
     apiPath: string;
+    initFormData: any;
+    externalUpdateRowApi?: (formData: any) => AxiosObservable<any>;
     enableApi?: boolean;
     filterRow?: boolean;
     identityId: string;
@@ -20,7 +24,6 @@ interface Props {
     enableButtonBar?: boolean;
     enableEdit?: boolean;
     enableDelete?: boolean;
-    initFormData: any;
     addCallBack?: () => void;
     updateCallBack?: () => void;
     deleteCallBack?: () => void;
@@ -31,6 +34,8 @@ interface Props {
 
 const GridTableEditor = ({
     apiPath,
+    initFormData,
+    externalUpdateRowApi,
     enableApi = true,
     identityId,
     subIdentityId = '',
@@ -40,7 +45,6 @@ const GridTableEditor = ({
     enableButtonBar = true,
     enableEdit = true,
     enableDelete = true,
-    initFormData,
     deleteCallBack,
     addCallBack,
     updateCallBack,
@@ -48,8 +52,9 @@ const GridTableEditor = ({
     filterRowFunction,
     isFilterActivate,
 }: Props) => {
-    const { gridApi, rowData, colDefs, getRowNodeId, gridReady, openEditor } = useGridTable<any[]>({
+    const { gridApi, rowData, colDefs, gridReady, openEditor } = useGridTable({
         formDef,
+        externalUpdateRowApi,
         apiPath,
         enableApi,
         identityId,
@@ -58,10 +63,14 @@ const GridTableEditor = ({
         deleteCallBack,
         addCallBack,
         updateCallBack,
-        initFormData,
         enableEdit,
         enableDelete,
     });
+
+    // each row of unique id, use on ag-grid grid rowdata CRUD, Filter etc...
+    const getRowNodeId = (params: GetRowIdParams) => {
+        return params.data[identityId];
+    };
 
     useEffect(() => {
         gridApi?.current?.onFilterChanged();
@@ -69,7 +78,7 @@ const GridTableEditor = ({
 
     return (
         <>
-            <div className={`ag-theme-dark ${classes.gridContainer}`}>
+            <div className={`ag-theme-modal ${classes.gridContainer}`}>
                 <div className={classes.buttonGroup}>
                     {enableButtonBar && (
                         <Button variant="text" onClick={() => openEditor(initFormData, 'add')}>
@@ -82,7 +91,7 @@ const GridTableEditor = ({
                     columnDefs={colDefs}
                     rowData={rowData || []}
                     gridReady={gridReady}
-                    getRowNodeId={getRowNodeId}
+                    getRowId={getRowNodeId}
                     onSelectionChanged={onSelectionChanged}
                     isFilterActivate={isFilterActivate}
                     filterRowFunction={filterRowFunction}

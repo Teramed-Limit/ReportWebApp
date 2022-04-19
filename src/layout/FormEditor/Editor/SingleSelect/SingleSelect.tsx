@@ -56,7 +56,7 @@ const SingleSelect = ({
                     size="small"
                     label={`${field.label} ${validationMsg}`}
                     select
-                    value={value}
+                    value={value || ''}
                     error={!isValid && isDirty}
                     onChange={handleChange}
                     SelectProps={{ MenuProps: menuProps }}
@@ -65,8 +65,8 @@ const SingleSelect = ({
                         <em>- None -</em>
                     </MenuItem>
                     {options.map((item) => {
-                        const optionLabel = field.optionSource.format
-                            ? item[field.optionSource.format]
+                        const optionLabel = field.optionSource.labelKey
+                            ? item[field.optionSource.labelKey]
                             : item;
                         const optionKey = field.optionSource.key
                             ? item[field.optionSource.key]

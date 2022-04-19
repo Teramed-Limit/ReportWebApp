@@ -1,12 +1,12 @@
 export interface UserRole {
-    roleName: string;
-    description: string;
+    RoleName: string;
+    Description: string;
 }
 
 export interface RoleFunction {
-    roleName: string;
-    functionName: string;
-    correspondElementId: string;
-    description: string;
-    checked: boolean;
+    RoleName: string;
+    FunctionName: string;
+    CorrespondElementId: string;
+    Description: string;
+    Checked: boolean;
 }

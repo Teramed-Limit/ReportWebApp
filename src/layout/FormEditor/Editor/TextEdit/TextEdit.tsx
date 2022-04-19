@@ -34,7 +34,7 @@ const TextEdit = ({
             disabled={readOnly}
             label={`${field.label} ${validationMsg}`}
             id={field.id}
-            value={value}
+            value={value || ''}
             onChange={(e) => {
                 onValueChanged(e.target.value, field.id);
                 setDirty(true);

@@ -47,12 +47,9 @@ const FormEditor = ({
             });
         });
         setFormValidateRecord(initFormInvalid);
-    }, [formData, formDef]);
-
-    useEffect(() => {
-        const formIsValid = Object.entries(formValidateRecord).every(([, value]) => value);
+        const formIsValid = Object.entries(initFormInvalid).every(([, value]) => value);
         formInvalidChanged?.(formIsValid);
-    }, [formValidateRecord, formInvalidChanged]);
+    }, [formData, formDef, formInvalidChanged]);
 
     return (
         <>

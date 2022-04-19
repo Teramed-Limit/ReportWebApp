@@ -87,11 +87,11 @@ const ImageSelector = ({
                         input: classes['lexicon-input'],
                     }}
                     value={findings}
-                    valueKey={optionSource.format || 'Name'}
+                    valueKey={optionSource.labelKey || 'Name'}
                     optionKey={optionSource.key || 'Code'}
                     onValueChange={(str) => onFindingsChange(id, str)}
                     initialLexiconList={options}
-                    getOptionLabel={(option) => option[optionSource.format || 'Name']}
+                    getOptionLabel={(option) => option[optionSource.labelKey || 'Name']}
                 />
             </label>
         </div>

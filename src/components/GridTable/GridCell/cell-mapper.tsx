@@ -16,10 +16,10 @@ export const CellMapper = {
     tooltip: TooltipCell,
     multilineTooltip: MultilineTooltipCell,
     chipRenderer: ChipCell,
-    editRowRenderer: EditRowCell,
-    deleteRowRenderer: DeleteRowCell,
     checkboxRenderer: CheckboxCell,
     buttonRenderer: ButtonCell,
     linkRenderer: LinkCell,
     reportStatusRenderer: ReportStatusCell,
+    editRowRenderer: EditRowCell,
+    deleteRowRenderer: DeleteRowCell,
 };

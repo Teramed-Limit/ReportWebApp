@@ -4,12 +4,12 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 
 import AppRoutes from '../../App-route';
-import classes from '../../App.module.scss';
 import Block from '../../components/Block/Block';
 import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
 import { useModal } from '../../hooks/useModal';
 import { useReportDataStore } from '../../models/useStore';
+import classes from './Main.module.scss';
 
 const Main = () => {
     const { loading } = useReportDataStore();
@@ -25,20 +25,17 @@ const Main = () => {
     }, [formValidation, history, setModalName]);
 
     return (
-        <>
+        <div className={classes.container}>
             {loading ? (
                 <Block>
                     <Spinner />
                 </Block>
             ) : null}
-
-            <div className={classes.container}>
-                <Header />
-                <main className={classes.content}>
-                    <AppRoutes />
-                </main>
-            </div>
-        </>
+            <Header />
+            <main className={classes.content}>
+                <AppRoutes />
+            </main>
+        </div>
     );
 };
 

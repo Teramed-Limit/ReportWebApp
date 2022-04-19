@@ -3,7 +3,7 @@ import { Field } from './field';
 export interface OptionSource<T> {
     type: string;
     source: string;
-    format?: string;
+    labelKey?: string;
     key?: string;
     params?: T;
 }
