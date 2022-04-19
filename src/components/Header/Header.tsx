@@ -14,6 +14,7 @@ import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
 import { NotificationContext } from '../../context/notification-context';
+import WithElementVisibility from '../../HOC/WithElementVisiblity/WithElementVisibility';
 import { useAuthStore, useReportDataStore } from '../../models/useStore';
 import { generateUUID } from '../../utils/general';
 import NavigationItem from '../Navigation/NavigationItem/NavigationItem';
@@ -138,25 +139,33 @@ const Header = () => {
             </Stack>
             <div className={classes.headerSidebar}>
                 <ButtonGroup>
-                    <NavigationItem link="/">
+                    <NavigationItem link="/" id="navigation__home">
                         <Button id="btn__home" color="black">
                             <HomeRoundedIcon className={classes.iconButton} />
                             Home
                         </Button>
                     </NavigationItem>
-                    <NavigationItem link="/setting">
-                        <Button id="btn__setting" color="black">
-                            <SettingsIcon className={classes.iconButton} />
-                            Settings
-                        </Button>
-                    </NavigationItem>
-                    <NavigationItem link="/account">
-                        <Button id="btn__account" color="black">
-                            <AccountCircleSharpIcon className={classes.iconButton} />
-                            Account
-                        </Button>
-                    </NavigationItem>
-                    <NavigationItem link="/account">
+                    {/* <WithElementVisibility */}
+                    {/*    wrappedComp={ */}
+                    {/*        <NavigationItem link="/setting" id="navigation__setting"> */}
+                    {/*            <Button id="btn__setting" color="black"> */}
+                    {/*                <SettingsIcon className={classes.iconButton} /> */}
+                    {/*                Settings */}
+                    {/*            </Button> */}
+                    {/*        </NavigationItem> */}
+                    {/*    } */}
+                    {/* /> */}
+                    <WithElementVisibility
+                        wrappedComp={
+                            <NavigationItem link="/account" id="navigation__account">
+                                <Button id="btn__account" color="black">
+                                    <AccountCircleSharpIcon className={classes.iconButton} />
+                                    Account
+                                </Button>
+                            </NavigationItem>
+                        }
+                    />
+                    <NavigationItem link="/login" id="navigation__logout">
                         <Button id="btn__logout" color="black" onClick={logout}>
                             <LogoutRoundedIcon className={classes.iconButton} />
                             Logout

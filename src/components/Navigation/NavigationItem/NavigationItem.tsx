@@ -5,13 +5,14 @@ import { NavLink } from 'react-router-dom';
 import classes from './NavigationItem.module.scss';
 
 interface Props {
+    id?: string;
     link: string;
     children?: React.ReactNode;
 }
 
-const NavigationItem = ({ link, children }: Props) => {
+const NavigationItem = ({ id, link, children }: Props) => {
     return (
-        <li className={classes.navigationItem}>
+        <li id={id} className={classes.navigationItem}>
             <NavLink to={`${link}${window.location.search}`} activeClassName={classes.active}>
                 {children}
             </NavLink>
