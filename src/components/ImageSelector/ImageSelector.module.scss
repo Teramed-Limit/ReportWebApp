@@ -7,6 +7,7 @@ $inputHeight: 30px;
     display: flex;
     flex-direction: column;
     border: 1px solid #ccc;
+    padding: 4px;
 }
 
 .floatWrapper {
@@ -58,6 +59,7 @@ $inputHeight: 30px;
 }
 
 .icon {
+    color: red;
     font-size: 20px;
 }
 

@@ -29,31 +29,22 @@ const Header = () => {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [printable, setPrintable] = useState<boolean>(false);
     const { setErrorNotification, showNotifyMsg } = useContext(NotificationContext);
-    const {
-        saveReport,
-        signOffReport,
-        modify,
-        reportDisabled,
-        reportHasSignOff,
-    } = useReportDataStore();
+    const { saveReport, signOffReport, modify } = useReportDataStore();
     const iframeRef = React.useRef() as React.MutableRefObject<HTMLIFrameElement>;
 
-    const genPdfIframeSrc = useCallback(
-        (file: string, print: boolean) => {
-            fetch(`${file}?a=${generateUUID()}`)
-                .then((response) => response.arrayBuffer())
-                .then((buffer) => {
-                    const pdfBlob = new window.Blob([buffer], { type: 'application/pdf' });
-                    setPdfUrl(window.URL.createObjectURL(pdfBlob));
-                    setPrintable(print);
-                })
-                .catch((err) => {
-                    console.error(err);
-                    setErrorNotification('pdf not found.');
-                });
-        },
-        [setErrorNotification],
-    );
+    const genPdfIframeSrc = useCallback((file: string, print: boolean) => {
+        // fetch(`${file}?a=${generateUUID()}`)
+        //     .then((response) => response.arrayBuffer())
+        //     .then((buffer) => {
+        //         const pdfBlob = new window.Blob([buffer], { type: 'application/pdf' });
+        //         setPdfUrl(window.URL.createObjectURL(pdfBlob));
+        //         setPrintable(print);
+        //     })
+        //     .catch((err) => {
+        //         console.error(err);
+        //         setErrorNotification('pdf not found.');
+        //     });
+    }, []);
 
     useEffect(() => {
         if (!pdfFile) return;
@@ -95,16 +86,16 @@ const Header = () => {
 
     return (
         <div className={classes.header}>
-            {reportHasSignOff && pdfUrl ? (
-                <iframe
-                    ref={iframeRef}
-                    id="iFramePrinter"
-                    title="iFramePrinter"
-                    style={{ display: 'none' }}
-                    src={pdfUrl}
-                    onLoad={iframeOnLoad}
-                />
-            ) : null}
+            {/* {reportHasSignOff && pdfUrl ? ( */}
+            {/*    <iframe */}
+            {/*        ref={iframeRef} */}
+            {/*        id="iFramePrinter" */}
+            {/*        title="iFramePrinter" */}
+            {/*        style={{ display: 'none' }} */}
+            {/*        src={pdfUrl} */}
+            {/*        onLoad={iframeOnLoad} */}
+            {/*    /> */}
+            {/* ) : null} */}
             <Stack
                 className={classes.headerInfo}
                 direction="column"

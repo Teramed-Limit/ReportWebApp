@@ -18,7 +18,7 @@ export interface UserAccountInfo {
 }
 
 export interface LoginResult {
-    Username: string;
+    UserName: string;
     AccessToken: string;
     RefreshToken: string;
     FunctionList: RoleFunction[];

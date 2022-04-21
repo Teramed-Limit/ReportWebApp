@@ -124,7 +124,7 @@ export const dbQueryField = [
         id: 'Modality',
         label: 'Modality',
         type: 'SingleSelect',
-        optionSource: { type: 'static', source: 'modality' },
+        optionSource: { type: 'static', source: 'Modality' },
     },
     { id: 'StudyDate', label: 'Study Date', type: 'DataRange' },
 ];

@@ -19,6 +19,7 @@ export interface DocumentData {
     Anesthesiologist?: string;
     ChiefEndoscopist?: string;
     Endoscopist?: string;
+    ProcedureDate?: string;
     Instrument?: string;
     AssistingNurse?: string;
     Indication?: string;
@@ -75,7 +76,13 @@ export interface DocumentData {
     PDFFilePath?: string;
     Author?: string;
     QualityBowelScore?: number;
-    ReportStatus?: 'saved' | 'newly' | 'signed';
+    ReportStatus?: ReportStatus;
+}
+
+export enum ReportStatus {
+    Newly = 'newly',
+    Saved = 'saved',
+    Signed = 'signed',
 }
 
 export interface ReportImageDataset {

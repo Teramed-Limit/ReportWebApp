@@ -33,24 +33,23 @@ export function refreshToken(token: string) {
 }
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {
-    return axiosIns.get<DocumentData>(`api/report/studyInstanceUID/${studyInsUid}`);
+    return axiosIns.get<DocumentData>(`api/standard/report/studyInstanceUID/${studyInsUid}`);
 }
 
 export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.post(`api/report`, body);
+    return axiosIns.post(`api/standard/report`, body);
 }
 
-export function signOffReport(body): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.post(`api/signOff`, body);
+export function signOffReport(studyInsUid: string): Observable<AxiosResponse<AnyObject>> {
+    return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/signOff`);
 }
 
 export function previewReport(
     studyInstanceUID: string,
-    episodeNo: string,
     generatePDF: boolean,
 ): Observable<AxiosResponse<AnyObject>> {
     return axiosIns.get(
-        `api/report/studyInstanceUID/${studyInstanceUID}/episodeNo/${episodeNo}/generatePDF/${generatePDF}`,
+        `api/standard/report/studyInstanceUID/${studyInstanceUID}/generatePDF/${generatePDF}`,
     );
 }
 

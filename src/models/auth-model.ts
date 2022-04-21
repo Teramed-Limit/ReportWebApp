@@ -53,7 +53,7 @@ export const AuthModel = types
             self.functionList = res.data.FunctionList;
             self.accessToken = res.data.AccessToken;
             self.refreshToken = res.data.RefreshToken;
-            self.loginUser = res.data.Username;
+            self.loginUser = res.data.UserName;
             startTokenTimer();
             localStorage.setItem('user', JSON.stringify(res.data));
         };

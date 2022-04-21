@@ -166,7 +166,7 @@ function TransferList({ itemList, selectItemList, onTransferListChanged, onCance
                 <Grid item>{customList(right)}</Grid>
             </Grid>
             <div className={classes.footer}>
-                <Button variant="outlined" color="error" onClick={() => onCancel()}>
+                <Button variant="outlined" onClick={() => onCancel()}>
                     Cancel
                 </Button>
                 <Button

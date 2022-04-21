@@ -4,8 +4,9 @@
 }
 
 .zoom-control-wrapper {
-    position: fixed;
-    left: 12px;
+    position: sticky;
+    top: 8px;
+    float: left;
     z-index: 2;
     display: flex;
     flex-direction: row;

@@ -145,15 +145,6 @@ export const ogdDefine = {
                             type: 'Text',
                             readOnly: true,
                         },
-                        {
-                            id: 'Endoscopist',
-                            label: 'Endoscopist',
-                            type: 'Selection',
-                            optionSource: {
-                                type: 'http',
-                                source: 'Endoscopist',
-                            },
-                        },
                     ],
                 },
                 {
@@ -164,24 +155,6 @@ export const ogdDefine = {
                             id: 'Sedation',
                             label: 'Sedation',
                             type: 'Text',
-                        },
-                        {
-                            id: 'Anesthesiologist',
-                            label: 'Anesthesiologist',
-                            type: 'Selection',
-                            optionSource: {
-                                type: 'http',
-                                source: 'Anesthesiologist',
-                            },
-                        },
-                        {
-                            id: 'AssistingNurse',
-                            label: 'Assisting Nurse',
-                            type: 'Selection',
-                            optionSource: {
-                                type: 'http',
-                                source: 'Nurse',
-                            },
                         },
                     ],
                 },
@@ -209,30 +182,6 @@ export const ogdDefine = {
                                 filterOptionKey: 'ERSType',
                             },
                             maxLength: 64,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            id: 'sectionInstrument',
-            type: 'form',
-            ratio: ['100%'],
-            subSections: [
-                {
-                    id: 'subSection_1',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'InstrumentDataset',
-                            label: 'Instrument',
-                            type: 'Selection',
-                            isMulti: true,
-                            orientation: 'vertical',
-                            optionSource: {
-                                type: 'http',
-                                source: 'Instrument',
-                            },
                         },
                     ],
                 },

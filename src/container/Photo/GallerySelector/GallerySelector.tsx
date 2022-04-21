@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { IconButton, Slider } from '@mui/material';
 import { observer } from 'mobx-react';
@@ -26,7 +26,6 @@ const filterCondition = {
 const GallerySelector = () => {
     const setModal = useContext(ModalContext);
     const [slider, setSlider] = useState(3);
-    const [col, setCol] = useState(0);
     const store = useStore();
     const { dataStore, optionStore, imageStore } = store;
     const { reportDisabled } = dataStore;
@@ -42,16 +41,9 @@ const GallerySelector = () => {
 
     const [options] = useObjectState(optionStore.getOptions(optionSource.source, filterCondition));
 
-    useEffect(() => {
-        if (images.length > slider) {
-            setCol(Math.ceil(images.length / slider));
-        } else {
-            setCol(slider);
-        }
-    }, [images.length, slider]);
-
     return (
         <>
+            <div className={classes.header}>Images</div>
             <div className={classes['gallery-toolbar']}>
                 <Button
                     disabled={reportDisabled}
@@ -71,12 +63,13 @@ const GallerySelector = () => {
                 </span>
             </div>
             <div className={classes['gallery-wrapper']}>
-                <Gallery row={7 - slider} col={col}>
+                <Gallery>
                     {images.map((image, index) => (
                         <ImageSelector
                             disabled={reportDisabled}
                             key={image.SOPInstanceUID}
                             index={index}
+                            size={100 / (7 - slider)}
                             id={image.SOPInstanceUID}
                             src={image.ImageSrc}
                             checked={image.IsAttachInReport}
@@ -90,34 +83,34 @@ const GallerySelector = () => {
                         />
                     ))}
                 </Gallery>
-                <div className={classes['slider-wrapper']}>
-                    <IconButton
-                        className={classes.sliderButton}
-                        component="span"
-                        onClick={() => setSlider((v) => (v === 1 ? v : v - 1))}
-                        size="large"
-                    >
-                        <RiZoomOutLine />
-                    </IconButton>
-                    <Slider
-                        className={classes['gallery-slider']}
-                        value={slider}
-                        track={false}
-                        marks
-                        onChange={(event, value: number | number[]) => setSlider(value as number)}
-                        step={1}
-                        min={1}
-                        max={6}
-                    />
-                    <IconButton
-                        className={classes.sliderButton}
-                        component="span"
-                        onClick={() => setSlider((v) => (v === 6 ? v : v + 1))}
-                        size="large"
-                    >
-                        <RiZoomInLine />
-                    </IconButton>
-                </div>
+            </div>
+            <div className={classes['slider-wrapper']}>
+                <IconButton
+                    className={classes.sliderButton}
+                    component="span"
+                    onClick={() => setSlider((v) => (v === 1 ? v : v - 1))}
+                    size="large"
+                >
+                    <RiZoomOutLine />
+                </IconButton>
+                <Slider
+                    className={classes['gallery-slider']}
+                    value={slider}
+                    track={false}
+                    marks
+                    onChange={(event, value: number | number[]) => setSlider(value as number)}
+                    step={1}
+                    min={1}
+                    max={6}
+                />
+                <IconButton
+                    className={classes.sliderButton}
+                    component="span"
+                    onClick={() => setSlider((v) => (v === 6 ? v : v + 1))}
+                    size="large"
+                >
+                    <RiZoomInLine />
+                </IconButton>
             </div>
         </>
     );

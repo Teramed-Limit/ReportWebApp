@@ -79,7 +79,7 @@ const modalityOptions = [
 ];
 
 export const staticOptionType = {
-    modality: modalityOptions,
+    Modality: modalityOptions,
     Min: minOptions,
     Hour: hourOptions,
     ColonDetail: colonDetail,

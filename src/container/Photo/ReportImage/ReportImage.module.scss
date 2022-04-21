@@ -1,9 +1,22 @@
-$bottom-container-height: 40px;
+.header {
+    user-select: none;
+    width: 100%;
+    font-size: 20px;
+    color: white;
+    min-height: 40px;
+    max-height: 40px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #74b8dc;
+    background: linear-gradient(90deg, #74b8dc 0%, #4487dc 100%);
+}
 
 .image-container {
     flex-grow: 1;
     width: 100%;
-    max-height: calc(100% - #{$bottom-container-height});
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -11,9 +24,9 @@ $bottom-container-height: 40px;
 
 .bottom-container {
     display: flex;
-    flex-basis: $bottom-container-height;
+    flex-basis: 40px;
     width: 100%;
-    min-height: $bottom-container-height;
+    min-height: 40px;
     padding: 4px;
 }
 

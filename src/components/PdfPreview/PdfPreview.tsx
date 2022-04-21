@@ -7,7 +7,11 @@ import { Document, Page } from 'react-pdf';
 import Spinner from '../Spinner/Spinner';
 import classes from './PdfPreview.module.scss';
 
-const PdfPreview = (props) => {
+interface Props {
+    pdfUrl: string;
+}
+
+const PdfPreview = ({ pdfUrl }: Props) => {
     const [pages, setNumPages] = useState(null);
     const [scale, setScale] = useState(1.5);
 
@@ -15,41 +19,40 @@ const PdfPreview = (props) => {
         setNumPages(numPages);
     }
 
-    const { pdf } = props;
-
     return (
-        <div className={classes.container}>
-            <div className={classes['zoom-control-wrapper']}>
-                <IconContext.Provider
-                    value={{
-                        color: '#4288f5',
-                        size: '24',
-                        style: { verticalAlign: 'middle' },
-                    }}
-                >
-                    <button
-                        className={classes['icon-button']}
-                        type="button"
-                        onClick={() => setScale(scale + 0.1)}
+        <>
+            <div className={classes.container}>
+                <div className={classes['zoom-control-wrapper']}>
+                    <IconContext.Provider
+                        value={{
+                            color: '#4288f5',
+                            size: '24',
+                            style: { verticalAlign: 'middle' },
+                        }}
                     >
-                        <IoMdAdd />
-                    </button>
-                    <button
-                        className={classes['icon-button']}
-                        type="button"
-                        onClick={() => setScale(scale - 0.1)}
-                    >
-                        <HiOutlineMinusSm />
-                    </button>
-                </IconContext.Provider>
+                        <button
+                            className={classes['icon-button']}
+                            type="button"
+                            onClick={() => setScale(scale + 0.1)}
+                        >
+                            <IoMdAdd />
+                        </button>
+                        <button
+                            className={classes['icon-button']}
+                            type="button"
+                            onClick={() => setScale(scale - 0.1)}
+                        >
+                            <HiOutlineMinusSm />
+                        </button>
+                    </IconContext.Provider>
+                </div>
+                <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} loading={<Spinner />}>
+                    {Array.from(new Array(pages), (el, index) => (
+                        <Page scale={scale} key={`page_${index + 1}`} pageNumber={index + 1} />
+                    ))}
+                </Document>
             </div>
-
-            <Document file={pdf} onLoadSuccess={onDocumentLoadSuccess} loading={<Spinner />}>
-                {Array.from(new Array(pages), (el, index) => (
-                    <Page scale={scale} key={`page_${index + 1}`} pageNumber={index + 1} />
-                ))}
-            </Document>
-        </div>
+        </>
     );
 };
 

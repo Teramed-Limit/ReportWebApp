@@ -10,7 +10,8 @@ import classes from './ImageSelector.module.scss';
 interface ImageSelectorProps {
     id: string;
     index: number;
-    src;
+    size: number;
+    src: string;
     checked?: boolean;
     findings: string;
     options: any[];
@@ -25,6 +26,7 @@ interface ImageSelectorProps {
 const ImageSelector = ({
     id,
     index,
+    size,
     src,
     checked,
     findings,
@@ -38,6 +40,7 @@ const ImageSelector = ({
 }: ImageSelectorProps) => {
     return (
         <div
+            style={{ width: `${size}%`, height: `${size}%` }}
             className={classes.container}
             draggable={!disabled}
             onDragOver={(event) => event.preventDefault()}

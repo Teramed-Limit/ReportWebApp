@@ -68,6 +68,7 @@ const ReportImage = () => {
 
     return (
         <>
+            <div className={classes.header}>Report Diagram</div>
             <div className={classes['image-container']}>
                 <MarkerCanvas
                     src={imageSrc}

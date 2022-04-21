@@ -5,7 +5,7 @@ import { catchError, concatMap, filter, map, startWith, switchMap } from 'rxjs/o
 
 import { fetchReport, previewReport, saveReport, signOffReport } from '../axios/api';
 import { AnyObject } from '../interface/anyObject';
-import { DocumentData } from '../interface/document-data';
+import { DocumentData, ReportStatus } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
@@ -22,6 +22,7 @@ export const DataModel = types
     .model('report', {
         reportReady: types.optional(types.enumeration(['prepare', 'success', 'error']), 'prepare'),
         modifiable: types.optional(types.boolean, false),
+        // report data is latest, no edit
         reportHasChanged: types.optional(types.boolean, false),
         loading: types.optional(types.boolean, false),
         activeStudy: types.frozen<StudyData | undefined>(undefined),
@@ -37,10 +38,11 @@ export const DataModel = types
         return {
             get reportDisabled() {
                 if (self.modifiable) return false;
-                return self.formData.get('ReportStatus') === 'signed';
+                return self.formData.get('ReportStatus') === ReportStatus.Signed;
             },
-            get reportHasSignOff() {
-                return self.formData.get('ReportStatus') === 'signed';
+            get reportStatus() {
+                // 'saved' | 'newly' | 'signed'
+                return self.formData.get('ReportStatus');
             },
             get pdfFile() {
                 if (isEmptyOrNil(self.formData.get('PDFFilePath'))) {
@@ -59,9 +61,6 @@ export const DataModel = types
             },
             get ersType() {
                 return self.formData.get('ERSType');
-            },
-            get episodeNo() {
-                return self.formData.get('EpisodeNo');
             },
             get studyInsUID() {
                 return self.formData.get('StudyInstanceUID');
@@ -200,29 +199,29 @@ export const DataModel = types
         };
 
         const signOffReport$ = () => {
-            const body = {
-                Episode: self.formData.get('EpisodeNo'),
-                ProcedureID: self.formData.get('HISProcedureID'),
-                Department: self.formData.get('Dept'),
-                StaffCode: self.formData.get('StaffCode'),
-            };
-
-            const saveAndSignOff$ = saveReport$().pipe(concatMap(() => signOffReport(body)));
-            const signOffOnly$ = signOffReport(body);
+            const signOffOnly$ = signOffReport(self.studyInsUID);
+            const saveAndSignOff$ = saveReport$().pipe(
+                concatMap(() => signOffReport(self.studyInsUID)),
+            );
 
             return iif(
-                () => self.reportHasChanged || self.formData.get('ReportStatus') === 'newly',
+                () =>
+                    self.reportHasChanged ||
+                    self.formData.get('ReportStatus') === ReportStatus.Newly,
+                // if report content has changed or report is newly, save and signOff
                 saveAndSignOff$,
+                // otherwise, just do  signOff
                 signOffOnly$,
             );
         };
 
         const previewReport$ = () => {
-            return self.formData.get('ReportStatus') === 'signed' && !self.reportHasChanged
-                ? previewReport(self.studyInsUID, self.episodeNo, false)
-                : saveReport$().pipe(
-                      concatMap(() => previewReport(self.studyInsUID, self.episodeNo, true)),
-                  );
+            return self.formData.get('ReportStatus') === ReportStatus.Signed &&
+                !self.reportHasChanged
+                ? // if report has signed and report content has not changed, do not need to generate pdf again
+                  previewReport(self.studyInsUID, false)
+                : // otherwise, save first and generate pdf
+                  saveReport$().pipe(concatMap(() => previewReport(self.studyInsUID, true)));
         };
 
         const callApi = (
@@ -239,9 +238,9 @@ export const DataModel = types
                         response: res.data,
                     }),
                 ]),
-                startWith(action(beforeFetch)),
+                startWith(action(() => (self.loading = true))),
                 catchError((error: AxiosError) => [
-                    action(fetchError),
+                    action(() => (self.loading = false)),
                     action(dollSignal, {
                         notification: {
                             message: error.response?.data.Message,
@@ -251,10 +250,6 @@ export const DataModel = types
                 ]),
             );
         };
-
-        const beforeFetch = () => (self.loading = true);
-
-        const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<AnyObject>, callback?: () => void) => {
             Object.entries(response.data).forEach(([key, value]) => self.formData.set(key, value));
@@ -313,7 +308,7 @@ export const DataModel = types
                         interval(5000).pipe(
                             filter(
                                 () =>
-                                    self.formData.get('ReportStatus') === 'newly' &&
+                                    self.formData.get('ReportStatus') === ReportStatus.Newly &&
                                     self.reportReady === 'success',
                             ),
                             map(() => action(update)),
@@ -333,7 +328,7 @@ export const DataModel = types
             selectedStudyData: StudyData;
         }) => {
             const { response, selectedStudyData } = res;
-            const { defineStore, imageStore } = getRoot(self);
+            const { defineStore, imageStore, authStore } = getRoot(self);
 
             self.loading = false;
             self.reportHasChanged = false;
@@ -342,15 +337,20 @@ export const DataModel = types
             self.activeStudy = selectedStudyData;
 
             // set initialize data
+            response.data.OwnerId = authStore.loginUser;
+            response.data.Author = authStore.loginUser;
+            response.data.ChiefEndoscopist = selectedStudyData.PerformingPhysiciansName;
+            response.data.ProcedureDate = selectedStudyData.StudyDate;
             self.formData.replace(response.data);
+
             imageStore.initImages(response.data?.ReportImageDataset || []);
 
             // report not existed, auto set value
-            if (response.data.ReportStatus === 'newly') {
+            if (response.data.ReportStatus === ReportStatus.Newly) {
                 // apply local storage data, when newly report
-                if (window.localStorage.getItem(self.formData.get('StudyInstanceUID'))) {
+                if (window.localStorage.getItem(self.studyInsUID)) {
                     const tempData: DocumentData = JSON.parse(
-                        <string>window.localStorage.getItem(self.formData.get('StudyInstanceUID')),
+                        <string>window.localStorage.getItem(self.studyInsUID),
                     );
                     self.formData.replace(tempData);
                     imageStore.initImages(tempData.ReportImageDataset || []);

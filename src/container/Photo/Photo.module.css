@@ -4,20 +4,22 @@
     display: flex;
     flex-direction: row;
     overflow: hidden;
-    padding: 0 4px;
+    padding: 10px;
     background-color: #f0f8fe;
 }
 
 .gallery-container {
     flex: 2;
     max-width: 65%;
+    display: flex;
+    flex-direction: column;
 }
 
 .side-container {
     flex: 1;
     max-width: 35%;
-    padding: 2px;
     display: flex;
     flex-basis: 400px;
     flex-direction: column;
+    margin-left: 10px;
 }
