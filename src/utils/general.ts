@@ -1,6 +1,6 @@
 import { RefObject } from 'react';
 
-import moment from 'moment';
+import { differenceInYears, format, parse } from 'date-fns';
 import * as R from 'ramda';
 
 export const generateUUID = () => {
@@ -33,62 +33,7 @@ export const isSSR = !(typeof window !== 'undefined' && window.document?.createE
 
 export const isProduction: boolean = process.env.NODE_ENV === 'production';
 
-export const isLocalhost = (): boolean => {
-    if (!isSSR) {
-        const { hostname } = window.location;
-        return Boolean(
-            hostname === 'localhost' ||
-                hostname === '[::1]' ||
-                hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/),
-        );
-    }
-
-    return false;
-};
 export const trim = (str: string) => str.replace(/^\s+|\s+$/gm, '');
-
-export const spiltDateTime = (value: string) => {
-    if (!value) {
-        return '';
-    }
-
-    const trimValue = trim(value);
-    const date = trimValue.substring(0, 8);
-    const time = trimValue.substring(8, trimValue.length);
-    return `${date} ${time}`;
-};
-
-export const formatDateTime = (format: string, value: string) => {
-    if (!value) {
-        return '';
-    }
-
-    const formatStr = moment(value).format(format);
-    if (formatStr === 'Invalid date') {
-        console.error(`Date Time string error: ${value}`);
-        return '';
-    }
-    return formatStr;
-};
-
-export const dobToAge = (dobStr: string) => {
-    if (!dobStr) {
-        return '';
-    }
-
-    const dob = new Date(formatDateTime('YYYY-MM-DD HH:mm:ss', spiltDateTime(dobStr)));
-    // calculate month difference from current date in time
-    const monthDiff = Date.now() - dob.getTime();
-
-    // convert the calculated difference in date format
-    const ageDiff = new Date(monthDiff);
-
-    // extract year from date
-    const year = ageDiff.getUTCFullYear();
-
-    // now calculate the age of the user
-    return Math.abs(year - 1970).toString();
-};
 
 export const isEmptyOrNil = (value: any) => {
     return R.isEmpty(value) || R.isNil(value);
@@ -109,22 +54,18 @@ export const reorder = <T>(list: Array<T>, startIndex, endIndex): Array<T> => {
     return result.slice();
 };
 
-export function dateToStr(date) {
-    let d = new Date();
-    if (date !== null) d = new Date(date);
-    let month = `${d.getMonth() + 1}`;
-    let day = `${d.getDate()}`;
-    const year = d.getFullYear();
+export const calculateAge = (dob): string => {
+    if (!dob) return '';
+    const date = parse(dob, 'yyyyMMdd', new Date());
+    return `${differenceInYears(new Date(), date)}y`;
+};
 
-    if (month.length < 2) month = `0${month}`;
-    if (day.length < 2) day = `0${day}`;
+export const stringFormatDate = (value, fromFormat): Date => {
+    return parse(value, fromFormat, new Date());
+};
 
-    return `${year}${month}${day}`;
-}
-
-export function strToDate(dateString: string) {
-    const year = dateString.substring(0, 4);
-    const month = dateString.substring(4, 6);
-    const day = dateString.substring(6, 8);
-    return new Date(+year, +month - 1, +day);
-}
+export const dataFormatString = (value, fromFormat, toFormat): string => {
+    if (!value) return '';
+    const date = parse(value, fromFormat, new Date());
+    return format(date, toFormat);
+};

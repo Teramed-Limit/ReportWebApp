@@ -7,9 +7,10 @@ import { RangeInput } from '@mui/lab/DateRangePicker/RangeTypes';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { format } from 'date-fns';
 
 import { Field } from '../../../../interface/field';
-import { dateToStr, isEmptyOrNil, strToDate } from '../../../../utils/general';
+import { isEmptyOrNil, stringFormatDate } from '../../../../utils/general';
 
 interface Props {
     field: Field;
@@ -28,7 +29,7 @@ const DateRangeSelector = ({ field, value, onValueChanged }: Props) => {
     useEffect(() => {
         if (isEmptyOrNil(value)) return;
         const dateStrRange = value.split('-');
-        const dateRange = value.split('-').map((dateStr) => strToDate(dateStr));
+        const dateRange = value.split('-').map((dateStr) => stringFormatDate(dateStr, 'yyyyMMdd'));
         setDate([dateRange[0], dateRange[1]]);
         setStartDate(dateStrRange[0]);
         setEndDate(dateStrRange[1]);
@@ -50,7 +51,9 @@ const DateRangeSelector = ({ field, value, onValueChanged }: Props) => {
                 disableCloseOnSelect={false}
                 disableOpenPicker
                 onChange={(newValue) => {
-                    const dateBetween = newValue.map((dateVal) => dateToStr(dateVal)).join('-');
+                    const dateBetween = newValue
+                        .map((dateVal) => format(dateVal || new Date(), 'yyyMMdd'))
+                        .join('-');
                     onValueChanged(dateBetween, field.id);
                 }}
                 renderInput={(startProps, endProps) => {

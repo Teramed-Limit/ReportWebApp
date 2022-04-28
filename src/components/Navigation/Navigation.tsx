@@ -1,30 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { observer } from 'mobx-react';
-import { tap } from 'rxjs/operators';
-
-import { NotificationContext } from '../../context/notification-context';
-import { MessageType } from '../../interface/notification';
-import { useReportDataStore } from '../../models/useStore';
-import Button from '../UI/Button/Button';
 import classes from './Navigation.module.scss';
-import NavigationItem from './NavigationItem/NavigationItem';
 
 const Navigation = () => {
-    const { previewReport } = useReportDataStore();
-    const { setSuccessNotification, setErrorNotification } = useContext(NotificationContext);
-    const previewReportAndNotify = () => {
-        previewReport(null, (signal$) =>
-            signal$.pipe(
-                tap(({ notification }) => {
-                    return notification.messageType === MessageType.Success
-                        ? setSuccessNotification(notification.message)
-                        : setErrorNotification(notification.message);
-                }),
-            ),
-        );
-    };
-
     return (
         <div className={classes.nav}>
             <ul className={classes.navigationItems}>
@@ -58,4 +36,4 @@ const Navigation = () => {
     );
 };
 
-export default observer(Navigation);
+export default Navigation;

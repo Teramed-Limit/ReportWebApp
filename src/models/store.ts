@@ -1,9 +1,10 @@
+import { format } from 'date-fns';
+
 import { standardDefine } from '../constant/standard-define';
 import { LoginResult } from '../interface/auth';
 import { ReportDataService } from '../logic/report-data/report-data-service';
 import { ReportDefineService } from '../logic/report-define/report-define-service';
 import { ValidationService } from '../logic/validation/validation-service';
-import { dateToStr } from '../utils/general';
 import { RootStoreModel } from './root-model';
 
 export function createStore() {
@@ -18,13 +19,16 @@ export function createStore() {
                 loginUser: user?.UserName,
             },
             defineStore: { formDefine: standardDefine },
-            dataStore: { loading: false },
+            dataStore: { loading: false, activeStudy: {} },
             imageStore: { images: [] },
             optionStore: {},
             queryStore: {
                 queryResult: [],
                 queryPairData: {
-                    StudyDate: `${dateToStr(new Date())}-${dateToStr(new Date())}`,
+                    StudyDate: `${format(new Date(), 'yyyyMMdd')}-${format(
+                        new Date(),
+                        'yyyyMMdd',
+                    )}`,
                 },
             },
         },
