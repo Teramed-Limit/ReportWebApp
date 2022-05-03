@@ -1,53 +1,60 @@
 import React from 'react';
 
 import { Image, Text, View } from '@react-pdf/renderer';
-import { observer } from 'mobx-react';
 
 import { DocumentData } from '../../../interface/document-data';
 import { StudyData } from '../../../interface/study-data';
-import { calculateAge, formatDate } from '../../../utils/general';
+import { calculateAge, dataFormatString, isEmptyOrNil } from '../../../utils/general';
 import { styles } from '../styles/style';
 
 interface Props {
     formData: DocumentData;
     logoUrl: string;
+    qrCodeUrl: string;
     reportName: string;
     activeStudy: Partial<StudyData>;
 }
 
-const PDFHeader = ({ formData, logoUrl, reportName, activeStudy }: Props) => {
+const PDFHeader = ({ formData, logoUrl, qrCodeUrl, reportName, activeStudy }: Props) => {
     return (
         <View fixed>
             <View style={styles.header}>
                 <View style={styles.header_leftContent}>
-                    {logoUrl && <Image style={styles.hospitalLogo} src={logoUrl} />}
+                    {!isEmptyOrNil(logoUrl) && <Image style={styles.hospitalLogo} src={logoUrl} />}
                     <Text>{reportName}</Text>
                 </View>
                 <View style={styles.header_rightContent}>
-                    <View style={styles.header_patientInfo}>
-                        <View>
-                            <Text style={{ fontWeight: 'bold' }}>{activeStudy?.PatientsName}</Text>
-                            <Text>{activeStudy?.OtherPatientNames}</Text>
-                            <Text>
-                                {activeStudy?.PatientsSex}/
-                                {calculateAge(activeStudy?.PatientsBirthDate)}
-                            </Text>
+                    <View style={styles.header_patientContainer}>
+                        <View style={styles.header_patientInfo}>
+                            <View>
+                                <Text style={{ fontWeight: 'bold' }}>
+                                    {activeStudy?.PatientsName}
+                                </Text>
+                                <Text>{activeStudy?.OtherPatientNames}</Text>
+                                <Text>
+                                    {activeStudy?.PatientsSex}/
+                                    {calculateAge(activeStudy?.PatientsBirthDate)}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style={{ fontWeight: 'bold' }}>{activeStudy?.PatientId}</Text>
+                                <Text style={{ fontWeight: 'bold' }}>
+                                    {activeStudy?.AccessionNumber}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text>
+                                    {`DOB : ${dataFormatString(
+                                        activeStudy?.PatientsBirthDate,
+                                        'yyyyMMdd',
+                                        'dd-MMM-yyyy',
+                                    )}`}
+                                </Text>
+                            </View>
                         </View>
-                        <View>
-                            <Text style={{ fontWeight: 'bold' }}>{activeStudy?.PatientId}</Text>
-                            <Text style={{ fontWeight: 'bold' }}>
-                                {activeStudy?.AccessionNumber}
-                            </Text>
-                        </View>
-                        <View>
-                            <Text>
-                                {`DOB : ${formatDate(
-                                    activeStudy?.PatientsBirthDate,
-                                    'yyyyMMdd',
-                                    'dd-MMM-yyyy',
-                                )}`}
-                            </Text>
-                        </View>
+                        {!isEmptyOrNil(qrCodeUrl) && (
+                            <Image style={styles.qrCode} src={qrCodeUrl} />
+                        )}
                     </View>
                 </View>
             </View>
@@ -77,7 +84,7 @@ const PDFHeader = ({ formData, logoUrl, reportName, activeStudy }: Props) => {
                             fontSize: 12,
                         }}
                     >
-                        {formatDate(activeStudy?.StudyDate, 'yyyyMMdd', 'dd-MMM-yyyy')}
+                        {dataFormatString(activeStudy?.StudyDate, 'yyyyMMdd', 'dd-MMM-yyyy')}
                     </Text>
                 </View>
                 <View
@@ -113,4 +120,4 @@ const PDFHeader = ({ formData, logoUrl, reportName, activeStudy }: Props) => {
     );
 };
 
-export default observer(PDFHeader);
+export default PDFHeader;

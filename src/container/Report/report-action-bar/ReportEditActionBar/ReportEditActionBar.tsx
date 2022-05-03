@@ -1,55 +1,35 @@
-import React, { useContext } from 'react';
+import React, { CSSProperties, useContext } from 'react';
 
 import { observer } from 'mobx-react';
 import { tap } from 'rxjs/operators';
 
 import Modal from '../../../../components/Modal/Modal';
-import PdfPreview from '../../../../components/PdfPreview/PdfPreview';
+import PdfCreator from '../../../../components/PdfCreator/PdfCreator';
 import Button from '../../../../components/UI/Button/Button';
 import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
 import { useReportDataStore } from '../../../../models/useStore';
-import { generateUUID } from '../../../../utils/general';
 
 const ReportEditActionBar: React.FC = () => {
-    const { showNotifyMsg, setErrorNotification } = useContext(NotificationContext);
+    const { showNotifyMsg } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
-    const { saveReport, previewReport, signOffReport } = useReportDataStore();
+    const { saveReport, signOffReport } = useReportDataStore();
 
-    // const print = (file: string) => {
-    //     fetch(`${file}?a=${generateUUID()}`)
-    //         .then((response) => response.arrayBuffer())
-    //         .then((buffer) => {
-    //             const pdfBlob = new window.Blob([buffer], { type: 'application/pdf' });
-    //             setPdfUrl(window.URL.createObjectURL(pdfBlob));
-    //             setPrintable(print);
-    //         });
-    // };
-
-    const openPreviewModal = (pdf): JSX.Element => {
-        if (!pdf) {
-            setErrorNotification('Pdf not found');
-            return <></>;
-        }
-
+    const openPreviewModal = (print: boolean): JSX.Element => {
         return (
             <Modal
                 open
                 width="80%"
                 height="80%"
-                overflow="hidden auto"
+                overflow="hidden hidden"
                 onClose={() => setModal(null)}
                 headerTitle="PDF Preview"
-                body={<PdfPreview pdfUrl={pdf} />}
+                body={<PdfCreator showToolbar={print} />}
+                bodyCSS={{ padding: '0' } as CSSProperties}
                 footer={
-                    <>
-                        <Button theme="reversePrimary" onClick={() => setModal(null)}>
-                            Ok
-                        </Button>
-                        <Button theme="primary" onClick={() => setModal(null)}>
-                            Print
-                        </Button>
-                    </>
+                    <Button theme="reversePrimary" onClick={() => setModal(null)}>
+                        Close
+                    </Button>
                 }
             />
         );
@@ -62,20 +42,14 @@ const ReportEditActionBar: React.FC = () => {
     };
 
     const previewReportAndPopPDFModal = () => {
-        previewReport(null, (signal$) =>
-            signal$.pipe(
-                tap(({ response }) => {
-                    setModal(openPreviewModal(response?.PDFFilePath));
-                }),
-            ),
-        );
+        setModal(openPreviewModal(false));
     };
 
     const signOffReportAndPreviewPdf = () => {
         signOffReport(null, (signal$) =>
             signal$.pipe(
-                tap(({ notification, response }) => {
-                    setModal(openPreviewModal(response?.PDFFilePath));
+                tap(({ notification }) => {
+                    setModal(openPreviewModal(true));
                     showNotifyMsg(notification);
                 }),
             ),

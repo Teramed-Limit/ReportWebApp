@@ -10,6 +10,7 @@ import { Section } from '../../interface/define';
 import { ReportStatus } from '../../interface/document-data';
 import ReportSection from '../../layout/ReportSection/ReportSection';
 import { useReportDataStore, useReportDefineStore } from '../../models/useStore';
+import { isEmptyOrNil } from '../../utils/general';
 import Photo from '../Photo/Photo';
 import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
 import ReportViewActionBar from './report-action-bar/ReportViewActionBar/ReportViewActionBar';
@@ -23,7 +24,7 @@ const Report = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     useEffect(() => {
-        if (!activeStudy) history.push('/');
+        if (isEmptyOrNil(activeStudy)) history.push('/');
     }, [activeStudy, history]);
 
     return (

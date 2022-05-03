@@ -12,6 +12,7 @@ export const setupInterceptors = (removeAuth: () => void) => {
         const accessToken = (JSON.parse(<string>localStorage.getItem('user')) as LoginResult)
             ?.AccessToken;
         if (accessToken) {
+            if (!newConfig?.headers) newConfig.headers = {};
             newConfig.headers.Authorization = `Bearer ${accessToken}`;
         }
         return config;

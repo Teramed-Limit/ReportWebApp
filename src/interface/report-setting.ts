@@ -16,6 +16,7 @@ export interface ReportTemplateList {
     Code: number;
     ERSType: string;
     Name: string;
+    ReportName: string;
 }
 
 export interface ReportReferringProviderList {

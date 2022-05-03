@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 
 import classes from './Modal.module.scss';
@@ -8,6 +8,7 @@ interface Props {
     onClose: () => void;
     headerTitle: string;
     body: JSX.Element;
+    bodyCSS?: CSSProperties;
     footer: JSX.Element;
     width?: string;
     height?: string;
@@ -18,6 +19,7 @@ const Modal = ({
     open,
     headerTitle,
     body,
+    bodyCSS,
     footer,
     width = '80%',
     height = '80%',
@@ -29,7 +31,7 @@ const Modal = ({
                   <div className={classes.overlay} />
                   <div style={{ width, height }} className={classes.modal}>
                       <div className={classes.header}>{headerTitle}</div>
-                      <div style={{ overflow }} className={classes.body}>
+                      <div style={{ ...bodyCSS, overflow }} className={classes.body}>
                           {body}
                       </div>
                       <div className={classes.footer}>{footer}</div>

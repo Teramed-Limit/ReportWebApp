@@ -57,9 +57,6 @@ export const OptionStoreModel = types
         );
         return {
             initialize,
-            afterCreate() {
-                initialize().then();
-            },
         };
     });
 

@@ -40,8 +40,8 @@ export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
     return axiosIns.post(`api/standard/report`, body);
 }
 
-export function signOffReport(studyInsUid: string): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/signOff`);
+export function signOffReport(studyInsUid: string, body): Observable<AxiosResponse<AnyObject>> {
+    return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/signOff`, body);
 }
 
 export function previewReport(

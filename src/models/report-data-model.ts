@@ -25,7 +25,7 @@ export const DataModel = types
         // report data is latest, no edit
         reportHasChanged: types.optional(types.boolean, false),
         loading: types.optional(types.boolean, false),
-        activeStudy: types.frozen<StudyData | undefined>(undefined),
+        activeStudy: types.frozen<Partial<StudyData>>(),
         formData: types.map(dateModel),
         formState: types.map(formState),
         formValidation: types.optional(types.frozen<ReportValidation>(), {
@@ -82,7 +82,7 @@ export const DataModel = types
         );
 
         const init = () => {
-            self.activeStudy = undefined;
+            self.activeStudy = {};
             self.formData.replace({});
             self.formState.replace({});
             self.formValidation = { isValid: true, openModalName: '' };
@@ -199,9 +199,9 @@ export const DataModel = types
         };
 
         const signOffReport$ = () => {
-            const signOffOnly$ = signOffReport(self.studyInsUID);
+            const signOffOnly$ = signOffReport(self.studyInsUID, self.formData.toJSON());
             const saveAndSignOff$ = saveReport$().pipe(
-                concatMap(() => signOffReport(self.studyInsUID)),
+                concatMap(() => signOffReport(self.studyInsUID, self.formData.toJSON())),
             );
 
             return iif(

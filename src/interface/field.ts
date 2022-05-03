@@ -14,6 +14,7 @@ export interface Field {
     validate?: Validate;
     hint?: string;
     hide?: boolean;
+    hideLabel?: boolean;
     fromModal?: string;
     maxLength?: number;
 }

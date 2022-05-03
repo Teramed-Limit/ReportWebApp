@@ -15,15 +15,10 @@ import classes from './FormSectionFieldContainer.module.scss';
 
 interface FormSectionFieldProps {
     field: Field;
-    hideLabelSection?: boolean;
     actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
 }
 
-const FormSectionFieldContainer = ({
-    field,
-    hideLabelSection = false,
-    actionContext,
-}: FormSectionFieldProps) => {
+const FormSectionFieldContainer = ({ field, actionContext }: FormSectionFieldProps) => {
     const inputRef = useRef();
     const { formState, formData, reportDisabled } = useReportDataStore();
     const { openNotification } = useContext(NotificationContext);
@@ -69,7 +64,7 @@ const FormSectionFieldContainer = ({
             id={field.id}
             label={field.label}
             orientation={field.orientation}
-            hideLabelSection={hideLabelSection}
+            hideLabelSection={field.hideLabel}
             readOnly={!!field.readOnly}
             hasValidation={!!field.validate}
             isDirty={isDirty}
