@@ -1,8 +1,10 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
+import { Button, Stack } from '@mui/material';
 import { ColDef } from 'ag-grid-community';
 import { GridReadyEvent } from 'ag-grid-community/dist/lib/events';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
+import { format, sub } from 'date-fns';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
@@ -47,6 +49,25 @@ const Query: React.FC = () => {
         });
     }, [onResultChanged, queryPairData]);
 
+    const onRapidQuery = useCallback(
+        (days: number) => {
+            const today = format(new Date(), 'yyyyMMdd');
+            const pastDay = format(sub(new Date(), { days }), 'yyyyMMdd');
+            gridApiRef.current?.showLoadingOverlay();
+            fetchStudy({ params: { StudyDate: `${pastDay}-${today}` } }).subscribe({
+                next: (res) => {
+                    onResultChanged(res.data);
+                    gridApiRef.current?.deselectAll();
+                    gridApiRef.current?.hideOverlay();
+                },
+                error: () => {
+                    gridApiRef.current?.hideOverlay();
+                },
+            });
+        },
+        [onResultChanged],
+    );
+
     const onNavigateReport = useCallback(
         (data: StudyData) => {
             fetchReport(data, (signal$) =>
@@ -76,7 +97,17 @@ const Query: React.FC = () => {
                 onQuery={onQuery}
                 onQueryPairDataChanged={onValueChanged}
             />
-
+            <Stack direction="row" spacing={1} className={classes.rapidQuery}>
+                <Button variant="contained" color="primary" onClick={() => onRapidQuery(0)}>
+                    Today
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => onRapidQuery(7)}>
+                    Week
+                </Button>
+                <Button variant="contained" color="primary" onClick={() => onRapidQuery(30)}>
+                    Month
+                </Button>
+            </Stack>
             <div className={`${classes.tableContainer} ag-theme-modal-black-header`}>
                 <GridTable
                     checkboxSelect={false}
