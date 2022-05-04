@@ -23,7 +23,8 @@ export const define = {
             { field: 'StudyDate', headerName: 'Study Date', width: 120 },
             { field: 'Modality', headerName: 'Modality', width: 120 },
             { field: 'StudyDescription', headerName: 'Description', flex: 1, minWidth: 200 },
-            { field: 'StudyInstanceUID', headerName: 'StudyInstanceUID', hide: true, width: 120 },
+            { field: 'StudyInstanceUID', headerName: 'StudyInstanceUID', hide: true },
+            { field: 'PDFFilePath', headerName: 'PDFFilePath', hide: true },
         ],
     },
     userRoleGroup: {

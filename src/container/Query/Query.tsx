@@ -17,6 +17,7 @@ import { NotificationContext } from '../../context/notification-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { StudyData } from '../../interface/study-data';
 import { useQueryStore, useReportDataStore } from '../../models/useStore';
+import { generateUUID, isEmptyOrNil } from '../../utils/general';
 import classes from './Query.module.scss';
 
 const Query: React.FC = () => {
@@ -25,6 +26,7 @@ const Query: React.FC = () => {
     const { onConditionChanged, onResultChanged, queryResult, queryPairData } = useQueryStore();
     const { showNotifyMsg } = useContext(NotificationContext);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
+    const [pdfUrl, setPdfUrl] = useState<string>('');
     // dispatch event for cell event
     const { dispatchCellEvent } = useGridColDef();
     const gridApiRef = useRef<GridApi | null>(null);
@@ -82,6 +84,15 @@ const Query: React.FC = () => {
         [fetchReport, history, showNotifyMsg],
     );
 
+    const onRenderPDF = useCallback((gridApi: GridApi) => {
+        const selectedRow = gridApi.getSelectedRows()[0] as StudyData;
+        if (!selectedRow) {
+            setPdfUrl('');
+            return;
+        }
+        setPdfUrl(selectedRow.PDFFilePath);
+    }, []);
+
     useEffect(() => {
         let mutateColDef: ColDef[] = [...define.study.colDef];
         mutateColDef = dispatchCellEvent(mutateColDef, 'navigateReport', onNavigateReport);
@@ -108,14 +119,25 @@ const Query: React.FC = () => {
                     Month
                 </Button>
             </Stack>
-            <div className={`${classes.tableContainer} ag-theme-modal-black-header`}>
-                <GridTable
-                    checkboxSelect={false}
-                    rowSelection="single"
-                    columnDefs={colDefs}
-                    rowData={queryResult}
-                    gridReady={gridReady}
-                />
+            <div className={classes.result}>
+                <div className={`${classes.tableContainer} ag-theme-modal-black-header`}>
+                    <GridTable
+                        checkboxSelect={false}
+                        rowSelection="single"
+                        columnDefs={colDefs}
+                        rowData={queryResult}
+                        gridReady={gridReady}
+                        onSelectionChanged={onRenderPDF}
+                    />
+                </div>
+                {!isEmptyOrNil(pdfUrl) && (
+                    <iframe
+                        className={classes.pdfPreview}
+                        id="pdfPreview"
+                        title="pdfPreview"
+                        src={`${pdfUrl}?a=${generateUUID()}`}
+                    />
+                )}
             </div>
         </div>
     );

@@ -9,9 +9,25 @@
     display: flex;
 }
 
-.tableContainer {
-    margin-top: 10px;
+.result {
     flex: 1 1 auto;
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+
+    .tableContainer {
+        flex: 1 1 auto;
+        margin-top: 10px;
+    }
+
+    .pdfPreview {
+        max-width: 40%;
+        width: 40%;
+        height: 100%;
+        overflow: auto;
+        border: 0;
+        padding-top: 11px;
+    }
 }
 
 .rapidQuery {

@@ -16,4 +16,5 @@ export interface StudyData {
     PatientsBirthDate: string;
     OtherPatientNames: string;
     OtherPatientId: string;
+    PDFFilePath: string;
 }
