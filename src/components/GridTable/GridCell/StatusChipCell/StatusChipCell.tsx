@@ -5,30 +5,28 @@ import { ICellRendererParams } from 'ag-grid-community/dist/lib/rendering/cellRe
 import { AgReactComponent } from 'ag-grid-react';
 
 interface Props extends ICellRendererParams {
-    label: string;
-    value: string[];
+    value: string;
 }
 
-const ChipCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
+const StatusChipCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
     return (
         <Box
             ref={ref}
             sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
                 height: '100%',
+                paddingLeft: '18px',
+                paddingRight: '18px',
             }}
         >
-            {props.value?.map((label) => {
-                return (
-                    <Box key={label} sx={{ mr: '2px', display: 'flex', alignItems: 'center ' }}>
-                        <Chip size="small" label={label} />
-                    </Box>
-                );
-            })}
+            <Chip
+                size="small"
+                color={props.colDef?.cellRendererParams[props.value]}
+                label={props.value}
+            />
         </Box>
     );
 });
 
-export default ChipCell;
+export default StatusChipCell;

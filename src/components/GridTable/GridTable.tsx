@@ -93,6 +93,7 @@ function GridTable({
                     tooltipField={col.tooltipField}
                     tooltipComponent={col.tooltipComponent}
                     editable={col.editable}
+                    pinned={col.pinned}
                 />
             ))}
         </AgGridReact>

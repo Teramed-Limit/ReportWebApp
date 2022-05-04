@@ -7,7 +7,7 @@ import FileCell from './FileCell/FileCell';
 import IconCell from './IconCell/IconCell';
 import LinkCell from './LinkCell/LinkCell';
 import MultilineTooltipCell from './MultilineTooltipCell/MultilineTooltipCell';
-import ReportStatusCell from './ReportStatusCell/ReportStatusCell';
+import StatusChipCell from './StatusChipCell/StatusChipCell';
 import TooltipCell from './TooltipCell/TooltipCell';
 
 export const CellMapper = {
@@ -19,7 +19,7 @@ export const CellMapper = {
     checkboxRenderer: CheckboxCell,
     buttonRenderer: ButtonCell,
     linkRenderer: LinkCell,
-    reportStatusRenderer: ReportStatusCell,
+    statusRenderer: StatusChipCell,
     editRowRenderer: EditRowCell,
     deleteRowRenderer: DeleteRowCell,
 };

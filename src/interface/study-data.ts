@@ -1,5 +1,5 @@
 export interface StudyData {
-    ReportExist: number;
+    ReportStatus: string;
     CountOfSeries: number;
     PatientId: string;
     PatientsName: string;
