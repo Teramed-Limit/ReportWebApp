@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { Image, Text, View } from '@react-pdf/renderer';
 
@@ -9,7 +9,6 @@ interface Props {
     row: number;
     col: number;
     imageList: ReportImageDataset[];
-    diagramData: string;
 }
 
 const paddingMap = {
@@ -18,30 +17,10 @@ const paddingMap = {
     '3*3': 4,
 };
 
-const PDFPhoto = ({ row, col, imageList, diagramData }: Props) => {
-    // Jpeg file format (as many others) can be identified by magic number.
-    // For JPEG the magic number is ff d8 ff at offset 0.
-    // If you encode this to Base64, you'll always get /9j/.
-    const [images] = useState<ReportImageDataset[]>([
-        ...[
-            {
-                SOPInstanceUID: 'Diagram',
-                ImageSrc: `data:image/${
-                    diagramData?.substr(0, 4) === '/9j/' ? 'jpg' : 'png'
-                };base64,${diagramData}`,
-                IsAttachInReport: true,
-                MappingNumber: -1,
-                DescriptionOfFindings: '',
-            },
-        ],
-        ...imageList.filter((image) => image.IsAttachInReport),
-    ]);
-
-    if (!diagramData || !imageList) return <></>;
-
+const PDFPhoto = ({ row, col, imageList }: Props) => {
     return (
         <View style={styles.gallery}>
-            {images.map((image: ReportImageDataset) => {
+            {imageList.map((image: ReportImageDataset) => {
                 return (
                     <View
                         key={image.SOPInstanceUID}
