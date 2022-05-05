@@ -25,7 +25,7 @@ interface Props {
 }
 
 const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
-    const { formData, activeStudy, diagramData } = useReportDataStore();
+    const { formData, activeStudy, diagramData, studyInsUID } = useReportDataStore();
     const { getOptions } = useOptionStore();
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState<ReportImageDataset[] | undefined>(undefined);
@@ -165,7 +165,12 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
             </ToggleButtonGroup>
             {images && logoUrl && qrCodeUrl && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
-                    <Document onRender={onPdfRender}>
+                    <Document
+                        title={`${activeStudy.PatientId}_${activeStudy.PatientsName}`}
+                        author={formData.get('Author')}
+                        subject={studyInsUID}
+                        onRender={onPdfRender}
+                    >
                         <Page size="A4" style={styles.page}>
                             <PDFHeader
                                 formData={formData.toJSON()}
