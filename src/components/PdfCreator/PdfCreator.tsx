@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { ToggleButton, ToggleButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
 import ReactPDF, { Document, Page, PDFViewer } from '@react-pdf/renderer';
 import BwipJs from 'bwip-js';
@@ -28,6 +29,10 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
     const [loading, setLoading] = useState(true);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
     const [qrCodeUrl, setQRCodeUrl] = useState<string | undefined>(undefined);
+    const [photoLayout, setPhotoLayout] = useState<{ row: number; col: number }>({
+        row: 3,
+        col: 3,
+    });
     const [reportName] = useState<string>(
         (getOptions('ReportTemplateList').find(
             (x) => x.Name === formData.get('ReportTemplate'),
@@ -73,14 +78,31 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
         [onRenderCallback],
     );
 
+    const onLayoutChanged = useCallback(
+        (event: React.MouseEvent<HTMLElement>, layout: { row: number; col: number }) => {
+            setPhotoLayout(layout);
+        },
+        [],
+    );
+
     return (
-        <Box sx={{ width: '100%', height: '100%' }}>
+        <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
             <canvas style={{ display: 'none' }} id="qrcode" />
             {loading && (
                 <Block>
                     <Spinner />
                 </Block>
             )}
+            <ToggleButtonGroup
+                sx={{ borderRadius: '0' }}
+                value={photoLayout}
+                exclusive
+                onChange={onLayoutChanged}
+            >
+                <ToggleButton value={{ row: 2, col: 2 }}>2*2</ToggleButton>
+                <ToggleButton value={{ row: 2, col: 3 }}>2*3</ToggleButton>
+                <ToggleButton value={{ row: 3, col: 3 }}>3*3</ToggleButton>
+            </ToggleButtonGroup>
             {logoUrl && qrCodeUrl && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document onRender={onPdfRender}>
@@ -106,6 +128,8 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                             <PDFPhoto
                                 imageList={formData.get('ReportImageDataset')}
                                 diagramData={diagramData}
+                                row={photoLayout.row}
+                                col={photoLayout.col}
                             />
                             <PDFFooter />
                         </Page>
