@@ -12,7 +12,7 @@ export const define = {
             {
                 field: 'ReportExist',
                 headerName: 'Status',
-                width: 100,
+                width: 130,
                 cellStyle: { padding: 0 },
                 cellRenderer: 'reportStatusRenderer',
             },

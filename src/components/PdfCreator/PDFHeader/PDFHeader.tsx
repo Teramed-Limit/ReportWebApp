@@ -120,4 +120,4 @@ const PDFHeader = ({ formData, logoUrl, qrCodeUrl, reportName, activeStudy }: Pr
     );
 };
 
-export default PDFHeader;
+export default React.memo(PDFHeader);

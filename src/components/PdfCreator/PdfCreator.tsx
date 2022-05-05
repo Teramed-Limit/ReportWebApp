@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
-import { Document, Page, PDFViewer } from '@react-pdf/renderer';
+import ReactPDF, { Document, Page, PDFViewer } from '@react-pdf/renderer';
 import BwipJs from 'bwip-js';
 import { observer } from 'mobx-react';
 
@@ -18,14 +18,16 @@ import { styles } from './styles/style';
 
 interface Props {
     showToolbar: boolean;
+    onRenderCallback?: (blob: Blob, base64: string) => void;
 }
 
-const PdfCreator = ({ showToolbar }: Props) => {
+const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
     const { formData, activeStudy, diagramData } = useReportDataStore();
+
     const { getOptions } = useOptionStore();
     const [loading, setLoading] = useState(true);
-    const [logoUrl, setLogoUrl] = useState<string>('');
-    const [qrCodeUrl, setQRCodeUrl] = useState<string>('');
+    const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
+    const [qrCodeUrl, setQRCodeUrl] = useState<string | undefined>(undefined);
     const [reportName] = useState<string>(
         (getOptions('ReportTemplateList').find(
             (x) => x.Name === formData.get('ReportTemplate'),
@@ -51,9 +53,25 @@ const PdfCreator = ({ showToolbar }: Props) => {
         return () => subscription.unsubscribe();
     }, [activeStudy.PatientId]);
 
-    const onPdfRender = () => {
-        setLoading(false);
-    };
+    const onPdfRender = useCallback(
+        (renderProps: ReactPDF.OnRenderProps) => {
+            setLoading(false);
+            if (!renderProps?.blob) return;
+            const reader = new FileReader();
+            reader.readAsDataURL(renderProps.blob);
+            reader.onloadend = () => {
+                setTimeout(() => {
+                    if (!renderProps?.blob || !reader?.result) return;
+                    onRenderCallback?.(
+                        renderProps.blob,
+                        (reader.result as string).replace('data:application/pdf;base64,', ''),
+                    );
+                });
+                setLoading(false);
+            };
+        },
+        [onRenderCallback],
+    );
 
     return (
         <Box sx={{ width: '100%', height: '100%' }}>
@@ -63,35 +81,37 @@ const PdfCreator = ({ showToolbar }: Props) => {
                     <Spinner />
                 </Block>
             )}
-            <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
-                <Document onRender={onPdfRender}>
-                    <Page size="A4" style={styles.page}>
-                        <PDFHeader
-                            formData={formData.toJSON()}
-                            activeStudy={activeStudy}
-                            logoUrl={logoUrl}
-                            qrCodeUrl={qrCodeUrl}
-                            reportName={reportName}
-                        />
-                        <PDFReportContent formData={formData.toJSON()} />
-                        <PDFFooter />
-                    </Page>
-                    <Page size="A4" style={styles.page}>
-                        <PDFHeader
-                            formData={formData.toJSON()}
-                            activeStudy={activeStudy}
-                            logoUrl={logoUrl}
-                            qrCodeUrl={qrCodeUrl}
-                            reportName={reportName}
-                        />
-                        <PDFPhoto
-                            imageList={formData.get('ReportImageDataset')}
-                            diagramData={diagramData}
-                        />
-                        <PDFFooter />
-                    </Page>
-                </Document>
-            </PDFViewer>
+            {logoUrl && qrCodeUrl && (
+                <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
+                    <Document onRender={onPdfRender}>
+                        <Page size="A4" style={styles.page}>
+                            <PDFHeader
+                                formData={formData.toJSON()}
+                                activeStudy={activeStudy}
+                                logoUrl={logoUrl}
+                                qrCodeUrl={qrCodeUrl}
+                                reportName={reportName}
+                            />
+                            <PDFReportContent formData={formData.toJSON()} />
+                            <PDFFooter />
+                        </Page>
+                        <Page size="A4" style={styles.page}>
+                            <PDFHeader
+                                formData={formData.toJSON()}
+                                activeStudy={activeStudy}
+                                logoUrl={logoUrl}
+                                qrCodeUrl={qrCodeUrl}
+                                reportName={reportName}
+                            />
+                            <PDFPhoto
+                                imageList={formData.get('ReportImageDataset')}
+                                diagramData={diagramData}
+                            />
+                            <PDFFooter />
+                        </Page>
+                    </Document>
+                </PDFViewer>
+            )}
         </Box>
     );
 };

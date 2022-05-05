@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Drawer, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { Section } from '../../interface/define';
 import { ReportStatus } from '../../interface/document-data';
 import ReportSection from '../../layout/ReportSection/ReportSection';
 import { useReportDataStore, useReportDefineStore } from '../../models/useStore';
-import { isEmptyOrNil } from '../../utils/general';
+import { dataFormatString, isEmptyOrNil } from '../../utils/general';
 import Photo from '../Photo/Photo';
 import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
 import ReportViewActionBar from './report-action-bar/ReportViewActionBar/ReportViewActionBar';
@@ -20,8 +20,8 @@ import classes from './Report.module.scss';
 const Report = () => {
     const history = useHistory();
     const { formDefine } = useReportDefineStore();
-    const { activeStudy, reportStatus, modifiable } = useReportDataStore();
-    const [drawerOpen, setDrawerOpen] = useState(false);
+    const { activeStudy, reportStatus, modifiable, formData } = useReportDataStore();
+    const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
 
     useEffect(() => {
         if (isEmptyOrNil(activeStudy)) history.push('/');
@@ -39,17 +39,14 @@ const Report = () => {
                         )}
                     </Stack>
                 </div>
-                <button
-                    className={cx(classes.toggleDrawer, {
-                        [classes.open]: drawerOpen,
-                    })}
-                    type="button"
-                    onClick={() => setDrawerOpen(!drawerOpen)}
-                >
-                    <Icon type="photos" size={40} />
-                </button>
                 <div className={classes.reportTimeline}>
-                    Created by test elli, Last Modified by Ian Tai on 28/Jan/2021
+                    {`Created by ${formData.get('CreateUser')}, Last Modified by ${formData.get(
+                        'ModifiedUser',
+                    )} on ${dataFormatString(
+                        formData.get('ModifiedDateTime'),
+                        'yyyyMMddHHmmss',
+                        'dd-MMM-yyyy',
+                    )}`}
                 </div>
                 <div className={classes.reportLayout}>
                     {formDefine.sections
@@ -62,15 +59,20 @@ const Report = () => {
                             />
                         ))}
                 </div>
-                <Drawer
-                    PaperProps={{ sx: { maxWidth: '80%', width: '80%' } }}
-                    anchor="left"
-                    open={drawerOpen}
-                    onClose={() => setDrawerOpen(false)}
-                >
-                    <Photo />
-                </Drawer>
             </ReportActionProvider>
+
+            {/* Photo Drawer */}
+            <button
+                style={{ top: '245px' }}
+                className={cx(classes.drawerBtn, { [classes.open]: photoDrawerOpen })}
+                type="button"
+                onClick={() => setPhotoDrawerOpen(!photoDrawerOpen)}
+            >
+                <Icon type="photos" size={40} />
+            </button>
+            <div className={cx(classes.drawer, { [classes.open]: photoDrawerOpen })}>
+                <Photo />
+            </div>
         </>
     );
 };

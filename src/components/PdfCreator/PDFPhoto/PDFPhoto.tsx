@@ -41,30 +41,6 @@ const PDFPhoto = ({ imageList, diagramData }: Props) => {
                     </View>
                 );
             })}
-            {images.map((image: ReportImageDataset) => {
-                return (
-                    <View key={image.SOPInstanceUID} style={styles.imageContainer} wrap={false}>
-                        <Image style={styles.image} src={image.ImageSrc} />
-                        <Text style={styles.imageDesc}>{image.DescriptionOfFindings}</Text>
-                    </View>
-                );
-            })}
-            {images.map((image: ReportImageDataset) => {
-                return (
-                    <View key={image.SOPInstanceUID} style={styles.imageContainer} wrap={false}>
-                        <Image style={styles.image} src={image.ImageSrc} />
-                        <Text style={styles.imageDesc}>{image.DescriptionOfFindings}</Text>
-                    </View>
-                );
-            })}
-            {images.map((image: ReportImageDataset) => {
-                return (
-                    <View key={image.SOPInstanceUID} style={styles.imageContainer} wrap={false}>
-                        <Image style={styles.image} src={image.ImageSrc} />
-                        <Text style={styles.imageDesc}>{image.DescriptionOfFindings}</Text>
-                    </View>
-                );
-            })}
         </View>
     );
 };

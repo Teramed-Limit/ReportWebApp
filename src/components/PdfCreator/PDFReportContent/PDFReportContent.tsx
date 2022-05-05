@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Text, View } from '@react-pdf/renderer';
-import { observer } from 'mobx-react';
 
 import { standardDefine } from '../../../constant/pdf-define/standard-define';
 import { Section, SubSection } from '../../../interface/define';
@@ -93,4 +92,4 @@ const PDFReportContent = ({ formData }: Props) => {
     );
 };
 
-export default observer(PDFReportContent);
+export default React.memo(PDFReportContent);

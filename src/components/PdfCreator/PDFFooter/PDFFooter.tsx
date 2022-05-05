@@ -14,4 +14,4 @@ const PDFFooter = () => {
     );
 };
 
-export default PDFFooter;
+export default React.memo(PDFFooter);

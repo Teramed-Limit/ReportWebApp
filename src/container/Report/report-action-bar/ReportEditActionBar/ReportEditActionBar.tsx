@@ -1,4 +1,4 @@
-import React, { CSSProperties, useContext } from 'react';
+import React, { CSSProperties, useCallback, useContext } from 'react';
 
 import { observer } from 'mobx-react';
 import { tap } from 'rxjs/operators';
@@ -13,9 +13,9 @@ import { useReportDataStore } from '../../../../models/useStore';
 const ReportEditActionBar: React.FC = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
-    const { saveReport, signOffReport } = useReportDataStore();
+    const { saveReport, savePdf, signOffReport } = useReportDataStore();
 
-    const openPreviewModal = (print: boolean): JSX.Element => {
+    const openPreviewModal = (isSignOff: boolean): JSX.Element => {
         return (
             <Modal
                 open
@@ -24,7 +24,12 @@ const ReportEditActionBar: React.FC = () => {
                 overflow="hidden hidden"
                 onClose={() => setModal(null)}
                 headerTitle="PDF Preview"
-                body={<PdfCreator showToolbar={print} />}
+                body={
+                    <PdfCreator
+                        showToolbar={isSignOff}
+                        onRenderCallback={isSignOff ? onSavePdf : () => {}}
+                    />
+                }
                 bodyCSS={{ padding: '0' } as CSSProperties}
                 footer={
                     <Button theme="reversePrimary" onClick={() => setModal(null)}>
@@ -35,17 +40,26 @@ const ReportEditActionBar: React.FC = () => {
         );
     };
 
-    const saveReportAndNotify = () => {
+    const onSavePdf = useCallback(
+        (blob: Blob, base64Str: string) => {
+            savePdf(base64Str, (signal$) =>
+                signal$.pipe(tap(({ notification }) => showNotifyMsg(notification))),
+            );
+        },
+        [savePdf, showNotifyMsg],
+    );
+
+    const onSaveReport = useCallback(() => {
         saveReport(null, (signal$) =>
             signal$.pipe(tap(({ notification }) => showNotifyMsg(notification))),
         );
-    };
+    }, [saveReport, showNotifyMsg]);
 
-    const previewReportAndPopPDFModal = () => {
+    const onPreviewReport = () => {
         setModal(openPreviewModal(false));
     };
 
-    const signOffReportAndPreviewPdf = () => {
+    const onSignOffReport = () => {
         signOffReport(null, (signal$) =>
             signal$.pipe(
                 tap(({ notification }) => {
@@ -63,7 +77,7 @@ const ReportEditActionBar: React.FC = () => {
                 icon="save"
                 iconPosition="left"
                 fontSize={16}
-                onClick={() => saveReportAndNotify()}
+                onClick={() => onSaveReport()}
             >
                 Save
             </Button>
@@ -72,7 +86,7 @@ const ReportEditActionBar: React.FC = () => {
                 icon="preview"
                 iconPosition="left"
                 fontSize={16}
-                onClick={() => previewReportAndPopPDFModal()}
+                onClick={() => onPreviewReport()}
             >
                 Preview
             </Button>
@@ -81,7 +95,7 @@ const ReportEditActionBar: React.FC = () => {
                 icon="signOff"
                 iconPosition="left"
                 fontSize={16}
-                onClick={() => signOffReportAndPreviewPdf()}
+                onClick={() => onSignOffReport()}
             >
                 SignOff
             </Button>

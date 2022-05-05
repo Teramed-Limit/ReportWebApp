@@ -44,13 +44,8 @@ export function signOffReport(studyInsUid: string, body): Observable<AxiosRespon
     return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/signOff`, body);
 }
 
-export function previewReport(
-    studyInstanceUID: string,
-    generatePDF: boolean,
-): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.get(
-        `api/standard/report/studyInstanceUID/${studyInstanceUID}/generatePDF/${generatePDF}`,
-    );
+export function saveReportPDF(studyInsUid: string, body): Observable<AxiosResponse<AnyObject>> {
+    return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/pdfSave`, body);
 }
 
 // Report setting

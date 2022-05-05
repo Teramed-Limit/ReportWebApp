@@ -3,7 +3,7 @@ import { action, dollEffect, effect, getEnv, getRoot, Instance, types } from 'ms
 import { iif, interval, Observable, throwError } from 'rxjs';
 import { catchError, concatMap, filter, map, startWith, switchMap } from 'rxjs/operators';
 
-import { fetchReport, previewReport, saveReport, signOffReport } from '../axios/api';
+import { fetchReport, saveReport, saveReportPDF, signOffReport } from '../axios/api';
 import { AnyObject } from '../interface/anyObject';
 import { DocumentData, ReportStatus } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
@@ -198,6 +198,10 @@ export const DataModel = types
             );
         };
 
+        const savePDF$ = (pdfBase64: string) => {
+            return saveReportPDF(self.studyInsUID, { ByteData: pdfBase64 });
+        };
+
         const signOffReport$ = () => {
             const signOffOnly$ = signOffReport(self.studyInsUID, self.formData.toJSON());
             const saveAndSignOff$ = saveReport$().pipe(
@@ -213,15 +217,6 @@ export const DataModel = types
                 // otherwise, just do  signOff
                 signOffOnly$,
             );
-        };
-
-        const previewReport$ = () => {
-            return self.formData.get('ReportStatus') === ReportStatus.Signed &&
-                !self.reportHasChanged
-                ? // if report has signed and report content has not changed, do not need to generate pdf again
-                  previewReport(self.studyInsUID, false)
-                : // otherwise, save first and generate pdf
-                  saveReport$().pipe(concatMap(() => previewReport(self.studyInsUID, true)));
         };
 
         const callApi = (
@@ -267,12 +262,12 @@ export const DataModel = types
                     );
                 },
             ),
-            previewReport: dollEffect<null, ReportResponseNotification>(
+            savePdf: dollEffect<string, ReportResponseNotification>(
                 self,
                 (payload$, dollSignal) => {
                     return payload$.pipe(
-                        switchMap(() =>
-                            callApi(previewReport$(), dollSignal, 'Report save success'),
+                        switchMap((base64) =>
+                            callApi(savePDF$(base64), dollSignal, 'Report save success'),
                         ),
                     );
                 },
