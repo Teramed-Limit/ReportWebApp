@@ -56,7 +56,14 @@ const ReportEditActionBar: React.FC = () => {
     }, [saveReport, showNotifyMsg]);
 
     const onPreviewReport = () => {
-        setModal(openPreviewModal(false));
+        saveReport(null, (signal$) =>
+            signal$.pipe(
+                tap(({ notification }) => {
+                    setModal(openPreviewModal(false));
+                    showNotifyMsg(notification);
+                }),
+            ),
+        );
     };
 
     const onSignOffReport = () => {
