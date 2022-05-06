@@ -24,6 +24,9 @@ export const RootStoreModel = types
         get formData() {
             return self.dataStore.formData;
         },
+        get loading() {
+            return self.dataStore.loading || self.optionStore.loading;
+        },
     }))
     .actions((self) => {
         return {

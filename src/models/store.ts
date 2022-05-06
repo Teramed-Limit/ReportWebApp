@@ -21,7 +21,7 @@ export function createStore() {
             defineStore: { formDefine: standardDefine },
             dataStore: { loading: false, activeStudy: {} },
             imageStore: { images: [] },
-            optionStore: {},
+            optionStore: { loading: false },
             queryStore: {
                 queryResult: [],
                 queryPairData: {

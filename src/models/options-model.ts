@@ -1,7 +1,7 @@
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { action, dollEffect, getRoot, Instance, types } from 'mst-effect';
 import * as R from 'ramda';
-import { map, switchMap } from 'rxjs/operators';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { fetchReportSetting } from '../axios/api';
 import { staticOptionType } from '../constant/static-options';
@@ -12,8 +12,10 @@ import { uniqBy } from '../utils/general';
 export const OptionStoreModel = types
     .model('optionStore')
     .props({
+        loading: types.optional(types.boolean, false),
         optionMap: types.map(types.frozen<any[]>([])),
     })
+    /* eslint-disable no-param-reassign */
     .views((self) => {
         return {
             getOptions(source: string, filterCondition?: FilterCondition) {
@@ -32,6 +34,7 @@ export const OptionStoreModel = types
     .actions((self) => {
         const fetchSuccess = ({ res: settingRes }: { res: AxiosResponse<ReportSetting> }) => {
             // selection options
+            self.loading = false;
             self.optionMap.replace(
                 new Map<string, any[]>(Object.entries({ ...settingRes.data }))
                     .set('Min', staticOptionType.Min)
@@ -51,6 +54,8 @@ export const OptionStoreModel = types
                 switchMap((queryParams: any) =>
                     fetchReportSetting().pipe(
                         map((res) => [action(fetchSuccess, { res, queryParams })]),
+                        startWith(action(() => (self.loading = true))),
+                        catchError((error: AxiosError) => [action(() => (self.loading = false))]),
                     ),
                 ),
             ),
