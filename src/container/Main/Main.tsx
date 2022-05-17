@@ -8,14 +8,14 @@ import Block from '../../components/Block/Block';
 import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
 import { useModal } from '../../hooks/useModal';
-import { useReportDataStore } from '../../models/useStore';
+import { useReportDataStore, useStore } from '../../models/useStore';
 import classes from './Main.module.scss';
 
 const Main = () => {
-    const { loading } = useReportDataStore();
+    const { formValidation } = useReportDataStore();
+    const { loading } = useStore();
     const [setModalName] = useModal();
     const history = useHistory();
-    const { formValidation } = useReportDataStore();
 
     useEffect(() => {
         if (!formValidation.isValid) {

@@ -16,7 +16,6 @@ const ChipCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
             sx={{
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center',
                 height: '100%',
             }}
         >

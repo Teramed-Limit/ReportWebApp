@@ -45,7 +45,7 @@ const ImageCanvasModal = ({ imageSrc }: Props) => {
         setTimeout(() => {
             valueChanged(
                 'DiagramData',
-                canvasRef.current?.onExport().replace('data:image/png;base64,', ''),
+                canvasRef.current?.onExport().replace('data:image/jpeg;base64,', ''),
             );
             setModal(null);
         });

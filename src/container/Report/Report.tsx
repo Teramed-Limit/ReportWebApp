@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
@@ -39,14 +40,46 @@ const Report = () => {
                         )}
                     </Stack>
                 </div>
-                <div className={classes.reportTimeline}>
-                    {`Created by ${formData.get('CreateUser')}, Last Modified by ${formData.get(
-                        'ModifiedUser',
-                    )} on ${dataFormatString(
-                        formData.get('ModifiedDateTime'),
-                        'yyyyMMddHHmmss',
-                        'dd-MMM-yyyy',
-                    )}`}
+                <div className={classes.patientInfo}>
+                    <AccountCircleIcon sx={{ fontSize: '36px' }} />
+                    <div className={classes.content}>
+                        <span>
+                            {activeStudy.PatientsName} ({activeStudy.PatientId})
+                        </span>
+                        <div className={classes.contentBetween}>
+                            <div>{activeStudy.AccessionNumber}</div>
+                            <div>
+                                {formData.get('CreateUser') && (
+                                    <>
+                                        <span>Created by </span>
+                                        <span className={classes.highlight}>
+                                            {formData.get('CreateUser')}
+                                        </span>
+                                    </>
+                                )}
+                                {formData.get('ModifiedUser') && (
+                                    <>
+                                        <span>, Last Modified by </span>
+                                        <span className={classes.highlight}>
+                                            {formData.get('ModifiedUser')}
+                                        </span>
+                                    </>
+                                )}
+                                {formData.get('ModifiedDateTime') && (
+                                    <>
+                                        <span> on </span>
+                                        <span className={classes.highlight}>
+                                            {dataFormatString(
+                                                formData.get('ModifiedDateTime'),
+                                                'yyyyMMddHHmmss',
+                                                'dd-MMM-yyyy',
+                                            )}
+                                        </span>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div className={classes.reportLayout}>
                     {formDefine.sections

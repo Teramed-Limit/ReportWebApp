@@ -2,7 +2,8 @@ import { getRoot, Instance, types } from 'mst-effect';
 import * as R from 'ramda';
 
 import { ReportImageDataset, ReportMark } from '../interface/document-data';
-import { ImageMarker, MarkerPoint } from '../interface/marker';
+import { CanvasHandle } from '../interface/konva-stage-event';
+import { MarkerPoint } from '../interface/marker';
 import { isEmptyOrNil } from '../utils/general';
 import { DataStore } from './report-data-model';
 
@@ -10,6 +11,7 @@ const maxSelection = 50;
 export const ImageModel = types
     .model('image', {
         images: types.array(types.frozen<ReportImageDataset>()),
+        diagramHandle: types.frozen<CanvasHandle>(),
     })
     .views((self) => {
         return {
@@ -37,10 +39,18 @@ export const ImageModel = types
             self.images.replace(reportImageDataset);
         };
 
-        const deleteMarker = (marker: Partial<ImageMarker>): ReportImageDataset[] => {
+        const registerDiagramCanvas = (canvasHandle: CanvasHandle) => {
+            self.diagramHandle = canvasHandle;
+        };
+
+        const exportDiagramUrl = (): string => {
+            return self.diagramHandle.onExport();
+        };
+
+        const deleteMarker = (marker: Partial<ReportMark>): ReportImageDataset[] => {
             return self.images.map((item) => {
-                const deletedMappingNum = +(marker.markerText || 0);
-                if (item.SOPInstanceUID === marker.id) {
+                const deletedMappingNum = +(marker.MappingNumber || 0);
+                if (item.SOPInstanceUID === marker.SOPInstanceUID) {
                     return {
                         ...item,
                         IsAttachInReport: false,
@@ -63,7 +73,7 @@ export const ImageModel = types
             });
         };
 
-        const onMarkerDelete = (marker: ImageMarker) => {
+        const onMarkerDelete = (marker: ReportMark) => {
             setReportImage(deleteMarker(marker));
         };
 
@@ -142,8 +152,8 @@ export const ImageModel = types
                     !isEmptyOrNil(foundImage.ReportMark)
                 ) {
                     updateImage = deleteMarker({
-                        id: foundImage.SOPInstanceUID,
-                        markerText: foundImage.MappingNumber.toString(),
+                        SOPInstanceUID: foundImage.SOPInstanceUID,
+                        MappingNumber: foundImage.MappingNumber,
                     });
                 }
             }
@@ -211,6 +221,8 @@ export const ImageModel = types
             deselectAllImage,
             onImageReorder,
             setReportImage,
+            registerDiagramCanvas,
+            exportDiagramUrl,
         };
     });
 

@@ -1,12 +1,15 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
+import InfoIcon from '@mui/icons-material/Info';
 import { observer } from 'mobx-react';
 import { first } from 'rxjs/operators';
 
 import { fetchDiagram } from '../../../axios/api';
-import MarkerCanvas from '../../../components/MarkerCanvas/MarkerCanvas';
+import ImagePositionMarkerCanvas from '../../../components/ImagePositionMarkerCanvas/ImagePositionMarkerCanvas';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
+import { useResize } from '../../../hooks/useResize';
+import { CanvasHandle } from '../../../interface/konva-stage-event';
 import { useReportDataStore, useReportImageStore } from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
 import DiagramSelectModal from '../../Modals/DiagramSelectModal/DiagramSelectModal';
@@ -15,13 +18,25 @@ import classes from './ReportImage.module.scss';
 
 const ReportImage = () => {
     const [imageSrc, setImageSrc] = useState<string>('');
+    const [containerHeight, setContainerHeight] = useState(0);
+    const [containerWidth, setContainerWidth] = useState(0);
+
     const { valueChanged, reportDisabled, ersType, diagramData } = useReportDataStore();
     const {
         imageMarkers,
         onMarkerDelete,
         onMarkerPlace,
         onImageStateInitialize,
+        registerDiagramCanvas,
     } = useReportImageStore();
+
+    useResize(() => {
+        if (containerRef === null || containerRef.current === null) return;
+        setContainerWidth(containerRef.current.offsetWidth);
+        setContainerHeight(containerRef.current.offsetHeight);
+    });
+
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const setModal = useContext(ModalContext);
 
@@ -45,14 +60,21 @@ const ReportImage = () => {
 
     useEffect(() => {
         if (!isEmptyOrNil(diagramData)) {
-            setImageSrc(`data:image/jpg;base64, ${diagramData}`);
+            setImageSrc(`data:image/jpeg;base64, ${diagramData}`);
             return;
         }
         if (isEmptyOrNil(ersType)) {
+            fetchReportDiagram('BLANK');
             return;
         }
         fetchReportDiagram(ersType);
     }, [diagramData, ersType, fetchReportDiagram]);
+
+    useEffect(() => {
+        if (containerRef === null || containerRef.current === null) return;
+        setContainerWidth(containerRef.current.offsetWidth);
+        setContainerHeight(containerRef.current.offsetHeight);
+    }, []);
 
     const onBlankDiagram = () => {
         fetchReportDiagram('BLANK');
@@ -69,14 +91,20 @@ const ReportImage = () => {
     return (
         <>
             <div className={classes.header}>Report Diagram</div>
-            <div className={classes['image-container']}>
-                <MarkerCanvas
+            <span className={classes.hint}>
+                <InfoIcon />
+                Position by dragging the image
+            </span>
+            <div ref={containerRef} className={classes['image-container']}>
+                <ImagePositionMarkerCanvas
+                    ref={(canvasHandle: CanvasHandle) => registerDiagramCanvas(canvasHandle)}
                     src={imageSrc}
-                    alt=""
-                    reportMarkers={imageMarkers}
-                    onDeleteMarker={onMarkerDelete}
-                    onAddMarker={onMarkerPlace}
+                    markers={imageMarkers}
+                    containerWidth={containerWidth}
+                    containerHeight={containerHeight}
                     disabled={reportDisabled}
+                    onMarkerPlace={onMarkerPlace}
+                    onMarkerDelete={onMarkerDelete}
                 />
             </div>
             <div className={classes['bottom-container']}>

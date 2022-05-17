@@ -4,10 +4,6 @@
     flex-basis: 40px;
     width: 100%;
     min-height: 40px;
-
-    & button {
-        margin-right: 10px;
-    }
 }
 
 .header {
@@ -63,4 +59,14 @@
 
 .imageInfo {
     font-weight: 600;
+}
+
+.hint {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+
+    svg {
+        color: rgb(255 196 30);
+    }
 }

@@ -1,21 +1,16 @@
 import React from 'react';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
-import CakeIcon from '@mui/icons-material/Cake';
-import ContactPageIcon from '@mui/icons-material/ContactPage';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-import WcIcon from '@mui/icons-material/Wc';
+// import SettingsIcon from '@mui/icons-material/Settings';
 import { Stack } from '@mui/material';
 import { observer } from 'mobx-react';
-import { AiOutlineFieldNumber } from 'react-icons/all';
 import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
 import WithElementVisibility from '../../HOC/WithElementVisiblity/WithElementVisibility';
-import { useAuthStore, useReportDataStore } from '../../models/useStore';
-import { isEmptyOrNil } from '../../utils/general';
+import { useAuthStore } from '../../models/useStore';
 import NavigationItem from '../Navigation/NavigationItem/NavigationItem';
 import ButtonGroup from '../UI/Button-Group/Button-Group';
 import Button from '../UI/Button/Button';
@@ -24,7 +19,6 @@ import classes from './Header.module.scss';
 const Header = () => {
     const history = useHistory();
     const { onLogout } = useAuthStore();
-    const { activeStudy } = useReportDataStore();
 
     const logout = () => {
         onLogout(null, (signal$) => signal$.pipe(tap(() => history.push({ pathname: `/login` }))));
@@ -32,38 +26,7 @@ const Header = () => {
 
     return (
         <div className={classes.header}>
-            <Stack
-                className={classes.headerInfo}
-                direction="column"
-                spacing={1}
-                sx={{ display: 'flex', flexDirection: 'column' }}
-            >
-                {!isEmptyOrNil(activeStudy) && (
-                    <>
-                        <Stack direction="row" spacing={2}>
-                            <span className={classes.iconText}>
-                                <ContactPageIcon /> {activeStudy?.PatientId}
-                            </span>
-                            <span className={classes.iconText}>
-                                <AiOutlineFieldNumber style={{ fontSize: '24px' }} />
-                                {activeStudy?.AccessionNumber}
-                            </span>
-                        </Stack>
-                        <Stack direction="row" spacing={2}>
-                            <span className={classes.iconText}>
-                                <AccountCircleIcon /> {activeStudy?.PatientsName}
-                            </span>
-                            <span className={classes.iconText}>
-                                <CakeIcon /> {activeStudy?.PatientsBirthDate}
-                            </span>
-                            <span className={classes.iconText}>
-                                <WcIcon />
-                                {activeStudy?.PatientsSex}
-                            </span>
-                        </Stack>
-                    </>
-                )}
-            </Stack>
+            <Stack className={classes.headerInfo} direction="column" spacing={1} />
             <div className={classes.headerSidebar}>
                 <ButtonGroup>
                     <NavigationItem link="/" id="navigation__home">
@@ -74,7 +37,7 @@ const Header = () => {
                     </NavigationItem>
                     {/* <WithElementVisibility */}
                     {/*    wrappedComp={ */}
-                    {/*        <NavigationItem link="/setting" id="navigation__setting"> */}
+                    {/*        <NavigationItem link="/settings" id="navigation__setting"> */}
                     {/*            <Button id="btn__setting" color="black"> */}
                     {/*                <SettingsIcon className={classes.iconButton} /> */}
                     {/*                Settings */}

@@ -22,6 +22,17 @@
     justify-content: center;
 }
 
+.hint {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    line-height: 40px;
+
+    svg {
+        color: rgb(255 196 30);
+    }
+}
+
 .bottom-container {
     display: flex;
     flex-basis: 40px;

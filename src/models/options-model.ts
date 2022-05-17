@@ -1,4 +1,4 @@
-import { AxiosError, AxiosResponse } from 'axios';
+import { AxiosResponse } from 'axios';
 import { action, dollEffect, getRoot, Instance, types } from 'mst-effect';
 import * as R from 'ramda';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
@@ -55,7 +55,7 @@ export const OptionStoreModel = types
                     fetchReportSetting().pipe(
                         map((res) => [action(fetchSuccess, { res, queryParams })]),
                         startWith(action(() => (self.loading = true))),
-                        catchError((error: AxiosError) => [action(() => (self.loading = false))]),
+                        catchError(() => [action(() => (self.loading = false))]),
                     ),
                 ),
             ),

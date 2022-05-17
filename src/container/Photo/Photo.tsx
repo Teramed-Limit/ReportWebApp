@@ -4,7 +4,7 @@ import GallerySelector from './GallerySelector/GallerySelector';
 import classes from './Photo.module.css';
 import ReportImage from './ReportImage/ReportImage';
 
-const Photo: React.FC = () => {
+const Photo = () => {
     return (
         <div className={classes.container}>
             <div className={classes[`gallery-container`]}>

@@ -65,8 +65,10 @@ export const styles = StyleSheet.create({
         height: '75px',
     },
     hospitalLogo: {
-        width: '127px',
-        height: '65px',
+        // width: '127px',
+        // height: '100%',
+        objectFit: 'contain',
+        objectPosition: 'left top',
     },
     section: {
         maxWidth: '100%',

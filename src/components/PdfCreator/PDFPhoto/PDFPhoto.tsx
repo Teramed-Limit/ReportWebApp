@@ -34,7 +34,11 @@ const PDFPhoto = ({ row, col, imageList }: Props) => {
                         wrap={false}
                     >
                         <Image style={{ ...styles.image }} src={image.ImageSrc} />
-                        <Text style={styles.imageDesc}>{image.DescriptionOfFindings}</Text>
+                        {image.MappingNumber > 0 && (
+                            <Text style={styles.imageDesc}>
+                                {image.MappingNumber}) {image.DescriptionOfFindings}
+                            </Text>
+                        )}
                     </View>
                 );
             })}

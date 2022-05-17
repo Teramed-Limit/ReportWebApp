@@ -31,7 +31,7 @@ const BaseCheckbox = ({ id, label, value, onValueChange, disabled = false }: Pro
                     size="small"
                 />
             }
-            label={label}
+            label={label || ''}
             labelPlacement="end"
         />
     );

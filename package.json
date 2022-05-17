@@ -32,7 +32,7 @@
         "mobx-state-tree": "^5.0.1",
         "moment": "^2.29.1",
         "mst-effect": "^1.2.0",
-        "node-sass": "^5.0.0",
+        "node-sass": "^6.0.1",
         "ramda": "^0.27.1",
         "react": "^17.0.1",
         "react-beautiful-dnd": "^13.1.0",

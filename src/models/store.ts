@@ -5,6 +5,7 @@ import { LoginResult } from '../interface/auth';
 import { ReportDataService } from '../logic/report-data/report-data-service';
 import { ReportDefineService } from '../logic/report-define/report-define-service';
 import { ValidationService } from '../logic/validation/validation-service';
+import { emptyBaseImage } from '../utils/general';
 import { RootStoreModel } from './root-model';
 
 export function createStore() {
@@ -20,7 +21,14 @@ export function createStore() {
             },
             defineStore: { formDefine: standardDefine },
             dataStore: { loading: false, activeStudy: {} },
-            imageStore: { images: [] },
+            imageStore: {
+                images: [],
+                diagramHandle: {
+                    onExport(): string {
+                        return emptyBaseImage();
+                    },
+                },
+            },
             optionStore: { loading: false },
             queryStore: {
                 queryResult: [],

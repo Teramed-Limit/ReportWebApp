@@ -1,16 +1,11 @@
-import React, {
-    forwardRef,
-    useEffect,
-    useImperativeHandle,
-    useLayoutEffect,
-    useState,
-} from 'react';
+import React, { forwardRef, useEffect, useState } from 'react';
 
 import Konva from 'konva';
 import { Image, Layer, Stage } from 'react-konva';
-import useImage from 'use-image';
 
 import { useCanvasTool } from '../../hooks/useCanvasTool';
+import { useImageScaleToFit } from '../../hooks/useImageScaleToFit';
+import { useKonva } from '../../hooks/useKonva';
 import { CanvasMarker, MarkerType } from '../../interface/canvas-maker-attribute';
 import classes from './Canvas.module.scss';
 import RenderMaker from './Tools/RenderMaker/RenderMaker';
@@ -52,67 +47,19 @@ const Canvas = forwardRef<CanvasHandle, Props>(
         },
         ref,
     ) => {
-        const stageRef = React.useRef<Konva.Stage>(null);
-        const imageRef = React.useRef<Konva.Image>(null);
-        const [image] = useImage(imageSrc, 'anonymous');
+        const { stageRef, imageRef } = useKonva(ref);
         const [isDrawing, setIsDrawing] = useState(false);
-        const [scale, setScale] = useState(1);
-        const [canvasWidth, setCanvasWidth] = useState(containerWidth);
-        const [canvasHeight, setCanvasHeight] = useState(containerHeight);
         const [canvasPosition] = useState({ x: 0, y: 0 });
         const { onClick, onMouseMove, onMouseUp, onMouseDown } = useCanvasTool(markerType);
-
-        useImperativeHandle(
-            ref,
-            () => ({
-                onExport(): string {
-                    if (!stageRef.current || !imageRef.current) return '';
-                    let ratio = 1;
-
-                    if (stageRef.current.height() < stageRef.current.width()) {
-                        ratio = imageRef.current.height() / stageRef.current.height();
-                    }
-
-                    if (stageRef.current.height() > stageRef.current.width()) {
-                        ratio = imageRef.current.width() / stageRef.current.width();
-                    }
-
-                    return stageRef.current.toDataURL({
-                        pixelRatio: ratio,
-                    });
-                },
-            }),
-            [],
+        const { image, scale, canvasWidth, canvasHeight } = useImageScaleToFit(
+            imageSrc,
+            containerWidth,
+            containerHeight,
         );
 
         useEffect(() => {
             setSelectMarkerId(-1);
         }, [markerType, setSelectMarkerId]);
-
-        useLayoutEffect(() => {
-            if (!stageRef.current || !imageRef.current) {
-                return;
-            }
-
-            const originalWidth = image?.naturalWidth || 0;
-            const originalHeight = image?.naturalHeight || 0;
-
-            if (originalWidth === 0 || originalHeight === 0) return;
-
-            if (containerWidth < containerHeight) {
-                const adjustedHeight = (originalHeight * containerWidth) / originalWidth;
-                setCanvasWidth(containerWidth);
-                setCanvasHeight(adjustedHeight);
-                setScale(containerWidth / originalWidth);
-            }
-
-            if (containerWidth > containerHeight) {
-                const adjustedWidth = (originalWidth * containerHeight) / originalHeight;
-                setCanvasWidth(adjustedWidth);
-                setCanvasHeight(containerHeight);
-                setScale(containerHeight / originalHeight);
-            }
-        }, [containerHeight, containerWidth, image]);
 
         const updateMarkerAttr = (id: number, attr: Konva.ShapeConfig) => {
             setCanvasMarkers((markers) => {

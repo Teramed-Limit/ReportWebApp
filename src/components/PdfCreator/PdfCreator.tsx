@@ -10,7 +10,7 @@ import Resizer from 'react-image-file-resizer';
 import { axiosIns } from '../../axios/axios';
 import { ReportImageDataset } from '../../interface/document-data';
 import { ReportTemplateList } from '../../interface/report-setting';
-import { useOptionStore, useReportDataStore } from '../../models/useStore';
+import { useOptionStore, useReportDataStore, useReportImageStore } from '../../models/useStore';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
 import PDFFooter from './PDFFooter/PDFFooter';
@@ -25,7 +25,8 @@ interface Props {
 }
 
 const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
-    const { formData, activeStudy, diagramData, studyInsUID } = useReportDataStore();
+    const { formData, activeStudy, studyInsUID } = useReportDataStore();
+    const { exportDiagramUrl } = useReportImageStore();
     const { getOptions } = useOptionStore();
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState<ReportImageDataset[] | undefined>(undefined);
@@ -107,12 +108,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                 ...[
                     {
                         SOPInstanceUID: 'Diagram',
-                        // Jpeg file format (as many others) can be identified by magic number.
-                        // For JPEG the magic number is ff d8 ff at offset 0.
-                        // If you encode this to Base64, you'll always get /9j/.
-                        ImageSrc: `data:image/${
-                            diagramData?.substr(0, 4) === '/9j/' ? 'jpg' : 'png'
-                        };base64,${diagramData}`,
+                        ImageSrc: exportDiagramUrl(),
                         IsAttachInReport: true,
                         MappingNumber: -1,
                         DescriptionOfFindings: '',
@@ -121,13 +117,13 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                 ...resizeImageList,
             ]);
         });
-    }, [diagramData, formData]);
+    }, [exportDiagramUrl, formData]);
 
     // Get hospital logo
     useEffect(() => {
         const subscription = axiosIns
             .get<string>('api/logo')
-            .subscribe((res) => setLogoUrl(res.data));
+            .subscribe((res) => setLogoUrl(`${res.data}?${new Date()}`));
         return () => subscription.unsubscribe();
     }, [activeStudy.PatientId]);
 
@@ -145,11 +141,22 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
         setQRCodeUrl(qrCode);
     }, [activeStudy.PatientId]);
 
+    // Get diagram
+    useEffect(() => {}, []);
+
     return (
-        <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
+        <Box
+            sx={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                position: 'relative',
+            }}
+        >
             <canvas style={{ display: 'none' }} id="qrcode" />
             {loading && (
-                <Block>
+                <Block enableScroll>
                     <Spinner />
                 </Block>
             )}

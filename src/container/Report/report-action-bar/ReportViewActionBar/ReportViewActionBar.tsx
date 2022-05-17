@@ -17,7 +17,7 @@ const ReportViewActionBar: React.FC = () => {
         setModal(
             <MessageModal
                 headerTitle="Message"
-                bodyContent="If you edit the report again, you must re-sign the report."
+                bodyContent="If you edit the report again, you must re-signOff the report."
                 onConfirmCallback={() => modify()}
             />,
         );
@@ -51,11 +51,9 @@ const ReportViewActionBar: React.FC = () => {
                             body={<PdfCreator showToolbar />}
                             bodyCSS={{ padding: '0' } as CSSProperties}
                             footer={
-                                <>
-                                    <Button theme="reversePrimary" onClick={() => setModal(null)}>
-                                        Close
-                                    </Button>
-                                </>
+                                <Button theme="reversePrimary" onClick={() => setModal(null)}>
+                                    Close
+                                </Button>
                             }
                         />,
                     );

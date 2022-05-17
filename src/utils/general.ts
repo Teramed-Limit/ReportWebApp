@@ -69,3 +69,6 @@ export const dataFormatString = (value, fromFormat, toFormat): string => {
     const date = parse(value, fromFormat, new Date());
     return format(date, toFormat);
 };
+
+export const emptyBaseImage = () =>
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
