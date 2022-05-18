@@ -2,20 +2,20 @@ import React from 'react';
 
 import { Text, View } from '@react-pdf/renderer';
 
-import { standardDefine } from '../../../constant/pdf-define/standard-define';
-import { Section, SubSection } from '../../../interface/define';
+import { FormDefine, Section, SubSection } from '../../../interface/define';
 import { DocumentData } from '../../../interface/document-data';
 import { Field } from '../../../interface/field';
 import { styles } from '../styles/style';
 
 interface Props {
+    formDefine: FormDefine;
     formData: DocumentData;
 }
 
-const PDFReportContent = ({ formData }: Props) => {
+const PDFReportContent = ({ formDefine, formData }: Props) => {
     return (
         <>
-            {standardDefine.sections
+            {formDefine.sections
                 .filter((section: Section) => !section.hide)
                 .map((section: Section) => {
                     return (

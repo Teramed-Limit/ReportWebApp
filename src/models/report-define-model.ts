@@ -7,6 +7,7 @@ import { RootService } from '../interface/root-service';
 export const DefineModel = types
     .model('define', {
         formDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
+        pdfDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
         normalizeFields: types.map(types.frozen<any>()),
     })
     /* eslint-disable no-param-reassign */
@@ -14,7 +15,8 @@ export const DefineModel = types
         return {
             setFormDefine: (formData: DocumentData) => {
                 const { reportDefineService } = getEnv<RootService>(self);
-                self.formDefine = reportDefineService.switchFormDefine(formData);
+                self.formDefine = reportDefineService.switchFormDefine(formData).reportDefine;
+                self.pdfDefine = reportDefineService.switchFormDefine(formData).pdfDefine;
             },
         };
     });

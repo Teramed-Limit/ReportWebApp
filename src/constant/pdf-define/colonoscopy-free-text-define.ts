@@ -1,4 +1,4 @@
-export const pdfStandardDefine = {
+export const pdfColonoscopyFreeTextDefine = {
     sections: [
         {
             id: 'sectionReportType',
@@ -150,6 +150,13 @@ export const pdfStandardDefine = {
                             orientation: 'vertical',
                             buttonBar: [
                                 {
+                                    id: 'quantityIndicatorAction',
+                                    label: 'Quality Indicator',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'colonoscopyQualityIndicators' },
+                                    disable: 'never',
+                                },
+                                {
                                     id: 'createTemplate',
                                     label: 'Create Template',
                                     action: 'createTemplate',
@@ -157,7 +164,8 @@ export const pdfStandardDefine = {
                                 {
                                     id: 'retrieveTemplate',
                                     label: 'Retrieve Template',
-                                    action: 'retrieveTemplate',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'retrieveTemplate' },
                                 },
                             ],
                         },
@@ -300,4 +308,112 @@ export const pdfStandardDefine = {
             ],
         },
     ],
+    modal: {
+        modalName: 'colonoscopyQualityIndicators',
+        sections: [
+            {
+                id: 'sectionDialog',
+                type: 'form',
+                ratio: ['100%'],
+                subSections: [
+                    {
+                        id: 'subSection_1',
+                        ratio: ['100%'],
+                        fields: [
+                            {
+                                id: 'QualityOfBowelPreparation',
+                                label: 'Quality of Bowel Preparation',
+                                type: 'Radio',
+                                optionSource: {
+                                    type: 'static',
+                                    source: 'AdequateInadequate',
+                                },
+                                validate: {
+                                    type: 'qualityBowelRequired',
+                                },
+                            },
+                            {
+                                id: 'QualityBowelScore',
+                                type: 'QualityBowelScore',
+                                validate: {
+                                    type: 'qualityBowelScore',
+                                },
+                            },
+                            {
+                                id: 'WithdrawalTime',
+                                label: 'Colonoscopy Withdrawal Time',
+                                type: 'Number',
+                                suffix: 'Minutes',
+                                validate: {
+                                    type: 'qualityBowelMin',
+                                    params: { min: 0 },
+                                },
+                            },
+                            {
+                                id: 'IsCaecumReached',
+                                label: 'Is Caecum Reached',
+                                type: 'Radio',
+                                optionSource: {
+                                    type: 'static',
+                                    source: 'YesNo',
+                                },
+                                validate: {
+                                    type: 'qualityBowelRequired',
+                                },
+                            },
+                            {
+                                id: 'MechanicalObstruction',
+                                label: 'Mechanical Obstruction',
+                                type: 'Checkbox',
+                                checkboxLabel:
+                                    'Mechanical Obstruction (e.g. obstructing lesion / tumor, previous known stricture)',
+                            },
+                            {
+                                id: 'TechnicalDifficulties',
+                                type: 'Checkbox',
+                                checkboxLabel:
+                                    'Technical Difficulties (e.g. acute bending / kinking, patient intolerance)',
+                            },
+                            {
+                                id: 'PostRighthemicolectomy',
+                                type: 'Checkbox',
+                                checkboxLabel: 'Post Right hemicolectomy',
+                            },
+                            {
+                                id: 'BowelPreparation',
+                                type: 'Checkbox',
+                                checkboxLabel: 'Bowel Preparation',
+                            },
+                            {
+                                id: 'PlannedforPartialColonoscopy',
+                                type: 'Checkbox',
+                                checkboxLabel: 'Planned for Partial Colonoscopy',
+                            },
+                            {
+                                id: 'OccurrenceofComplication',
+                                type: 'Checkbox',
+                                checkboxLabel: 'Occurrence of Complication',
+                            },
+                            {
+                                id: 'Other',
+                                label: 'Other',
+                                type: 'Composite',
+                                fields: [
+                                    {
+                                        id: 'Other',
+                                        type: 'Checkbox',
+                                        checkboxLabel: 'Others',
+                                    },
+                                    {
+                                        id: 'OtherDescription',
+                                        type: 'Text',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
 };

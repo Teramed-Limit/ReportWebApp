@@ -10,7 +10,12 @@ import Resizer from 'react-image-file-resizer';
 import { axiosIns } from '../../axios/axios';
 import { ReportImageDataset } from '../../interface/document-data';
 import { ReportTemplateList } from '../../interface/report-setting';
-import { useOptionStore, useReportDataStore, useReportImageStore } from '../../models/useStore';
+import {
+    useOptionStore,
+    useReportDataStore,
+    useReportDefineStore,
+    useReportImageStore,
+} from '../../models/useStore';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
 import PDFFooter from './PDFFooter/PDFFooter';
@@ -27,6 +32,7 @@ interface Props {
 const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
     const { formData, activeStudy, studyInsUID } = useReportDataStore();
     const { exportDiagramUrl } = useReportImageStore();
+    const { pdfDefine } = useReportDefineStore();
     const { getOptions } = useOptionStore();
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState<ReportImageDataset[] | undefined>(undefined);
@@ -186,7 +192,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                                 qrCodeUrl={qrCodeUrl}
                                 reportName={reportName}
                             />
-                            <PDFReportContent formData={formData.toJSON()} />
+                            <PDFReportContent formDefine={pdfDefine} formData={formData.toJSON()} />
                             <PDFFooter />
                         </Page>
                         <Page size="A4" style={styles.page}>

@@ -1,4 +1,4 @@
-export const pdfStandardDefine = {
+export const pdfOGDDefine = {
     sections: [
         {
             id: 'sectionReportType',
@@ -157,9 +157,101 @@ export const pdfStandardDefine = {
                                 {
                                     id: 'retrieveTemplate',
                                     label: 'Retrieve Template',
-                                    action: 'retrieveTemplate',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'retrieveTemplate' },
                                 },
                             ],
+                        },
+                    ],
+                },
+            ],
+        },
+        {
+            id: 'sectionOGDFindings',
+            type: 'form',
+            ratio: ['50%', '50%'],
+            subSections: [
+                {
+                    id: 'subSection_1',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'Esophagus',
+                            label: 'Esophagus',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
+                        },
+                        {
+                            id: 'Cardia',
+                            label: 'Cardia',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
+                        },
+                        {
+                            id: 'Fundus',
+                            label: 'Fundus',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
+                        },
+                        {
+                            id: 'Corpus',
+                            label: 'Corpus',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_2',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'Antrum',
+                            label: 'Antrum',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
+                        },
+                        {
+                            id: 'Pyloric',
+                            label: 'Pyloric',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
+                        },
+                        {
+                            id: 'D1',
+                            label: 'D1',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
+                        },
+                        {
+                            id: 'D2',
+                            label: 'D2',
+                            type: 'Lexicon',
+                            optionSource: {
+                                type: 'static',
+                                source: 'ColonDetail',
+                            },
                         },
                     ],
                 },

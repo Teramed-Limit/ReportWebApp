@@ -1,10 +1,14 @@
 import { colonoscopyDefine } from '../../constant/colonoscopy-define';
 import { colonoscopyFreeTextDefine } from '../../constant/colonoscopy-free-text-define';
 import { ogdDefine } from '../../constant/ogd-define';
+import { pdfColonoscopyDefine } from '../../constant/pdf-define/colonoscopy-define';
+import { pdfColonoscopyFreeTextDefine } from '../../constant/pdf-define/colonoscopy-free-text-define';
+import { pdfOGDDefine } from '../../constant/pdf-define/ogd-define';
+import { pdfStandardDefine } from '../../constant/pdf-define/standard-define';
 import { standardDefine } from '../../constant/standard-define';
 import { FormFieldType } from '../../container/Report/field/field-type';
 import { CompositeField } from '../../interface/composite-field';
-import { Section } from '../../interface/define';
+import { FormDefine, Section } from '../../interface/define';
 import { DocumentData } from '../../interface/document-data';
 import { Field } from '../../interface/field';
 
@@ -36,7 +40,8 @@ interface DefineMapper {
 
 interface DefineDetail {
     templateName: string;
-    define: any;
+    define: FormDefine;
+    pdfDefine: FormDefine;
 }
 
 export const ReportDefineMapper = {
@@ -46,6 +51,7 @@ export const ReportDefineMapper = {
             {
                 templateName: 'All',
                 define: standardDefine,
+                pdfDefine: pdfStandardDefine,
             },
         ],
     },
@@ -58,10 +64,12 @@ export const ReportDefineMapper = {
             {
                 templateName: 'Colonoscopy Free Text',
                 define: colonoscopyFreeTextDefine,
+                pdfDefine: pdfColonoscopyFreeTextDefine,
             },
             {
                 templateName: 'Colonoscopy',
                 define: colonoscopyDefine,
+                pdfDefine: pdfColonoscopyDefine,
             },
         ],
     },
@@ -71,10 +79,12 @@ export const ReportDefineMapper = {
             {
                 templateName: 'OGD Free Text',
                 define: standardDefine,
+                pdfDefine: pdfStandardDefine,
             },
             {
                 templateName: 'OGD',
                 define: ogdDefine,
+                pdfDefine: pdfOGDDefine,
             },
         ],
     },
@@ -87,7 +97,9 @@ export class ReportDefineService {
 
     currentReportTemplate = 'Standard';
 
-    switchFormDefine = (formData: DocumentData) => {
+    switchFormDefine = (
+        formData: DocumentData,
+    ): { reportDefine: FormDefine; pdfDefine: FormDefine } => {
         if (formData.ERSType && ReportDefineMapper[formData.ERSType]) {
             this.currentFields = ReportDefineMapper[formData.ERSType].fields;
         }
@@ -99,7 +111,7 @@ export class ReportDefineService {
         ) {
             this.currentERSType = 'Standard';
             this.currentReportTemplate = 'Standard';
-            return standardDefine;
+            return { reportDefine: standardDefine, pdfDefine: pdfStandardDefine };
         }
 
         const found = (ReportDefineMapper[formData.ERSType] as DefineMapper).defines.find(
@@ -109,12 +121,12 @@ export class ReportDefineService {
         if (!found?.define) {
             this.currentERSType = 'Standard';
             this.currentReportTemplate = 'Standard';
-            return standardDefine;
+            return { reportDefine: standardDefine, pdfDefine: pdfStandardDefine };
         }
 
         this.currentERSType = formData.ERSType;
         this.currentReportTemplate = formData.ReportTemplate;
-        return found.define;
+        return { reportDefine: found.define, pdfDefine: found.pdfDefine };
     };
 
     getField = (id: string): Field => {
