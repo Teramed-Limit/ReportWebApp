@@ -205,7 +205,8 @@ export const colonoscopyDefine = {
                                 {
                                     id: 'quantityIndicatorAction',
                                     label: 'Quality Indicator',
-                                    action: 'quantityIndicator',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'colonoscopyQualityIndicators' },
                                     disable: 'never',
                                 },
                                 {
@@ -216,7 +217,8 @@ export const colonoscopyDefine = {
                                 {
                                     id: 'retrieveTemplate',
                                     label: 'Retrieve Template',
-                                    action: 'retrieveTemplate',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'retrieveTemplate' },
                                 },
                             ],
                         },
@@ -458,7 +460,7 @@ export const colonoscopyDefine = {
         },
     ],
     modal: {
-        modalName: 'QualityIndicator',
+        modalName: 'colonoscopyQualityIndicators',
         sections: [
             {
                 id: 'sectionDialog',

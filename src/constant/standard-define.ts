@@ -210,7 +210,8 @@ export const standardDefine = {
                                 {
                                     id: 'retrieveTemplate',
                                     label: 'Retrieve Template',
-                                    action: 'retrieveTemplate',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'retrieveTemplate' },
                                 },
                             ],
                         },

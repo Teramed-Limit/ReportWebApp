@@ -3,12 +3,12 @@ import { MutableRefObject } from 'react';
 import { AxiosResponse } from 'axios';
 
 import { createFindingsTemplate } from '../../../axios/api';
-import { ActionParams } from '../../../interface/action';
+import { BaseActionParams } from '../../../interface/action';
 import { MessageType } from '../../../interface/notification';
 import { TemplateFinding } from '../../../interface/report-finding';
 import { isEmptyOrNil } from '../../../utils/general';
 
-export const createTemplateAction = (actionParams: ActionParams) => {
+export const createTemplateAction = (actionParams: BaseActionParams) => {
     if (
         (actionParams.ref as MutableRefObject<HTMLTextAreaElement>).current === undefined ||
         actionParams.formData.ERSType === undefined ||

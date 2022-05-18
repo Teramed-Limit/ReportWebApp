@@ -210,7 +210,8 @@ export const ogdDefine = {
                                 {
                                     id: 'retrieveTemplate',
                                     label: 'Retrieve Template',
-                                    action: 'retrieveTemplate',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'retrieveTemplate' },
                                 },
                             ],
                         },

@@ -205,7 +205,8 @@ export const colonoscopyFreeTextDefine = {
                                 {
                                     id: 'quantityIndicatorAction',
                                     label: 'Quality Indicator',
-                                    action: 'quantityIndicator',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'colonoscopyQualityIndicators' },
                                     disable: 'never',
                                 },
                                 {
@@ -216,7 +217,8 @@ export const colonoscopyFreeTextDefine = {
                                 {
                                     id: 'retrieveTemplate',
                                     label: 'Retrieve Template',
-                                    action: 'retrieveTemplate',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'retrieveTemplate' },
                                 },
                             ],
                         },
@@ -358,7 +360,7 @@ export const colonoscopyFreeTextDefine = {
         },
     ],
     modal: {
-        modalName: 'QualityIndicator',
+        modalName: 'colonoscopyQualityIndicators',
         sections: [
             {
                 id: 'sectionDialog',

@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { ModalContext } from '../../../context/modal-context';
+import { useModal } from '../../../hooks/useModal';
+import { BaseActionParams } from '../../../interface/action';
 import { createTemplateAction } from '../actions/create-template-action';
-import { qualityIndicatorAction } from '../actions/qualityIndicatorAction';
-import { retrieveTemplateAction } from '../actions/retrieve-template-action';
 
 export const ReportActionContext = React.createContext<{
     [propName: string]: (actionParams) => void;
@@ -14,11 +13,11 @@ interface Props {
 }
 
 export function ReportActionProvider(props: Props) {
-    const setModal = useContext(ModalContext);
+    const [setModalName] = useModal();
     const [actionMapper] = React.useState<any>({
-        quantityIndicator: (actionParams) => qualityIndicatorAction(actionParams, setModal),
-        retrieveTemplate: (actionParams) => retrieveTemplateAction(actionParams, setModal),
-        createTemplate: (actionParams) => createTemplateAction(actionParams),
+        openModal: (actionParams: { modalName: string } & BaseActionParams) =>
+            setModalName(actionParams.modalName),
+        createTemplate: (actionParams: BaseActionParams) => createTemplateAction(actionParams),
     });
 
     const value = React.useMemo(() => actionMapper, [actionMapper]);

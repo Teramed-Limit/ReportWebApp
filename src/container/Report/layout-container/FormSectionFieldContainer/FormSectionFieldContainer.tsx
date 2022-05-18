@@ -4,8 +4,7 @@ import { observer } from 'mobx-react';
 
 import Button from '../../../../components/UI/Button/Button';
 import { NotificationContext } from '../../../../context/notification-context';
-import { useAction } from '../../../../hooks/useAction';
-import { ActionParams } from '../../../../interface/action';
+import { BaseActionParams } from '../../../../interface/action';
 import { Field } from '../../../../interface/field';
 import FormSectionField from '../../../../layout/FormSectionField/FormSectionField';
 import { useReportDataStore } from '../../../../models/useStore';
@@ -19,9 +18,10 @@ interface FormSectionFieldProps {
 }
 
 const FormSectionFieldContainer = ({ field, actionContext }: FormSectionFieldProps) => {
+    const actionDispatcher = useContext(actionContext);
+    const { openNotification } = useContext(NotificationContext);
     const inputRef = useRef();
     const { formState, formData, reportDisabled } = useReportDataStore();
-    const { openNotification } = useContext(NotificationContext);
 
     const { isDirty, isValid, errorMessage } = formState.get(field.id) || {
         isDirty: false,
@@ -29,9 +29,13 @@ const FormSectionFieldContainer = ({ field, actionContext }: FormSectionFieldPro
         errorMessage: '',
     };
 
-    const actionDispatcher = useAction(actionContext);
-    const executeAction = (action: string, actionParams: ActionParams) => {
-        actionDispatcher.execute(action, {
+    const executeAction = (action: string, actionParams: BaseActionParams) => {
+        if (!actionDispatcher[action]) {
+            console.error('Action not defined');
+            return;
+        }
+
+        actionDispatcher[action]({
             ...actionParams,
             ref: inputRef,
             formData: formData.toJSON(),
