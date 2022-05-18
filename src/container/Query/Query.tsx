@@ -15,6 +15,7 @@ import GridTable from '../../components/GridTable/GridTable';
 import { dbQueryField, defaultQueryFields, define } from '../../constant/setting-define';
 import { NotificationContext } from '../../context/notification-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
+import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
 import { useQueryStore, useReportDataStore } from '../../models/useStore';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
@@ -27,8 +28,10 @@ const Query: React.FC = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
     const [pdfUrl, setPdfUrl] = useState<string>('');
+    // function available
+    const { checkAvailable } = useRoleFunctionAvailable();
     // dispatch event for cell event
-    const { dispatchCellEvent } = useGridColDef();
+    const { dispatchCellEvent, assignCellVisibility } = useGridColDef();
     const gridApiRef = useRef<GridApi | null>(null);
 
     const gridReady = (params: GridReadyEvent) => (gridApiRef.current = params.api);
@@ -96,8 +99,9 @@ const Query: React.FC = () => {
     useEffect(() => {
         let mutateColDef: ColDef[] = [...define.study.colDef];
         mutateColDef = dispatchCellEvent(mutateColDef, 'navigateReport', onNavigateReport);
+        mutateColDef = assignCellVisibility(mutateColDef, 'navigateReport', checkAvailable);
         setColDefs(mutateColDef);
-    }, [dispatchCellEvent, onNavigateReport]);
+    }, [assignCellVisibility, checkAvailable, dispatchCellEvent, onNavigateReport]);
 
     return (
         <div className={classes.container}>
