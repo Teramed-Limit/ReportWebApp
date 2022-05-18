@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 
 import { ModalContext } from '../../../context/modal-context';
 import { createTemplateAction } from '../actions/create-template-action';
-import { fillInDetailsAction } from '../actions/fill-in-details-action';
 import { qualityIndicatorAction } from '../actions/qualityIndicatorAction';
 import { retrieveTemplateAction } from '../actions/retrieve-template-action';
 
@@ -18,7 +17,6 @@ export function ReportActionProvider(props: Props) {
     const setModal = useContext(ModalContext);
     const [actionMapper] = React.useState<any>({
         quantityIndicator: (actionParams) => qualityIndicatorAction(actionParams, setModal),
-        fillInDetails: (actionParams) => fillInDetailsAction(actionParams, setModal),
         retrieveTemplate: (actionParams) => retrieveTemplateAction(actionParams, setModal),
         createTemplate: (actionParams) => createTemplateAction(actionParams),
     });
