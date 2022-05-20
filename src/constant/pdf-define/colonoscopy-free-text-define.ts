@@ -327,20 +327,9 @@ export const pdfColonoscopyFreeTextDefine = {
                                 checkboxLabel: 'Occurrence of Complication',
                             },
                             {
-                                id: 'Other',
+                                id: 'OtherDescription',
                                 label: 'Other',
-                                type: 'Composite',
-                                fields: [
-                                    {
-                                        id: 'Other',
-                                        type: 'Checkbox',
-                                        checkboxLabel: 'Others',
-                                    },
-                                    {
-                                        id: 'OtherDescription',
-                                        type: 'Text',
-                                    },
-                                ],
+                                type: 'Text',
                             },
                         ],
                     },

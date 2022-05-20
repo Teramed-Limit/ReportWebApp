@@ -1,21 +1,24 @@
 import React from 'react';
 
-import { Text, View } from '@react-pdf/renderer';
+import { View } from '@react-pdf/renderer';
 
-import { FormDefine, Section, SubSection } from '../../../interface/define';
+import { Section, SubSection } from '../../../interface/define';
 import { DocumentData } from '../../../interface/document-data';
 import { Field } from '../../../interface/field';
+import { FilterCondition } from '../../../interface/selection-field';
+import PDFField from '../PDFField/PDFField';
 import { styles } from '../styles/style';
 
 interface Props {
-    formDefine: FormDefine;
+    formSections: Section[];
     formData: DocumentData;
+    getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFReportContent = ({ formDefine, formData }: Props) => {
+const PDFReportContent = ({ formSections, formData, getOptions }: Props) => {
     return (
         <>
-            {formDefine.sections
+            {formSections
                 .filter((section: Section) => !section.hide)
                 .map((section: Section) => {
                     return (
@@ -45,39 +48,12 @@ const PDFReportContent = ({ formDefine, formData }: Props) => {
                                                                     : 'row',
                                                         }}
                                                     >
-                                                        {/* Label */}
-                                                        {!field.hideLabel && (
-                                                            <Text
-                                                                style={{
-                                                                    ...styles.label,
-                                                                    ...(field.orientation ===
-                                                                    'vertical'
-                                                                        ? {
-                                                                              ...styles.labelVertical,
-                                                                          }
-                                                                        : {
-                                                                              ...styles.labelHorizontal,
-                                                                          }),
-                                                                }}
-                                                            >
-                                                                {field.label}:
-                                                            </Text>
-                                                        )}
-                                                        {/* Value */}
-                                                        <Text
-                                                            style={{
-                                                                ...styles.textValue,
-                                                                ...(field.orientation === 'vertical'
-                                                                    ? {
-                                                                          ...styles.textValueVertical,
-                                                                      }
-                                                                    : {
-                                                                          ...styles.textValueHorizontal,
-                                                                      }),
-                                                            }}
-                                                        >
-                                                            {formData[field.id] || ''}
-                                                        </Text>
+                                                        <PDFField
+                                                            field={field}
+                                                            formData={formData}
+                                                            value={formData[field.id]}
+                                                            getOptions={getOptions}
+                                                        />
                                                     </View>
                                                 );
                                             })}

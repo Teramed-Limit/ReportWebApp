@@ -70,6 +70,12 @@ export const styles = StyleSheet.create({
         objectFit: 'contain',
         objectPosition: 'left top',
     },
+    icon: {
+        width: '13px',
+        height: '13px',
+        objectFit: 'contain',
+        objectPosition: 'center',
+    },
     section: {
         maxWidth: '100%',
         width: '100%',

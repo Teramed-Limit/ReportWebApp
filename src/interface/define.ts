@@ -15,8 +15,9 @@ export interface Section {
     subSections: SubSection[];
 }
 
-export interface ModalSection extends Section {
+export interface ModalSection {
     modalName: string;
+    sections: Section[];
 }
 
 export interface SubSection {

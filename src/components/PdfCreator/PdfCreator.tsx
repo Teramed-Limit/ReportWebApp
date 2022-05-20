@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import Box from '@mui/material/Box';
-import ReactPDF, { Document, Page, PDFViewer } from '@react-pdf/renderer';
+import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
 import BwipJs from 'bwip-js';
 import { observer } from 'mobx-react';
 import Resizer from 'react-image-file-resizer';
@@ -18,11 +18,9 @@ import {
 } from '../../models/useStore';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
-import PDFFooter from './PDFFooter/PDFFooter';
-import PDFHeader from './PDFHeader/PDFHeader';
+import PDFPage from './PDFPage/PDFPage';
 import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
-import { styles } from './styles/style';
 
 interface Props {
     showToolbar: boolean;
@@ -38,10 +36,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
     const [images, setImages] = useState<ReportImageDataset[] | undefined>(undefined);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
     const [qrCodeUrl, setQRCodeUrl] = useState<string | undefined>(undefined);
-    const [photoLayout, setPhotoLayout] = useState<{ row: number; col: number }>({
-        row: 3,
-        col: 3,
-    });
+    const [photoLayout, setPhotoLayout] = useState<string>(JSON.stringify({ row: 3, col: 3 }));
     const [reportName] = useState<string>(
         (getOptions('ReportTemplateList').find(
             (x) => x.Name === formData.get('ReportTemplate'),
@@ -87,12 +82,9 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
         [onRenderCallback],
     );
 
-    const onLayoutChanged = useCallback(
-        (event: React.MouseEvent<HTMLElement>, layout: { row: number; col: number }) => {
-            setPhotoLayout(layout);
-        },
-        [],
-    );
+    const onLayoutChanged = (event) => {
+        setPhotoLayout(event.target.value);
+    };
 
     // Resizing image
     useEffect(() => {
@@ -166,16 +158,18 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                     <Spinner />
                 </Block>
             )}
-            <ToggleButtonGroup
-                sx={{ borderRadius: '0' }}
-                value={photoLayout}
-                exclusive
-                onChange={onLayoutChanged}
-            >
-                <ToggleButton value={{ row: 2, col: 2 }}>2*2</ToggleButton>
-                <ToggleButton value={{ row: 2, col: 3 }}>2*3</ToggleButton>
-                <ToggleButton value={{ row: 3, col: 3 }}>3*3</ToggleButton>
-            </ToggleButtonGroup>
+
+            <Box sx={{ padding: '8px' }}>
+                <FormControl sx={{ width: '120px' }}>
+                    <InputLabel>Photo Layout</InputLabel>
+                    <Select value={photoLayout} label="Photo Layout" onChange={onLayoutChanged}>
+                        <MenuItem value={JSON.stringify({ row: 2, col: 2 })}>2 * 2</MenuItem>
+                        <MenuItem value={JSON.stringify({ row: 2, col: 3 })}>2 * 3</MenuItem>
+                        <MenuItem value={JSON.stringify({ row: 3, col: 3 })}>3 * 3</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+
             {images && logoUrl && qrCodeUrl && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
@@ -184,32 +178,49 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                         subject={studyInsUID}
                         onRender={onPdfRender}
                     >
-                        <Page size="A4" style={styles.page}>
-                            <PDFHeader
+                        <PDFPage
+                            formData={formData.toJSON()}
+                            activeStudy={activeStudy}
+                            logoUrl={logoUrl}
+                            qrCodeUrl={qrCodeUrl}
+                            reportName={reportName}
+                        >
+                            <PDFReportContent
+                                formSections={pdfDefine.sections}
+                                formData={formData.toJSON()}
+                                getOptions={getOptions}
+                            />
+                        </PDFPage>
+
+                        {pdfDefine?.modal?.modalName === 'colonoscopyQualityIndicators' && (
+                            <PDFPage
                                 formData={formData.toJSON()}
                                 activeStudy={activeStudy}
                                 logoUrl={logoUrl}
                                 qrCodeUrl={qrCodeUrl}
                                 reportName={reportName}
-                            />
-                            <PDFReportContent formDefine={pdfDefine} formData={formData.toJSON()} />
-                            <PDFFooter />
-                        </Page>
-                        <Page size="A4" style={styles.page}>
-                            <PDFHeader
-                                formData={formData.toJSON()}
-                                activeStudy={activeStudy}
-                                logoUrl={logoUrl}
-                                qrCodeUrl={qrCodeUrl}
-                                reportName={reportName}
-                            />
+                            >
+                                <PDFReportContent
+                                    formSections={pdfDefine.modal.sections}
+                                    formData={formData.toJSON()}
+                                    getOptions={getOptions}
+                                />
+                            </PDFPage>
+                        )}
+
+                        <PDFPage
+                            formData={formData.toJSON()}
+                            activeStudy={activeStudy}
+                            logoUrl={logoUrl}
+                            qrCodeUrl={qrCodeUrl}
+                            reportName={reportName}
+                        >
                             <PDFPhoto
                                 imageList={images}
-                                row={photoLayout.row}
-                                col={photoLayout.col}
+                                row={JSON.parse(photoLayout).row}
+                                col={JSON.parse(photoLayout).col}
                             />
-                            <PDFFooter />
-                        </Page>
+                        </PDFPage>
                     </Document>
                 </PDFViewer>
             )}

@@ -167,27 +167,12 @@ export const rootTheme = createTheme({
         },
         MuiToggleButtonGroup: {
             styleOverrides: {
-                root: {
-                    backgroundColor: '#0A1929',
-                },
+                root: {},
             },
         },
         MuiToggleButton: {
             styleOverrides: {
-                root: {
-                    textTransform: 'none',
-                    fontWeight: 700,
-                    color: '#CDD2D7',
-                    borderColor: '#1E4976',
-                    '&.Mui-selected': {
-                        color: '#fff',
-                        borderColor: 'undefined !important',
-                        backgroundColor: '#132F4C',
-                        '&:hover': {
-                            backgroundColor: '#173A5E',
-                        },
-                    },
-                },
+                root: {},
             },
         },
         MuiTooltip: {

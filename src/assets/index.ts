@@ -1,3 +1,5 @@
+import CheckboxCheckedIcon from './icon/checkbox-checked.png';
+import CheckboxUnCheckedIcon from './icon/checkbox-unchecked.png';
 import DefaultImage from './icon/default-image.svg';
 import LoginBackground from './Main/login_bg.png';
 import Photos from './Main/TopFun/ic_CapturesMapping.png';
@@ -40,4 +42,6 @@ export {
     LoginBackground,
     Logout,
     Settings,
+    CheckboxCheckedIcon,
+    CheckboxUnCheckedIcon,
 };
