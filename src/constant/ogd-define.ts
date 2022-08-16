@@ -203,6 +203,12 @@ export const ogdDefine = {
                             orientation: 'vertical',
                             buttonBar: [
                                 {
+                                    id: 'fillInDetails',
+                                    label: 'Fill in details',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'fillInDetails' },
+                                },
+                                {
                                     id: 'createTemplate',
                                     label: 'Create Template',
                                     action: 'createTemplate',

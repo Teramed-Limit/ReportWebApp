@@ -89,6 +89,12 @@ export const pdfColonoscopyFreeTextDefine = {
                                     disable: 'never',
                                 },
                                 {
+                                    id: 'fillInDetails',
+                                    label: 'Fill in details',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'fillInDetails' },
+                                },
+                                {
                                     id: 'createTemplate',
                                     label: 'Create Template',
                                     action: 'createTemplate',

@@ -26,7 +26,7 @@ const BaseTextArea = forwardRef(
         ref: ForwardedRef<HTMLTextAreaElement>,
     ) => {
         const handleChange = (event) => {
-            onValueChange(event.target.value.substring(0, maxLength).replace(/\r?\n/g, '\r\n'));
+            onValueChange(event.target.value.substring(0, maxLength));
         };
 
         return (

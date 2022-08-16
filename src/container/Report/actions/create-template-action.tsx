@@ -22,7 +22,7 @@ export const createTemplateAction = (actionParams: BaseActionParams) => {
     const selectionText = element.value.substring(element.selectionStart, element.selectionEnd);
 
     if (isEmptyOrNil(selectionText)) {
-        actionParams.openNotification(MessageType.Warning, 'selected text is empty');
+        actionParams.openNotification(MessageType.Warning, 'The selected text(Findings) is empty');
         return;
     }
 
@@ -33,7 +33,7 @@ export const createTemplateAction = (actionParams: BaseActionParams) => {
 
     createFindingsTemplate(body).subscribe((res: AxiosResponse) => {
         return res.status === 200
-            ? actionParams.openNotification(MessageType.Success, 'create template success')
-            : actionParams.openNotification(MessageType.Error, 'create template error');
+            ? actionParams.openNotification(MessageType.Success, 'Create template success')
+            : actionParams.openNotification(MessageType.Error, 'Create template error');
     });
 };
