@@ -16,10 +16,9 @@
 }
 
 .side-container {
-    flex: 1;
     max-width: 35%;
-    display: flex;
-    flex-basis: 400px;
+    display: block;
+    flex: 1;
     flex-direction: column;
     margin-left: 10px;
 }

@@ -11,16 +11,16 @@ interface Props {
     imageList: ReportImageDataset[];
 }
 
-const paddingMap = {
-    '2*2': 4,
-    '2*3': 40,
-    '3*3': 4,
+const sizeMap = {
+    '2*2': { padding: '4px', diagramHeight: '202px' },
+    '2*3': { padding: '40px', diagramHeight: '148px' },
+    '3*3': { padding: '4px', diagramHeight: '133px' },
 };
 
 const PDFPhoto = ({ row, col, imageList }: Props) => {
     return (
         <View style={styles.gallery}>
-            {imageList.map((image: ReportImageDataset) => {
+            {imageList.map((image: ReportImageDataset, index) => {
                 return (
                     <View
                         key={image.SOPInstanceUID}
@@ -29,16 +29,22 @@ const PDFPhoto = ({ row, col, imageList }: Props) => {
                             width: `${100 / row}%`,
                             maxWidth: `${100 / row}%`,
                             flex: `1 1 ${100 / row}%`,
-                            padding: `4px ${paddingMap[`${row}*${col}`]}px`,
+                            padding: `16px ${sizeMap[`${row}*${col}`].padding}`,
                         }}
                         wrap={false}
                     >
-                        <Image style={{ ...styles.image }} src={image.ImageSrc} />
-                        {image.MappingNumber > 0 && (
-                            <Text style={styles.imageDesc}>
-                                {image.MappingNumber}) {image.DescriptionOfFindings}
-                            </Text>
-                        )}
+                        <Image
+                            style={{
+                                ...styles.image,
+                                height:
+                                    index === 0 ? sizeMap[`${row}*${col}`].diagramHeight : 'auto',
+                            }}
+                            src={image.ImageSrc}
+                        />
+                        <Text style={{ ...styles.imageDesc }}>
+                            {image.MappingNumber > 0 && `${image.MappingNumber}) `}
+                            {image.DescriptionOfFindings}
+                        </Text>
                     </View>
                 );
             })}

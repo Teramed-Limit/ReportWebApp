@@ -21,16 +21,30 @@ export const useImageScaleToFit = (
 
         if (containerWidth < containerHeight) {
             const adjustedHeight = (originalHeight * containerWidth) / originalWidth;
-            setCanvasWidth(containerWidth);
-            setCanvasHeight(adjustedHeight);
-            setScale(containerWidth / originalWidth);
+            if (containerHeight < adjustedHeight) {
+                const adjustScale = containerHeight / adjustedHeight;
+                setCanvasWidth(containerWidth * adjustScale);
+                setCanvasHeight(adjustedHeight * adjustScale);
+                setScale((containerWidth / originalWidth) * adjustScale);
+            } else {
+                setCanvasWidth(containerWidth);
+                setCanvasHeight(adjustedHeight);
+                setScale(containerWidth / originalWidth);
+            }
         }
 
         if (containerWidth > containerHeight) {
             const adjustedWidth = (originalWidth * containerHeight) / originalHeight;
-            setCanvasWidth(adjustedWidth);
-            setCanvasHeight(containerHeight);
-            setScale(containerHeight / originalHeight);
+            if (adjustedWidth < containerWidth) {
+                const adjustScale = containerWidth / adjustedWidth;
+                setCanvasWidth(adjustedWidth * adjustScale);
+                setCanvasHeight(containerHeight * adjustScale);
+                setScale((containerHeight / originalHeight) * adjustScale);
+            } else {
+                setCanvasWidth(adjustedWidth);
+                setCanvasHeight(containerHeight);
+                setScale(containerHeight / originalHeight);
+            }
         }
     }, [containerHeight, containerWidth, image]);
 

@@ -120,6 +120,7 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         flexWrap: 'wrap',
+        width: '100%',
         maxWidth: '100%',
     },
     imageContainer: {
