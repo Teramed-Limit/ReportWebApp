@@ -67,8 +67,29 @@ export const stringFormatDate = (value, fromFormat): Date => {
 export const dataFormatString = (value, fromFormat, toFormat): string => {
     if (!value) return '';
     const date = parse(value, fromFormat, new Date());
+
     return format(date, toFormat);
 };
+
+export function dateToStr(date) {
+    let d = new Date();
+    if (date !== null) d = new Date(date);
+    let month = `${d.getMonth() + 1}`;
+    let day = `${d.getDate()}`;
+    const year = d.getFullYear();
+
+    if (month.length < 2) month = `0${month}`;
+    if (day.length < 2) day = `0${day}`;
+
+    return `${year}${month}${day}`;
+}
+
+export function strToDate(dateString: string) {
+    const year = dateString.substring(0, 4);
+    const month = dateString.substring(4, 6);
+    const day = dateString.substring(6, 8);
+    return new Date(+year, +month - 1, +day);
+}
 
 export const emptyBaseImage = () =>
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';

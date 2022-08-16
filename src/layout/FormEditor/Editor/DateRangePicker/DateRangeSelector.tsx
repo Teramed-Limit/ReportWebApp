@@ -3,14 +3,12 @@ import { useEffect, useState } from 'react';
 
 import { DateRangePicker } from '@mui/lab';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import { RangeInput } from '@mui/lab/DateRangePicker/RangeTypes';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { format } from 'date-fns';
 
 import { Field } from '../../../../interface/field';
-import { isEmptyOrNil, stringFormatDate } from '../../../../utils/general';
+import { dateToStr, isEmptyOrNil, strToDate } from '../../../../utils/general';
 
 interface Props {
     field: Field;
@@ -22,14 +20,14 @@ interface Props {
 
 const DateRangeSelector = ({ field, value, onValueChanged }: Props) => {
     const [open, setOpen] = useState(false);
-    const [date, setDate] = useState<RangeInput<Date>>([null, null]);
+    const [date, setDate] = useState<any>([null, null]);
     const [startDate, setStartDate] = useState<string>();
     const [endDate, setEndDate] = useState<string>();
 
     useEffect(() => {
         if (isEmptyOrNil(value)) return;
         const dateStrRange = value.split('-');
-        const dateRange = value.split('-').map((dateStr) => stringFormatDate(dateStr, 'yyyyMMdd'));
+        const dateRange = value.split('-').map((dateStr) => strToDate(dateStr));
         setDate([dateRange[0], dateRange[1]]);
         setStartDate(dateStrRange[0]);
         setEndDate(dateStrRange[1]);
@@ -51,9 +49,11 @@ const DateRangeSelector = ({ field, value, onValueChanged }: Props) => {
                 disableCloseOnSelect={false}
                 disableOpenPicker
                 onChange={(newValue) => {
-                    const dateBetween = newValue
-                        .map((dateVal) => format(dateVal || new Date(), 'yyyMMdd'))
-                        .join('-');
+                    if (!newValue[0] || !newValue[1]) {
+                        onValueChanged('', field.id);
+                        return;
+                    }
+                    const dateBetween = newValue.map((dateVal) => dateToStr(dateVal)).join('-');
                     onValueChanged(dateBetween, field.id);
                 }}
                 renderInput={(startProps, endProps) => {
