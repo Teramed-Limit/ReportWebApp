@@ -1,3 +1,5 @@
+import { Style } from '@react-pdf/types/style';
+
 import { Validate } from './validate';
 
 export interface Field {
@@ -7,6 +9,7 @@ export interface Field {
     size?: string;
     readOnly?: boolean;
     orientation?: string;
+    compositeOrientation?: string;
     multiple?: boolean;
     buttonBar?: ButtonMeta[];
     suffix?: string;
@@ -17,6 +20,9 @@ export interface Field {
     hideLabel?: boolean;
     fromModal?: string;
     maxLength?: number;
+    placeholder?: string;
+    labelStyle?: Style;
+    valueStyle?: Style;
 }
 
 export interface ButtonMeta {

@@ -58,11 +58,14 @@ export function NotificationProvider(props: Props) {
         setOpen(true);
     }, []);
 
-    const showNotifyMsg = (notify: Notification) => {
-        return notify.messageType === MessageType.Success
-            ? setSuccessNotification(notify.message)
-            : setErrorNotification(notify.message);
-    };
+    const showNotifyMsg = useCallback(
+        (notify: Notification) => {
+            return notify.messageType === MessageType.Success
+                ? setSuccessNotification(notify.message)
+                : setErrorNotification(notify.message);
+        },
+        [setErrorNotification, setSuccessNotification],
+    );
 
     const attribute = useRef<SnackbarOrigin>({
         vertical: 'bottom',

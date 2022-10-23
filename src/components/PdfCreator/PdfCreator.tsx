@@ -1,15 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import Box from '@mui/material/Box';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
-import BwipJs from 'bwip-js';
 import { observer } from 'mobx-react';
 import Resizer from 'react-image-file-resizer';
 
 import { axiosIns } from '../../axios/axios';
 import { ReportImageDataset } from '../../interface/document-data';
-import { ReportTemplateList } from '../../interface/report-setting';
 import {
     useOptionStore,
     useReportDataStore,
@@ -28,23 +25,22 @@ interface Props {
 }
 
 const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
-    const { formData, activeStudy, studyInsUID } = useReportDataStore();
+    const { formData, studyInsUID } = useReportDataStore();
     const { exportDiagramUrl } = useReportImageStore();
     const { pdfDefine } = useReportDefineStore();
-    const { getOptions } = useOptionStore();
+    const { getCodeList } = useOptionStore();
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState<ReportImageDataset[] | undefined>(undefined);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
-    const [qrCodeUrl, setQRCodeUrl] = useState<string | undefined>(undefined);
-    const [photoLayout, setPhotoLayout] = useState<string>(JSON.stringify({ row: 3, col: 3 }));
+    const [signatureUrl, setSignatureUrl] = useState<string | undefined>(undefined);
+    const [diagramUrl, setDiagramUrl] = useState<string | undefined>(undefined);
     const [reportName] = useState<string>(
-        (getOptions('ReportTemplateList').find(
-            (x) => x.Name === formData.get('ReportTemplate'),
-        ) as ReportTemplateList)?.ReportName || '內視鏡報告',
+        getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
+            '',
     );
 
     const resizeImage = (url) => {
-        return fetch(url)
+        return fetch(`${url}?${new Date()}`)
             .then((response) => response.blob())
             .then((blob: Blob) => {
                 return new Promise<string>((resolve) => {
@@ -82,15 +78,12 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
         [onRenderCallback],
     );
 
-    const onLayoutChanged = (event) => {
-        setPhotoLayout(event.target.value);
-    };
-
     // Resizing image
     useEffect(() => {
         const concatImage = async () => {
+            const imageList = formData.get('ReportImageDataset') as ReportImageDataset[];
             return Promise.all<ReportImageDataset>(
-                (formData.get('ReportImageDataset') as ReportImageDataset[])
+                (imageList || [])
                     .filter((image) => image.IsAttachInReport)
                     .map(
                         async (image): Promise<ReportImageDataset> => {
@@ -102,45 +95,41 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
         };
 
         concatImage().then((resizeImageList) => {
-            setImages([
-                ...[
-                    {
-                        SOPInstanceUID: 'Diagram',
-                        ImageSrc: exportDiagramUrl(),
-                        IsAttachInReport: true,
-                        MappingNumber: -1,
-                        DescriptionOfFindings: '',
-                    },
-                ],
-                ...resizeImageList,
-            ]);
+            const sortImages = resizeImageList?.sort((a, b) => {
+                const numA = +a.MappingNumber;
+                const numB = +b.MappingNumber;
+                if (numA < numB) {
+                    return -1;
+                }
+                if (numA > numB) {
+                    return 1;
+                }
+                return 0;
+            });
+            setImages(sortImages);
         });
-    }, [exportDiagramUrl, formData]);
+    }, [formData]);
 
     // Get hospital logo
     useEffect(() => {
-        const subscription = axiosIns
-            .get<string>('api/logo')
-            .subscribe((res) => setLogoUrl(`${res.data}?${new Date()}`));
+        const subscription = axiosIns.get<string>('api/logo').subscribe((res) => {
+            setLogoUrl(`${res.data}?${new Date()}`);
+        });
         return () => subscription.unsubscribe();
-    }, [activeStudy.PatientId]);
+    }, []);
 
-    // Get qrcode
+    // Get signature
     useEffect(() => {
-        const qrCode = BwipJs.toCanvas('qrcode', {
-            bcid: 'qrcode', // Barcode type
-            text: activeStudy?.PatientId || 'Undefined', // Text to encode
-            scale: 1, // 3x scaling factor
-            height: 75, // Bar height, in millimeters
-            width: 75, // Bar height, in millimeters
-            includetext: false, // Show human-readable text
-            textxalign: 'center', // Always good to set this
-        }).toDataURL('image/png');
-        setQRCodeUrl(qrCode);
-    }, [activeStudy.PatientId]);
+        setDiagramUrl(exportDiagramUrl());
+    }, [exportDiagramUrl]);
 
     // Get diagram
-    useEffect(() => {}, []);
+    useEffect(() => {
+        const subscription = axiosIns
+            .get<string>('api/signature')
+            .subscribe((res) => setSignatureUrl(`${res.data}?${new Date()}`));
+        return () => subscription.unsubscribe();
+    }, []);
 
     return (
         <Box
@@ -152,74 +141,31 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                 position: 'relative',
             }}
         >
-            <canvas style={{ display: 'none' }} id="qrcode" />
             {loading && (
                 <Block enableScroll>
                     <Spinner />
                 </Block>
             )}
-
-            <Box sx={{ padding: '8px' }}>
-                <FormControl sx={{ width: '120px' }}>
-                    <InputLabel>Photo Layout</InputLabel>
-                    <Select value={photoLayout} label="Photo Layout" onChange={onLayoutChanged}>
-                        <MenuItem value={JSON.stringify({ row: 2, col: 2 })}>2 * 2</MenuItem>
-                        <MenuItem value={JSON.stringify({ row: 2, col: 3 })}>2 * 3</MenuItem>
-                        <MenuItem value={JSON.stringify({ row: 3, col: 3 })}>3 * 3</MenuItem>
-                    </Select>
-                </FormControl>
-            </Box>
-
-            {images && logoUrl && qrCodeUrl && (
+            {images && logoUrl && signatureUrl && diagramUrl && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
-                        title={`${activeStudy.PatientId}_${activeStudy.PatientsName}`}
+                        title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}
                         author={formData.get('Author')}
                         subject={studyInsUID}
                         onRender={onPdfRender}
                     >
                         <PDFPage
-                            formData={formData.toJSON()}
-                            activeStudy={activeStudy}
+                            signatureUrl={signatureUrl}
                             logoUrl={logoUrl}
-                            qrCodeUrl={qrCodeUrl}
                             reportName={reportName}
                         >
                             <PDFReportContent
                                 formSections={pdfDefine.sections}
                                 formData={formData.toJSON()}
-                                getOptions={getOptions}
+                                diagramUrl={diagramUrl}
+                                getOptions={getCodeList}
                             />
-                        </PDFPage>
-
-                        {pdfDefine?.modal?.modalName === 'colonoscopyQualityIndicators' && (
-                            <PDFPage
-                                formData={formData.toJSON()}
-                                activeStudy={activeStudy}
-                                logoUrl={logoUrl}
-                                qrCodeUrl={qrCodeUrl}
-                                reportName={reportName}
-                            >
-                                <PDFReportContent
-                                    formSections={pdfDefine.modal.sections}
-                                    formData={formData.toJSON()}
-                                    getOptions={getOptions}
-                                />
-                            </PDFPage>
-                        )}
-
-                        <PDFPage
-                            formData={formData.toJSON()}
-                            activeStudy={activeStudy}
-                            logoUrl={logoUrl}
-                            qrCodeUrl={qrCodeUrl}
-                            reportName={reportName}
-                        >
-                            <PDFPhoto
-                                imageList={images}
-                                row={JSON.parse(photoLayout).row}
-                                col={JSON.parse(photoLayout).col}
-                            />
+                            <PDFPhoto imageList={images} />
                         </PDFPage>
                     </Document>
                 </PDFViewer>

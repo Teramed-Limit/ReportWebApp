@@ -1,13 +1,32 @@
-import ArinalUNI from './fonts/ARIALUNI.ttf';
-import NotoSansTCRegular from './fonts/NotoSansTC-Regular.otf';
+import ArialBold from './fonts/Arial-Bold.ttf';
+import Arial from './fonts/Arial.ttf';
+import MicrosoftBlack from './fonts/MicrosoftBlack.ttf';
 
 export default [
     {
-        url: NotoSansTCRegular,
-        name: 'NotoSansTCRegular',
+        family: 'Arial',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        name: 'Arial',
+        fonts: [
+            {
+                src: Arial,
+            },
+            {
+                src: ArialBold,
+                fontWeight: 'bold',
+            },
+        ],
     },
     {
-        url: ArinalUNI,
-        name: 'ArinalUNI',
+        family: 'MicrosoftBlack',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        name: 'MicrosoftBlack',
+        fonts: [
+            {
+                src: MicrosoftBlack,
+            },
+        ],
     },
 ];

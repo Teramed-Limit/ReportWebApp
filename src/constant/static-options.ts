@@ -78,6 +78,17 @@ const modalityOptions = [
     'XA',
 ];
 
+const generateDosageOptions = (length: number): any[] => {
+    const options = [] as { Name: string; Code: string }[];
+    for (let i = 0; i < length; i++) {
+        let value = i.toString();
+        value = `${value} mg`;
+        options.push({ Name: value, Code: i.toString() });
+    }
+    return options;
+};
+const dosage = generateDosageOptions(501);
+
 export const staticOptionType = {
     Modality: modalityOptions,
     Min: minOptions,
@@ -85,4 +96,5 @@ export const staticOptionType = {
     ColonDetail: colonDetail,
     AdequateInadequate: adequateInadequate,
     YesNo: yesNo,
+    Dosage: dosage,
 };

@@ -13,14 +13,15 @@ export const ogdDefine = {
                         {
                             id: 'ERSType',
                             label: 'ERS Type',
-                            type: 'Selection',
+                            type: 'CodeListSelection',
                             optionSource: {
                                 type: 'http',
-                                source: 'ReportERSTypeList',
+                                source: 'ERSType',
                             },
                             validate: {
                                 type: 'required',
                             },
+                            labelStyle: { color: '#339966' },
                         },
                     ],
                 },
@@ -31,38 +32,39 @@ export const ogdDefine = {
                         {
                             id: 'ReportTemplate',
                             label: 'Report Template',
-                            type: 'Selection',
+                            type: 'CodeListSelection',
                             optionSource: {
                                 type: 'http',
-                                source: 'ReportTemplateList',
+                                source: 'ReportTemplate',
                             },
                             filterCondition: {
                                 filterById: 'ERSType',
-                                filterOptionKey: 'ERSType',
                             },
                             validate: {
                                 type: 'required',
                             },
+                            labelStyle: { color: '#339966' },
                         },
                     ],
                 },
             ],
         },
         {
-            id: 'sectionProcedure',
+            id: 'sectionPatientInfo',
             type: 'form',
             divider: true,
-            ratio: ['50%', '50%'],
+            ratio: ['50%', '12%', '10%', '28%'],
             subSections: [
                 {
                     id: 'subSection_1',
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'ProcedureDate',
-                            label: 'Procedure Date',
+                            id: 'PatientsName',
+                            label: 'Patient Name',
                             type: 'Text',
                             readOnly: true,
+                            labelStyle: { color: '#339966' },
                         },
                     ],
                 },
@@ -71,51 +73,37 @@ export const ogdDefine = {
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'TimeStart',
-                            label: 'Time Start',
-                            type: 'Composite',
-                            fields: [
-                                {
-                                    id: 'StartTimeHour',
-                                    type: 'Selection',
-                                    optionSource: {
-                                        type: 'static',
-                                        source: 'Hour',
-                                    },
-                                },
-                                {
-                                    id: 'StartTimeMin',
-                                    type: 'Selection',
-                                    optionSource: {
-                                        type: 'static',
-                                        source: 'Min',
-                                    },
-                                },
-                            ],
+                            id: 'PatientsSex',
+                            label: 'Sex',
+                            type: 'Text',
+                            readOnly: true,
+                            labelStyle: { color: '#339966' },
                         },
+                    ],
+                },
+                {
+                    id: 'subSection_3',
+                    ratio: ['100%'],
+                    fields: [
                         {
-                            id: 'TimeEnd',
-                            label: 'Time End',
-                            type: 'Composite',
-
-                            fields: [
-                                {
-                                    id: 'EndTimeHour',
-                                    type: 'Selection',
-                                    optionSource: {
-                                        type: 'static',
-                                        source: 'Hour',
-                                    },
-                                },
-                                {
-                                    id: 'EndTimeMin',
-                                    type: 'Selection',
-                                    optionSource: {
-                                        type: 'static',
-                                        source: 'Min',
-                                    },
-                                },
-                            ],
+                            id: 'PatientsAge',
+                            label: 'Age',
+                            type: 'Text',
+                            readOnly: true,
+                            labelStyle: { color: '#339966' },
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_4',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'PatientId',
+                            label: 'ID',
+                            type: 'Text',
+                            readOnly: true,
+                            labelStyle: { color: '#339966' },
                         },
                     ],
                 },
@@ -131,19 +119,58 @@ export const ogdDefine = {
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'ReferringProvider',
-                            label: 'Referring Provider',
-                            type: 'Selection',
-                            optionSource: {
-                                type: 'http',
-                                source: 'ReportReferringProviderList',
-                            },
-                        },
-                        {
-                            id: 'ChiefEndoscopist',
-                            label: 'Chief Endoscopist',
+                            id: 'AccessionNumber',
+                            label: 'Accession No',
                             type: 'Text',
                             readOnly: true,
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'Sedation',
+                            label: 'Sedation',
+                            type: 'Composite',
+                            labelStyle: { color: '#339966' },
+                            fields: [
+                                {
+                                    id: 'SedationDrug',
+                                    type: 'CodeListSelection',
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Sedation',
+                                    },
+                                },
+                                {
+                                    id: 'SedationDosage',
+                                    type: 'Text',
+                                    suffix: 'mg',
+                                },
+                            ],
+                        },
+                        {
+                            id: 'ProceduresComposite',
+                            label: 'Procedure',
+                            type: 'Composite',
+                            compositeOrientation: 'vertical',
+                            labelStyle: { alignSelf: 'flex-start', color: '#339966' },
+                            fields: [
+                                {
+                                    id: 'ProceduresDataset',
+                                    label: 'Procedure',
+                                    type: 'CodeListSelection',
+                                    isMulti: true,
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Procedure',
+                                    },
+                                },
+                                {
+                                    id: 'ProcedureExtra',
+                                    label: 'Other Procedure',
+                                    type: 'TextArea',
+                                    rows: 2,
+                                    placeholder: 'Other Procedure',
+                                },
+                            ],
                         },
                     ],
                 },
@@ -152,9 +179,53 @@ export const ogdDefine = {
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'Sedation',
-                            label: 'Sedation',
-                            type: 'Text',
+                            id: 'DateOfProcedure',
+                            label: 'Date of Procedure',
+                            type: 'DatePicker',
+                            labelStyle: { color: '#339966' },
+                            validate: {
+                                type: 'required',
+                            },
+                        },
+                        {
+                            id: 'ChiefEndoscopist',
+                            label: 'Doctor in Charge',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Doctor',
+                            },
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'Endoscopist',
+                            label: 'Endoscopist',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Doctor',
+                            },
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'Anesthesiologist',
+                            label: 'Anaesthetist',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Anaesthetist',
+                            },
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'EndoscopeUsed',
+                            label: 'Endoscope used',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Instrument',
+                            },
+                            labelStyle: { color: '#339966' },
                         },
                     ],
                 },
@@ -163,34 +234,54 @@ export const ogdDefine = {
         {
             id: 'sectionIndication',
             type: 'form',
-            ratio: ['50%'],
+            ratio: ['50%', '50%'],
             subSections: [
                 {
                     id: 'subSection_1',
-                    ratio: ['50%'],
+                    ratio: ['100%'],
                     fields: [
                         {
-                            id: 'Indication',
+                            id: 'IndicationComposite',
                             label: 'Indication',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'http',
-                                source: 'ReportIndicationList',
-                            },
-                            filterCondition: {
-                                filterById: 'ERSType',
-                                filterOptionKey: 'ERSType',
-                            },
-                            maxLength: 64,
+                            type: 'Composite',
+                            compositeOrientation: 'vertical',
+                            labelStyle: { alignSelf: 'flex-start', color: '#0000FF', fontSize: 16 },
+                            fields: [
+                                {
+                                    id: 'Indication',
+                                    label: 'Indication',
+                                    type: 'CodeListLexiconInput',
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Indication',
+                                    },
+                                    filterCondition: {
+                                        filterById: 'ERSType',
+                                    },
+                                },
+                                {
+                                    id: 'IndicationOptional',
+                                    label: 'Other Indication',
+                                    type: 'TextArea',
+                                    rows: 2,
+                                    placeholder: 'Other Indication',
+                                },
+                            ],
                         },
                     ],
+                },
+                {
+                    id: 'subSection_2',
+                    ratio: ['100%'],
+                    fields: [],
                 },
             ],
         },
         {
             id: 'sectionFindings',
             type: 'form',
-            ratio: ['100%'],
+            maxWidth: '70%',
+            ratio: ['100%', '100%', '100%'],
             subSections: [
                 {
                     id: 'subSection_1',
@@ -201,6 +292,7 @@ export const ogdDefine = {
                             label: 'Findings',
                             type: 'TextArea',
                             orientation: 'vertical',
+                            labelStyle: { color: '#0000FF', fontSize: 16 },
                             buttonBar: [
                                 {
                                     id: 'fillInDetails',
@@ -208,164 +300,51 @@ export const ogdDefine = {
                                     action: 'openModal',
                                     actionParams: { modalName: 'fillInDetails' },
                                 },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_2',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'Diagnosis',
+                            label: 'Diagnosis',
+                            type: 'Composite',
+                            orientation: 'vertical',
+                            compositeOrientation: 'vertical',
+                            labelStyle: { color: '#0000FF', alignSelf: 'flex-start', fontSize: 16 },
+                            fields: [
                                 {
-                                    id: 'createTemplate',
-                                    label: 'Create Template',
-                                    action: 'createTemplate',
+                                    id: 'DiagnosisDataset',
+                                    type: 'CodeListSelection',
+                                    isMulti: true,
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Diagnosis',
+                                    },
                                 },
                                 {
-                                    id: 'retrieveTemplate',
-                                    label: 'Retrieve Template',
-                                    action: 'openModal',
-                                    actionParams: { modalName: 'retrieveTemplate' },
+                                    id: 'DiagnosisExtra',
+                                    type: 'TextArea',
+                                    rows: 2,
+                                    placeholder: 'Other Diagnosis',
                                 },
                             ],
                         },
                     ],
                 },
-            ],
-        },
-        {
-            id: 'sectionOGDFindings',
-            type: 'form',
-            ratio: ['50%', '50%'],
-            subSections: [
                 {
-                    id: 'subSection_1',
+                    id: 'subSection_4',
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'Esophagus',
-                            label: 'Esophagus',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Cardia',
-                            label: 'Cardia',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Fundus',
-                            label: 'Fundus',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Corpus',
-                            label: 'Corpus',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_2',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'Antrum',
-                            label: 'Antrum',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Pyloric',
-                            label: 'Pyloric',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'D1',
-                            label: 'D1',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'D2',
-                            label: 'D2',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            label: 'Diagnosis',
-            id: 'sectionDiagnosis',
-            type: 'form',
-            ratio: ['50%', '50%', '100%'],
-            subSections: [
-                {
-                    id: 'subSection_1',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'DiagnosisPrimary',
-                            termId: 'DiagnosisPrimaryTermID',
-                            label: 'Primary',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Diagnosis',
-                            },
-                            validate: {
-                                type: 'required',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_2',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'DiagnosisSecondary',
-                            termId: 'DiagnosisSecondaryTermID',
-                            label: 'Secondary (Optional)',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Diagnosis',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_3',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'DiagnosisExtra',
-                            label: 'Optional',
+                            id: 'SpecimenDescription',
+                            label: 'Specimen Description',
                             type: 'TextArea',
                             orientation: 'vertical',
+                            labelStyle: { color: '#0000FF', fontSize: 16 },
                             maxLength: 1024,
                         },
                     ],
@@ -373,76 +352,22 @@ export const ogdDefine = {
             ],
         },
         {
-            label: 'Procedures',
-            id: 'sectionProcedures',
+            id: 'sectionDiagrams',
             type: 'form',
-            ratio: ['50%', '50%', '100%'],
-            subSections: [
-                {
-                    id: 'subSection_1',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'ProcedurePrimary',
-                            termId: 'ProcedurePrimaryTermID',
-                            label: 'Primary',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Procedure',
-                            },
-                            validate: {
-                                type: 'required',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_2',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'ProcedureSecondary',
-                            termId: 'ProcedureSecondaryTermID',
-                            label: 'Secondary (Optional)',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Procedure',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_3',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'ProcedureExtra',
-                            label: 'Optional',
-                            type: 'TextArea',
-                            orientation: 'vertical',
-                            maxLength: 1024,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            id: 'sectionManagementPlan',
-            type: 'form',
+            maxWidth: '30%',
             ratio: ['100%'],
             subSections: [
                 {
-                    id: 'subSection_1',
+                    id: 'subSection_4',
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'ManagementPlan',
-                            label: 'Management Plan',
-                            type: 'TextArea',
-                            orientation: 'vertical',
-                            maxLength: 1024,
+                            id: 'DiagramData',
+                            type: 'ReportDiagram',
+                            hideLabel: true,
+                            imageSource: {
+                                type: 'base64',
+                            },
                         },
                     ],
                 },

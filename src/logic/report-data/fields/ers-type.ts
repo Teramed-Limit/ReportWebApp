@@ -9,6 +9,7 @@ export class ERSType extends ReportField {
     ) => {
         changeValue('ReportTemplate', '', { isValid: false });
         changeValue('Indication', '');
+        changeValue('DiagramData', '');
 
         if (data.ERSType !== 'Colonoscopy') {
             changeValue('Other', '');

@@ -5,11 +5,19 @@ export interface DocumentData {
     HISConsumableDataset?: HISConsumableDataset[];
     HISLabRequestsDataset?: HISLabRequestsDataset[];
     HISMedicationDataset?: HISMedicationDataset[];
+    PatientId?: string;
+    PatientsName?: string;
+    PatientsSex?: string;
+    PatientsAge?: string;
+    PatientsBirthDate?: string;
+    AccessionNumber?: string;
+    StudyDate?: string;
+    Modality?: string;
+    StudyDescription?: string;
     EpisodeNo?: string;
     HISProcedureID?: string;
     Dept?: string;
     StaffCode?: string;
-    AccessionNumber?: string;
     OwnerId?: string;
     StudyInstanceUID?: string;
     ERSType?: string;
@@ -19,17 +27,20 @@ export interface DocumentData {
     Anesthesiologist?: string;
     ChiefEndoscopist?: string;
     Endoscopist?: string;
-    ProcedureDate?: string;
     Instrument?: string;
     AssistingNurse?: string;
     Indication?: string;
     IndicationOptional?: string;
     ManagementPlan?: string;
     DiagnosisPrimary?: string;
+    DiagnosisPrimaryTermID?: string;
     DiagnosisSecondary?: string;
+    DiagnosisSecondaryTermID?: string;
     DiagnosisExtra?: string;
     ProcedurePrimary?: string;
+    ProcedurePrimaryTermID?: string;
     ProcedureSecondary?: string;
+    ProcedureSecondaryTermID?: string;
     ProcedureExtra?: string;
     Findings?: string;
     Esophagus?: string;
@@ -52,6 +63,7 @@ export interface DocumentData {
     CaptureMapping?: string;
     ReportImages?: string;
     ReportMarks?: string;
+    ReportImageSort?: string;
     QualityOfBowelPreparation?: string;
     BBPS_Right?: number;
     BBPS_Transverse?: number;
@@ -72,11 +84,21 @@ export interface DocumentData {
     EndTimeMin?: string;
     DiagramData?: string;
     SignOffsDateTime?: string;
-    SignOffsData?: any;
+    SignOffsData?: string;
     PDFFilePath?: string;
     Author?: string;
+    ReportImageLayout?: string;
+    CreateDateTime?: string;
+    ModifiedDateTime?: string;
+    CreateUser?: string;
+    ModifiedUser?: string;
     QualityBowelScore?: number;
     ReportStatus?: ReportStatus;
+    SedationDrug?: string;
+    SedationDosage?: string;
+    EndoscopeUsed?: string;
+    SpecimenDescription?: string;
+    DateOfProcedure?: string;
 }
 
 export enum ReportStatus {

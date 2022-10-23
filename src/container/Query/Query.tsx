@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Button, Stack } from '@mui/material';
 import { ColDef } from 'ag-grid-community';
@@ -7,25 +7,21 @@ import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { format, sub } from 'date-fns';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
-import { tap } from 'rxjs/operators';
 
 import { fetchStudy } from '../../axios/api';
 import ConditionQuerier from '../../components/ConditonQuerier/ConditionQuerier';
 import GridTable from '../../components/GridTable/GridTable';
 import { dbQueryField, defaultQueryFields, define } from '../../constant/setting-define';
-import { NotificationContext } from '../../context/notification-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
-import { useQueryStore, useReportDataStore } from '../../models/useStore';
+import { useQueryStore } from '../../models/useStore';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
 import classes from './Query.module.scss';
 
 const Query: React.FC = () => {
     const history = useHistory();
-    const { fetchReport } = useReportDataStore();
     const { onConditionChanged, onResultChanged, queryResult, queryPairData } = useQueryStore();
-    const { showNotifyMsg } = useContext(NotificationContext);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
     const [pdfUrl, setPdfUrl] = useState<string>('');
     // function available
@@ -75,16 +71,11 @@ const Query: React.FC = () => {
 
     const onNavigateReport = useCallback(
         (data: StudyData) => {
-            fetchReport(data, (signal$) =>
-                signal$.pipe(
-                    tap(({ notification }) => {
-                        showNotifyMsg(notification);
-                        history.push({ pathname: `/reporting` });
-                    }),
-                ),
-            );
+            history.push({
+                pathname: `/reporting/studyInstanceUID/${data.StudyInstanceUID}`,
+            });
         },
-        [fetchReport, history, showNotifyMsg],
+        [history],
     );
 
     const onRenderPDF = useCallback((gridApi: GridApi) => {
@@ -102,6 +93,10 @@ const Query: React.FC = () => {
         mutateColDef = assignCellVisibility(mutateColDef, 'navigateReport', checkAvailable);
         setColDefs(mutateColDef);
     }, [assignCellVisibility, checkAvailable, dispatchCellEvent, onNavigateReport]);
+
+    useEffect(() => {
+        onRapidQuery(1);
+    }, [onRapidQuery]);
 
     return (
         <div className={classes.container}>

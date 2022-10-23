@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 
 import { Tooltip } from '@mui/material';
 import cx from 'classnames';
@@ -10,9 +10,10 @@ import classes from './FormSectionField.module.scss';
 interface FormSectionFieldProps {
     id: string;
     label?: string;
+    labelStyle?: CSSProperties;
     hint?: string;
+    ratio?: string;
     orientation?: string;
-    labelAlign?: string;
     hideLabelSection?: boolean;
     readOnly: boolean;
     hasValidation: boolean;
@@ -28,8 +29,9 @@ interface FormSectionFieldProps {
 const FormSectionField = ({
     id,
     label = '',
+    labelStyle = {},
+    ratio = '100%',
     hint = '',
-    labelAlign = 'center',
     orientation = 'horizontal',
     hideLabelSection = false,
     readOnly = false,
@@ -48,15 +50,15 @@ const FormSectionField = ({
         <>
             <div
                 id={`formSectionField__${id}`}
+                style={{
+                    maxWidth: ratio,
+                }}
                 className={cx(classes[`input-wrapper`], {
                     [classes.vertical]: orientation === 'vertical',
                 })}
             >
                 {hideLabelSection ? null : (
-                    <span
-                        style={{ alignItems: labelAlign }}
-                        className={classes[`section-field-label`]}
-                    >
+                    <span className={classes[`section-field-label`]} style={labelStyle}>
                         {label ? (
                             <span
                                 className={cx(classes, {
@@ -92,8 +94,8 @@ const FormSectionField = ({
                         <div className={cx(classes[`field-base`])}>{fieldComponent}</div>
                     </div>
                 </Tooltip>
+                {buttonBarComponent}
             </div>
-            {buttonBarComponent}
         </>
     );
 };

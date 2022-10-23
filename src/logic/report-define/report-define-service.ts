@@ -1,8 +1,6 @@
 import { colonoscopyDefine } from '../../constant/colonoscopy-define';
-import { colonoscopyFreeTextDefine } from '../../constant/colonoscopy-free-text-define';
 import { ogdDefine } from '../../constant/ogd-define';
 import { pdfColonoscopyDefine } from '../../constant/pdf-define/colonoscopy-define';
-import { pdfColonoscopyFreeTextDefine } from '../../constant/pdf-define/colonoscopy-free-text-define';
 import { pdfOGDDefine } from '../../constant/pdf-define/ogd-define';
 import { pdfStandardDefine } from '../../constant/pdf-define/standard-define';
 import { standardDefine } from '../../constant/standard-define';
@@ -62,27 +60,17 @@ export const ReportDefineMapper = {
         },
         defines: [
             {
-                templateName: 'Colonoscopy Free Text',
-                define: colonoscopyFreeTextDefine,
-                pdfDefine: pdfColonoscopyFreeTextDefine,
-            },
-            {
                 templateName: 'Colonoscopy',
                 define: colonoscopyDefine,
                 pdfDefine: pdfColonoscopyDefine,
             },
         ],
     },
-    OGD: {
+    Gastroscopy: {
         fields: normalizeFields(ogdDefine.sections, ''),
         defines: [
             {
-                templateName: 'OGD Free Text',
-                define: standardDefine,
-                pdfDefine: pdfStandardDefine,
-            },
-            {
-                templateName: 'OGD',
+                templateName: 'Gastroscopy',
                 define: ogdDefine,
                 pdfDefine: pdfOGDDefine,
             },

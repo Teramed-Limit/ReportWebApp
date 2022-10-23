@@ -1,5 +1,6 @@
 export interface ReportFinding {
     ERSType: string;
+    FieldId: string;
     ItemName: string;
     DisplayIndex: number;
     AutoFillDefaultWhenEmpty: string;

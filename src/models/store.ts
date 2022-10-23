@@ -20,9 +20,10 @@ export function createStore() {
                 loginUser: user?.UserName,
             },
             defineStore: { formDefine: standardDefine },
-            dataStore: { loading: false, activeStudy: {} },
+            dataStore: { loading: false },
             imageStore: {
                 images: [],
+                diagramChanged: new Date().toString(),
                 diagramHandle: {
                     onExport(): string {
                         return emptyBaseImage();

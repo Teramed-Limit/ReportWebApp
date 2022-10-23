@@ -7,11 +7,12 @@
 .section-field-label {
     font-weight: bold;
     width: 30%;
-    padding: 4px;
+    padding: 4px 0;
     word-break: break-word;
     flex: 0 0 30%;
     color: #3a464d;
     align-self: center;
+    margin: 2px;
 }
 
 .compositeContainer {

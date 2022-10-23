@@ -11,6 +11,7 @@ export interface Section {
     label?: string;
     type: string;
     divider?: boolean;
+    maxWidth?: string;
     ratio: string[];
     subSections: SubSection[];
 }

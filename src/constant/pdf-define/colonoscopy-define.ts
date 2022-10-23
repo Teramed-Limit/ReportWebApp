@@ -1,6 +1,66 @@
 export const pdfColonoscopyDefine = {
     sections: [
         {
+            id: 'sectionPatientInfo',
+            type: 'form',
+            divider: true,
+            ratio: ['50%', '12%', '10%', '28%'],
+            subSections: [
+                {
+                    id: 'subSection_1',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'PatientsName',
+                            label: 'Patient Name',
+                            type: 'Text',
+                            readOnly: true,
+                            labelStyle: { color: '#339966' },
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_2',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'PatientsSex',
+                            label: 'Sex',
+                            type: 'Text',
+                            readOnly: true,
+                            labelStyle: { color: '#339966' },
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_3',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'PatientsAge',
+                            label: 'Age',
+                            type: 'Text',
+                            readOnly: true,
+                            labelStyle: { color: '#339966' },
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_4',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'PatientId',
+                            label: 'ID',
+                            type: 'Text',
+                            readOnly: true,
+                            labelStyle: { color: '#339966' },
+                        },
+                    ],
+                },
+            ],
+        },
+        {
             id: 'sectionGeneral',
             type: 'form',
             ratio: ['50%', '50%'],
@@ -10,19 +70,58 @@ export const pdfColonoscopyDefine = {
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'ReferringProvider',
-                            label: 'Referring Provider',
-                            type: 'Selection',
-                            optionSource: {
-                                type: 'http',
-                                source: 'ReportReferringProviderList',
-                            },
-                        },
-                        {
-                            id: 'ChiefEndoscopist',
-                            label: 'Chief Endoscopist',
+                            id: 'AccessionNumber',
+                            label: 'Accession No',
                             type: 'Text',
                             readOnly: true,
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'Sedation',
+                            label: 'Sedation',
+                            type: 'Composite',
+                            labelStyle: { color: '#339966' },
+                            fields: [
+                                {
+                                    id: 'SedationDrug',
+                                    type: 'CodeListSelection',
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Sedation',
+                                    },
+                                },
+                                {
+                                    id: 'SedationDosage',
+                                    type: 'Text',
+                                    suffix: 'mg',
+                                },
+                            ],
+                        },
+                        {
+                            id: 'ProceduresComposite',
+                            label: 'Procedure',
+                            type: 'Composite',
+                            compositeOrientation: 'vertical',
+                            labelStyle: { alignSelf: 'flex-start', color: '#339966' },
+                            fields: [
+                                {
+                                    id: 'ProceduresDataset',
+                                    label: 'Procedure',
+                                    type: 'CodeListSelection',
+                                    isMulti: true,
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Procedure',
+                                    },
+                                },
+                                {
+                                    id: 'ProcedureExtra',
+                                    label: 'Other Procedure',
+                                    type: 'TextArea',
+                                    rows: 2,
+                                    placeholder: 'Other Procedure',
+                                },
+                            ],
                         },
                     ],
                 },
@@ -31,9 +130,50 @@ export const pdfColonoscopyDefine = {
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'Sedation',
-                            label: 'Sedation',
+                            id: 'DateOfProcedure',
+                            label: 'Date of Procedure',
                             type: 'Text',
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'ChiefEndoscopist',
+                            label: 'Doctor in Charge',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Doctor',
+                            },
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'Endoscopist',
+                            label: 'Endoscopist',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Doctor',
+                            },
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'Anesthesiologist',
+                            label: 'Anaesthetist',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Anaesthetist',
+                            },
+                            labelStyle: { color: '#339966' },
+                        },
+                        {
+                            id: 'EndoscopeUsed',
+                            label: 'Endoscope used',
+                            type: 'CodeListSelection',
+                            optionSource: {
+                                type: 'http',
+                                source: 'Instrument',
+                            },
+                            labelStyle: { color: '#339966' },
                         },
                     ],
                 },
@@ -42,34 +182,54 @@ export const pdfColonoscopyDefine = {
         {
             id: 'sectionIndication',
             type: 'form',
-            ratio: ['50%'],
+            ratio: ['50%', '50%'],
             subSections: [
                 {
                     id: 'subSection_1',
-                    ratio: ['50%'],
+                    ratio: ['100%'],
                     fields: [
                         {
-                            id: 'Indication',
+                            id: 'IndicationComposite',
                             label: 'Indication',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'http',
-                                source: 'ReportIndicationList',
-                            },
-                            filterCondition: {
-                                filterById: 'ERSType',
-                                filterOptionKey: 'ERSType',
-                            },
-                            maxLength: 64,
+                            type: 'Composite',
+                            compositeOrientation: 'vertical',
+                            labelStyle: { alignSelf: 'flex-start', color: '#0000FF', fontSize: 12 },
+                            fields: [
+                                {
+                                    id: 'Indication',
+                                    label: 'Indication',
+                                    type: 'CodeListLexiconInput',
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Indication',
+                                    },
+                                    filterCondition: {
+                                        filterById: 'ERSType',
+                                    },
+                                },
+                                {
+                                    id: 'IndicationOptional',
+                                    label: 'Other Indication',
+                                    type: 'TextArea',
+                                    rows: 2,
+                                    placeholder: 'Other Indication',
+                                },
+                            ],
                         },
                     ],
+                },
+                {
+                    id: 'subSection_2',
+                    ratio: ['100%'],
+                    fields: [],
                 },
             ],
         },
         {
             id: 'sectionFindings',
             type: 'form',
-            ratio: ['100%'],
+            maxWidth: '70%',
+            ratio: ['100%', '50%', '50%', '100%'],
             subSections: [
                 {
                     id: 'subSection_1',
@@ -80,6 +240,60 @@ export const pdfColonoscopyDefine = {
                             label: 'Findings',
                             type: 'TextArea',
                             orientation: 'vertical',
+                            labelStyle: { color: '#0000FF', fontSize: 12 },
+                            buttonBar: [
+                                {
+                                    id: 'fillInDetails',
+                                    label: 'Fill in details',
+                                    action: 'openModal',
+                                    actionParams: { modalName: 'fillInDetails' },
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_2',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'Diagnosis',
+                            label: 'Diagnosis',
+                            type: 'Composite',
+                            orientation: 'vertical',
+                            compositeOrientation: 'vertical',
+                            labelStyle: { color: '#0000FF', alignSelf: 'flex-start', fontSize: 12 },
+                            fields: [
+                                {
+                                    id: 'DiagnosisDataset',
+                                    type: 'CodeListSelection',
+                                    isMulti: true,
+                                    optionSource: {
+                                        type: 'http',
+                                        source: 'Diagnosis',
+                                    },
+                                },
+                                {
+                                    id: 'DiagnosisExtra',
+                                    type: 'TextArea',
+                                    rows: 2,
+                                    placeholder: 'Other Diagnosis',
+                                },
+                            ],
+                        },
+                    ],
+                },
+                {
+                    id: 'subSection_3',
+                    ratio: ['100%'],
+                    fields: [
+                        {
+                            id: 'OtherDescription',
+                            label: 'Bowel Prep.',
+                            type: 'TextArea',
+                            orientation: 'vertical',
+                            maxLength: 1024,
+                            labelStyle: { color: '#0000FF', fontSize: 12 },
                             buttonBar: [
                                 {
                                     id: 'quantityIndicatorAction',
@@ -88,180 +302,20 @@ export const pdfColonoscopyDefine = {
                                     actionParams: { modalName: 'colonoscopyQualityIndicators' },
                                     disable: 'never',
                                 },
-                                {
-                                    id: 'fillInDetails',
-                                    label: 'Fill in details',
-                                    action: 'openModal',
-                                    actionParams: { modalName: 'fillInDetails' },
-                                },
-                                {
-                                    id: 'createTemplate',
-                                    label: 'Create Template',
-                                    action: 'createTemplate',
-                                },
-                                {
-                                    id: 'retrieveTemplate',
-                                    label: 'Retrieve Template',
-                                    action: 'openModal',
-                                    actionParams: { modalName: 'retrieveTemplate' },
-                                },
                             ],
                         },
                     ],
                 },
-            ],
-        },
-        {
-            id: 'sectionColonFindings',
-            type: 'form',
-            ratio: ['50%', '50%'],
-            subSections: [
                 {
-                    id: 'subSection_1',
+                    id: 'subSection_4',
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'Terminallleum',
-                            label: 'Terminal lleum',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Caecum',
-                            label: 'Caecum',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'AscendingColon',
-                            label: 'Ascending Colon',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'HepaticFlexure',
-                            label: 'Hepatic Flexure',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Transverse',
-                            label: 'Transverse',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_2',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'SplenicFlexure',
-                            label: 'Splenic Flexure',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Descending',
-                            label: 'Descending',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Sigmoid',
-                            label: 'Sigmoid',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                        {
-                            id: 'Rectum',
-                            label: 'Rectum',
-                            type: 'Lexicon',
-                            optionSource: {
-                                type: 'static',
-                                source: 'ColonDetail',
-                            },
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            label: 'Diagnosis',
-            id: 'sectionDiagnosis',
-            type: 'form',
-            ratio: ['100%', '100%', '100%'],
-            subSections: [
-                {
-                    id: 'subSection_1',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'DiagnosisPrimary',
-                            termId: 'DiagnosisPrimaryTermID',
-                            label: 'Diagnosis (Primary)',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Diagnosis',
-                            },
-                            validate: {
-                                type: 'required',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_2',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'DiagnosisSecondary',
-                            termId: 'DiagnosisSecondaryTermID',
-                            label: 'Diagnosis (Secondary)',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Diagnosis',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_3',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'DiagnosisExtra',
-                            label: 'Optional',
+                            id: 'SpecimenDescription',
+                            label: 'Specimen Description',
                             type: 'TextArea',
-                            hideLabel: true,
                             orientation: 'vertical',
+                            labelStyle: { color: '#0000FF', fontSize: 12 },
                             maxLength: 1024,
                         },
                     ],
@@ -269,178 +323,26 @@ export const pdfColonoscopyDefine = {
             ],
         },
         {
-            label: 'Procedures',
-            id: 'sectionProcedures',
+            id: 'sectionDiagrams',
             type: 'form',
-            ratio: ['100%', '100%', '100%'],
-            subSections: [
-                {
-                    id: 'subSection_1',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'ProcedurePrimary',
-                            termId: 'ProcedurePrimaryTermID',
-                            label: 'Procedure (Primary)',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Procedure',
-                            },
-                            validate: {
-                                type: 'required',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_2',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'ProcedureSecondary',
-                            termId: 'ProcedureSecondaryTermID',
-                            label: 'Procedure (Secondary)',
-                            type: 'AsyncLexicon',
-                            optionSource: {
-                                params: 'Procedure',
-                            },
-                            maxLength: 256,
-                        },
-                    ],
-                },
-                {
-                    id: 'subSection_3',
-                    ratio: ['100%'],
-                    fields: [
-                        {
-                            id: 'ProcedureExtra',
-                            label: 'Optional',
-                            type: 'TextArea',
-                            hideLabel: true,
-                            orientation: 'vertical',
-                            maxLength: 1024,
-                        },
-                    ],
-                },
-            ],
-        },
-        {
-            id: 'sectionManagementPlan',
-            type: 'form',
+            maxWidth: '30%',
             ratio: ['100%'],
             subSections: [
                 {
-                    id: 'subSection_1',
+                    id: 'subSection_4',
                     ratio: ['100%'],
                     fields: [
                         {
-                            id: 'ManagementPlan',
-                            label: 'Management Plan',
-                            type: 'TextArea',
-                            orientation: 'vertical',
-                            maxLength: 1024,
+                            id: 'DiagramData',
+                            type: 'ReportDiagram',
+                            hideLabel: true,
+                            imageSource: {
+                                type: 'base64',
+                            },
                         },
                     ],
                 },
             ],
         },
     ],
-    modal: {
-        modalName: 'colonoscopyQualityIndicators',
-        sections: [
-            {
-                id: 'sectionDialog',
-                type: 'form',
-                ratio: ['100%'],
-                subSections: [
-                    {
-                        id: 'subSection_1',
-                        ratio: ['100%'],
-                        fields: [
-                            {
-                                id: 'QualityOfBowelPreparation',
-                                label: 'Quality of Bowel Preparation',
-                                type: 'Radio',
-                                optionSource: {
-                                    type: 'static',
-                                    source: 'AdequateInadequate',
-                                },
-                                validate: {
-                                    type: 'qualityBowelRequired',
-                                },
-                            },
-                            {
-                                id: 'QualityBowelScore',
-                                type: 'QualityBowelScore',
-                                validate: {
-                                    type: 'qualityBowelScore',
-                                },
-                            },
-                            {
-                                id: 'WithdrawalTime',
-                                label: 'Colonoscopy Withdrawal Time',
-                                type: 'Number',
-                                suffix: 'Minutes',
-                                validate: {
-                                    type: 'qualityBowelMin',
-                                    params: { min: 0 },
-                                },
-                            },
-                            {
-                                id: 'IsCaecumReached',
-                                label: 'Is Caecum Reached',
-                                type: 'Radio',
-                                optionSource: {
-                                    type: 'static',
-                                    source: 'YesNo',
-                                },
-                                validate: {
-                                    type: 'qualityBowelRequired',
-                                },
-                            },
-                            {
-                                id: 'MechanicalObstruction',
-                                label: 'Mechanical Obstruction',
-                                type: 'Checkbox',
-                                checkboxLabel:
-                                    'Mechanical Obstruction (e.g. obstructing lesion / tumor, previous known stricture)',
-                            },
-                            {
-                                id: 'TechnicalDifficulties',
-                                type: 'Checkbox',
-                                checkboxLabel:
-                                    'Technical Difficulties (e.g. acute bending / kinking, patient intolerance)',
-                            },
-                            {
-                                id: 'PostRighthemicolectomy',
-                                type: 'Checkbox',
-                                checkboxLabel: 'Post Right hemicolectomy',
-                            },
-                            {
-                                id: 'BowelPreparation',
-                                type: 'Checkbox',
-                                checkboxLabel: 'Bowel Preparation',
-                            },
-                            {
-                                id: 'PlannedforPartialColonoscopy',
-                                type: 'Checkbox',
-                                checkboxLabel: 'Planned for Partial Colonoscopy',
-                            },
-                            {
-                                id: 'OccurrenceofComplication',
-                                type: 'Checkbox',
-                                checkboxLabel: 'Occurrence of Complication',
-                            },
-                            {
-                                id: 'OtherDescription',
-                                label: 'Other',
-                                type: 'Text',
-                            },
-                        ],
-                    },
-                ],
-            },
-        ],
-    },
 };

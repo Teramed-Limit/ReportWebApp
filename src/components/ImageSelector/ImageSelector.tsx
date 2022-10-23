@@ -3,7 +3,7 @@ import React from 'react';
 import { Badge, Checkbox } from '@mui/material';
 import { FaMapMarkerAlt } from 'react-icons/all';
 
-import { OptionSource } from '../../interface/selection-field';
+import { CodeList } from '../../interface/code-list';
 import BaseLexiconInput from '../UI/BaseLexiconInput/BaseLexiconInput';
 import classes from './ImageSelector.module.scss';
 
@@ -15,7 +15,6 @@ interface ImageSelectorProps {
     checked?: boolean;
     findings: string;
     options: any[];
-    optionSource: OptionSource<any>;
     markerMappingNumber: number;
     disabled: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
@@ -34,7 +33,6 @@ const ImageSelector = ({
     onImageCheck,
     onFindingsChange,
     options,
-    optionSource,
     disabled,
     onImageReorder,
 }: ImageSelectorProps) => {
@@ -84,17 +82,18 @@ const ImageSelector = ({
                 <span>Findings:</span>
                 <BaseLexiconInput
                     id={id}
-                    disabled={disabled}
                     cssClass={{
                         container: classes['lexicon-container'],
                         input: classes['lexicon-input'],
                     }}
+                    disabled={disabled}
                     value={findings}
-                    valueKey={optionSource.labelKey || 'Name'}
-                    optionKey={optionSource.key || 'Code'}
+                    valueKey="Value"
+                    optionKey="Id"
                     onValueChange={(str) => onFindingsChange(id, str)}
                     initialLexiconList={options}
-                    getOptionLabel={(option) => option[optionSource.labelKey || 'Name']}
+                    getOptionLabel={(option: CodeList) => option.Value}
+                    showTooltip={false}
                 />
             </label>
         </div>

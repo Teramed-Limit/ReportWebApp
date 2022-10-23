@@ -39,7 +39,6 @@ const SectionListView = ({ onCategoryTextChange, onCategoryFocus }: Props) => {
                                     ? 'Auto fill default content'
                                     : ''
                             }
-                            labelAlign="flex-start"
                             readOnly={false}
                             hasValidation={false}
                             isDirty={false}

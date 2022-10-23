@@ -10,7 +10,6 @@ import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
-import { StudyData } from '../interface/study-data';
 import { isEmptyOrNil } from '../utils/general';
 
 const dateModel = types.union(types.frozen<DocumentData>());
@@ -25,7 +24,6 @@ export const DataModel = types
         // report data is latest, no edit
         reportHasChanged: types.optional(types.boolean, false),
         loading: types.optional(types.boolean, false),
-        activeStudy: types.frozen<Partial<StudyData>>(),
         formData: types.map(dateModel),
         formState: types.map(formState),
         formValidation: types.optional(types.frozen<ReportValidation>(), {
@@ -82,7 +80,6 @@ export const DataModel = types
         );
 
         const init = () => {
-            self.activeStudy = {};
             self.formData.replace({});
             self.formState.replace({});
             self.formValidation = { isValid: true, openModalName: '' };
@@ -182,6 +179,10 @@ export const DataModel = types
                     self.formValidation = { isValid: false, openModalName };
                 }
                 newFormState[key] = { ...state, isDirty: true };
+
+                if (!state.isValid) {
+                    console.error(key);
+                }
             });
 
             self.formState.replace(newFormState);
@@ -316,26 +317,20 @@ export const DataModel = types
     .actions((self) => {
         const beforeFetch = () => (self.loading = true);
 
-        const fetchError = () => (self.loading = false);
+        const fetchError = () => {
+            self.reportReady = 'error';
+            self.loading = false;
+        };
 
-        const fetchSuccess = (res: {
-            response: AxiosResponse<DocumentData>;
-            selectedStudyData: StudyData;
-        }) => {
-            const { response, selectedStudyData } = res;
+        const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
             const { defineStore, imageStore, authStore } = getRoot(self);
 
-            self.loading = false;
-            self.reportHasChanged = false;
-
             // register selected study
-            self.activeStudy = selectedStudyData;
+            // self.activeStudy = selectedStudyData;
 
             // set initialize data
             response.data.OwnerId = authStore.loginUser;
             response.data.Author = authStore.loginUser;
-            response.data.ChiefEndoscopist = selectedStudyData.PerformingPhysiciansName;
-            response.data.ProcedureDate = selectedStudyData.StudyDate;
             self.formData.replace(response.data);
 
             imageStore.initImages(response.data?.ReportImageDataset || []);
@@ -354,23 +349,21 @@ export const DataModel = types
 
             // initialize form control
             defineStore.setFormDefine(self.formData.toJSON());
+            self.reportHasChanged = false;
             self.initialFormControl(self.formData.toJSON());
             self.loading = false;
             self.reportReady = 'success';
         };
 
         return {
-            fetchReport: dollEffect<StudyData, ReportResponseNotification>(
+            fetchReport: dollEffect<string, ReportResponseNotification>(
                 self,
                 (payload$, dollSignal) => {
                     return payload$.pipe(
-                        switchMap((studyData: StudyData) =>
-                            fetchReport(studyData.StudyInstanceUID).pipe(
+                        switchMap((studyInstanceUID: string) =>
+                            fetchReport(studyInstanceUID).pipe(
                                 map((response) => [
-                                    action(fetchSuccess, {
-                                        response,
-                                        selectedStudyData: studyData,
-                                    }),
+                                    action(fetchSuccess, response),
                                     action(dollSignal, {
                                         notification: {
                                             message: 'Fetch report success',

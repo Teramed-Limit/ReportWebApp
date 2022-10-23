@@ -1,8 +1,9 @@
 import { Field } from './field';
-import { OptionSource } from './selection-field';
+import { FilterCondition, OptionSource } from './selection-field';
 
 export interface LexiconField<T> extends Field {
     optionSource: OptionSource<T>;
+    filterCondition: FilterCondition;
 }
 
 export interface AsyncLexiconField<T> extends Field {

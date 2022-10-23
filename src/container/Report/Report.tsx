@@ -1,17 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
+import { tap } from 'rxjs/operators';
 
 import Icon from '../../components/UI/Icon/Icon';
+import { NotificationContext } from '../../context/notification-context';
 import { Section } from '../../interface/define';
 import { ReportStatus } from '../../interface/document-data';
+import { MessageType } from '../../interface/notification';
 import ReportSection from '../../layout/ReportSection/ReportSection';
-import { useReportDataStore, useReportDefineStore } from '../../models/useStore';
-import { dataFormatString, isEmptyOrNil } from '../../utils/general';
+import { useOptionStore, useReportDataStore, useReportDefineStore } from '../../models/useStore';
 import Photo from '../Photo/Photo';
 import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
 import ReportViewActionBar from './report-action-bar/ReportViewActionBar/ReportViewActionBar';
@@ -20,13 +21,27 @@ import classes from './Report.module.scss';
 
 const Report = () => {
     const history = useHistory();
+    const { showNotifyMsg } = useContext(NotificationContext);
+    const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
-    const { activeStudy, reportStatus, modifiable, formData } = useReportDataStore();
+    const { reportStatus, modifiable, fetchReport } = useReportDataStore();
+    const { loading: fetchOptionsLoading } = useOptionStore();
     const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
 
     useEffect(() => {
-        if (isEmptyOrNil(activeStudy)) history.push('/');
-    }, [activeStudy, history]);
+        // wait options ready
+        if (fetchOptionsLoading) return;
+        fetchReport(studyInstanceUID, (signal$) =>
+            signal$.pipe(
+                tap(({ notification }) => {
+                    showNotifyMsg(notification);
+                    if (notification.messageType === MessageType.Error) {
+                        history.push('/');
+                    }
+                }),
+            ),
+        );
+    }, [fetchOptionsLoading, fetchReport, history, showNotifyMsg, studyInstanceUID]);
 
     return (
         <>
@@ -39,47 +54,6 @@ const Report = () => {
                             <ReportEditActionBar />
                         )}
                     </Stack>
-                </div>
-                <div className={classes.patientInfo}>
-                    <AccountCircleIcon sx={{ fontSize: '36px' }} />
-                    <div className={classes.content}>
-                        <span>
-                            {activeStudy.PatientsName} ({activeStudy.PatientId})
-                        </span>
-                        <div className={classes.contentBetween}>
-                            <div>{activeStudy.AccessionNumber}</div>
-                            <div>
-                                {formData.get('CreateUser') && (
-                                    <>
-                                        <span>Created by </span>
-                                        <span className={classes.highlight}>
-                                            {formData.get('CreateUser')}
-                                        </span>
-                                    </>
-                                )}
-                                {formData.get('ModifiedUser') && (
-                                    <>
-                                        <span>, Last Modified by </span>
-                                        <span className={classes.highlight}>
-                                            {formData.get('ModifiedUser')}
-                                        </span>
-                                    </>
-                                )}
-                                {formData.get('ModifiedDateTime') && (
-                                    <>
-                                        <span> on </span>
-                                        <span className={classes.highlight}>
-                                            {dataFormatString(
-                                                formData.get('ModifiedDateTime'),
-                                                'yyyyMMddHHmmss',
-                                                'dd-MMM-yyyy',
-                                            )}
-                                        </span>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                    </div>
                 </div>
                 <div className={classes.reportLayout}>
                     {formDefine.sections

@@ -6,6 +6,7 @@ interface Props {
     id?: string;
     value: string;
     rows?: number;
+    placeholder?: string;
     disabled?: boolean;
     maxLength?: number;
     onValueChange: (str: string) => void;
@@ -17,6 +18,7 @@ const BaseTextArea = forwardRef(
         {
             id,
             value = '',
+            placeholder = '',
             rows = 6,
             maxLength = 5000,
             disabled = false,
@@ -33,6 +35,7 @@ const BaseTextArea = forwardRef(
             <textarea
                 ref={ref}
                 id={id}
+                placeholder={placeholder}
                 autoComplete="off"
                 disabled={disabled}
                 className={classes.textareaInput}

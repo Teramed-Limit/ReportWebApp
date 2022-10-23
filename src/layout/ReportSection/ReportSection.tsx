@@ -17,7 +17,11 @@ const ReportSection = ({ section, actionContext }: Props) => {
                     <h4 className={classes[`header-label`]}>{section?.label}</h4>
                 </div>
             ) : null}
-            <div id={section.id} className={classes[`section-wrapper`]}>
+            <div
+                id={section.id}
+                style={{ maxWidth: section.maxWidth }}
+                className={classes[`section-wrapper`]}
+            >
                 {section.subSections.map((subSection: SubSection, subSectionIdx: number) => (
                     <ReportSubSection
                         key={subSection.id}

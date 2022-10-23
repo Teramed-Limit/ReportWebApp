@@ -18,7 +18,11 @@ import { FindingTemplateContext } from './context/finding-template-context';
 import classes from './FillInDetailsModal.module.scss';
 import ViewEditSwitcher from './ViewEditSwitcher/ViewEditSwitcher';
 
-const FillInDetailsModal = () => {
+interface Props {
+    fieldId: string;
+}
+
+const FillInDetailsModal = ({ fieldId }: Props) => {
     const { valueChanged, ersType } = useReportDataStore();
     const setModal = useContext(ModalContext);
     const { findingList, setFindingList, activeIndex, setActiveIndex } = useContext(
@@ -28,7 +32,7 @@ const FillInDetailsModal = () => {
     const [itemList, setItemList] = useState<ReportFindingItemList[]>([]);
 
     useEffect(() => {
-        getReportFindings(ersType)
+        getReportFindings(ersType, fieldId)
             .pipe(
                 first(),
                 filter((res) => !isEmptyOrNil(res.data) && !isEmptyOrNil(ersType)),
@@ -39,7 +43,7 @@ const FillInDetailsModal = () => {
                 setActiveIndex(0);
                 setItemList(dataList[0].ReportFindingsItemList);
             });
-    }, [ersType, setActiveIndex, setFindingList]);
+    }, [ersType, fieldId, setActiveIndex, setFindingList]);
 
     const onClose = () => {
         setModal(null);
@@ -48,10 +52,10 @@ const FillInDetailsModal = () => {
     const onConfirmSelect = () => {
         let findings = '';
         findingList.forEach((findingCategory) => {
-            const section = `${findingCategory.ItemName}: ${findingCategory.Text}\n`;
+            const section = `${findingCategory.Text}\n`;
             findings += section;
         });
-        valueChanged('Findings', findings);
+        valueChanged(fieldId, findings);
         onClose();
     };
 
@@ -123,6 +127,7 @@ const FillInDetailsModal = () => {
                     editComponent={
                         <SectionListEdit
                             ersType={ersType}
+                            fieldId={fieldId}
                             onCategoryFocus={onCategoryFocus}
                             onCancelFocus={onCancelFocus}
                         />

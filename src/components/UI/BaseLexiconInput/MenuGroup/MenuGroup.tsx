@@ -74,7 +74,7 @@ const MenuGroup = ({
         const viewSpaceRight = viewWidth - anchorElementRect.left;
 
         const position = 'fixed';
-        const zIndex = 999;
+        const zIndex = 1400;
         const { width } = anchorElementRect;
         let { left, top } = { left: 0, top: 0 };
 

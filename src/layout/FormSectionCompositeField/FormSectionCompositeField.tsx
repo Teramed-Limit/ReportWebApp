@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 
 import cx from 'classnames';
 import { observer } from 'mobx-react';
@@ -22,14 +22,26 @@ const FormSectionCompositeField = ({ field: compositeField }: FormSectionFieldPr
         <div
             id={`formSectionComposite__${compositeField.id}`}
             className={cx(classes[`input-wrapper`])}
+            style={{
+                flexDirection: compositeField.orientation === 'vertical' ? 'column' : 'row',
+            }}
         >
             {compositeField.label ? (
-                <span className={classes[`section-field-label`]}>
+                <span
+                    style={compositeField.labelStyle as CSSProperties}
+                    className={classes[`section-field-label`]}
+                >
                     <span>{compositeField.label}</span>
                 </span>
             ) : null}
 
-            <div className={classes.compositeContainer}>
+            <div
+                className={classes.compositeContainer}
+                style={{
+                    flexDirection:
+                        compositeField.compositeOrientation === 'vertical' ? 'column' : 'row',
+                }}
+            >
                 {compositeField.fields.map((field: Field) => {
                     const { isDirty, isValid, errorMessage } = formState.get(field.id) || {
                         isDirty: false,
@@ -41,7 +53,7 @@ const FormSectionCompositeField = ({ field: compositeField }: FormSectionFieldPr
                             key={field.id}
                             id={field.id}
                             label=""
-                            orientation={field.orientation}
+                            labelStyle={field?.labelStyle as CSSProperties}
                             hideLabelSection
                             readOnly={!!field.readOnly}
                             hasValidation={!!field.validate}

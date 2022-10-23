@@ -1,4 +1,4 @@
-import React, { useContext, useRef } from 'react';
+import React, { CSSProperties, useContext, useRef } from 'react';
 
 import { observer } from 'mobx-react';
 
@@ -14,10 +14,11 @@ import classes from './FormSectionFieldContainer.module.scss';
 
 interface FormSectionFieldProps {
     field: Field;
+    ratio: string;
     actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
 }
 
-const FormSectionFieldContainer = ({ field, actionContext }: FormSectionFieldProps) => {
+const FormSectionFieldContainer = ({ field, ratio, actionContext }: FormSectionFieldProps) => {
     const actionDispatcher = useContext(actionContext);
     const { openNotification } = useContext(NotificationContext);
     const inputRef = useRef();
@@ -39,6 +40,7 @@ const FormSectionFieldContainer = ({ field, actionContext }: FormSectionFieldPro
             ...actionParams,
             ref: inputRef,
             formData: formData.toJSON(),
+            field,
             openNotification,
         });
     };
@@ -67,6 +69,8 @@ const FormSectionFieldContainer = ({ field, actionContext }: FormSectionFieldPro
         <FormSectionField
             id={field.id}
             label={field.label}
+            labelStyle={field?.labelStyle as CSSProperties}
+            ratio={ratio}
             orientation={field.orientation}
             hideLabelSection={field.hideLabel}
             readOnly={!!field.readOnly}

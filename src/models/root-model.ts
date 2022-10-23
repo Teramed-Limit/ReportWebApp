@@ -31,7 +31,8 @@ export const RootStoreModel = types
     .actions((self) => {
         return {
             afterCreate() {
-                self.optionStore.initialize().then();
+                // self.optionStore.initialize().then();
+                self.optionStore.initializeCodeList().then();
             },
         };
     });
