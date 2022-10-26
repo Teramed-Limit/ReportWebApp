@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: 'white',
         padding: '14px',
-        paddingBottom: '50px',
+        paddingBottom: '88px',
         fontFamily: 'Arial',
     },
     pageNumber: {
