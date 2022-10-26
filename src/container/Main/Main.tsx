@@ -19,7 +19,6 @@ const Main = () => {
 
     useEffect(() => {
         if (!formValidation.isValid) {
-            // history.push(`/reporting/studyInstanceUID/${data.StudyInstanceUID}`);
             setModalName(formValidation.openModalName);
         }
     }, [formValidation, history, setModalName]);

@@ -29,8 +29,8 @@ export function logout() {
     return axiosIns.post(`api/logout`);
 }
 
-export function refreshToken(token: string) {
-    return axiosIns.post(`api/refreshtoken`, { refreshToken: token });
+export function refreshToken(token: string, userName: string) {
+    return axiosIns.post(`api/refreshtoken`, { refreshToken: token, userName });
 }
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {
