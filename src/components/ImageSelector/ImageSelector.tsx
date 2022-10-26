@@ -13,12 +13,15 @@ interface ImageSelectorProps {
     size: number;
     src: string;
     checked?: boolean;
+    sites: string;
     findings: string;
-    options: any[];
+    findingsOptions: CodeList[];
+    sitesOptions: CodeList[];
     markerMappingNumber: number;
     disabled: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
     onFindingsChange: (sopInsUid: string, findings: string) => void;
+    onSitesChange: (sopInsUid: string, sites: string) => void;
     onImageReorder: (fromIdx: number, toIdx: number) => void;
 }
 
@@ -28,11 +31,14 @@ const ImageSelector = ({
     size,
     src,
     checked,
+    sites,
     findings,
     markerMappingNumber,
     onImageCheck,
     onFindingsChange,
-    options,
+    onSitesChange,
+    findingsOptions,
+    sitesOptions,
     disabled,
     onImageReorder,
 }: ImageSelectorProps) => {
@@ -79,6 +85,24 @@ const ImageSelector = ({
             />
 
             <label className={classes.label}>
+                <span>Sites:</span>
+                <BaseLexiconInput
+                    id={id}
+                    cssClass={{
+                        container: classes['lexicon-container'],
+                        input: classes['lexicon-input'],
+                    }}
+                    disabled={disabled}
+                    value={sites}
+                    valueKey="Value"
+                    optionKey="Id"
+                    onValueChange={(str) => onSitesChange(id, str)}
+                    initialLexiconList={sitesOptions}
+                    getOptionLabel={(option: CodeList) => option.Value}
+                    showTooltip={false}
+                />
+            </label>
+            <label className={classes.label}>
                 <span>Findings:</span>
                 <BaseLexiconInput
                     id={id}
@@ -91,7 +115,7 @@ const ImageSelector = ({
                     valueKey="Value"
                     optionKey="Id"
                     onValueChange={(str) => onFindingsChange(id, str)}
-                    initialLexiconList={options}
+                    initialLexiconList={findingsOptions}
                     getOptionLabel={(option: CodeList) => option.Value}
                     showTooltip={false}
                 />

@@ -112,7 +112,7 @@ export interface ReportImageDataset {
     ImageSrc: string;
     IsAttachInReport: boolean;
     MappingNumber: number;
-    // DescriptionOfSites: string;
+    DescriptionOfSites: string;
     DescriptionOfFindings: string;
     ReportMark?: ReportMark;
 }

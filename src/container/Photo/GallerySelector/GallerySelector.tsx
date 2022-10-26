@@ -22,12 +22,24 @@ const GallerySelector = () => {
         imageSelectCount,
         onImageCheck,
         onFindingsChanged,
+        onSitesChanged,
         selectAllImage,
         deselectAllImage,
         onImageReorder,
     } = imageStore;
 
-    const [options] = useObjectState(optionStore.getCodeList('ImageFindings') || []);
+    const [findingsOptions] = useObjectState(
+        optionStore.getCodeList('ImageFindings', {
+            filterById: 'ERSType',
+            filterOptionKey: 'ERSType',
+        }) || [],
+    );
+    const [sitesOptions] = useObjectState(
+        optionStore.getCodeList('ImageSites', {
+            filterById: 'ERSType',
+            filterOptionKey: 'ERSType',
+        }) || [],
+    );
 
     return (
         <>
@@ -59,10 +71,13 @@ const GallerySelector = () => {
                             src={image.ImageSrc}
                             checked={image.IsAttachInReport}
                             findings={image.DescriptionOfFindings}
-                            options={options}
+                            sites={image.DescriptionOfSites}
+                            findingsOptions={findingsOptions}
+                            sitesOptions={sitesOptions}
                             markerMappingNumber={image.MappingNumber}
                             onImageCheck={onImageCheck}
                             onFindingsChange={onFindingsChanged}
+                            onSitesChange={onSitesChanged}
                             onImageReorder={onImageReorder}
                         />
                     ))}

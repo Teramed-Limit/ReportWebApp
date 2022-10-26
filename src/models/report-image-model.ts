@@ -193,6 +193,20 @@ export const ImageModel = types
             );
         };
 
+        const onSitesChanged = (sopInsUid: string, sites: string) => {
+            setReportImage(
+                self.images.map((image) => {
+                    if (image.SOPInstanceUID === sopInsUid) {
+                        return {
+                            ...image,
+                            DescriptionOfSites: sites,
+                        };
+                    }
+                    return image;
+                }),
+            );
+        };
+
         const onImageReorder = (fromIdx: number, toIdx: number) => {
             if (!fromIdx && !toIdx) {
                 return;
@@ -223,6 +237,7 @@ export const ImageModel = types
             onMarkerPlace,
             onImageCheck,
             onFindingsChanged,
+            onSitesChanged,
             onImageStateInitialize,
             selectAllImage,
             deselectAllImage,
