@@ -49,6 +49,7 @@ const SectionListView = ({ onCategoryTextChange, onCategoryFocus }: Props) => {
                             fieldComponent={
                                 <BaseTextArea
                                     rows={1}
+                                    style={{ height: '100%', overflow: 'auto' }}
                                     value={field.Text}
                                     onValueChange={(value) => onCategoryTextChange(index, value)}
                                     onFocusChange={() => onCategoryFocus(index)}
