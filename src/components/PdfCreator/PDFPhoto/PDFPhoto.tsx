@@ -34,10 +34,13 @@ const PDFPhoto = ({ imageList }: Props) => {
                             }}
                             src={image.ImageSrc}
                         />
-                        <Text style={{ ...styles.imageDesc }}>
-                            {image.MappingNumber > 0 && `${image.MappingNumber}) `}
-                            {image.DescriptionOfFindings}
+                        <Text style={styles.imageNum}>
+                            {image.MappingNumber > 0 && `${image.MappingNumber}`}
                         </Text>
+                        <View style={styles.imageDescContainer}>
+                            <Text style={styles.imageDesc}>{image.DescriptionOfSites}</Text>
+                            <Text style={styles.imageDesc}>{image.DescriptionOfFindings}</Text>
+                        </View>
                     </View>
                 );
             })}

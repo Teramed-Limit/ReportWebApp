@@ -162,6 +162,7 @@ export const styles = StyleSheet.create({
         maxWidth: '100%',
     },
     imageContainer: {
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         flexWrap: 'nowrap',
@@ -173,9 +174,28 @@ export const styles = StyleSheet.create({
         objectFit: 'contain',
         objectPosition: 'center',
     },
-    imageDesc: {
+    imageDescContainer: {
         width: '100%',
         maxWidth: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        textAlign: 'center',
         fontSize,
+    },
+    imageNum: {
+        fontFamily: 'Arial',
+        fontWeight: 'bold',
+        fontSize: '18px',
+        position: 'absolute',
+        color: 'white',
+        padding: '2px 8px',
+        left: 0,
+        top: 0,
+    },
+    imageDesc: {
+        textAlign: 'center',
+        display: 'flex',
+        width: '100%',
+        maxWidth: '100%',
     },
 });

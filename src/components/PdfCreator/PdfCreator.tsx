@@ -98,6 +98,11 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
             const sortImages = resizeImageList?.sort((a, b) => {
                 const numA = +a.MappingNumber;
                 const numB = +b.MappingNumber;
+
+                if (numA === 0 || numB === 0) {
+                    return 0;
+                }
+
                 if (numA < numB) {
                     return -1;
                 }
