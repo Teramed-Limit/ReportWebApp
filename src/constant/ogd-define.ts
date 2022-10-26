@@ -162,6 +162,9 @@ export const ogdDefine = {
                                         type: 'http',
                                         source: 'Procedure',
                                     },
+                                    filterCondition: {
+                                        filterById: 'ERSType',
+                                    },
                                 },
                                 {
                                     id: 'ProcedureExtra',
@@ -323,6 +326,9 @@ export const ogdDefine = {
                                     optionSource: {
                                         type: 'http',
                                         source: 'Diagnosis',
+                                    },
+                                    filterCondition: {
+                                        filterById: 'ERSType',
                                     },
                                 },
                                 {

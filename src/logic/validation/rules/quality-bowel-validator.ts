@@ -12,18 +12,24 @@ export class QualityBowelValidator extends Validator {
             };
         }
 
-        // select inadequate or any N/A
-        if (
-            documentData.QualityOfBowelPreparation === '0' ||
-            documentData.BBPS_Left === -1 ||
-            documentData.BBPS_Right === -1 ||
-            documentData.BBPS_Transverse === -1
-        ) {
+        if (documentData.QualityOfBowelPreparation === 'Inadequate') {
             return {
                 isValid: true,
                 errorMessage: '',
             };
         }
+
+        // // select inadequate or any N/A
+        // if (
+        //     documentData.BBPS_Left === -1 ||
+        //     documentData.BBPS_Right === -1 ||
+        //     documentData.BBPS_Transverse === -1
+        // ) {
+        //     return {
+        //         isValid: true,
+        //         errorMessage: '',
+        //     };
+        // }
 
         if (documentData.QualityBowelScore && documentData.QualityBowelScore >= 6) {
             return {

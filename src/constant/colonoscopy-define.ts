@@ -162,6 +162,9 @@ export const colonoscopyDefine = {
                                         type: 'http',
                                         source: 'Procedure',
                                     },
+                                    filterCondition: {
+                                        filterById: 'ERSType',
+                                    },
                                 },
                                 {
                                     id: 'ProcedureExtra',
@@ -324,6 +327,9 @@ export const colonoscopyDefine = {
                                         type: 'http',
                                         source: 'Diagnosis',
                                     },
+                                    filterCondition: {
+                                        filterById: 'ERSType',
+                                    },
                                 },
                                 {
                                     id: 'DiagnosisExtra',
@@ -433,10 +439,6 @@ export const colonoscopyDefine = {
                                 label: 'Colonoscopy Withdrawal Time',
                                 type: 'Number',
                                 suffix: 'Minutes',
-                                validate: {
-                                    type: 'qualityBowelMin',
-                                    params: { min: 0 },
-                                },
                             },
                             {
                                 id: 'IsCaecumReached',
@@ -445,9 +447,6 @@ export const colonoscopyDefine = {
                                 optionSource: {
                                     type: 'http',
                                     source: 'YesNo',
-                                },
-                                validate: {
-                                    type: 'qualityBowelRequired',
                                 },
                             },
                             {

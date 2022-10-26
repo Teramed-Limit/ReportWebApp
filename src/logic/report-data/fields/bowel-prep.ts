@@ -8,7 +8,7 @@ export class BowelPrep extends ReportField {
         changeValue: (id, value, state?: Partial<FormControl>) => void,
     ) => {
         let summary = '';
-        if (data.QualityOfBowelPreparation === '1') {
+        if (data.QualityOfBowelPreparation === 'Adequate') {
             summary = `Good (Clean with slight feaculent fluid)`;
         } else {
             summary = `Poor (Solid faces which obscure view)`;
