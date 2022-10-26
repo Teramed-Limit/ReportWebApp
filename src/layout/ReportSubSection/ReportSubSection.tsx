@@ -26,7 +26,11 @@ const ReportSubSection = ({ subSection, ratio, actionContext }: Props) => {
                 .filter((field) => !field.hide)
                 .map((field, idx) => {
                     return field.type === FormFieldType.Composite ? (
-                        <FormSectionCompositeField key={field.id} field={field as CompositeField} />
+                        <FormSectionCompositeField
+                            key={field.id}
+                            field={field as CompositeField}
+                            actionContext={actionContext}
+                        />
                     ) : (
                         <FormSectionFieldContainer
                             key={field.id}

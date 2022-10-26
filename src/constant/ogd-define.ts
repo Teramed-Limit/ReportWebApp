@@ -334,8 +334,17 @@ export const ogdDefine = {
                                 {
                                     id: 'DiagnosisExtra',
                                     type: 'TextArea',
+                                    orientation: 'vertical',
                                     rows: 2,
                                     placeholder: 'Other Diagnosis',
+                                    buttonBar: [
+                                        {
+                                            id: 'fillInDetails',
+                                            label: 'Fill in details',
+                                            action: 'openModal',
+                                            actionParams: { modalName: 'fillInDetails' },
+                                        },
+                                    ],
                                 },
                             ],
                         },

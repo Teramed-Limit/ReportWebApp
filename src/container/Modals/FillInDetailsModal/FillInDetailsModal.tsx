@@ -52,7 +52,12 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
     const onConfirmSelect = () => {
         let findings = '';
         findingList.forEach((findingCategory) => {
-            const section = `${findingCategory.Text}\n`;
+            let section;
+            if (isEmptyOrNil(findingCategory.Text)) {
+                section = `${findingCategory.Text}`;
+            } else {
+                section = `${findingCategory.Text}\n`;
+            }
             findings += section;
         });
         valueChanged(fieldId, findings);
@@ -85,7 +90,7 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
             setFindingList((list) => {
                 return list.map((item, updateIdx) =>
                     updateIdx === activeIndex
-                        ? { ...item, Text: `${item.Text}${value} ` }
+                        ? { ...item, Text: `${item.Text}${value}, ` }
                         : { ...item },
                 );
             });
@@ -166,7 +171,7 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
     const footer = (
         <>
             <div className={[classes.footer, classes.content, classes.left].join(' ')}>
-                Current ERS Type: {ersType}
+                Current ERS Type: {ersType}, Field: {fieldId}
             </div>
             <div className={[classes.footer, classes.content, classes.right].join(' ')}>
                 <Button theme="primary" onClick={onConfirmSelect}>
