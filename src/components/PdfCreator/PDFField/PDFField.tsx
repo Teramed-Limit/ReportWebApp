@@ -13,6 +13,7 @@ import { RadioField } from '../../../interface/radio-field';
 import { FilterCondition, SelectionField } from '../../../interface/selection-field';
 import PDFBowelScore from '../PDFFieldComponent/PDFBowelScore/PDFBowelScore';
 import { styles } from '../styles/style';
+import { isEmptyOrNil } from '../../../utils/general';
 
 interface Props {
     field: Field;
@@ -104,7 +105,8 @@ const PDFField = ({ field, formData, value, diagramUrl, getOptions }: Props) => 
     const text = (renderedField: Field, rendererValue: string) => {
         return (
             <Text style={styles.textValue}>
-                {renderedField?.prefix} {rendererValue} {renderedField?.suffix}
+                {!isEmptyOrNil(rendererValue) && renderedField?.prefix} {rendererValue}{' '}
+                {!isEmptyOrNil(rendererValue) && renderedField?.suffix}
             </Text>
         );
     };
