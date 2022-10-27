@@ -188,6 +188,7 @@ const BaseLexiconInput = ({
             onChange={onTextInputChange}
             onFocus={onFocusTrigger}
             onBlur={onBlurTrigger}
+            onDrag={(e) => e.stopPropagation()}
         />
     );
 
