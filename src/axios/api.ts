@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { AnyObject } from '../interface/anyObject';
 import { LoginResult } from '../interface/auth';
-import { CodeListMap } from '../interface/code-list';
+import { CodeList, CodeListMap } from '../interface/code-list';
 import { Diagram } from '../interface/diagram';
 import { DocumentData, ReportImageDataset } from '../interface/document-data';
 import { HkcctCode } from '../interface/hkcct';
@@ -54,9 +54,19 @@ export function fetchReportSetting(): Observable<AxiosResponse<ReportSetting>> {
     return axiosIns.get(`api/report/setting`);
 }
 
-// Code list
+// 獲取 Code list
 export function fetchCodeList(): Observable<AxiosResponse<CodeListMap>> {
     return axiosIns.get(`api/codelist`);
+}
+
+// 新增 Code list by code name
+export function insertCodeListByCodeName(codeName: string): Observable<any> {
+    return axiosIns.post(`api/codelist/codeName/${codeName}`);
+}
+
+// 刪除 Code list by code name
+export function deleteCodeListByCodeName(codeName: string): Observable<any> {
+    return axiosIns.delete(`api/codelist/codeName/${codeName}`);
 }
 
 // Report Diagram

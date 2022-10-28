@@ -44,7 +44,7 @@ export const define = {
                             id: 'RoleName',
                             label: 'Role Name',
                             type: 'Text',
-                            readOnly: true,
+                            isKey: true,
                             validate: { type: 'Required' },
                         },
                         { id: 'Description', label: 'Description', type: 'Text' },
@@ -91,7 +91,7 @@ export const define = {
                             id: 'UserID',
                             label: 'User Id',
                             type: 'Text',
-                            readOnly: true,
+                            isKey: true,
                             validate: { type: 'Required' },
                         },
                         {
@@ -112,6 +112,77 @@ export const define = {
                                 key: 'RoleName',
                                 labelKey: 'RoleName',
                             },
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    codeList: {
+        colDef: [
+            {
+                field: 'Id',
+                width: 200,
+                hide: true,
+            },
+            {
+                field: 'Label',
+                headerName: 'Label',
+                width: 200,
+                flex: 1,
+            },
+            {
+                field: 'Value',
+                headerName: 'Value',
+                width: 200,
+                flex: 1,
+            },
+            {
+                field: 'CodeName',
+                headerName: 'Code Name',
+                width: 120,
+            },
+            {
+                field: 'ParentCodeValue',
+                headerName: 'Parent Code Value',
+                width: 120,
+            },
+            {
+                field: 'OrderingIndex',
+                headerName: 'Ordering',
+                minWidth: 120,
+            },
+        ],
+        formDef: {
+            sections: [
+                {
+                    fields: [
+                        { id: 'Id', label: 'Id', type: 'Number', hide: true, isKey: true },
+                        {
+                            id: 'Label',
+                            label: 'Label',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                        },
+                        {
+                            id: 'Value',
+                            label: 'Value',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                        },
+                        {
+                            id: 'CodeName',
+                            label: 'Code Name',
+                            type: 'Text',
+                            readOnly: true,
+                            validate: { type: 'Required' },
+                        },
+                        { id: 'ParentCodeValue', label: 'Parent Code Value', type: 'Text' },
+                        {
+                            id: 'OrderingIndex',
+                            label: 'Ordering',
+                            type: 'Number',
+                            validate: { type: 'Required' },
                         },
                     ],
                 },

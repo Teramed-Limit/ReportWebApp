@@ -13,6 +13,7 @@ import { CellMapper } from './GridCell/cell-mapper';
 import classes from './GridTable.module.scss';
 
 interface TableProps {
+    domLayout?: 'normal' | 'autoHeight' | 'print';
     columnDefs: ColDef[];
     rowData: any[];
     onSelectionChanged?: (param) => void;
@@ -31,6 +32,7 @@ function isFirstColumn(params) {
 }
 
 function GridTable({
+    domLayout = 'normal',
     columnDefs,
     rowData,
     onSelectionChanged,
@@ -51,6 +53,7 @@ function GridTable({
 
     return (
         <AgGridReact
+            domLayout={domLayout}
             rowClass={cx(classes.row)}
             defaultColDef={{
                 resizable: true,

@@ -11,6 +11,7 @@ interface Props {
 }
 
 const DatePicker = React.forwardRef(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ({ field, value, onValueChange, disabled }: Props, ref: ForwardedRef<HTMLTextAreaElement>) => {
         return (
             <BaseDatePicker

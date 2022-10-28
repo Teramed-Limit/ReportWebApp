@@ -25,6 +25,10 @@ export interface Field {
     valueStyle?: Style;
 }
 
+export interface FormField extends Field {
+    isKey?: boolean;
+}
+
 export interface ButtonMeta {
     id: string;
     label: string;

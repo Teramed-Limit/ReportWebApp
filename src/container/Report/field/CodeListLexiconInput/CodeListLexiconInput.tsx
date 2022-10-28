@@ -13,8 +13,8 @@ interface Props {
     onValueChange: (value: string) => void;
     disabled: boolean;
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const CodeListLexiconInput = React.forwardRef(
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ({ field, value, onValueChange, disabled }: Props, ref) => {
         const store = useOptionStore();
 

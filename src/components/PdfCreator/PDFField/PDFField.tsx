@@ -11,9 +11,9 @@ import { Field } from '../../../interface/field';
 import { Option } from '../../../interface/option';
 import { RadioField } from '../../../interface/radio-field';
 import { FilterCondition, SelectionField } from '../../../interface/selection-field';
+import { isEmptyOrNil } from '../../../utils/general';
 import PDFBowelScore from '../PDFFieldComponent/PDFBowelScore/PDFBowelScore';
 import { styles } from '../styles/style';
-import { isEmptyOrNil } from '../../../utils/general';
 
 interface Props {
     field: Field;

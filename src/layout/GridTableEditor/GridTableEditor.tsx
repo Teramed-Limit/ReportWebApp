@@ -12,8 +12,11 @@ import { FormEditorDef } from '../../interface/form-editor-define';
 import classes from './GridTableEditor.module.scss';
 
 interface Props {
+    domLayout?: 'normal' | 'autoHeight' | 'print';
     apiPath: string;
     initFormData: any;
+    initRowData?: any[];
+    externalGetRowData?: AxiosObservable<any>;
     externalUpdateRowApi?: (formData: any) => AxiosObservable<any>;
     enableApi?: boolean;
     filterRow?: boolean;
@@ -33,8 +36,11 @@ interface Props {
 }
 
 const GridTableEditor = ({
+    domLayout = 'normal',
     apiPath,
     initFormData,
+    initRowData,
+    externalGetRowData,
     externalUpdateRowApi,
     enableApi = true,
     identityId,
@@ -54,9 +60,10 @@ const GridTableEditor = ({
 }: Props) => {
     const { gridApi, rowData, colDefs, gridReady, openEditor } = useGridTable({
         formDef,
+        initRowData,
+        externalGetRowData,
         externalUpdateRowApi,
         apiPath,
-        enableApi,
         identityId,
         subIdentityId,
         colDef,
@@ -87,6 +94,7 @@ const GridTableEditor = ({
                     )}
                 </div>
                 <GridTable
+                    domLayout={domLayout}
                     rowSelection="single"
                     columnDefs={colDefs}
                     rowData={rowData || []}

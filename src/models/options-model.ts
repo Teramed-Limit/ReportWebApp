@@ -92,9 +92,14 @@ export const OptionStoreModel = types
             ),
         );
 
+        const setCodeListMap = (data: CodeListMap) => {
+            self.codeListMap = data;
+        };
+
         return {
             // initialize,
             initializeCodeList,
+            setCodeListMap,
         };
     });
 

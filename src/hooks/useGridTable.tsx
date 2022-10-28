@@ -44,12 +44,16 @@ const gridEditActionButton = (onClick: EditRowClick): ColDef[] => [
 ];
 
 interface Props {
+    // default row data form parent, and not use fetch api to request row data
+    initRowData?: any[];
     // base api scheme, corresponds to backend api controller
     apiPath: string;
     // if api has different format, user can define their own api path
+    externalGetRowData?: AxiosObservable<any>;
+    // if api has different format, user can define their own api path
     externalUpdateRowApi?: (formData: any) => AxiosObservable<any>;
-    // use prop `enable` to control whether to get row data when the component renders
-    enableApi: boolean;
+    // if api has different format, user can define their own api path
+    externalDeleteRowApi?: () => AxiosObservable<any>;
     // following restapi
     // Create(Post) : {apiPath}/{identityId} e.g. api/role/name
     // Read(Get)   : {apiPath}/{identityId} e.g. api/role/name
@@ -73,9 +77,9 @@ interface Props {
 }
 
 export const useGridTable = ({
+    initRowData,
     formDef,
     apiPath,
-    enableApi,
     identityId,
     colDef,
     enableEdit,
@@ -83,16 +87,24 @@ export const useGridTable = ({
     addCallBack,
     updateCallBack,
     deleteCallBack,
+    externalGetRowData,
 }: Props) => {
     const gridApi = useRef<GridApi | null>(null);
     const setModal = useContext(ModalContext);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
-    const [rowData, setRowData] = useState([]);
+    const [rowData, setRowData] = useState(initRowData || []);
     const { openNotification: setNotification } = useContext(NotificationContext);
 
     // get initial rowdata from api
     const getRowData = useCallback(() => {
-        const subscription = axiosIns.get(`api/${apiPath}`).subscribe({
+        // data from parent
+        if (initRowData) {
+            setRowData(initRowData);
+            return;
+        }
+
+        const fetch$ = externalGetRowData || axiosIns.get(`api/${apiPath}`);
+        const subscription = fetch$.subscribe({
             next: (res: AxiosResponse) => {
                 setRowData(res.data);
             },
@@ -105,13 +117,12 @@ export const useGridTable = ({
             },
         });
         return () => subscription.unsubscribe();
-    }, [apiPath, setNotification]);
+    }, [apiPath, externalGetRowData, initRowData, setNotification]);
 
     // use prop `enable` to control whether to get row data when the component renders
     useEffect(() => {
-        if (!enableApi) return;
         getRowData();
-    }, [apiPath, enableApi, getRowData, setNotification]);
+    }, [getRowData]);
 
     // delete row api
     const deleteRow = useCallback(
