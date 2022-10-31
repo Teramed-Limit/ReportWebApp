@@ -337,6 +337,9 @@ export const DataModel = types
 
             // report not existed, auto set value
             if (response.data.ReportStatus === ReportStatus.Newly) {
+                // autofill studyDescription in ERSType
+                self.formData.set('ERSType', response.data.StudyDescription);
+
                 // apply local storage data, when newly report
                 if (window.localStorage.getItem(self.studyInsUID)) {
                     const tempData: DocumentData = JSON.parse(
