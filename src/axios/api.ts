@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { AnyObject } from '../interface/anyObject';
 import { LoginResult } from '../interface/auth';
-import { CodeList, CodeListMap } from '../interface/code-list';
+import { CodeListMap } from '../interface/code-list';
 import { Diagram } from '../interface/diagram';
 import { DocumentData, ReportImageDataset } from '../interface/document-data';
 import { HkcctCode } from '../interface/hkcct';

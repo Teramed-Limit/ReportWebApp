@@ -3,6 +3,7 @@ import React from 'react';
 import { ThemeProvider } from '@mui/material';
 import { Font } from '@react-pdf/renderer';
 import { Route, Switch } from 'react-router-dom';
+import { RecoilRoot } from 'recoil';
 
 import InjectAxiosInterceptors from './axios/InjectAxiosInterceptors ';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
@@ -30,18 +31,20 @@ fonts.map((font) => {
 function App() {
     return (
         <MobxStateProvider store={rootStore}>
-            <InjectAxiosInterceptors />
-            <ThemeProvider theme={rootTheme}>
-                <NotificationProvider>
-                    <ModalProvider>
-                        <Switch>
-                            <Route path="/login" component={Login} />
-                            <Route path="/" component={Main} />
-                            <Route path="*" component={NotFoundPage} />
-                        </Switch>
-                    </ModalProvider>
-                </NotificationProvider>
-            </ThemeProvider>
+            <RecoilRoot>
+                <InjectAxiosInterceptors />
+                <ThemeProvider theme={rootTheme}>
+                    <NotificationProvider>
+                        <ModalProvider>
+                            <Switch>
+                                <Route path="/login" component={Login} />
+                                <Route path="/" component={Main} />
+                                <Route path="*" component={NotFoundPage} />
+                            </Switch>
+                        </ModalProvider>
+                    </NotificationProvider>
+                </ThemeProvider>
+            </RecoilRoot>
         </MobxStateProvider>
     );
 }

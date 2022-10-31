@@ -18,7 +18,6 @@ interface Props {
     initRowData?: any[];
     externalGetRowData?: AxiosObservable<any>;
     externalUpdateRowApi?: (formData: any) => AxiosObservable<any>;
-    enableApi?: boolean;
     filterRow?: boolean;
     identityId: string;
     subIdentityId?: string;
@@ -42,7 +41,6 @@ const GridTableEditor = ({
     initRowData,
     externalGetRowData,
     externalUpdateRowApi,
-    enableApi = true,
     identityId,
     subIdentityId = '',
     filterRow = false,

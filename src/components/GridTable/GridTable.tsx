@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-alpine.css';
-import { ColDef, RowNode } from 'ag-grid-community';
+import { ColDef, FilterChangedEvent, RowNode } from 'ag-grid-community';
 import { GetRowIdFunc } from 'ag-grid-community/dist/lib/entities/gridOptions';
 import { GridReadyEvent } from 'ag-grid-community/dist/lib/events';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
@@ -24,6 +24,7 @@ interface TableProps {
     getRowId?: GetRowIdFunc;
     filterRowFunction?: (node: RowNode) => boolean;
     isFilterActivate?: () => boolean;
+    onFilterChanged?: (event: FilterChangedEvent) => void;
 }
 
 function isFirstColumn(params) {
@@ -43,6 +44,7 @@ function GridTable({
     getRowId,
     filterRowFunction,
     isFilterActivate,
+    onFilterChanged,
 }: TableProps) {
     const gridApi = useRef<GridApi | null>(null);
 
@@ -73,6 +75,7 @@ function GridTable({
             getRowId={getRowId}
             components={{ ...CellMapper }}
             tooltipShowDelay={0}
+            onFilterChanged={(e) => onFilterChanged?.(e)}
         >
             {columnDefs.map((col) => (
                 <AgGridColumn
@@ -88,6 +91,9 @@ function GridTable({
                     hide={col.hide}
                     flex={col.flex}
                     width={col.width}
+                    filter={col.filter}
+                    filterParams={col.filterParams}
+                    floatingFilter={col.floatingFilter}
                     cellStyle={col.cellStyle}
                     cellRenderer={col.cellRenderer}
                     cellRendererParams={col.cellRendererParams}
