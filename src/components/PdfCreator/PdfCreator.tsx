@@ -131,6 +131,8 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
 
     // Get signature
     useEffect(() => {
+        if (!formData.get('Endoscopist')) return;
+
         const subscription = axiosIns
             .get<UserSignature>(`api/account/signature/userId/${formData.get('Endoscopist')}`)
             .subscribe((res) => {

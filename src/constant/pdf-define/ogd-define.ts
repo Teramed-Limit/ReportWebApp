@@ -78,24 +78,28 @@ export const pdfOGDDefine = {
                         },
                         {
                             id: 'Sedation',
-                            label: 'Sedation',
-                            type: 'Composite',
-                            labelStyle: { color: '#339966' },
-                            fields: [
-                                {
-                                    id: 'SedationDrug',
-                                    type: 'CodeListSelection',
-                                    optionSource: {
-                                        type: 'http',
-                                        source: 'Sedation',
+                            type: 'Array',
+                            templateField: {
+                                id: 'Sedation',
+                                label: 'Sedation',
+                                type: 'Composite',
+                                labelStyle: { color: '#339966' },
+                                fields: [
+                                    {
+                                        id: 'SedationDrug',
+                                        type: 'CodeListSelection',
+                                        optionSource: {
+                                            type: 'http',
+                                            source: 'Sedation',
+                                        },
                                     },
-                                },
-                                {
-                                    id: 'SedationDosage',
-                                    type: 'Text',
-                                    suffix: 'mg',
-                                },
-                            ],
+                                    {
+                                        id: 'SedationDosage',
+                                        type: 'Text',
+                                        suffix: 'mg',
+                                    },
+                                ],
+                            },
                         },
                         {
                             id: 'ProceduresComposite',

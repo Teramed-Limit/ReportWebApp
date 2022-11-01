@@ -133,6 +133,10 @@ export const styles = StyleSheet.create({
     labelVertical: {
         marginBottom: 3,
     },
+    arrayFieldContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+    },
     compositeFieldContainer: {
         display: 'flex',
     },

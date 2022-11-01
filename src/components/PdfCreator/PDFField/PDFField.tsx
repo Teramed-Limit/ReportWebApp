@@ -149,7 +149,13 @@ const PDFField = ({ field, formData, value, diagramUrl, getOptions }: Props) => 
     };
 
     return (
-        <>
+        <View
+            style={{
+                ...styles.fieldSection,
+                alignItems: field.orientation === 'vertical' ? 'flex-start' : 'center',
+                flexDirection: field.orientation === 'vertical' ? 'column' : 'row',
+            }}
+        >
             {/* Label */}
             {labelRenderer(field)}
             {/* Value */}
@@ -162,7 +168,7 @@ const PDFField = ({ field, formData, value, diagramUrl, getOptions }: Props) => 
             >
                 {fieldRenderer(field, value)}
             </View>
-        </>
+        </View>
     );
 };
 
