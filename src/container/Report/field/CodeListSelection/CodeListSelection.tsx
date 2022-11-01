@@ -50,7 +50,7 @@ const CodeListSelection = React.forwardRef(
         let formatValue = coerceArray(selectedOption);
         let formatSelectedOption;
         if (selectedOption && options) {
-            formatValue = formatValue.map((str) => options.find((option) => option.label === str));
+            formatValue = formatValue.map((str) => options.find((option) => option.Value === str));
 
             // selectedOption does not in options
             formatSelectedOption = isMulti ? formatValue : formatValue[0];

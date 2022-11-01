@@ -5,6 +5,7 @@ import { Image, Text, View } from '@react-pdf/renderer';
 import { CheckboxCheckedIcon, CheckboxUnCheckedIcon } from '../../../assets';
 import { FormFieldType } from '../../../container/Report/field/field-type';
 import { CheckboxField } from '../../../interface/checkbox-field';
+import { CodeList } from '../../../interface/code-list';
 import { CompositeField } from '../../../interface/composite-field';
 import { DocumentData } from '../../../interface/document-data';
 import { Field } from '../../../interface/field';
@@ -55,7 +56,7 @@ const PDFField = ({ field, formData, value, diagramUrl, getOptions }: Props) => 
 
     const labelRenderer = (rendererField) => {
         return (
-            !field.hideLabel && (
+            !rendererField.hideLabel && (
                 <Text
                     style={{
                         ...styles.label,
@@ -76,13 +77,19 @@ const PDFField = ({ field, formData, value, diagramUrl, getOptions }: Props) => 
             const newValue = (rendererValue as string[]).join('\r\n');
             return text(rendererField, newValue);
         }
-        return text(rendererField, rendererValue);
+
+        // 一律用Label顯示
+        const foundOption: CodeList = getOptions(
+            (rendererField as SelectionField<any>).optionSource.source,
+        ).find((option: CodeList) => option.Value === rendererValue);
+        if (!foundOption) return text(rendererField, rendererValue);
+        return text(rendererField, foundOption.Label);
     };
 
     const radio = (rendererField, rendererValue) => {
-        const foundOption: Option = getOptions((field as RadioField<any>).optionSource.source).find(
-            (option: Option) => option.Name === rendererValue,
-        );
+        const foundOption: Option = getOptions(
+            (rendererField as RadioField<any>).optionSource.source,
+        ).find((option: Option) => option.Name === rendererValue);
 
         return text(rendererField, foundOption?.Code);
     };
@@ -97,7 +104,7 @@ const PDFField = ({ field, formData, value, diagramUrl, getOptions }: Props) => 
                         <Image style={{ ...styles.icon }} src={CheckboxUnCheckedIcon} />
                     )}
                 </View>
-                {text(rendererField, (field as CheckboxField).checkboxLabel)}
+                {text(rendererField, (rendererField as CheckboxField).checkboxLabel)}
             </>
         );
     };
