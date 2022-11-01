@@ -14,6 +14,7 @@ export enum FormFieldType {
     QualityBowelScore = 'QualityBowelScore',
     ReportDiagram = 'ReportDiagram',
     DatePicker = 'DatePicker',
+    Array = 'Array',
 }
 
 export const noBorderField = {

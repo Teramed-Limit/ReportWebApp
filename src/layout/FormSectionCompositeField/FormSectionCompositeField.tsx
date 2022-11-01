@@ -16,12 +16,20 @@ import classes from './FormSectionCompositeField.module.scss';
 
 interface FormSectionFieldProps {
     field: CompositeField;
+    customValueChange?: (id: string, text: string) => void;
+    customValueGetter?: (id: string) => string;
     actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
+    prefixComp?: JSX.Element | null;
+    suffixComp?: JSX.Element | null;
 }
 
 const FormSectionCompositeField = ({
     field: compositeField,
+    customValueChange,
+    customValueGetter,
     actionContext,
+    prefixComp,
+    suffixComp,
 }: FormSectionFieldProps) => {
     const { formState, formData, reportDisabled } = useReportDataStore();
 
@@ -80,7 +88,9 @@ const FormSectionCompositeField = ({
                     style={compositeField.labelStyle as CSSProperties}
                     className={classes[`section-field-label`]}
                 >
+                    {prefixComp}
                     <span>{compositeField.label}</span>
+                    {suffixComp}
                 </span>
             ) : null}
 
@@ -99,7 +109,7 @@ const FormSectionCompositeField = ({
                     };
                     return (
                         <FormSectionField
-                            key={field.id}
+                            key={`${field.id}`}
                             id={field.id}
                             label=""
                             orientation={field.orientation}
@@ -113,7 +123,13 @@ const FormSectionCompositeField = ({
                             errorMessage={errorMessage}
                             disabled={reportDisabled}
                             noBorder={noBorderField[field.type]}
-                            fieldComponent={<ReportDynamicField field={field} />}
+                            fieldComponent={
+                                <ReportDynamicField
+                                    field={field}
+                                    customValueChange={customValueChange}
+                                    customValueGetter={customValueGetter}
+                                />
+                            }
                         />
                     );
                 })}

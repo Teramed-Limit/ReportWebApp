@@ -14,11 +14,23 @@ import classes from './FormSectionFieldContainer.module.scss';
 
 interface FormSectionFieldProps {
     field: Field;
+    customValueChange?: (id: string, text: string) => void;
+    customValueGetter?: (id: string) => string;
     ratio: string;
     actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
+    prefixComp?: JSX.Element | null;
+    suffixComp?: JSX.Element | null;
 }
 
-const FormSectionFieldContainer = ({ field, ratio, actionContext }: FormSectionFieldProps) => {
+const FormSectionFieldContainer = ({
+    field,
+    customValueChange,
+    customValueGetter,
+    ratio,
+    actionContext,
+    prefixComp,
+    suffixComp,
+}: FormSectionFieldProps) => {
     const actionDispatcher = useContext(actionContext);
     const { openNotification } = useContext(NotificationContext);
     const inputRef = useRef();
@@ -66,23 +78,34 @@ const FormSectionFieldContainer = ({ field, ratio, actionContext }: FormSectionF
         );
 
     return (
-        <FormSectionField
-            id={field.id}
-            label={field.label}
-            labelStyle={field?.labelStyle as CSSProperties}
-            ratio={ratio}
-            orientation={field.orientation}
-            hideLabelSection={field.hideLabel}
-            readOnly={!!field.readOnly}
-            hasValidation={!!field.validate}
-            isDirty={isDirty}
-            isValid={isValid}
-            errorMessage={errorMessage}
-            disabled={reportDisabled}
-            noBorder={noBorderField[field.type]}
-            buttonBarComponent={buttonBarComponent}
-            fieldComponent={<ReportDynamicField ref={inputRef} field={field} />}
-        />
+        <>
+            {prefixComp}
+            <FormSectionField
+                id={field.id}
+                label={field.label}
+                labelStyle={field?.labelStyle as CSSProperties}
+                ratio={ratio}
+                orientation={field.orientation}
+                hideLabelSection={field.hideLabel}
+                readOnly={!!field.readOnly}
+                hasValidation={!!field.validate}
+                isDirty={isDirty}
+                isValid={isValid}
+                errorMessage={errorMessage}
+                disabled={reportDisabled}
+                noBorder={noBorderField[field.type]}
+                buttonBarComponent={buttonBarComponent}
+                fieldComponent={
+                    <ReportDynamicField
+                        ref={inputRef}
+                        field={field}
+                        customValueChange={customValueChange}
+                        customValueGetter={customValueGetter}
+                    />
+                }
+            />
+            {suffixComp}
+        </>
     );
 };
 
