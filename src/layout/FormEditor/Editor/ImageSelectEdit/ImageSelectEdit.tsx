@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Stack, TextField } from '@mui/material';
 
@@ -23,7 +23,7 @@ const ImageSelectEdit = ({
     onValueChanged,
 }: Props) => {
     const [isDirty, setDirty] = useState(false);
-    const [imageSrc, setImageSrc] = useState<string>(`data:image/png;base64, ${value}`);
+    const [imageSrc, setImageSrc] = useState<string>(value);
     const [validationMsg] = useState(
         field.validate ? `- ${ValidationMessage[field.validate?.type]}` : '',
     );
@@ -42,6 +42,14 @@ const ImageSelectEdit = ({
             };
         });
     };
+
+    useEffect(() => {
+        if (/^(f|ht)tps?:\/\//i.test(value)) {
+            setImageSrc(value);
+            return;
+        }
+        setImageSrc(`data:image/jpg;base64, ${value}`);
+    }, [value]);
 
     return (
         <Stack direction="row" spacing={1} sx={{ alignItems: 'center' }}>

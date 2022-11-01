@@ -16,7 +16,7 @@ interface Props extends ICellRendererParams {
 
 const ImageCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
     const setModal = useContext(ModalContext);
-    const [imageSrc, setImageSrc] = useState<string>(`data:image/jpg;base64, ${props.value}`);
+    const [imageSrc, setImageSrc] = useState<string>(props.value);
 
     useImperativeHandle(ref, () => ({
         getReactContainerStyle() {
@@ -29,6 +29,10 @@ const ImageCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
     }));
 
     useEffect(() => {
+        if (/^(f|ht)tps?:\/\//i.test(props.value)) {
+            setImageSrc(props.value);
+            return;
+        }
         setImageSrc(`data:image/jpg;base64, ${props.value}`);
     }, [props.value]);
 
