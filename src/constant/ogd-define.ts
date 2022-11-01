@@ -202,6 +202,9 @@ export const ogdDefine = {
                                 type: 'http',
                                 source: 'Doctor',
                             },
+                            validate: {
+                                type: 'required',
+                            },
                             labelStyle: { color: '#339966' },
                         },
                         {
@@ -211,6 +214,9 @@ export const ogdDefine = {
                             optionSource: {
                                 type: 'http',
                                 source: 'Doctor',
+                            },
+                            validate: {
+                                type: 'required',
                             },
                             labelStyle: { color: '#339966' },
                         },
