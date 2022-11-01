@@ -125,6 +125,13 @@ export const define = {
                 width: 200,
             },
             {
+                field: 'SignatureBase64',
+                headerName: 'Signature',
+                width: 120,
+                cellRenderer: 'imageRowRenderer',
+                cellRendererParams: { type: 'base64' },
+            },
+            {
                 field: 'RoleList',
                 headerName: 'Role Group',
                 width: 200,
@@ -151,6 +158,7 @@ export const define = {
                         },
                         { id: 'DoctorCName', label: 'User CName', type: 'Text' },
                         { id: 'DoctorEName', label: 'User EName', type: 'Text' },
+                        { id: 'SignatureBase64', label: 'Signature', type: 'ImageSelect' },
                         {
                             id: 'RoleList',
                             label: 'Role Group',
