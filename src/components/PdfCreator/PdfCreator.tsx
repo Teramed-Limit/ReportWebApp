@@ -7,6 +7,7 @@ import Resizer from 'react-image-file-resizer';
 
 import { axiosIns } from '../../axios/axios';
 import { ReportImageDataset } from '../../interface/document-data';
+import { UserSignature } from '../../interface/user-signature';
 import {
     useOptionStore,
     useReportDataStore,
@@ -32,7 +33,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
     const [loading, setLoading] = useState(true);
     const [images, setImages] = useState<ReportImageDataset[] | undefined>(undefined);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
-    const [signatureUrl, setSignatureUrl] = useState<string | undefined>(undefined);
+    const [signatureData, setSignatureData] = useState<UserSignature | undefined>(undefined);
     const [diagramUrl, setDiagramUrl] = useState<string | undefined>(undefined);
     const [reportName] = useState<string>(
         getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
@@ -123,18 +124,21 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
         return () => subscription.unsubscribe();
     }, []);
 
-    // Get signature
+    // Get diagram
     useEffect(() => {
         setDiagramUrl(exportDiagramUrl());
     }, [exportDiagramUrl]);
 
-    // Get diagram
+    // Get signature
     useEffect(() => {
         const subscription = axiosIns
-            .get<string>('api/signature')
-            .subscribe((res) => setSignatureUrl(`${res.data}?${new Date()}`));
+            .get<UserSignature>(`api/account/signature/userId/${formData.get('Endoscopist')}`)
+            .subscribe((res) => {
+                setSignatureData(res.data);
+            });
+
         return () => subscription.unsubscribe();
-    }, []);
+    }, [formData]);
 
     return (
         <Box
@@ -151,7 +155,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                     <Spinner />
                 </Block>
             )}
-            {images && logoUrl && signatureUrl && diagramUrl && (
+            {images && logoUrl && signatureData && diagramUrl && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
                         title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}
@@ -160,7 +164,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                         onRender={onPdfRender}
                     >
                         <PDFPage
-                            signatureUrl={signatureUrl}
+                            signatureData={signatureData}
                             logoUrl={logoUrl}
                             reportName={reportName}
                         >
