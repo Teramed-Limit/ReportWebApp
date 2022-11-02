@@ -15,7 +15,7 @@ export class BowelPrep extends ReportField {
         }
         changeValue(
             'OtherDescription',
-            `${summary}\r\nBPPS ${data.BBPS_Right}+${data.BBPS_Transverse}+${data.BBPS_Left}`,
+            `${summary}\r\nBBPS ${data.BBPS_Right}+${data.BBPS_Transverse}+${data.BBPS_Left}`,
         );
     };
 }
