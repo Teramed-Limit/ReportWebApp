@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { AnyObject } from '../interface/anyObject';
 import { LoginResult } from '../interface/auth';
 import { CodeListMap } from '../interface/code-list';
+import { FormDefineMap } from '../interface/define';
 import { Diagram } from '../interface/diagram';
 import { DocumentData, ReportImageDataset } from '../interface/document-data';
 import { HkcctCode } from '../interface/hkcct';
@@ -13,10 +14,6 @@ import { ReportSetting } from '../interface/report-setting';
 import { Study } from '../interface/study';
 import { StudyData } from '../interface/study-data';
 import { axiosIns } from './axios';
-
-// export function fetchReportDefine(): Observable<AxiosResponse> {
-//     return axiosIns.get(`getReportDefine`);
-// }
 
 export function login(username: string, password: string): Observable<AxiosResponse<LoginResult>> {
     return axiosIns.post<LoginResult>(`api/login`, {
@@ -35,6 +32,10 @@ export function refreshToken(token: string, userName: string) {
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {
     return axiosIns.get<DocumentData>(`api/standard/report/studyInstanceUID/${studyInsUid}`);
+}
+
+export function fetchReportDefine(): Observable<AxiosResponse<FormDefineMap>> {
+    return axiosIns.get(`api/standard/report/define`);
 }
 
 export function saveReport(body): Observable<AxiosResponse<AnyObject>> {

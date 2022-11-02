@@ -4,11 +4,10 @@ import { observer } from 'mobx-react';
 
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
-import { colonoscopyDefine } from '../../../constant/colonoscopy-define';
 import { ModalContext } from '../../../context/modal-context';
 import { Section } from '../../../interface/define';
 import ReportSection from '../../../layout/ReportSection/ReportSection';
-import { useReportDataStore } from '../../../models/useStore';
+import { useReportDataStore, useReportDefineStore } from '../../../models/useStore';
 import classes from '../../Report/Report.module.scss';
 
 const DialogContext = React.createContext<{ [propName: string]: (actionParams) => void }>({});
@@ -16,6 +15,7 @@ const DialogContext = React.createContext<{ [propName: string]: (actionParams) =
 const QualityIndicatorModal = () => {
     const setModal = useContext(ModalContext);
     const [disabled, setDisabled] = useState(true);
+    const { formDefine } = useReportDefineStore();
     const {
         qualityModelIsValid,
         formData,
@@ -47,9 +47,14 @@ const QualityIndicatorModal = () => {
 
     const body = (
         <div className={classes.container}>
-            {colonoscopyDefine.modal.sections.map((section: Section) => (
-                <ReportSection key={section.id} section={section} actionContext={DialogContext} />
-            ))}
+            {formDefine?.modal &&
+                formDefine.modal.sections.map((section: Section) => (
+                    <ReportSection
+                        key={section.id}
+                        section={section}
+                        actionContext={DialogContext}
+                    />
+                ))}
         </div>
     );
 

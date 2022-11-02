@@ -25,12 +25,13 @@ const Report = () => {
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
     const { reportStatus, modifiable, fetchReport } = useReportDataStore();
+    const { loading: fetchDefineLoading } = useReportDefineStore();
     const { loading: fetchOptionsLoading } = useOptionStore();
     const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
 
     useEffect(() => {
-        // wait options ready
-        if (fetchOptionsLoading) return;
+        // wait ready
+        if (fetchOptionsLoading || fetchDefineLoading) return;
         fetchReport(studyInstanceUID, (signal$) =>
             signal$.pipe(
                 tap(({ notification }) => {
@@ -41,7 +42,14 @@ const Report = () => {
                 }),
             ),
         );
-    }, [fetchOptionsLoading, fetchReport, history, showNotifyMsg, studyInstanceUID]);
+    }, [
+        fetchOptionsLoading,
+        fetchDefineLoading,
+        fetchReport,
+        history,
+        showNotifyMsg,
+        studyInstanceUID,
+    ]);
 
     return (
         <>

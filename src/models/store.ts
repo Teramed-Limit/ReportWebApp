@@ -1,6 +1,5 @@
 import { format } from 'date-fns';
 
-import { standardDefine } from '../constant/standard-define';
 import { LoginResult } from '../interface/auth';
 import { ReportDataService } from '../logic/report-data/report-data-service';
 import { ReportDefineService } from '../logic/report-define/report-define-service';
@@ -19,7 +18,7 @@ export function createStore() {
                 refreshToken: user?.RefreshToken,
                 loginUser: user?.UserName,
             },
-            defineStore: { formDefine: standardDefine },
+            defineStore: {},
             dataStore: { loading: false },
             imageStore: {
                 images: [],

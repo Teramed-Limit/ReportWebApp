@@ -33,6 +33,7 @@ export const RootStoreModel = types
             afterCreate() {
                 // self.optionStore.initialize().then();
                 self.optionStore.initializeCodeList().then();
+                self.defineStore.fetchDefine().then();
             },
         };
     });

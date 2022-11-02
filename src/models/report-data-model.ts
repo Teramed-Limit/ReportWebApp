@@ -10,6 +10,7 @@ import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
+import { RegisterReportDefineMap } from '../logic/report-define/report-define-service';
 import { isEmptyOrNil } from '../utils/general';
 
 const dateModel = types.union(types.frozen<DocumentData>());
@@ -102,7 +103,8 @@ export const DataModel = types
                     ...validate(targetId, targetValue),
                     ...staticState,
                 });
-                setFormDefine(self.formData.toJSON());
+
+                if (targetId === 'ERSType') setFormDefine(self.formData.toJSON());
             };
             changeValue(id, value);
             reportDataService.inject(id);
@@ -110,9 +112,13 @@ export const DataModel = types
         };
 
         const validate = (id: string, value: any): FormControl => {
-            const field = reportDefineService.getField(id);
-            const validateRules = field?.validate;
             const state = { isDirty: true, isValid: true, errorMessage: '', fromModal: '' };
+
+            const field = reportDefineService.getField(id);
+            if (!field) return state;
+
+            const validateRules = field?.validate;
+
             if (!validateRules) {
                 return state;
             }
@@ -131,10 +137,11 @@ export const DataModel = types
             };
         };
 
-        const initialFormControl = (documentData: DocumentData) => {
+        const initialFormControl = () => {
             const initialState = {};
+            const documentData = self.formData.toJSON();
 
-            Object.keys(documentData).forEach((key) => {
+            Object.keys(self.formData.toJSON()).forEach((key) => {
                 const state = { isDirty: false, isValid: true, errorMessage: '', fromModal: '' };
 
                 const field = reportDefineService.getField(key);
@@ -181,7 +188,7 @@ export const DataModel = types
                 newFormState[key] = { ...state, isDirty: true };
 
                 if (!state.isValid) {
-                    console.error(key);
+                    console.error(`${key}: ${state.errorMessage}`);
                 }
             });
 
@@ -325,9 +332,6 @@ export const DataModel = types
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
             const { defineStore, imageStore, authStore } = getRoot(self);
 
-            // register selected study
-            // self.activeStudy = selectedStudyData;
-
             // set initialize data
             response.data.OwnerId = authStore.loginUser;
             response.data.Author = authStore.loginUser;
@@ -338,7 +342,12 @@ export const DataModel = types
             // report not existed, auto set value
             if (response.data.ReportStatus === ReportStatus.Newly) {
                 // autofill studyDescription in ERSType
-                self.formData.set('ERSType', response.data.StudyDescription);
+                if (
+                    response.data.StudyDescription &&
+                    RegisterReportDefineMap[response.data.StudyDescription]
+                ) {
+                    self.formData.set('ERSType', response.data.StudyDescription);
+                }
 
                 // apply local storage data, when newly report
                 if (window.localStorage.getItem(self.studyInsUID)) {
@@ -353,7 +362,7 @@ export const DataModel = types
             // initialize form control
             defineStore.setFormDefine(self.formData.toJSON());
             self.reportHasChanged = false;
-            self.initialFormControl(self.formData.toJSON());
+            self.initialFormControl();
             self.loading = false;
             self.reportReady = 'success';
         };
