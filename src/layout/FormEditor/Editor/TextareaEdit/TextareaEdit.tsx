@@ -2,11 +2,11 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { TextField } from '@mui/material';
 
-import { Field } from '../../../../interface/field';
+import { FormField } from '../../../../interface/form-editor-define';
 import { ValidationMessage } from '../validationMapper';
 
 interface Props {
-    field: Field;
+    field: FormField;
     value: string;
     isValid: boolean;
     autoFocus: boolean;

@@ -8,8 +8,7 @@ export interface Field {
     type: string;
     size?: string;
     readOnly?: boolean;
-    orientation?: string;
-    compositeOrientation?: string;
+    orientation: 'column' | 'row';
     multiple?: boolean;
     buttonBar?: ButtonMeta[];
     suffix?: string;
@@ -23,10 +22,6 @@ export interface Field {
     placeholder?: string;
     labelStyle?: Style;
     valueStyle?: Style;
-}
-
-export interface FormField extends Field {
-    isKey?: boolean;
 }
 
 export interface ButtonMeta {

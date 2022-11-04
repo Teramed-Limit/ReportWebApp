@@ -2,8 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { Box } from '@mui/material';
 
-import { FormField } from '../../interface/field';
-import { FormEditorDef } from '../../interface/form-editor-define';
+import { FormEditorDef, FormField } from '../../interface/form-editor-define';
 import { EditorMapper } from './Editor/editorMapper';
 import { ValidationMapper } from './Editor/validationMapper';
 import classes from './FormEditor.module.scss';

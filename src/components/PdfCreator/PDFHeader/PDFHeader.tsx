@@ -12,15 +12,15 @@ interface Props {
 
 const PDFHeader = ({ logoUrl, reportName }: Props) => {
     return (
-        <View fixed>
-            <View style={styles.header}>
+        <>
+            <View style={styles.header} fixed>
                 {!isEmptyOrNil(logoUrl) && <Image style={styles.hospitalLogo} src={logoUrl} />}
                 <View style={styles.headerReportContainer}>
                     <Text style={styles.headerReport}>{reportName}</Text>
                 </View>
             </View>
-            <View style={styles.divider} />
-        </View>
+            <View style={styles.divider} fixed />
+        </>
     );
 };
 

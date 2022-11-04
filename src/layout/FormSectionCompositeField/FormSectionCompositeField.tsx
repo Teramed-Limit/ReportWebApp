@@ -1,18 +1,26 @@
 import React, { CSSProperties, useContext, useRef } from 'react';
 
-import cx from 'classnames';
+import { Box, Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 
 import Button from '../../components/UI/Button/Button';
 import { noBorderField } from '../../container/Report/field/field-type';
+import FormSectionFieldLabel from '../../container/Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
 import ReportDynamicField from '../../container/Report/ReportDynamicField/ReportDynamicField';
 import { NotificationContext } from '../../context/notification-context';
 import { BaseActionParams } from '../../interface/action';
 import { CompositeField } from '../../interface/composite-field';
 import { Field } from '../../interface/field';
 import { useReportDataStore } from '../../models/useStore';
+import {
+    fieldSectionValue,
+    compositeFieldSpacing,
+    fieldButtonBar,
+    fieldGutter,
+    fieldSectionContainer,
+    fieldFlex,
+} from '../../styles/report/style';
 import FormSectionField from '../FormSectionField/FormSectionField';
-import classes from './FormSectionCompositeField.module.scss';
 
 interface FormSectionFieldProps {
     field: CompositeField;
@@ -54,7 +62,7 @@ const FormSectionCompositeField = ({
 
     const buttonBarComponent = (field: Field) =>
         field.buttonBar === undefined ? null : (
-            <div className={classes.buttonBar}>
+            <Stack sx={fieldButtonBar} spacing={1}>
                 {field.buttonBar
                     .filter((buttonMeta) => !buttonMeta.hide)
                     .map((buttonMeta) => (
@@ -72,34 +80,36 @@ const FormSectionCompositeField = ({
                             {buttonMeta.label}
                         </Button>
                     ))}
-            </div>
+            </Stack>
         );
 
     return (
-        <div
-            id={`formSectionComposite__${compositeField.id}`}
-            className={cx(classes[`input-wrapper`])}
-            style={{
-                flexDirection: compositeField.orientation === 'vertical' ? 'column' : 'row',
+        <Box
+            id={`formSectionCompositeContainer__${compositeField.id}`}
+            sx={{
+                ...fieldSectionContainer,
+                flexDirection: compositeField.orientation,
+                padding: fieldGutter,
             }}
         >
-            {compositeField.label ? (
-                <span
-                    style={compositeField.labelStyle as CSSProperties}
-                    className={classes[`section-field-label`]}
-                >
-                    {prefixComp}
-                    <span>{compositeField.label}</span>
-                    {suffixComp}
-                </span>
-            ) : null}
-
-            <div
-                className={classes.compositeContainer}
-                style={{
-                    flexDirection:
-                        compositeField.compositeOrientation === 'vertical' ? 'column' : 'row',
-                }}
+            {/* Label */}
+            <FormSectionFieldLabel
+                id={compositeField.id}
+                label={compositeField.label}
+                labelStyle={compositeField.labelStyle as CSSProperties}
+                orientation={compositeField.orientation}
+                hint={compositeField.hint}
+                hideLabelSection={compositeField.hideLabel}
+                hasValidation={!!compositeField.validate}
+                prefixComp={prefixComp}
+                suffixComp={suffixComp}
+            />
+            {/* Value */}
+            <Stack
+                spacing={compositeFieldSpacing}
+                sx={[fieldSectionValue, fieldFlex.value[compositeField.orientation]]}
+                direction={compositeField.compositeOrientation}
+                style={{ flexDirection: compositeField.compositeOrientation }}
             >
                 {compositeField.fields.map((field: Field) => {
                     const { isDirty, isValid, errorMessage } = formState.get(field.id) || {
@@ -111,12 +121,8 @@ const FormSectionCompositeField = ({
                         <FormSectionField
                             key={`${field.id}`}
                             id={field.id}
-                            label=""
                             orientation={field.orientation}
-                            labelStyle={field?.labelStyle as CSSProperties}
-                            hideLabelSection
                             readOnly={!!field.readOnly}
-                            hasValidation={!!field.validate}
                             isDirty={isDirty}
                             isValid={isValid}
                             buttonBarComponent={buttonBarComponent(field)}
@@ -133,8 +139,8 @@ const FormSectionCompositeField = ({
                         />
                     );
                 })}
-            </div>
-        </div>
+            </Stack>
+        </Box>
     );
 };
 

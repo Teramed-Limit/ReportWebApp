@@ -41,7 +41,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
     );
 
     const resizeImage = (url) => {
-        return fetch(`${url}?${new Date()}`)
+        return fetch(url)
             .then((response) => response.blob())
             .then((blob: Blob) => {
                 return new Promise<string>((resolve) => {
@@ -119,7 +119,7 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
     // Get hospital logo
     useEffect(() => {
         const subscription = axiosIns.get<string>('api/logo').subscribe((res) => {
-            setLogoUrl(`${res.data}?${new Date()}`);
+            setLogoUrl(res.data);
         });
         return () => subscription.unsubscribe();
     }, []);

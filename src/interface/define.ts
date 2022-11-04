@@ -22,17 +22,15 @@ export interface Section {
     type: string;
     divider?: boolean;
     maxWidth?: string;
-    ratio: string[];
     subSections: SubSection[];
+}
+export interface SubSection {
+    id: string;
+    maxWidth?: string;
+    fields: Field[];
 }
 
 export interface ModalSection {
     modalName: string;
     sections: Section[];
-}
-
-export interface SubSection {
-    id: string;
-    ratio: string[];
-    fields: Field[];
 }

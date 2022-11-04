@@ -2,6 +2,7 @@ import { StyleSheet } from '@react-pdf/renderer';
 
 // Common
 export const fontSize = 10;
+export const footerHeight = '92px';
 
 // Style
 export const styles = StyleSheet.create({
@@ -9,7 +10,7 @@ export const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: 'white',
         padding: '14px',
-        paddingBottom: '88px',
+        paddingBottom: footerHeight,
         fontFamily: 'Arial',
     },
     pageNumber: {
@@ -23,7 +24,7 @@ export const styles = StyleSheet.create({
     },
     header: {
         width: '100%',
-        height: '68',
+        minHeight: '68px',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
@@ -99,64 +100,6 @@ export const styles = StyleSheet.create({
         objectFit: 'contain',
         objectPosition: 'center',
     },
-    contentContainer: {
-        maxWidth: '100%',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    section: {
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    subSection: {
-        maxWidth: '100%',
-        width: '100%',
-        display: 'flex',
-    },
-    fieldSection: {
-        display: 'flex',
-        flexWrap: 'nowrap',
-        margin: '2px 0',
-    },
-    // Label
-    label: {
-        fontSize,
-        fontWeight: 'bold',
-    },
-    labelHorizontal: {
-        flex: '1 1 35%',
-    },
-    labelVertical: {
-        marginBottom: 3,
-    },
-    arrayFieldContainer: {
-        display: 'flex',
-        flexDirection: 'column',
-    },
-    compositeFieldContainer: {
-        display: 'flex',
-    },
-    compositeField: {
-        flex: '1 1 100%',
-        width: '100%',
-    },
-    // Text value
-    textValue: {
-        fontFamily: 'MicrosoftBlack',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize,
-        color: '#3a464d',
-    },
-    textValueHorizontal: {
-        flex: '1 1 65%',
-        padding: '0 2px',
-    },
-    textValueVertical: {},
     // Image
     gallery: {
         display: 'flex',
@@ -177,6 +120,7 @@ export const styles = StyleSheet.create({
         maxWidth: '100%',
         objectFit: 'contain',
         objectPosition: 'center',
+        height: 'auto',
     },
     imageDescContainer: {
         width: '100%',
@@ -192,7 +136,7 @@ export const styles = StyleSheet.create({
         fontSize: '18px',
         position: 'absolute',
         color: 'white',
-        padding: '2px 8px',
+        padding: '4px',
         left: 0,
         top: 0,
     },

@@ -12,11 +12,11 @@ import {
 } from '@mui/material';
 
 import { useSelectOptions } from '../../../../hooks/useSelectOptions';
-import { SelectionField } from '../../../../interface/selection-field';
+import { FormSelectionField } from '../../../../interface/form-editor-define';
 import classes from './MultiSelect.module.scss';
 
 interface Props {
-    field: SelectionField<any>;
+    field: FormSelectionField;
     value: string[];
     readOnly?: boolean;
     autoFocus: boolean;

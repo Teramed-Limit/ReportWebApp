@@ -7,11 +7,11 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
-import { Field } from '../../../../interface/field';
+import { FormField } from '../../../../interface/form-editor-define';
 import { dateToStr, isEmptyOrNil, strToDate } from '../../../../utils/general';
 
 interface Props {
-    field: Field;
+    field: FormField;
     value: string;
     autoFocus: boolean;
     readOnly?: boolean;

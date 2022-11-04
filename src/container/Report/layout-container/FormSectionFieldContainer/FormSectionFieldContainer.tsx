@@ -1,5 +1,6 @@
 import React, { CSSProperties, useContext, useRef } from 'react';
 
+import { Box, Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 
 import Button from '../../../../components/UI/Button/Button';
@@ -8,15 +9,19 @@ import { BaseActionParams } from '../../../../interface/action';
 import { Field } from '../../../../interface/field';
 import FormSectionField from '../../../../layout/FormSectionField/FormSectionField';
 import { useReportDataStore } from '../../../../models/useStore';
+import {
+    fieldButtonBar,
+    fieldGutter,
+    fieldSectionContainer,
+} from '../../../../styles/report/style';
 import { noBorderField } from '../../field/field-type';
 import ReportDynamicField from '../../ReportDynamicField/ReportDynamicField';
-import classes from './FormSectionFieldContainer.module.scss';
+import FormSectionFieldLabel from '../FormSectionFieldLabel/FormSectionFieldLabel';
 
 interface FormSectionFieldProps {
     field: Field;
     customValueChange?: (id: string, text: string) => void;
     customValueGetter?: (id: string) => string;
-    ratio: string;
     actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
     prefixComp?: JSX.Element | null;
     suffixComp?: JSX.Element | null;
@@ -26,7 +31,6 @@ const FormSectionFieldContainer = ({
     field,
     customValueChange,
     customValueGetter,
-    ratio,
     actionContext,
     prefixComp,
     suffixComp,
@@ -59,7 +63,7 @@ const FormSectionFieldContainer = ({
 
     const buttonBarComponent =
         field.buttonBar === undefined ? null : (
-            <div className={classes.buttonBar}>
+            <Stack sx={fieldButtonBar} spacing={1}>
                 {field.buttonBar
                     .filter((buttonMeta) => !buttonMeta.hide)
                     .map((buttonMeta) => (
@@ -74,21 +78,35 @@ const FormSectionFieldContainer = ({
                             {buttonMeta.label}
                         </Button>
                     ))}
-            </div>
+            </Stack>
         );
 
     return (
-        <>
-            {prefixComp}
-            <FormSectionField
+        <Box
+            id={`formSectionFieldContainer__${field.id}`}
+            sx={{
+                ...fieldSectionContainer,
+                flexDirection: field.orientation,
+                padding: fieldGutter,
+            }}
+        >
+            {/* Label */}
+            <FormSectionFieldLabel
                 id={field.id}
                 label={field.label}
-                labelStyle={field?.labelStyle as CSSProperties}
-                ratio={ratio}
+                labelStyle={field.labelStyle as CSSProperties}
                 orientation={field.orientation}
+                hint={field.hint}
                 hideLabelSection={field.hideLabel}
-                readOnly={!!field.readOnly}
                 hasValidation={!!field.validate}
+                prefixComp={prefixComp}
+                suffixComp={suffixComp}
+            />
+            {/* Value */}
+            <FormSectionField
+                id={field.id}
+                orientation={field.orientation}
+                readOnly={!!field.readOnly}
                 isDirty={isDirty}
                 isValid={isValid}
                 errorMessage={errorMessage}
@@ -104,8 +122,7 @@ const FormSectionFieldContainer = ({
                     />
                 }
             />
-            {suffixComp}
-        </>
+        </Box>
     );
 };
 

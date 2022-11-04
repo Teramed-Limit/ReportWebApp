@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -13,6 +13,7 @@ import { ReportStatus } from '../../interface/document-data';
 import { MessageType } from '../../interface/notification';
 import ReportSection from '../../layout/ReportSection/ReportSection';
 import { useOptionStore, useReportDataStore, useReportDefineStore } from '../../models/useStore';
+import { reportPage } from '../../styles/report/style';
 import Photo from '../Photo/Photo';
 import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
 import ReportViewActionBar from './report-action-bar/ReportViewActionBar/ReportViewActionBar';
@@ -64,15 +65,17 @@ const Report = () => {
                     </Stack>
                 </div>
                 <div className={classes.reportLayout}>
-                    {formDefine.sections
-                        .filter((section: Section) => !section.hide)
-                        .map((section: Section) => (
-                            <ReportSection
-                                key={section.id}
-                                section={section}
-                                actionContext={ReportActionContext}
-                            />
-                        ))}
+                    <Box sx={reportPage}>
+                        {formDefine.sections
+                            .filter((section: Section) => !section.hide)
+                            .map((section: Section) => (
+                                <ReportSection
+                                    key={section.id}
+                                    section={section}
+                                    actionContext={ReportActionContext}
+                                />
+                            ))}
+                    </Box>
                 </div>
             </ReportActionProvider>
 

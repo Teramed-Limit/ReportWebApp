@@ -1,32 +1,27 @@
 import React from 'react';
 
+import { Box } from '@mui/material';
+
 import { FormFieldType } from '../../container/Report/field/field-type';
 import FormSectionFieldContainer from '../../container/Report/layout-container/FormSectionFieldContainer/FormSectionFieldContainer';
 import { ArrayField } from '../../interface/array-field';
 import { CompositeField } from '../../interface/composite-field';
 import { SubSection } from '../../interface/define';
+import { reportSubsection } from '../../styles/report/style';
 import FormSectionArrayField from '../FormSectionArrayField/FormSectionArrayField';
 import FormSectionCompositeField from '../FormSectionCompositeField/FormSectionCompositeField';
-import classes from './ReportSubSection.module.scss';
 
 interface Props {
     subSection: SubSection;
-    ratio: string;
     actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
 }
 
-const ReportSubSection = ({ subSection, ratio, actionContext }: Props) => {
+const ReportSubSection = ({ subSection, actionContext }: Props) => {
     return (
-        <div
-            id={subSection.id}
-            className={classes[`subSection-wrapper`]}
-            style={{
-                maxWidth: ratio,
-            }}
-        >
+        <Box id={subSection.id} sx={reportSubsection} style={{ maxWidth: subSection?.maxWidth }}>
             {subSection.fields
                 .filter((field) => !field.hide)
-                .map((field, idx) => {
+                .map((field) => {
                     switch (field.type) {
                         case FormFieldType.Composite:
                             return (
@@ -48,14 +43,13 @@ const ReportSubSection = ({ subSection, ratio, actionContext }: Props) => {
                             return (
                                 <FormSectionFieldContainer
                                     key={field.id}
-                                    ratio={subSection.ratio[idx]}
                                     field={field}
                                     actionContext={actionContext}
                                 />
                             );
                     }
                 })}
-        </div>
+        </Box>
     );
 };
 

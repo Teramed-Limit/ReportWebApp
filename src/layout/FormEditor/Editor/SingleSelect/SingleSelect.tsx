@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { MenuItem, MenuProps, TextField } from '@mui/material';
 
 import { useSelectOptions } from '../../../../hooks/useSelectOptions';
-import { SelectionField } from '../../../../interface/selection-field';
+import { FormSelectionField } from '../../../../interface/form-editor-define';
 import { ValidationMessage } from '../validationMapper';
 
 const ITEM_HEIGHT = 48;
@@ -19,7 +19,7 @@ const menuProps: Partial<MenuProps> = {
 };
 
 interface Props {
-    field: SelectionField<any>;
+    field: FormSelectionField;
     value: string;
     readOnly?: boolean;
     autoFocus: boolean;
