@@ -17,7 +17,7 @@ const PDFFieldContainer = ({ orientation, children }: Props) => {
             style={{
                 ...(fieldSectionContainer as Style),
                 ...{ flexDirection: orientation },
-                ...{ fontSize, fontFamily: 'NotoSansTC' },
+                ...{ fontSize },
             }}
         >
             {children}

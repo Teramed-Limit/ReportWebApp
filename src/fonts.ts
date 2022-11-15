@@ -1,6 +1,7 @@
 import ArialBold from './fonts/Arial-Bold.ttf';
 import Arial from './fonts/Arial.ttf';
 import MicrosoftBlack from './fonts/MicrosoftBlack.ttf';
+import MicrosoftBlackBold from './fonts/MicrosoftBlackBold.ttf';
 
 export default [
     {
@@ -26,6 +27,10 @@ export default [
         fonts: [
             {
                 src: MicrosoftBlack,
+            },
+            {
+                src: MicrosoftBlackBold,
+                fontWeight: 'bold',
             },
         ],
     },

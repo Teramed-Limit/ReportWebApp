@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white',
         padding: '14px',
         paddingBottom: footerHeight,
-        fontFamily: 'Arial',
+        fontFamily: 'MicrosoftBlack',
     },
     pageNumber: {
         position: 'absolute',
@@ -37,7 +37,6 @@ export const styles = StyleSheet.create({
     },
     headerReport: {
         fontSize: 16,
-        fontFamily: 'Times-Bold',
         color: '#0070C0',
     },
     divider: {
@@ -53,7 +52,6 @@ export const styles = StyleSheet.create({
         objectPosition: 'left top',
     },
     footer: {
-        fontFamily: 'Arial',
         fontSize: '10px',
         position: 'absolute',
         bottom: 10,
@@ -131,7 +129,6 @@ export const styles = StyleSheet.create({
         fontSize,
     },
     imageNum: {
-        fontFamily: 'Arial',
         fontWeight: 'bold',
         fontSize: '18px',
         position: 'absolute',
