@@ -79,6 +79,7 @@ export const styles = StyleSheet.create({
         display: 'flex',
         flex: '1 1 40%',
         color: '#00B050',
+        fontWeight: 'bold',
     },
     signatureContent: {
         flex: '1 1 60%',

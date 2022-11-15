@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Image, Text, View } from '@react-pdf/renderer';
+import { Font, Image, Text, View } from '@react-pdf/renderer';
 
 import { CheckboxCheckedIcon, CheckboxUnCheckedIcon } from '../../../assets';
 import { FormFieldType } from '../../../container/Report/field/field-type';
@@ -12,6 +12,8 @@ import { RadioField } from '../../../interface/radio-field';
 import { FilterCondition, SelectionField } from '../../../interface/selection-field';
 import { isEmptyOrNil } from '../../../utils/general';
 import { styles } from '../styles/style';
+
+Font.registerHyphenationCallback((word) => [word]);
 
 interface Props {
     field: Field;

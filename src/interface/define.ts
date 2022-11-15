@@ -22,6 +22,7 @@ export interface Section {
     type: string;
     divider?: boolean;
     maxWidth?: string;
+    isHeader?: boolean;
     subSections: SubSection[];
 }
 export interface SubSection {

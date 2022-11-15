@@ -6,6 +6,7 @@ import { observer } from 'mobx-react';
 import Resizer from 'react-image-file-resizer';
 
 import { axiosIns } from '../../axios/axios';
+import { Section } from '../../interface/define';
 import { ReportImageDataset } from '../../interface/document-data';
 import { UserSignature } from '../../interface/user-signature';
 import {
@@ -16,6 +17,8 @@ import {
 } from '../../models/useStore';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
+import PDFFooter from './PDFFooter/PDFFooter';
+import PDFHeader from './PDFHeader/PDFHeader';
 import PDFPage from './PDFPage/PDFPage';
 import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
@@ -163,18 +166,30 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
                         subject={studyInsUID}
                         onRender={onPdfRender}
                     >
-                        <PDFPage
-                            signatureData={signatureData}
-                            logoUrl={logoUrl}
-                            reportName={reportName}
-                        >
+                        <PDFPage>
+                            {/* Header */}
+                            <PDFHeader logoUrl={logoUrl} reportName={reportName}>
+                                <PDFReportContent
+                                    formSections={pdfDefine.sections.filter(
+                                        (section: Section) => section.isHeader,
+                                    )}
+                                    formData={formData.toJSON()}
+                                    diagramUrl={diagramUrl}
+                                    getOptions={getCodeList}
+                                />
+                            </PDFHeader>
+                            {/* Body */}
                             <PDFReportContent
-                                formSections={pdfDefine.sections}
+                                formSections={pdfDefine.sections.filter(
+                                    (section: Section) => !section?.isHeader,
+                                )}
                                 formData={formData.toJSON()}
                                 diagramUrl={diagramUrl}
                                 getOptions={getCodeList}
                             />
                             <PDFPhoto imageList={images} />
+                            {/* Footer */}
+                            <PDFFooter signatureData={signatureData} />
                         </PDFPage>
                     </Document>
                 </PDFViewer>

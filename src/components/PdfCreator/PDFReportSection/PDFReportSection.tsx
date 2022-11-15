@@ -16,7 +16,6 @@ export const margin = 0.25;
 const PDFReportSection = ({ section, children }: Props) => {
     return (
         <View
-            wrap={false}
             style={{
                 ...(reportSection as Style),
                 maxWidth: section.maxWidth,

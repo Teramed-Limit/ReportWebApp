@@ -8,9 +8,10 @@ import { styles } from '../styles/style';
 interface Props {
     logoUrl: string;
     reportName: string;
+    children: React.ReactNode;
 }
 
-const PDFHeader = ({ logoUrl, reportName }: Props) => {
+const PDFHeader = ({ logoUrl, reportName, children }: Props) => {
     return (
         <>
             <View style={styles.header} fixed>
@@ -20,6 +21,7 @@ const PDFHeader = ({ logoUrl, reportName }: Props) => {
                 </View>
             </View>
             <View style={styles.divider} fixed />
+            <View fixed>{children}</View>
         </>
     );
 };
