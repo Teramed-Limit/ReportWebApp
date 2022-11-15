@@ -1,5 +1,14 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { action, dollEffect, effect, getEnv, getRoot, Instance, types } from 'mst-effect';
+import {
+    action,
+    dollEffect,
+    effect,
+    getEnv,
+    getRoot,
+    IAnyModelType,
+    Instance,
+    types,
+} from 'mst-effect';
 import { iif, interval, Observable, throwError } from 'rxjs';
 import { catchError, concatMap, filter, map, startWith, switchMap } from 'rxjs/operators';
 
@@ -76,9 +85,8 @@ export const DataModel = types
         };
     })
     .actions((self) => {
-        const { reportDataService, reportDefineService, validationService } = getEnv<RootService>(
-            self,
-        );
+        const { reportDataService, reportDefineService, validationService } =
+            getEnv<RootService>(self);
 
         const init = () => {
             self.formData.replace({});
@@ -93,7 +101,7 @@ export const DataModel = types
         const valueChanged = (id: string, value: any) => {
             const {
                 defineStore: { setFormDefine },
-            } = getRoot(self);
+            } = getRoot<IAnyModelType>(self);
 
             const changeValue = (targetId, targetValue, staticState: Partial<FormControl> = {}) => {
                 self.reportHasChanged = true;
@@ -330,7 +338,7 @@ export const DataModel = types
         };
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const { defineStore, imageStore, authStore } = getRoot(self);
+            const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
 
             // set initialize data
             response.data.OwnerId = authStore.loginUser;

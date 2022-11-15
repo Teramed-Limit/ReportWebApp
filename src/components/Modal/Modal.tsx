@@ -5,7 +5,6 @@ import classes from './Modal.module.scss';
 
 interface Props {
     open: boolean;
-    onClose: () => void;
     headerTitle: string;
     body: JSX.Element;
     bodyCSS?: CSSProperties;

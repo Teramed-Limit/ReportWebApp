@@ -16,13 +16,9 @@ const QualityIndicatorModal = () => {
     const setModal = useContext(ModalContext);
     const [disabled, setDisabled] = useState(true);
     const { formDefine } = useReportDefineStore();
-    const {
-        qualityModelIsValid,
-        formData,
-        formState,
-        resetFormData,
-        resetFormState,
-    } = useReportDataStore();
+    const { qualityModelIsValid, formData, formState, resetFormData, resetFormState } =
+        useReportDataStore();
+
     const [originalFormData, setOriginalFormData] = useState(formData.toJSON());
     const [originalFormState, setOriginalFormState] = useState(formState.toJSON());
 
@@ -72,7 +68,6 @@ const QualityIndicatorModal = () => {
     return (
         <Modal
             open
-            onClose={onClose}
             headerTitle="Colonoscopy Quantity Indicator"
             body={body}
             footer={footer}

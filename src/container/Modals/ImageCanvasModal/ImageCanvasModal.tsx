@@ -171,7 +171,6 @@ const ImageCanvasModal = ({ imageSrc }: Props) => {
             open
             width="90%"
             height="90%"
-            onClose={() => onClose()}
             headerTitle="Edit Diagram"
             body={body}
             footer={footer}

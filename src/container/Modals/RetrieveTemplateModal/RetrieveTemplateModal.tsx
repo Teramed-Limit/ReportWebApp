@@ -157,7 +157,6 @@ const RetrieveTemplateModal = () => {
             open
             width="80%"
             height="80%"
-            onClose={() => onClose()}
             headerTitle="Findings Template"
             body={body}
             footer={footer}

@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { Button } from '@mui/material';
-import { ColDef, RowNode } from 'ag-grid-community';
-import { GetRowIdParams } from 'ag-grid-community/dist/lib/entities/gridOptions';
+import { ColDef, GetRowIdParams, RowNode } from 'ag-grid-community';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { AxiosObservable } from 'axios-observable/dist/axios-observable.interface';
 

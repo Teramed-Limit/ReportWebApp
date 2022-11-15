@@ -9,7 +9,6 @@ import { fieldFlex, fieldSectionValue } from '../../../styles/report/style';
 import PDFFieldContainer from '../PDFFieldContainer/PDFFieldContainer';
 import PDFFieldLabel from '../PDFFieldLabel/PDFFieldLabel';
 import PDFFieldRenderer from '../PDFFieldRenderer/PDFFieldRenderer';
-import { fontSize } from '../styles/style';
 
 interface Props {
     field: Field;

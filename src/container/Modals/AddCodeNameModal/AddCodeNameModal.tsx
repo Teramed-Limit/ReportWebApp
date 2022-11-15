@@ -28,7 +28,6 @@ const AddCodeNameModal = ({ initCodeListMap }: Props) => {
             open
             width="fit-content"
             height="fit-content"
-            onClose={() => setModal(null)}
             headerTitle="Add Category"
             body={
                 <Box sx={{ p: 2 }}>

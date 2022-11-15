@@ -7,12 +7,7 @@ import { ModalContext } from '../../../../context/modal-context';
 import Modal from '../../../Modal/Modal';
 import Button from '../../../UI/Button/Button';
 
-interface Props extends ICellRendererParams {
-    onClick: (...params) => void;
-    color: 'inherit' | 'primary' | 'secondary' | 'success' | 'error' | 'info' | 'warning';
-    variant: 'text' | 'outlined' | 'contained';
-    label: string;
-}
+type Props = ICellRendererParams;
 
 const ImageCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
     const setModal = useContext(ModalContext);
@@ -48,7 +43,6 @@ const ImageCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
                             open
                             width="50%"
                             height="fit-content"
-                            onClose={() => setModal(null)}
                             headerTitle="Signature Preview"
                             body={
                                 <img

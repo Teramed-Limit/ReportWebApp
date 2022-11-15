@@ -11,7 +11,6 @@ import { fieldFlex, fieldSectionContainer, fieldSectionValue } from '../../../st
 import PDFFieldContainer from '../PDFFieldContainer/PDFFieldContainer';
 import PDFFieldLabel from '../PDFFieldLabel/PDFFieldLabel';
 import PDFFieldRenderer from '../PDFFieldRenderer/PDFFieldRenderer';
-import { fontSize } from '../styles/style';
 
 interface Props {
     field: CompositeField;

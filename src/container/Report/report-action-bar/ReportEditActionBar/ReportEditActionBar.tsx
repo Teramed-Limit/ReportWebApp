@@ -23,7 +23,6 @@ const ReportEditActionBar: React.FC = () => {
                 width="80%"
                 height="80%"
                 overflow="hidden hidden"
-                onClose={() => setModal(null)}
                 headerTitle="PDF Preview"
                 body={
                     <PdfCreator

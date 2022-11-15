@@ -19,9 +19,7 @@ const ToolMouseEventMapper = {
     [MarkerType.FreeDraw]: FreeDrawLineMarkerMouseEvent,
 };
 
-export function useCanvasTool(
-    markerType: MarkerType = MarkerType.None,
-): {
+export function useCanvasTool(markerType: MarkerType = MarkerType.None): {
     onClick: (
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,

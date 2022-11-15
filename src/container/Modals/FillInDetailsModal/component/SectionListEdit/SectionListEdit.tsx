@@ -25,9 +25,8 @@ interface Props {
 
 const SectionListEdit = ({ ersType, fieldId, onCategoryFocus, onCancelFocus }: Props) => {
     const { setSuccessNotification, setErrorNotification } = useContext(NotificationContext);
-    const { setEdit, findingList, setFindingList, activeIndex, backupFindingList } = useContext(
-        FindingTemplateContext,
-    );
+    const { setEdit, findingList, setFindingList, activeIndex, backupFindingList } =
+        useContext(FindingTemplateContext);
 
     const onConfirm = useCallback(() => {
         saveReportFindings(ersType, fieldId, findingList)

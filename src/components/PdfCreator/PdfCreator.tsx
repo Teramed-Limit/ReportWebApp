@@ -86,12 +86,10 @@ const PdfCreator = ({ showToolbar, onRenderCallback }: Props) => {
             return Promise.all<ReportImageDataset>(
                 (imageList || [])
                     .filter((image) => image.IsAttachInReport)
-                    .map(
-                        async (image): Promise<ReportImageDataset> => {
-                            const base64 = await resizeImage(image.ImageSrc);
-                            return { ...image, ImageSrc: base64 };
-                        },
-                    ),
+                    .map(async (image): Promise<ReportImageDataset> => {
+                        const base64 = await resizeImage(image.ImageSrc);
+                        return { ...image, ImageSrc: base64 };
+                    }),
             );
         };
 

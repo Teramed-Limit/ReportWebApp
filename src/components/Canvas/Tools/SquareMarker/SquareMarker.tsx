@@ -15,20 +15,14 @@ interface Props {
 
 const SquareMarker = React.forwardRef<Konva.Rect, Props>(
     ({ id, attribute, isSelected, onSelect, onUpdateAttr }, shapeRef) => {
-        const {
-            onClick,
-            onDragStart,
-            onDragEnd,
-            onMouseDown,
-            onMouseLeave,
-            onMouseEnter,
-        } = useMarkerEvent(
-            id,
-            isSelected,
-            (shapeRef as MutableRefObject<Konva.Rect>).current,
-            onSelect,
-            onUpdateAttr,
-        );
+        const { onClick, onDragStart, onDragEnd, onMouseDown, onMouseLeave, onMouseEnter } =
+            useMarkerEvent(
+                id,
+                isSelected,
+                (shapeRef as MutableRefObject<Konva.Rect>).current,
+                onSelect,
+                onUpdateAttr,
+            );
         return (
             <Rect
                 ref={shapeRef}

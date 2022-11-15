@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { action, dollEffect, getRoot, Instance, types } from 'mst-effect';
+import { action, dollEffect, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { fetchCodeList } from '../axios/api';
@@ -20,7 +20,7 @@ export const OptionStoreModel = types
                 const options = self.optionMap.get(source) || [];
                 if (filterCondition?.filterById && filterCondition?.filterOptionKey) {
                     const { filterById, filterOptionKey } = filterCondition;
-                    const { dataStore } = getRoot(self);
+                    const { dataStore } = getRoot<IAnyModelType>(self);
                     const filterStr = (dataStore.formData.get(filterById) as string) || '';
 
                     return options.filter((option) => option[filterOptionKey] === filterStr);
@@ -33,7 +33,7 @@ export const OptionStoreModel = types
 
                 if (filterCondition?.filterById) {
                     const { filterById } = filterCondition;
-                    const { dataStore } = getRoot(self);
+                    const { dataStore } = getRoot<IAnyModelType>(self);
                     const filterStr = (dataStore.formData.get(filterById) as string) || '';
 
                     return options.filter((option) => option.ParentCodeValue === filterStr);

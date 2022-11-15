@@ -1,5 +1,5 @@
 import { AxiosResponse } from 'axios';
-import { action, dollEffect, getEnv, getRoot, Instance, types } from 'mst-effect';
+import { action, dollEffect, getEnv, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { fetchReportDefine } from '../axios/api';
@@ -46,7 +46,7 @@ export const DefineModel = types
                 self.formDefine = formDefine;
                 self.pdfDefine = pdfDefine;
 
-                const { dataStore } = getRoot(self);
+                const { dataStore } = getRoot<IAnyModelType>(self);
                 dataStore.initialFormControl();
             },
         };

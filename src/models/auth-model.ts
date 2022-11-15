@@ -1,5 +1,5 @@
 import { AxiosError } from 'axios';
-import { action, dollEffect, getRoot, Instance, types } from 'mst-effect';
+import { action, dollEffect, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
 import { login, logout } from '../axios/api';
@@ -66,7 +66,7 @@ export const AuthModel = types
             self.loginUser = undefined;
             // stopTokenTimer();
             localStorage.removeItem('user');
-            const { dataStore } = getRoot(self);
+            const { dataStore } = getRoot<IAnyModelType>(self);
             dataStore.init();
         };
 

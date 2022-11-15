@@ -103,15 +103,7 @@ const LoadStudyModal = () => {
     );
 
     return (
-        <Modal
-            open
-            width="60%"
-            height="50%"
-            onClose={() => onClose()}
-            headerTitle="Load Study"
-            body={body}
-            footer={footer}
-        />
+        <Modal open width="60%" height="50%" headerTitle="Load Study" body={body} footer={footer} />
     );
 };
 

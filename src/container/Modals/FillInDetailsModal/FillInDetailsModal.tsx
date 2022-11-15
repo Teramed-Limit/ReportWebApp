@@ -25,9 +25,8 @@ interface Props {
 const FillInDetailsModal = ({ fieldId }: Props) => {
     const { valueChanged, ersType } = useReportDataStore();
     const setModal = useContext(ModalContext);
-    const { findingList, setFindingList, activeIndex, setActiveIndex } = useContext(
-        FindingTemplateContext,
-    );
+    const { findingList, setFindingList, activeIndex, setActiveIndex } =
+        useContext(FindingTemplateContext);
 
     const [itemList, setItemList] = useState<ReportFindingItemList[]>([]);
 
@@ -189,7 +188,6 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
             open
             height="90%"
             width="90%"
-            onClose={() => {}}
             headerTitle="Endoscopy Reporting System"
             body={body}
             footer={footer}

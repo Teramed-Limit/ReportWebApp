@@ -15,20 +15,14 @@ interface Props {
 
 const ArrowMarker = React.forwardRef<Konva.Arrow, Props>(
     ({ id, attribute, isSelected, onSelect, onUpdateAttr }, shapeRef) => {
-        const {
-            onClick,
-            onDragStart,
-            onDragEnd,
-            onMouseDown,
-            onMouseLeave,
-            onMouseEnter,
-        } = useMarkerEvent(
-            id,
-            isSelected,
-            (shapeRef as MutableRefObject<Konva.Arrow>).current,
-            onSelect,
-            onUpdateAttr,
-        );
+        const { onClick, onDragStart, onDragEnd, onMouseDown, onMouseLeave, onMouseEnter } =
+            useMarkerEvent(
+                id,
+                isSelected,
+                (shapeRef as MutableRefObject<Konva.Arrow>).current,
+                onSelect,
+                onUpdateAttr,
+            );
 
         return (
             <Arrow

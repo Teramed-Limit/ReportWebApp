@@ -17,10 +17,10 @@ const RadioGroup = ({ id, value, onChange, optionList, disabled }: Props) => {
         setState(value);
     }, [value]);
 
-    function handleOnChange(selected: string) {
+    const handleOnChange = (selected: string) => {
         setState(selected);
         onChange?.(selected);
-    }
+    };
 
     return (
         <>
