@@ -15,20 +15,14 @@ interface Props {
 
 const CircleMarker = React.forwardRef<Konva.Circle, Props>(
     ({ id, attribute, isSelected, onSelect, onUpdateAttr }, shapeRef) => {
-        const {
-            onClick,
-            onDragStart,
-            onDragEnd,
-            onMouseDown,
-            onMouseLeave,
-            onMouseEnter,
-        } = useMarkerEvent(
-            id,
-            isSelected,
-            (shapeRef as MutableRefObject<Konva.Circle>).current,
-            onSelect,
-            onUpdateAttr,
-        );
+        const { onClick, onDragStart, onDragEnd, onMouseDown, onMouseLeave, onMouseEnter } =
+            useMarkerEvent(
+                id,
+                isSelected,
+                (shapeRef as MutableRefObject<Konva.Circle>).current,
+                onSelect,
+                onUpdateAttr,
+            );
 
         return (
             <Circle

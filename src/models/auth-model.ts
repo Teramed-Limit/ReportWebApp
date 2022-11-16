@@ -1,9 +1,8 @@
-import { AxiosError, AxiosResponse } from 'axios';
-import { action, dollEffect, getRoot, Instance, types } from 'mst-effect';
-import { of, Subscription } from 'rxjs';
-import { catchError, concatMap, delay, map, switchMap } from 'rxjs/operators';
+import { AxiosError } from 'axios';
+import { action, dollEffect, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
+import { catchError, map, switchMap } from 'rxjs/operators';
 
-import { login, logout, refreshToken } from '../axios/api';
+import { login, logout } from '../axios/api';
 import { LoginResult } from '../interface/auth';
 import { RoleFunction } from '../interface/user-role';
 
@@ -17,45 +16,46 @@ export const AuthModel = types
     })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
-        let timer: Subscription;
+        // let timer: Subscription | undefined;
 
-        const getTokenRemainingTime = () => {
-            const { accessToken } = self;
-            if (!accessToken) {
-                return 0;
-            }
-            const jwtToken = JSON.parse(atob(accessToken.split('.')[1]));
-            const expires = new Date(jwtToken.exp * 1000 - 60000);
-            return expires.getTime() - Date.now();
-        };
+        // const getTokenRemainingTime = (): number => {
+        //     const { accessToken } = self;
+        //     if (!accessToken) {
+        //         return 0;
+        //     }
+        //     const jwtToken = JSON.parse(atob(accessToken.split('.')[1]));
+        //     const expires = new Date(jwtToken.exp * 1000);
+        //     return expires.getTime() - Date.now();
+        // };
+        //
+        // const stopTokenTimer = () => {
+        //     timer?.unsubscribe();
+        //     timer = undefined;
+        // };
+        //
+        // const startTokenTimer = () => {
+        //     const delayTime = getTokenRemainingTime();
+        //
+        //     if (timer) return;
+        //
+        //     timer = interval(delayTime - 5000)
+        //         .pipe(concatMap(() => refreshToken(self?.refreshToken || '')))
+        //         .subscribe({
+        //             next: () => {},
+        //             error: () => {
+        //                 action(removeAuth);
+        //             },
+        //         });
+        // };
 
-        const stopTokenTimer = () => {
-            timer?.unsubscribe();
-        };
-
-        const startTokenTimer = () => {
-            const timeout = getTokenRemainingTime();
-            timer = of(true)
-                .pipe(
-                    delay(timeout),
-                    concatMap(() => refreshToken(self?.refreshToken || '')),
-                )
-                .subscribe({
-                    next: () => {},
-                    error: () => {
-                        action(removeAuth);
-                    },
-                });
-        };
-
-        const registerAuth = (res: AxiosResponse<LoginResult>) => {
+        const registerAuth = (data: LoginResult) => {
             self.isAuth = true;
-            self.functionList = res.data.FunctionList;
-            self.accessToken = res.data.AccessToken;
-            self.refreshToken = res.data.RefreshToken;
-            self.loginUser = res.data.UserName;
-            startTokenTimer();
-            localStorage.setItem('user', JSON.stringify(res.data));
+            self.functionList = data.FunctionList;
+            self.accessToken = data.AccessToken;
+            self.refreshToken = data.RefreshToken;
+            self.loginUser = data.UserName;
+            // startTokenTimer();
+            localStorage.setItem('user', JSON.stringify(data));
         };
 
         const removeAuth = () => {
@@ -64,9 +64,9 @@ export const AuthModel = types
             self.accessToken = undefined;
             self.refreshToken = undefined;
             self.loginUser = undefined;
-            stopTokenTimer();
+            // stopTokenTimer();
             localStorage.removeItem('user');
-            const { dataStore } = getRoot(self);
+            const { dataStore } = getRoot<IAnyModelType>(self);
             dataStore.init();
         };
 
@@ -78,7 +78,7 @@ export const AuthModel = types
                         switchMap(({ username, password }) =>
                             login(username, password).pipe(
                                 map((response) => [
-                                    action(registerAuth, response),
+                                    action(registerAuth, response.data),
                                     action(dollSignal, ''),
                                 ]),
                                 catchError((error: AxiosError) => [
@@ -98,16 +98,7 @@ export const AuthModel = types
                     ),
                 ),
             ),
-            onTokenRefresh: dollEffect<null, string>(self, (payload$, dollSignal) =>
-                payload$.pipe(
-                    switchMap(() =>
-                        refreshToken(self?.refreshToken || '').pipe(
-                            map((response) => [action(registerAuth, response)]),
-                            catchError(() => [action(removeAuth), action(dollSignal, '/login')]),
-                        ),
-                    ),
-                ),
-            ),
+            registerAuth,
             removeAuth,
         };
     });

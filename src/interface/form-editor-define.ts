@@ -1,9 +1,26 @@
-import { Field } from './field';
+import { FilterCondition, OptionSource } from './selection-field';
+import { Validate } from './validate';
 
 export interface FormEditorDef {
-    sections: Section[];
+    sections: FormSection[];
 }
 
-export interface Section {
-    fields: Field[];
+export interface FormSection {
+    fields: FormField[];
+}
+
+export interface FormField {
+    id: string;
+    label: string;
+    type: string;
+    validate?: Validate;
+    isKey?: boolean;
+    readOnly?: boolean;
+    hide?: boolean;
+}
+
+export interface FormSelectionField extends FormField {
+    isMulti?: boolean;
+    optionSource: OptionSource<any>;
+    filterCondition: FilterCondition;
 }

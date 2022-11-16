@@ -5,6 +5,7 @@ import { FaRegEdit } from 'react-icons/all';
 
 import BaseTextArea from '../../../../../components/UI/BaseTextArea/BaseTextArea';
 import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';
+import FormSectionFieldLabel from '../../../../Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
 import { FindingTemplateContext } from '../../context/finding-template-context';
 import classes from './SectionListView.module.scss';
 
@@ -31,17 +32,24 @@ const SectionListView = ({ onCategoryTextChange, onCategoryFocus }: Props) => {
             {findingList.map((field, index) => {
                 return (
                     <div key={field.ItemName} className={classes.container}>
-                        <FormSectionField
+                        {/* Label */}
+                        <FormSectionFieldLabel
                             id={field.ItemName}
                             label={field.ItemName}
+                            orientation="row"
                             hint={
                                 field.AutoFillDefaultWhenEmpty === '1'
                                     ? 'Auto fill default content'
                                     : ''
                             }
-                            labelAlign="flex-start"
-                            readOnly={false}
+                            hideLabelSection={false}
                             hasValidation={false}
+                        />
+                        {/* Value */}
+                        <FormSectionField
+                            id={field.ItemName}
+                            orientation="row"
+                            readOnly={false}
                             isDirty={false}
                             isValid
                             errorMessage=""
@@ -50,6 +58,7 @@ const SectionListView = ({ onCategoryTextChange, onCategoryFocus }: Props) => {
                             fieldComponent={
                                 <BaseTextArea
                                     rows={1}
+                                    style={{ height: '100%', overflow: 'auto' }}
                                     value={field.Text}
                                     onValueChange={(value) => onCategoryTextChange(index, value)}
                                     onFocusChange={() => onCategoryFocus(index)}

@@ -2,13 +2,13 @@ import React from 'react';
 
 import { RadioGroup } from '@mui/material';
 
-import { Option } from '../../../interface/option';
+import { CodeList } from '../../../interface/code-list';
 import BaseRadio from '../BaseRadio/BaseRadio';
 
 interface Props {
     id: string;
     value: string;
-    options: Option[];
+    options: CodeList[];
     onChecked: (value: string) => void;
     disabled: boolean;
 }
@@ -24,9 +24,9 @@ const BaseRadioGroup = ({ id, options, value, onChecked, disabled }: Props) => {
                 return (
                     <BaseRadio
                         disabled={disabled}
-                        key={option.Code}
-                        label={option.Code}
-                        value={option.Name}
+                        key={option.Id}
+                        label={option.Label}
+                        value={option.Value}
                     />
                 );
             })}

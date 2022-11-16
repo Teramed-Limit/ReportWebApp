@@ -188,6 +188,7 @@ const BaseLexiconInput = ({
             onChange={onTextInputChange}
             onFocus={onFocusTrigger}
             onBlur={onBlurTrigger}
+            onDrag={(e) => e.stopPropagation()}
         />
     );
 
@@ -211,7 +212,7 @@ const BaseLexiconInput = ({
             ) : null}
             <BookIcon className={classes.icon} />
 
-            {isMenuOpen ? (
+            {isMenuOpen && (
                 <MenuGroup
                     anchorElement={inputRef?.current}
                     maxMenuGroupHeight={maxMenuGroupHeight}
@@ -222,7 +223,7 @@ const BaseLexiconInput = ({
                 >
                     {displayMenuOption}
                 </MenuGroup>
-            ) : null}
+            )}
         </div>
     );
 };

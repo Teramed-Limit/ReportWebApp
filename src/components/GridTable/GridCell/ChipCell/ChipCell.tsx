@@ -5,7 +5,6 @@ import { ICellRendererParams } from 'ag-grid-community/dist/lib/rendering/cellRe
 import { AgReactComponent } from 'ag-grid-react';
 
 interface Props extends ICellRendererParams {
-    label: string;
     value: string[];
 }
 

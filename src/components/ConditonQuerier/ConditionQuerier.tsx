@@ -63,7 +63,6 @@ const ConditionQuerier = ({
                 open
                 width="auto"
                 height="auto"
-                onClose={() => setModal(null)}
                 headerTitle="Custom Condition"
                 body={
                     <TransferList

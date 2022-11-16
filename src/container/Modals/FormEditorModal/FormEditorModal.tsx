@@ -29,7 +29,6 @@ const FormEditorModal = ({ initFormData, saveType, formDef, addRow, updateRow }:
             open
             width="50%"
             height="fit-content"
-            onClose={() => setModal(null)}
             headerTitle="Edit"
             body={
                 <FormEditor

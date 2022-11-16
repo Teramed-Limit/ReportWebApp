@@ -1,18 +1,10 @@
-import { colonoscopyDefine } from '../../constant/colonoscopy-define';
-import { colonoscopyFreeTextDefine } from '../../constant/colonoscopy-free-text-define';
-import { ogdDefine } from '../../constant/ogd-define';
-import { pdfColonoscopyDefine } from '../../constant/pdf-define/colonoscopy-define';
-import { pdfColonoscopyFreeTextDefine } from '../../constant/pdf-define/colonoscopy-free-text-define';
-import { pdfOGDDefine } from '../../constant/pdf-define/ogd-define';
-import { pdfStandardDefine } from '../../constant/pdf-define/standard-define';
-import { standardDefine } from '../../constant/standard-define';
 import { FormFieldType } from '../../container/Report/field/field-type';
 import { CompositeField } from '../../interface/composite-field';
-import { FormDefine, Section } from '../../interface/define';
-import { DocumentData } from '../../interface/document-data';
+import { FormDefine, FormDefineMap, Section } from '../../interface/define';
 import { Field } from '../../interface/field';
 
-export const normalizeFields = (sections: any[], modalName: string) => {
+export const normalizeFields = (sections: any[] | undefined, modalName: string | undefined) => {
+    if (sections === undefined) return;
     const entities = {};
     sections.forEach((section: Section) => {
         section.subSections.forEach((subSection) => {
@@ -33,103 +25,46 @@ export const normalizeFields = (sections: any[], modalName: string) => {
     return entities;
 };
 
-interface DefineMapper {
-    fields: any;
-    defines: DefineDetail[];
-}
-
-interface DefineDetail {
-    templateName: string;
-    define: FormDefine;
+export interface RegisterReportDefine {
+    formDefine: FormDefine;
     pdfDefine: FormDefine;
+    fields: { [props: string]: Field };
 }
 
-export const ReportDefineMapper = {
-    Standard: {
-        fields: normalizeFields(standardDefine.sections, ''),
-        defines: [
-            {
-                templateName: 'All',
-                define: standardDefine,
-                pdfDefine: pdfStandardDefine,
-            },
-        ],
-    },
-    Colonoscopy: {
-        fields: {
-            ...normalizeFields(colonoscopyDefine.sections, ''),
-            ...normalizeFields(colonoscopyDefine.modal.sections, colonoscopyDefine.modal.modalName),
-        },
-        defines: [
-            {
-                templateName: 'Colonoscopy Free Text',
-                define: colonoscopyFreeTextDefine,
-                pdfDefine: pdfColonoscopyFreeTextDefine,
-            },
-            {
-                templateName: 'Colonoscopy',
-                define: colonoscopyDefine,
-                pdfDefine: pdfColonoscopyDefine,
-            },
-        ],
-    },
-    OGD: {
-        fields: normalizeFields(ogdDefine.sections, ''),
-        defines: [
-            {
-                templateName: 'OGD Free Text',
-                define: standardDefine,
-                pdfDefine: pdfStandardDefine,
-            },
-            {
-                templateName: 'OGD',
-                define: ogdDefine,
-                pdfDefine: pdfOGDDefine,
-            },
-        ],
-    },
-};
+export const RegisterReportDefineMap: { [props: string]: RegisterReportDefine } = {};
 
 export class ReportDefineService {
-    currentFields = ReportDefineMapper.Standard.fields;
+    currentFields;
 
-    currentERSType = 'Standard';
-
-    currentReportTemplate = 'Standard';
-
-    switchFormDefine = (
-        formData: DocumentData,
-    ): { reportDefine: FormDefine; pdfDefine: FormDefine } => {
-        if (formData.ERSType && ReportDefineMapper[formData.ERSType]) {
-            this.currentFields = ReportDefineMapper[formData.ERSType].fields;
-        }
-
-        if (
-            !formData.ERSType ||
-            !formData.ReportTemplate ||
-            !ReportDefineMapper[formData.ERSType]
-        ) {
-            this.currentERSType = 'Standard';
-            this.currentReportTemplate = 'Standard';
-            return { reportDefine: standardDefine, pdfDefine: pdfStandardDefine };
-        }
-
-        const found = (ReportDefineMapper[formData.ERSType] as DefineMapper).defines.find(
-            (x) => x.templateName === formData.ReportTemplate,
-        );
-
-        if (!found?.define) {
-            this.currentERSType = 'Standard';
-            this.currentReportTemplate = 'Standard';
-            return { reportDefine: standardDefine, pdfDefine: pdfStandardDefine };
-        }
-
-        this.currentERSType = formData.ERSType;
-        this.currentReportTemplate = formData.ReportTemplate;
-        return { reportDefine: found.define, pdfDefine: found.pdfDefine };
+    registerFormDefine = (defineMap: FormDefineMap) => {
+        Object.entries(defineMap).forEach(([k, v]) => {
+            if (RegisterReportDefineMap[k]) return;
+            // register
+            const formDefine = JSON.parse(v.FormDefine) as FormDefine;
+            const pdfDefine = JSON.parse(v.PDFDefine) as FormDefine;
+            RegisterReportDefineMap[k] = {
+                formDefine,
+                pdfDefine,
+                fields: {
+                    ...normalizeFields(formDefine.sections, ''),
+                    ...normalizeFields(formDefine?.modal?.sections, formDefine?.modal?.modalName),
+                },
+            };
+        });
     };
 
-    getField = (id: string): Field => {
+    getFormDefine = (reportType: string): RegisterReportDefine => {
+        if (!RegisterReportDefineMap[reportType]) {
+            console.error(`${reportType} not found`);
+        }
+
+        this.currentFields = RegisterReportDefineMap[reportType].fields;
+
+        return RegisterReportDefineMap[reportType];
+    };
+
+    getField = (id: string): Field | undefined => {
+        if (!this.currentFields) return undefined;
         return this.currentFields[id];
     };
 }

@@ -1,3 +1,5 @@
+import { dateFilterParams } from '../utils/ag-grid-utils';
+
 export const define = {
     study: {
         colDef: [
@@ -19,14 +21,61 @@ export const define = {
                 cellRenderer: 'statusRenderer',
                 cellRendererParams: { Saved: 'warning', Signed: 'success', InComplete: 'error' },
                 pinned: 'left',
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
             },
-            { field: 'PatientId', headerName: 'Patient Id', width: 160 },
-            { field: 'PatientsName', headerName: 'Patient Name', width: 160 },
-            { field: 'AccessionNumber', headerName: 'Accession No.', width: 180 },
-            { field: 'PatientsBirthDate', headerName: 'BirthDate', width: 120 },
-            { field: 'StudyDate', headerName: 'Study Date', width: 120 },
-            { field: 'Modality', headerName: 'Modality', width: 120 },
-            { field: 'StudyDescription', headerName: 'Description', flex: 1, minWidth: 200 },
+            {
+                field: 'PatientId',
+                headerName: 'Patient Id',
+                width: 160,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'PatientsName',
+                headerName: 'Patient Name',
+                width: 160,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'AccessionNumber',
+                headerName: 'Accession No.',
+                width: 180,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'PatientsBirthDate',
+                headerName: 'BirthDate',
+                width: 160,
+                filter: 'agDateColumnFilter',
+                filterParams: dateFilterParams,
+                floatingFilter: true,
+            },
+            {
+                field: 'StudyDate',
+                headerName: 'Study Date',
+                width: 160,
+                filter: 'agDateColumnFilter',
+                filterParams: dateFilterParams,
+                floatingFilter: true,
+            },
+            {
+                field: 'Modality',
+                headerName: 'Modality',
+                width: 120,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'StudyDescription',
+                headerName: 'Description',
+                flex: 1,
+                minWidth: 200,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
             { field: 'StudyInstanceUID', headerName: 'StudyInstanceUID', hide: true },
             { field: 'PDFFilePath', headerName: 'PDFFilePath', hide: true },
         ],
@@ -44,7 +93,7 @@ export const define = {
                             id: 'RoleName',
                             label: 'Role Name',
                             type: 'Text',
-                            readOnly: true,
+                            isKey: true,
                             validate: { type: 'Required' },
                         },
                         { id: 'Description', label: 'Description', type: 'Text' },
@@ -76,6 +125,13 @@ export const define = {
                 width: 200,
             },
             {
+                field: 'SignatureBase64',
+                headerName: 'Signature',
+                width: 120,
+                cellRenderer: 'imageRowRenderer',
+                cellRendererParams: { type: 'base64' },
+            },
+            {
                 field: 'RoleList',
                 headerName: 'Role Group',
                 width: 200,
@@ -91,7 +147,7 @@ export const define = {
                             id: 'UserID',
                             label: 'User Id',
                             type: 'Text',
-                            readOnly: true,
+                            isKey: true,
                             validate: { type: 'Required' },
                         },
                         {
@@ -102,6 +158,7 @@ export const define = {
                         },
                         { id: 'DoctorCName', label: 'User CName', type: 'Text' },
                         { id: 'DoctorEName', label: 'User EName', type: 'Text' },
+                        { id: 'SignatureBase64', label: 'Signature', type: 'ImageSelect' },
                         {
                             id: 'RoleList',
                             label: 'Role Group',
@@ -112,6 +169,77 @@ export const define = {
                                 key: 'RoleName',
                                 labelKey: 'RoleName',
                             },
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    codeList: {
+        colDef: [
+            {
+                field: 'Id',
+                width: 200,
+                hide: true,
+            },
+            {
+                field: 'Label',
+                headerName: 'Label',
+                width: 200,
+                flex: 1,
+            },
+            {
+                field: 'Value',
+                headerName: 'Value',
+                width: 200,
+                flex: 1,
+            },
+            {
+                field: 'CodeName',
+                headerName: 'Code Name',
+                width: 120,
+            },
+            {
+                field: 'ParentCodeValue',
+                headerName: 'Parent Code Value',
+                width: 120,
+            },
+            {
+                field: 'OrderingIndex',
+                headerName: 'Ordering',
+                minWidth: 120,
+            },
+        ],
+        formDef: {
+            sections: [
+                {
+                    fields: [
+                        { id: 'Id', label: 'Id', type: 'Number', hide: true, isKey: true },
+                        {
+                            id: 'Label',
+                            label: 'Label',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                        },
+                        {
+                            id: 'Value',
+                            label: 'Value',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                        },
+                        {
+                            id: 'CodeName',
+                            label: 'Code Name',
+                            type: 'Text',
+                            readOnly: true,
+                            validate: { type: 'Required' },
+                        },
+                        { id: 'ParentCodeValue', label: 'Parent Code Value', type: 'Text' },
+                        {
+                            id: 'OrderingIndex',
+                            label: 'Ordering',
+                            type: 'Number',
+                            validate: { type: 'Required' },
                         },
                     ],
                 },

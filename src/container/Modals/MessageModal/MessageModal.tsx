@@ -41,7 +41,6 @@ const MessageModal = ({ headerTitle, bodyContent, onConfirmCallback }: Props) =>
             open
             width="auto"
             height="auto"
-            onClose={() => onClose()}
             headerTitle={headerTitle}
             body={body}
             footer={footer}

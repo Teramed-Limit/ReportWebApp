@@ -5,6 +5,7 @@ import DeleteRowCell from './DeleteRowCell/DeleteRowCell';
 import EditRowCell from './EditRowCell/EditRowCell';
 import FileCell from './FileCell/FileCell';
 import IconCell from './IconCell/IconCell';
+import ImageCell from './ImageCell/ImageCell';
 import LinkCell from './LinkCell/LinkCell';
 import MultilineTooltipCell from './MultilineTooltipCell/MultilineTooltipCell';
 import StatusChipCell from './StatusChipCell/StatusChipCell';
@@ -22,4 +23,5 @@ export const CellMapper = {
     statusRenderer: StatusChipCell,
     editRowRenderer: EditRowCell,
     deleteRowRenderer: DeleteRowCell,
+    imageRowRenderer: ImageCell,
 };

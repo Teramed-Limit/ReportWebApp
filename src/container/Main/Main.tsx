@@ -19,7 +19,6 @@ const Main = () => {
 
     useEffect(() => {
         if (!formValidation.isValid) {
-            history.push(`/reporting`);
             setModalName(formValidation.openModalName);
         }
     }, [formValidation, history, setModalName]);

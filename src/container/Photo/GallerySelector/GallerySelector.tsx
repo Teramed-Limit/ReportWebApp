@@ -8,23 +8,11 @@ import { RiZoomInLine, RiZoomOutLine } from 'react-icons/all';
 import Gallery from '../../../components/Gallery/Gallery';
 import ImageSelector from '../../../components/ImageSelector/ImageSelector';
 import Button from '../../../components/UI/Button/Button';
-// import { ModalContext } from '../../../context/modal-context';
 import { useObjectState } from '../../../hooks/useObjectState';
 import { useStore } from '../../../models/useStore';
 import classes from './GallerySelector.module.scss';
 
-const optionSource = {
-    type: 'http',
-    source: 'CapturesMappingFindingsList',
-};
-
-const filterCondition = {
-    filterById: 'ERSType',
-    filterOptionKey: 'ERSType',
-};
-
 const GallerySelector = () => {
-    // const setModal = useContext(ModalContext);
     const [slider, setSlider] = useState(3);
     const store = useStore();
     const { dataStore, optionStore, imageStore } = store;
@@ -34,24 +22,29 @@ const GallerySelector = () => {
         imageSelectCount,
         onImageCheck,
         onFindingsChanged,
+        onSitesChanged,
         selectAllImage,
         deselectAllImage,
         onImageReorder,
     } = imageStore;
 
-    const [options] = useObjectState(optionStore.getOptions(optionSource.source, filterCondition));
+    const [findingsOptions] = useObjectState(
+        optionStore.getCodeList('ImageFindings', {
+            filterById: 'ERSType',
+            filterOptionKey: 'ERSType',
+        }) || [],
+    );
+    const [sitesOptions] = useObjectState(
+        optionStore.getCodeList('ImageSites', {
+            filterById: 'ERSType',
+            filterOptionKey: 'ERSType',
+        }) || [],
+    );
 
     return (
         <>
             <div className={classes.header}>Images</div>
             <Stack className={classes['gallery-toolbar']} direction="row" spacing={2}>
-                {/* <Button */}
-                {/*    disabled={reportDisabled} */}
-                {/*    theme="primary" */}
-                {/*    onClick={() => setModal(<LoadStudyModal />)} */}
-                {/* > */}
-                {/*    Load */}
-                {/* </Button> */}
                 <Button disabled={reportDisabled} theme="primary" onClick={selectAllImage}>
                     Attach All
                 </Button>
@@ -78,11 +71,13 @@ const GallerySelector = () => {
                             src={image.ImageSrc}
                             checked={image.IsAttachInReport}
                             findings={image.DescriptionOfFindings}
-                            options={options}
-                            optionSource={optionSource}
+                            sites={image.DescriptionOfSites}
+                            findingsOptions={findingsOptions}
+                            sitesOptions={sitesOptions}
                             markerMappingNumber={image.MappingNumber}
                             onImageCheck={onImageCheck}
                             onFindingsChange={onFindingsChanged}
+                            onSitesChange={onSitesChanged}
                             onImageReorder={onImageReorder}
                         />
                     ))}

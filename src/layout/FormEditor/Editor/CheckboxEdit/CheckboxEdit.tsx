@@ -3,10 +3,10 @@ import React from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 
-import { Field } from '../../../../interface/field';
+import { FormField } from '../../../../interface/form-editor-define';
 
 interface Props {
-    field: Field;
+    field: FormField;
     value: number;
     readOnly?: boolean;
     onValueChanged: (value: number, fieldId: string) => void;

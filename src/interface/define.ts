@@ -1,5 +1,15 @@
 import { Field } from './field';
 
+export interface FormDefineMap {
+    [props: string]: FormDefineDto;
+}
+
+export interface FormDefineDto {
+    ReportType: string;
+    FormDefine: string;
+    PDFDefine: string;
+}
+
 export interface FormDefine {
     sections: Section[];
     modal?: ModalSection;
@@ -11,17 +21,17 @@ export interface Section {
     label?: string;
     type: string;
     divider?: boolean;
-    ratio: string[];
+    maxWidth?: string;
+    isHeader?: boolean;
     subSections: SubSection[];
+}
+export interface SubSection {
+    id: string;
+    maxWidth?: string;
+    fields: Field[];
 }
 
 export interface ModalSection {
     modalName: string;
     sections: Section[];
-}
-
-export interface SubSection {
-    id: string;
-    ratio: string[];
-    fields: Field[];
 }

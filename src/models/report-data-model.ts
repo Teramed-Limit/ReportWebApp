@@ -1,5 +1,14 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { action, dollEffect, effect, getEnv, getRoot, Instance, types } from 'mst-effect';
+import {
+    action,
+    dollEffect,
+    effect,
+    getEnv,
+    getRoot,
+    IAnyModelType,
+    Instance,
+    types,
+} from 'mst-effect';
 import { iif, interval, Observable, throwError } from 'rxjs';
 import { catchError, concatMap, filter, map, startWith, switchMap } from 'rxjs/operators';
 
@@ -10,7 +19,7 @@ import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
-import { StudyData } from '../interface/study-data';
+import { RegisterReportDefineMap } from '../logic/report-define/report-define-service';
 import { isEmptyOrNil } from '../utils/general';
 
 const dateModel = types.union(types.frozen<DocumentData>());
@@ -25,7 +34,6 @@ export const DataModel = types
         // report data is latest, no edit
         reportHasChanged: types.optional(types.boolean, false),
         loading: types.optional(types.boolean, false),
-        activeStudy: types.frozen<Partial<StudyData>>(),
         formData: types.map(dateModel),
         formState: types.map(formState),
         formValidation: types.optional(types.frozen<ReportValidation>(), {
@@ -77,12 +85,10 @@ export const DataModel = types
         };
     })
     .actions((self) => {
-        const { reportDataService, reportDefineService, validationService } = getEnv<RootService>(
-            self,
-        );
+        const { reportDataService, reportDefineService, validationService } =
+            getEnv<RootService>(self);
 
         const init = () => {
-            self.activeStudy = {};
             self.formData.replace({});
             self.formState.replace({});
             self.formValidation = { isValid: true, openModalName: '' };
@@ -95,7 +101,7 @@ export const DataModel = types
         const valueChanged = (id: string, value: any) => {
             const {
                 defineStore: { setFormDefine },
-            } = getRoot(self);
+            } = getRoot<IAnyModelType>(self);
 
             const changeValue = (targetId, targetValue, staticState: Partial<FormControl> = {}) => {
                 self.reportHasChanged = true;
@@ -105,7 +111,8 @@ export const DataModel = types
                     ...validate(targetId, targetValue),
                     ...staticState,
                 });
-                setFormDefine(self.formData.toJSON());
+
+                if (targetId === 'ERSType') setFormDefine(self.formData.toJSON());
             };
             changeValue(id, value);
             reportDataService.inject(id);
@@ -113,9 +120,13 @@ export const DataModel = types
         };
 
         const validate = (id: string, value: any): FormControl => {
-            const field = reportDefineService.getField(id);
-            const validateRules = field?.validate;
             const state = { isDirty: true, isValid: true, errorMessage: '', fromModal: '' };
+
+            const field = reportDefineService.getField(id);
+            if (!field) return state;
+
+            const validateRules = field?.validate;
+
             if (!validateRules) {
                 return state;
             }
@@ -134,10 +145,11 @@ export const DataModel = types
             };
         };
 
-        const initialFormControl = (documentData: DocumentData) => {
+        const initialFormControl = () => {
             const initialState = {};
+            const documentData = self.formData.toJSON();
 
-            Object.keys(documentData).forEach((key) => {
+            Object.keys(self.formData.toJSON()).forEach((key) => {
                 const state = { isDirty: false, isValid: true, errorMessage: '', fromModal: '' };
 
                 const field = reportDefineService.getField(key);
@@ -182,6 +194,10 @@ export const DataModel = types
                     self.formValidation = { isValid: false, openModalName };
                 }
                 newFormState[key] = { ...state, isDirty: true };
+
+                if (!state.isValid) {
+                    console.error(`${key}: ${state.errorMessage}`);
+                }
             });
 
             self.formState.replace(newFormState);
@@ -316,32 +332,31 @@ export const DataModel = types
     .actions((self) => {
         const beforeFetch = () => (self.loading = true);
 
-        const fetchError = () => (self.loading = false);
-
-        const fetchSuccess = (res: {
-            response: AxiosResponse<DocumentData>;
-            selectedStudyData: StudyData;
-        }) => {
-            const { response, selectedStudyData } = res;
-            const { defineStore, imageStore, authStore } = getRoot(self);
-
+        const fetchError = () => {
+            self.reportReady = 'error';
             self.loading = false;
-            self.reportHasChanged = false;
+        };
 
-            // register selected study
-            self.activeStudy = selectedStudyData;
+        const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
+            const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
 
             // set initialize data
             response.data.OwnerId = authStore.loginUser;
             response.data.Author = authStore.loginUser;
-            response.data.ChiefEndoscopist = selectedStudyData.PerformingPhysiciansName;
-            response.data.ProcedureDate = selectedStudyData.StudyDate;
             self.formData.replace(response.data);
 
             imageStore.initImages(response.data?.ReportImageDataset || []);
 
             // report not existed, auto set value
             if (response.data.ReportStatus === ReportStatus.Newly) {
+                // autofill studyDescription in ERSType
+                if (
+                    response.data.StudyDescription &&
+                    RegisterReportDefineMap[response.data.StudyDescription]
+                ) {
+                    self.formData.set('ERSType', response.data.StudyDescription);
+                }
+
                 // apply local storage data, when newly report
                 if (window.localStorage.getItem(self.studyInsUID)) {
                     const tempData: DocumentData = JSON.parse(
@@ -354,23 +369,21 @@ export const DataModel = types
 
             // initialize form control
             defineStore.setFormDefine(self.formData.toJSON());
-            self.initialFormControl(self.formData.toJSON());
+            self.reportHasChanged = false;
+            self.initialFormControl();
             self.loading = false;
             self.reportReady = 'success';
         };
 
         return {
-            fetchReport: dollEffect<StudyData, ReportResponseNotification>(
+            fetchReport: dollEffect<string, ReportResponseNotification>(
                 self,
                 (payload$, dollSignal) => {
                     return payload$.pipe(
-                        switchMap((studyData: StudyData) =>
-                            fetchReport(studyData.StudyInstanceUID).pipe(
+                        switchMap((studyInstanceUID: string) =>
+                            fetchReport(studyInstanceUID).pipe(
                                 map((response) => [
-                                    action(fetchSuccess, {
-                                        response,
-                                        selectedStudyData: studyData,
-                                    }),
+                                    action(fetchSuccess, response),
                                     action(dollSignal, {
                                         notification: {
                                             message: 'Fetch report success',

@@ -4,11 +4,11 @@ import { useAuthStore } from '../models/useStore';
 import { setupInterceptors } from './axios';
 
 function InjectAxiosInterceptors() {
-    const { removeAuth } = useAuthStore();
+    const { removeAuth, registerAuth } = useAuthStore();
 
     useEffect(() => {
-        setupInterceptors(removeAuth);
-    }, [removeAuth]);
+        setupInterceptors(registerAuth, removeAuth);
+    }, [registerAuth, removeAuth]);
 
     return null;
 }

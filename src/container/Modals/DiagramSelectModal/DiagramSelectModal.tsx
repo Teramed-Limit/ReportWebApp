@@ -78,7 +78,6 @@ const DiagramSelectModal = ({ diagramList }: Props) => {
             open
             width="80%"
             height="80%"
-            onClose={() => onClose()}
             headerTitle="New Diagram"
             body={body}
             footer={footer}

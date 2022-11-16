@@ -15,20 +15,14 @@ interface Props {
 
 const TextMarker = React.forwardRef<Konva.Text, Props>(
     ({ id, attribute, isSelected, onSelect, onUpdateAttr }: Props, shapeRef) => {
-        const {
-            onClick,
-            onDragStart,
-            onDragEnd,
-            onMouseDown,
-            onMouseLeave,
-            onMouseEnter,
-        } = useMarkerEvent(
-            id,
-            isSelected,
-            (shapeRef as MutableRefObject<Konva.Text>).current,
-            onSelect,
-            onUpdateAttr,
-        );
+        const { onClick, onDragStart, onDragEnd, onMouseDown, onMouseLeave, onMouseEnter } =
+            useMarkerEvent(
+                id,
+                isSelected,
+                (shapeRef as MutableRefObject<Konva.Text>).current,
+                onSelect,
+                onUpdateAttr,
+            );
 
         return (
             <Text

@@ -14,7 +14,11 @@ function AppRoutes() {
         <Switch>
             <Redirect exact from="/" to="/home" />
             <PrivateRoute path="/home" component={<Query />} exact />
-            <PrivateRoute path="/reporting" component={<Report />} exact />
+            <PrivateRoute
+                exact
+                path="/reporting/studyInstanceUID/:studyInstanceUID"
+                component={<Report />}
+            />
             <PrivateRoute path="/account" component={<Account />} exact />
             <PrivateRoute path="/settings" component={<Settings />} exact />
             <Route path="*" component={NotFoundPage} />

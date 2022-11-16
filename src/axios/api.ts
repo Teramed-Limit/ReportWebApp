@@ -3,6 +3,8 @@ import { Observable } from 'rxjs';
 
 import { AnyObject } from '../interface/anyObject';
 import { LoginResult } from '../interface/auth';
+import { CodeListMap } from '../interface/code-list';
+import { FormDefineMap } from '../interface/define';
 import { Diagram } from '../interface/diagram';
 import { DocumentData, ReportImageDataset } from '../interface/document-data';
 import { HkcctCode } from '../interface/hkcct';
@@ -12,10 +14,6 @@ import { ReportSetting } from '../interface/report-setting';
 import { Study } from '../interface/study';
 import { StudyData } from '../interface/study-data';
 import { axiosIns } from './axios';
-
-// export function fetchReportDefine(): Observable<AxiosResponse> {
-//     return axiosIns.get(`getReportDefine`);
-// }
 
 export function login(username: string, password: string): Observable<AxiosResponse<LoginResult>> {
     return axiosIns.post<LoginResult>(`api/login`, {
@@ -28,12 +26,16 @@ export function logout() {
     return axiosIns.post(`api/logout`);
 }
 
-export function refreshToken(token: string) {
-    return axiosIns.post(`api/refreshtoken`, { refreshToken: token });
+export function refreshToken(token: string, userName: string) {
+    return axiosIns.post(`api/refreshtoken`, { refreshToken: token, userName });
 }
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {
     return axiosIns.get<DocumentData>(`api/standard/report/studyInstanceUID/${studyInsUid}`);
+}
+
+export function fetchReportDefine(): Observable<AxiosResponse<FormDefineMap>> {
+    return axiosIns.get(`api/standard/report/define`);
 }
 
 export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
@@ -53,6 +55,21 @@ export function fetchReportSetting(): Observable<AxiosResponse<ReportSetting>> {
     return axiosIns.get(`api/report/setting`);
 }
 
+// 獲取 Code list
+export function fetchCodeList(): Observable<AxiosResponse<CodeListMap>> {
+    return axiosIns.get(`api/codelist`);
+}
+
+// 新增 Code list by code name
+export function insertCodeListByCodeName(codeName: string): Observable<any> {
+    return axiosIns.post(`api/codelist/codeName/${codeName}`);
+}
+
+// 刪除 Code list by code name
+export function deleteCodeListByCodeName(codeName: string): Observable<any> {
+    return axiosIns.delete(`api/codelist/codeName/${codeName}`);
+}
+
 // Report Diagram
 export function fetchDiagram(ersType: string): Observable<AxiosResponse<Diagram[]>> {
     return axiosIns.get(`api/diagrams/ersType/${ersType}`);
@@ -66,15 +83,20 @@ export function getHKCTTAlias(
     return axiosIns.get(`api/hkcctAlias/type/${type}`, { params: { searchStr } });
 }
 
-export function getReportFindings(type: string): Observable<AxiosResponse<ReportFinding[]>> {
-    return axiosIns.get(`api/findingsTemplate/type/${type}`);
+// fill in details
+export function getReportFindings(
+    type: string,
+    fieldId: string,
+): Observable<AxiosResponse<ReportFinding[]>> {
+    return axiosIns.get(`api/findingsTemplate/type/${type}/fieldId/${fieldId}`);
 }
 
 export function saveReportFindings(
     type: string,
+    fieldId: string,
     body: ReportFinding[],
 ): Observable<AxiosResponse<ReportFinding[]>> {
-    return axiosIns.post(`api/findingsTemplate/type/${type}`, body);
+    return axiosIns.post(`api/findingsTemplate/type/${type}/fieldId/${fieldId}`, body);
 }
 
 // old ver.

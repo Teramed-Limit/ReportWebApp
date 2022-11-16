@@ -3,13 +3,18 @@ export enum FormFieldType {
     TextArea = 'TextArea',
     Dropdown = 'Dropdown',
     Selection = 'Selection',
+    CodeListSelection = 'CodeListSelection',
     Lexicon = 'Lexicon',
+    CodeListLexicon = 'CodeListLexiconInput',
     AsyncLexicon = 'AsyncLexicon',
     Composite = 'Composite',
     Checkbox = 'Checkbox',
     Radio = 'Radio',
     Number = 'Number',
     QualityBowelScore = 'QualityBowelScore',
+    ReportDiagram = 'ReportDiagram',
+    DatePicker = 'DatePicker',
+    Array = 'Array',
 }
 
 export const noBorderField = {

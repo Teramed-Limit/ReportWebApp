@@ -2,6 +2,7 @@ import { DocumentData } from '../../interface/document-data';
 import { FormControl } from '../../interface/form-state';
 import { ReportField } from '../../interface/report-data';
 import { ReportInjector } from '../../interface/report-injector';
+import { BowelPrep } from './fields/bowel-prep';
 import { ERSType } from './fields/ers-type';
 import { ReportTemplate } from './fields/report-template';
 
@@ -13,6 +14,10 @@ export class ReportDataService implements ReportInjector {
     constructor() {
         this.factoryMapper.set('ERSType', new ERSType());
         this.factoryMapper.set('ReportTemplate', new ReportTemplate());
+        this.factoryMapper.set('QualityOfBowelPreparation', new BowelPrep());
+        this.factoryMapper.set('BBPS_Right', new BowelPrep());
+        this.factoryMapper.set('BBPS_Transverse', new BowelPrep());
+        this.factoryMapper.set('BBPS_Left', new BowelPrep());
     }
 
     inject(id: string) {

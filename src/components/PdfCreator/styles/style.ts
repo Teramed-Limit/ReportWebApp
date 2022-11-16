@@ -2,15 +2,16 @@ import { StyleSheet } from '@react-pdf/renderer';
 
 // Common
 export const fontSize = 10;
+export const footerHeight = '92px';
 
 // Style
 export const styles = StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: 'white',
-        padding: '20px',
-        paddingBottom: '50px',
-        fontFamily: 'ArinalUNI',
+        padding: '14px',
+        paddingBottom: footerHeight,
+        fontFamily: 'MicrosoftBlack',
     },
     pageNumber: {
         position: 'absolute',
@@ -23,12 +24,20 @@ export const styles = StyleSheet.create({
     },
     header: {
         width: '100%',
-        height: '130',
+        minHeight: '68px',
         display: 'flex',
         flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
-    header_rightContent: {
-        flex: '1 1 40%',
+    headerReportContainer: {
+        display: 'flex',
+        height: '100%',
+        justifyContent: 'flex-end',
+    },
+    headerReport: {
+        fontSize: 16,
+        color: '#0070C0',
     },
     divider: {
         margin: '2px 0',
@@ -36,39 +45,53 @@ export const styles = StyleSheet.create({
         width: '100%',
         backgroundColor: 'black',
     },
-    header_patientContainer: {
-        border: '2px solid black',
-        height: '100%',
-        width: '100%',
-        padding: '6px',
-        fontSize,
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-    },
-    header_patientInfo: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        flexDirection: 'column',
-    },
-    header_leftContent: {
-        flex: '1 1 60%',
-        width: 200,
-        fontSize: 12,
-        display: 'flex',
-        justifyContent: 'space-between',
-    },
-    qrCode: {
-        display: 'flex',
-        alignSelf: 'flex-end',
-        width: '75px',
-        height: '75px',
-    },
     hospitalLogo: {
-        // width: '127px',
-        // height: '100%',
+        flex: 1,
+        maxWidth: '50%',
         objectFit: 'contain',
         objectPosition: 'left top',
+    },
+    footer: {
+        fontSize: '10px',
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        width: '45%',
+    },
+    signatureContainer: {
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+    },
+    signatureImage: {
+        flex: 1,
+        width: 'auto',
+        height: '60px',
+        margin: 'auto',
+        objectFit: 'contain',
+        objectPosition: 'left top',
+    },
+    signatureTextContainer: {
+        display: 'flex',
+        flexDirection: 'row',
+    },
+    signatureTitle: {
+        display: 'flex',
+        flex: '1 1 40%',
+        color: '#00B050',
+        fontWeight: 'bold',
+    },
+    signatureContent: {
+        flex: '1 1 60%',
+        display: 'flex',
+    },
+    signatureDoctor: {
+        display: 'flex',
+        color: '#0000FF',
+    },
+    signatureSummary: {
+        display: 'flex',
+        color: '#0000FF',
     },
     icon: {
         width: '13px',
@@ -76,45 +99,6 @@ export const styles = StyleSheet.create({
         objectFit: 'contain',
         objectPosition: 'center',
     },
-    section: {
-        maxWidth: '100%',
-        width: '100%',
-        display: 'flex',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-    },
-    subSection: {
-        maxWidth: '100%',
-        width: '100%',
-        display: 'flex',
-    },
-    fieldSection: {
-        display: 'flex',
-        margin: '3px 0',
-    },
-    // Label
-    label: {
-        fontSize,
-        fontWeight: 'bold',
-    },
-    labelHorizontal: {
-        flex: '1 1 35%',
-    },
-    labelVertical: {
-        marginBottom: 3,
-    },
-    // Text value
-    textValue: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize,
-        color: '#3a464d',
-    },
-    textValueHorizontal: {
-        flex: '1 1 65%',
-        padding: '0 2px',
-    },
-    textValueVertical: {},
     // Image
     gallery: {
         display: 'flex',
@@ -124,6 +108,7 @@ export const styles = StyleSheet.create({
         maxWidth: '100%',
     },
     imageContainer: {
+        position: 'relative',
         display: 'flex',
         flexDirection: 'column',
         flexWrap: 'nowrap',
@@ -134,10 +119,29 @@ export const styles = StyleSheet.create({
         maxWidth: '100%',
         objectFit: 'contain',
         objectPosition: 'center',
+        height: 'auto',
     },
-    imageDesc: {
+    imageDescContainer: {
         width: '100%',
         maxWidth: '100%',
+        display: 'flex',
+        flexDirection: 'column',
+        textAlign: 'center',
         fontSize,
+    },
+    imageNum: {
+        fontWeight: 'bold',
+        fontSize: '18px',
+        position: 'absolute',
+        color: 'white',
+        padding: '4px',
+        left: 0,
+        top: 0,
+    },
+    imageDesc: {
+        textAlign: 'center',
+        display: 'flex',
+        width: '100%',
+        maxWidth: '100%',
     },
 });

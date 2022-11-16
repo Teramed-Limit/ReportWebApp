@@ -1,70 +1,81 @@
 import React from 'react';
 
 import { View } from '@react-pdf/renderer';
+import { Style } from '@react-pdf/types/style';
 
+import { FormFieldType } from '../../../container/Report/field/field-type';
+import { ArrayField } from '../../../interface/array-field';
+import { CompositeField } from '../../../interface/composite-field';
 import { Section, SubSection } from '../../../interface/define';
 import { DocumentData } from '../../../interface/document-data';
 import { Field } from '../../../interface/field';
 import { FilterCondition } from '../../../interface/selection-field';
+import { reportPage } from '../../../styles/report/style';
+import PDFArrayField from '../PDFArrayField/PDFArrayField';
+import PDFCompositeField from '../PDFCompositeField/PDFCompositeField';
 import PDFField from '../PDFField/PDFField';
-import { styles } from '../styles/style';
+import PDFReportSection from '../PDFReportSection/PDFReportSection';
+import PDFReportSubSection from '../PDFReportSubSection/PDFReportSubSection';
 
 interface Props {
     formSections: Section[];
     formData: DocumentData;
+    diagramUrl: string;
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFReportContent = ({ formSections, formData, getOptions }: Props) => {
+export const margin = 0.25;
+
+const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Props) => {
     return (
-        <>
-            {formSections
-                .filter((section: Section) => !section.hide)
-                .map((section: Section) => {
-                    return (
-                        // Section
-                        <View wrap={false} key={section.id} style={{ ...styles.section }}>
-                            {section.subSections.map(
-                                (subSection: SubSection, subSectionIdx: number) => {
-                                    return (
-                                        // SubSection
-                                        <View
-                                            key={subSection.id}
-                                            style={{
-                                                ...styles.subSection,
-                                                width: `${section.ratio[subSectionIdx]}%`,
-                                            }}
-                                        >
-                                            {subSection.fields.map((field: Field) => {
-                                                // Field
+        <View style={{ margin: `${margin}%` }}>
+            <View style={reportPage as Style}>
+                {formSections
+                    .filter((section: Section) => !section.hide)
+                    .map((section: Section) => (
+                        <PDFReportSection key={section.id} section={section}>
+                            {section.subSections.map((subSection: SubSection) => (
+                                <PDFReportSubSection key={subSection.id} subSection={subSection}>
+                                    {subSection.fields.map((field: Field) => {
+                                        switch (field.type) {
+                                            case FormFieldType.Array:
                                                 return (
-                                                    <View
+                                                    <PDFArrayField
                                                         key={field.id}
-                                                        style={{
-                                                            ...styles.fieldSection,
-                                                            flexDirection:
-                                                                field.orientation === 'vertical'
-                                                                    ? 'column'
-                                                                    : 'row',
-                                                        }}
-                                                    >
-                                                        <PDFField
-                                                            field={field}
-                                                            formData={formData}
-                                                            value={formData[field.id]}
-                                                            getOptions={getOptions}
-                                                        />
-                                                    </View>
+                                                        field={field as ArrayField}
+                                                        formData={formData}
+                                                        diagramUrl={diagramUrl}
+                                                        getOptions={getOptions}
+                                                    />
                                                 );
-                                            })}
-                                        </View>
-                                    );
-                                },
-                            )}
-                        </View>
-                    );
-                })}
-        </>
+                                            case FormFieldType.Composite:
+                                                return (
+                                                    <PDFCompositeField
+                                                        key={field.id}
+                                                        field={field as CompositeField}
+                                                        formData={formData}
+                                                        diagramUrl={diagramUrl}
+                                                        getOptions={getOptions}
+                                                    />
+                                                );
+                                            default:
+                                                return (
+                                                    <PDFField
+                                                        key={field.id}
+                                                        field={field}
+                                                        value={formData[field.id]}
+                                                        diagramUrl={diagramUrl}
+                                                        getOptions={getOptions}
+                                                    />
+                                                );
+                                        }
+                                    })}
+                                </PDFReportSubSection>
+                            ))}
+                        </PDFReportSection>
+                    ))}
+            </View>
+        </View>
     );
 };
 

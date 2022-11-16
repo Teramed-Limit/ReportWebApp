@@ -70,7 +70,7 @@ export const LexiconReducer = (state = initialState, action: any) => {
             return {
                 ...state,
                 isMenuOpen: false,
-                options: [],
+                // options: [],
                 selectedOption: undefined,
                 filteredOptions: [],
                 focusOptionIdx: -1,

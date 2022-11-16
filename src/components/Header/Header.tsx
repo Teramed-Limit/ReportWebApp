@@ -3,7 +3,7 @@ import React from 'react';
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
-// import SettingsIcon from '@mui/icons-material/Settings';
+import SettingsIcon from '@mui/icons-material/Settings';
 import { Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
@@ -33,6 +33,12 @@ const Header = () => {
                         <Button id="btn__home" color="black">
                             <HomeRoundedIcon className={classes.iconButton} />
                             Home
+                        </Button>
+                    </NavigationItem>
+                    <NavigationItem link="/settings" id="navigation__setting">
+                        <Button id="btn__setting" color="black">
+                            <SettingsIcon className={classes.iconButton} />
+                            Settings
                         </Button>
                     </NavigationItem>
                     {/* <WithElementVisibility */}

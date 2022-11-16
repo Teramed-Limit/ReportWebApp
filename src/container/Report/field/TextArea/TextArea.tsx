@@ -1,10 +1,10 @@
 import React, { ForwardedRef } from 'react';
 
 import BaseTextArea from '../../../../components/UI/BaseTextArea/BaseTextArea';
-import { Field } from '../../../../interface/field';
+import { TextareaField } from '../../../../interface/textarea-field';
 
 interface Props {
-    field: Field;
+    field: TextareaField;
     value: string;
     onValueChange: (value: string) => void;
     disabled: boolean;
@@ -16,6 +16,8 @@ const TextArea = React.forwardRef(
             <BaseTextArea
                 ref={ref}
                 id={field.id}
+                rows={field.rows || 4}
+                placeholder={field.placeholder || ''}
                 disabled={disabled || field.readOnly}
                 value={value}
                 maxLength={field.maxLength}

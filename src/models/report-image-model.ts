@@ -11,6 +11,7 @@ const maxSelection = 50;
 export const ImageModel = types
     .model('image', {
         images: types.array(types.frozen<ReportImageDataset>()),
+        diagramChanged: types.string,
         diagramHandle: types.frozen<CanvasHandle>(),
     })
     .views((self) => {
@@ -44,10 +45,15 @@ export const ImageModel = types
         };
 
         const exportDiagramUrl = (): string => {
-            return self.diagramHandle.onExport();
+            return self?.diagramHandle?.onExport();
+        };
+
+        const markDiagramChanged = () => {
+            self.diagramChanged = new Date().toString();
         };
 
         const deleteMarker = (marker: Partial<ReportMark>): ReportImageDataset[] => {
+            markDiagramChanged();
             return self.images.map((item) => {
                 const deletedMappingNum = +(marker.MappingNumber || 0);
                 if (item.SOPInstanceUID === marker.SOPInstanceUID) {
@@ -78,6 +84,7 @@ export const ImageModel = types
         };
 
         const onMarkerPlace = (marker: MarkerPoint, sopInstanceUID: string) => {
+            markDiagramChanged();
             const targetImageIsAttach = self.images.find(
                 (image) => image.SOPInstanceUID === sopInstanceUID,
             )?.IsAttachInReport;
@@ -186,6 +193,20 @@ export const ImageModel = types
             );
         };
 
+        const onSitesChanged = (sopInsUid: string, sites: string) => {
+            setReportImage(
+                self.images.map((image) => {
+                    if (image.SOPInstanceUID === sopInsUid) {
+                        return {
+                            ...image,
+                            DescriptionOfSites: sites,
+                        };
+                    }
+                    return image;
+                }),
+            );
+        };
+
         const onImageReorder = (fromIdx: number, toIdx: number) => {
             if (!fromIdx && !toIdx) {
                 return;
@@ -216,6 +237,7 @@ export const ImageModel = types
             onMarkerPlace,
             onImageCheck,
             onFindingsChanged,
+            onSitesChanged,
             onImageStateInitialize,
             selectAllImage,
             deselectAllImage,
@@ -223,6 +245,7 @@ export const ImageModel = types
             setReportImage,
             registerDiagramCanvas,
             exportDiagramUrl,
+            markDiagramChanged,
         };
     });
 

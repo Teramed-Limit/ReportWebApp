@@ -51,12 +51,6 @@ module.exports = {
         'import/prefer-default-export': 0,
         'no-console': ['error', { allow: ['warn', 'error'] }],
         'linebreak-style': 'off',
-        'prettier/prettier': [
-            'error',
-            {
-                endOfLine: 'auto',
-            },
-        ],
         'no-plusplus': 'off',
         'consistent-return': 'off',
         'react/require-default-props': 0,
@@ -64,6 +58,8 @@ module.exports = {
         'react/destructuring-assignment': 0,
         'react/static-property-placement': 0,
         'react/jsx-props-no-spreading': 0,
+        'react/no-array-index-key': 0,
+        'react/jsx-no-bind': 0,
         '@typescript-eslint/no-use-before-define': 0,
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-explicit-any': 'off',

@@ -1,11 +1,15 @@
-import React, { ForwardedRef, forwardRef } from 'react';
+import React, { CSSProperties, ForwardedRef, forwardRef } from 'react';
+
+import { TextareaAutosize } from '@mui/material';
 
 import classes from './BaseTextArea.module.scss';
 
 interface Props {
     id?: string;
+    style?: CSSProperties;
     value: string;
     rows?: number;
+    placeholder?: string;
     disabled?: boolean;
     maxLength?: number;
     onValueChange: (str: string) => void;
@@ -16,8 +20,10 @@ const BaseTextArea = forwardRef(
     (
         {
             id,
+            style,
             value = '',
-            rows = 6,
+            placeholder = '',
+            rows = 4,
             maxLength = 5000,
             disabled = false,
             onValueChange,
@@ -30,15 +36,17 @@ const BaseTextArea = forwardRef(
         };
 
         return (
-            <textarea
+            <TextareaAutosize
                 ref={ref}
                 id={id}
+                style={style}
+                placeholder={placeholder}
                 autoComplete="off"
                 disabled={disabled}
                 className={classes.textareaInput}
                 maxLength={maxLength}
                 tabIndex={0}
-                rows={rows}
+                minRows={rows}
                 value={value}
                 onClick={(event) => event.stopPropagation()}
                 onChange={handleChange}

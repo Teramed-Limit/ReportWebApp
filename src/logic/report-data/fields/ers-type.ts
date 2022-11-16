@@ -9,6 +9,7 @@ export class ERSType extends ReportField {
     ) => {
         changeValue('ReportTemplate', '', { isValid: false });
         changeValue('Indication', '');
+        changeValue('DiagramData', '');
 
         if (data.ERSType !== 'Colonoscopy') {
             changeValue('Other', '');
@@ -29,8 +30,8 @@ export class ERSType extends ReportField {
             return;
         }
 
-        changeValue('IsCaecumReached', '', { isValid: false });
-        changeValue('WithdrawalTime', 0, { isValid: false });
+        changeValue('IsCaecumReached', '', { isValid: true });
+        changeValue('WithdrawalTime', 0, { isValid: true });
         changeValue('QualityOfBowelPreparation', '', { isValid: false });
         changeValue('QualityBowelScore', 0, { isValid: false });
     };

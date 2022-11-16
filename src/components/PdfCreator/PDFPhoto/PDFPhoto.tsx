@@ -3,48 +3,37 @@ import React from 'react';
 import { Image, Text, View } from '@react-pdf/renderer';
 
 import { ReportImageDataset } from '../../../interface/document-data';
+import { margin } from '../PDFReportContent/PDFReportContent';
 import { styles } from '../styles/style';
 
 interface Props {
-    row: number;
-    col: number;
     imageList: ReportImageDataset[];
 }
 
-const sizeMap = {
-    '2*2': { padding: '4px', diagramHeight: '202px' },
-    '2*3': { padding: '40px', diagramHeight: '148px' },
-    '3*3': { padding: '4px', diagramHeight: '133px' },
-};
-
-const PDFPhoto = ({ row, col, imageList }: Props) => {
+const PDFPhoto = ({ imageList }: Props) => {
     return (
         <View style={styles.gallery}>
-            {imageList.map((image: ReportImageDataset, index) => {
+            {imageList.map((image: ReportImageDataset) => {
                 return (
                     <View
                         key={image.SOPInstanceUID}
                         style={{
                             ...styles.imageContainer,
-                            width: `${100 / row}%`,
-                            maxWidth: `${100 / row}%`,
-                            flex: `1 1 ${100 / row}%`,
-                            padding: `16px ${sizeMap[`${row}*${col}`].padding}`,
+                            width: `${100 / 4 - margin * 2}%`,
+                            minWidth: `${100 / 4 - margin * 2}%`,
+                            maxWidth: `${100 / 4 - margin * 2}%`,
+                            margin: `${margin}%`,
                         }}
                         wrap={false}
                     >
-                        <Image
-                            style={{
-                                ...styles.image,
-                                height:
-                                    index === 0 ? sizeMap[`${row}*${col}`].diagramHeight : 'auto',
-                            }}
-                            src={image.ImageSrc}
-                        />
-                        <Text style={{ ...styles.imageDesc }}>
-                            {image.MappingNumber > 0 && `${image.MappingNumber}) `}
-                            {image.DescriptionOfFindings}
+                        <Image style={styles.image} src={image.ImageSrc} />
+                        <Text style={styles.imageNum}>
+                            {image.MappingNumber > 0 && `${image.MappingNumber}`}
                         </Text>
+                        <View style={styles.imageDescContainer}>
+                            <Text style={styles.imageDesc}>{image.DescriptionOfSites}</Text>
+                            <Text style={styles.imageDesc}>{image.DescriptionOfFindings}</Text>
+                        </View>
                     </View>
                 );
             })}

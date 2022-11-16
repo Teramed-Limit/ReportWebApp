@@ -6,6 +6,7 @@ import BaseTextInput from '../../../../../components/UI/BaseTextInput/BaseTextIn
 import { FormControl } from '../../../../../interface/form-state';
 import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';
 import { isEmptyOrNil } from '../../../../../utils/general';
+import FormSectionFieldLabel from '../../../../Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
 import classes from './SectionAdder.module.scss';
 
 interface Props {
@@ -60,11 +61,13 @@ const SectionAdder = ({ itemNameList, isDragging = false, onAddSection }: Props)
 
     return (
         <div style={{ display: isDragging ? 'none' : '' }} className={classes.item}>
+            {/* Label */}
+            <FormSectionFieldLabel id="sectionAdder" label="Name" hasValidation orientation="row" />
+            {/* Value */}
             <FormSectionField
                 id="sectionAdder"
-                label="Name"
                 readOnly={false}
-                hasValidation
+                orientation="row"
                 isDirty={inputState.isDirty}
                 isValid={inputState.isValid}
                 errorMessage={inputState.errorMessage}

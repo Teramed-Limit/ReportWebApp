@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 
 import { Button } from '@mui/material';
-import { ColDef, RowNode } from 'ag-grid-community';
-import { GetRowIdParams } from 'ag-grid-community/dist/lib/entities/gridOptions';
+import { ColDef, GetRowIdParams, RowNode } from 'ag-grid-community';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { AxiosObservable } from 'axios-observable/dist/axios-observable.interface';
 
@@ -12,10 +11,12 @@ import { FormEditorDef } from '../../interface/form-editor-define';
 import classes from './GridTableEditor.module.scss';
 
 interface Props {
+    domLayout?: 'normal' | 'autoHeight' | 'print';
     apiPath: string;
     initFormData: any;
+    initRowData?: any[];
+    externalGetRowData?: AxiosObservable<any>;
     externalUpdateRowApi?: (formData: any) => AxiosObservable<any>;
-    enableApi?: boolean;
     filterRow?: boolean;
     identityId: string;
     subIdentityId?: string;
@@ -33,10 +34,12 @@ interface Props {
 }
 
 const GridTableEditor = ({
+    domLayout = 'normal',
     apiPath,
     initFormData,
+    initRowData,
+    externalGetRowData,
     externalUpdateRowApi,
-    enableApi = true,
     identityId,
     subIdentityId = '',
     filterRow = false,
@@ -54,9 +57,10 @@ const GridTableEditor = ({
 }: Props) => {
     const { gridApi, rowData, colDefs, gridReady, openEditor } = useGridTable({
         formDef,
+        initRowData,
+        externalGetRowData,
         externalUpdateRowApi,
         apiPath,
-        enableApi,
         identityId,
         subIdentityId,
         colDef,
@@ -87,6 +91,7 @@ const GridTableEditor = ({
                     )}
                 </div>
                 <GridTable
+                    domLayout={domLayout}
                     rowSelection="single"
                     columnDefs={colDefs}
                     rowData={rowData || []}

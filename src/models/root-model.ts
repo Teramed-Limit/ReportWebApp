@@ -1,4 +1,4 @@
-import { Instance, types } from 'mst-effect';
+import { IAnyModelType, Instance, types } from 'mst-effect';
 
 import { AuthModel } from './auth-model';
 import { OptionStoreModel } from './options-model';
@@ -9,7 +9,7 @@ import { ImageModel } from './report-image-model';
 
 export const RootStoreModel = types
     .model('root', {
-        authStore: AuthModel,
+        authStore: types.late((): IAnyModelType => AuthModel),
         optionStore: OptionStoreModel,
         dataStore: DataModel,
         defineStore: DefineModel,
@@ -31,7 +31,9 @@ export const RootStoreModel = types
     .actions((self) => {
         return {
             afterCreate() {
-                self.optionStore.initialize().then();
+                // self.optionStore.initialize().then();
+                self.optionStore.initializeCodeList().then();
+                self.defineStore.fetchDefine().then();
             },
         };
     });

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { Box } from '@mui/material';
 
-import { FormEditorDef } from '../../interface/form-editor-define';
+import { FormEditorDef, FormField } from '../../interface/form-editor-define';
 import { EditorMapper } from './Editor/editorMapper';
 import { ValidationMapper } from './Editor/validationMapper';
 import classes from './FormEditor.module.scss';
@@ -57,18 +57,24 @@ const FormEditor = ({
             <div className={classes.container}>
                 {formDef.sections.map((section, index) => {
                     let autoFocusIdx = 0;
+
                     return (
                         <div
                             key={index.toString()}
                             style={{ flex: `${100 / sectionCount}%` }}
                             className={classes.section}
                         >
-                            {section.fields.map((fieldDef, idx) => {
+                            {section.fields.map((fieldDef: FormField, idx) => {
                                 const RenderComponent = EditorMapper[fieldDef.type];
                                 let readonly = fieldDef.readOnly;
-                                if (saveType === 'add') readonly = false;
+                                // Is primary key for table and is type is updated
+                                if (fieldDef?.isKey) readonly = true;
+                                // If primary key and save type is added always editable
+                                if (saveType === 'add' && fieldDef?.isKey) readonly = false;
                                 if (readonly) autoFocusIdx++;
                                 const value = formData[fieldDef.id] || '';
+
+                                if (fieldDef.hide) return <React.Fragment key={fieldDef.id} />;
 
                                 return (
                                     <Box key={fieldDef.id} sx={{ m: '8px 0' }}>
