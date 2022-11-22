@@ -2,18 +2,18 @@ import React from 'react';
 
 import { Image, Text, View } from '@react-pdf/renderer';
 
-import { ReportImageDataset } from '../../../interface/document-data';
+import { ReportImageData } from '../../../interface/document-data';
 import { margin } from '../PDFReportContent/PDFReportContent';
 import { styles } from '../styles/style';
 
 interface Props {
-    imageList: ReportImageDataset[];
+    imageList: ReportImageData[];
 }
 
 const PDFPhoto = ({ imageList }: Props) => {
     return (
         <View style={styles.gallery}>
-            {imageList.map((image: ReportImageDataset) => {
+            {imageList.map((image: ReportImageData) => {
                 return (
                     <View
                         key={image.SOPInstanceUID}
@@ -26,7 +26,7 @@ const PDFPhoto = ({ imageList }: Props) => {
                         }}
                         wrap={false}
                     >
-                        <Image style={styles.image} src={image.ImageSrc} />
+                        <Image style={styles.image} src={image.thumbnailImageSrc} />
                         <Text style={styles.imageNum}>
                             {image.MappingNumber > 0 && `${image.MappingNumber}`}
                         </Text>

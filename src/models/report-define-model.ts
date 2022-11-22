@@ -40,7 +40,7 @@ export const DefineModel = types
             setFormDefine: (formData: DocumentData) => {
                 const { reportDefineService } = getEnv<RootService>(self);
                 const { formDefine, pdfDefine } = reportDefineService.getFormDefine(
-                    formData.ERSType || 'Blank',
+                    formData?.ReportTemplate || 'Blank',
                 );
 
                 self.formDefine = formDefine;

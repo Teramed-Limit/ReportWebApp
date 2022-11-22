@@ -1,20 +1,15 @@
-import { useRef, useEffect, useCallback, RefObject } from 'react';
+import { RefObject, useCallback, useEffect, useRef } from 'react';
 
-import { getRefElement, isSSR } from '../utils/general';
+import { getRefElement } from '../utils/general';
 
 interface UseEventListener {
     type: keyof WindowEventMap;
     listener: EventListener;
-    element?: RefObject<Element> | Document | Window | null;
+    element?: RefObject<Element>;
     options?: AddEventListenerOptions;
 }
 
-export const useEventListener = ({
-    type,
-    listener,
-    element = isSSR ? undefined : window,
-    options,
-}: UseEventListener): void => {
+export const useEventListener = ({ type, listener, element, options }: UseEventListener): void => {
     const savedListener = useRef<EventListener>();
 
     useEffect(() => {

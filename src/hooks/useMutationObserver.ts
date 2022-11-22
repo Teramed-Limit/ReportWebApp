@@ -1,9 +1,9 @@
-import { useEffect, useMemo, RefObject } from 'react';
+import { RefObject, useEffect, useMemo } from 'react';
 
 import { getRefElement, isSSR } from '../utils/general';
 
 interface Props {
-    target?: RefObject<Element> | Element | Node | null;
+    target?: RefObject<Element>;
     options?: MutationObserverInit;
     callback?: MutationCallback;
 }

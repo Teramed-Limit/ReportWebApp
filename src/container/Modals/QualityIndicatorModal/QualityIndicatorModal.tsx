@@ -14,10 +14,8 @@ const DialogContext = React.createContext<{ [propName: string]: (actionParams) =
 
 const QualityIndicatorModal = () => {
     const setModal = useContext(ModalContext);
-    const [disabled, setDisabled] = useState(true);
     const { formDefine } = useReportDefineStore();
-    const { qualityModelIsValid, formData, formState, resetFormData, resetFormState } =
-        useReportDataStore();
+    const { formData, formState, resetFormData, resetFormState } = useReportDataStore();
 
     const [originalFormData, setOriginalFormData] = useState(formData.toJSON());
     const [originalFormState, setOriginalFormState] = useState(formState.toJSON());
@@ -26,6 +24,8 @@ const QualityIndicatorModal = () => {
         setOriginalFormData({ ...formData.toJSON() });
         setOriginalFormState({ ...formState.toJSON() });
     }, [formData, formState]);
+
+    useEffect(() => {}, [formState]);
 
     const onConfirm = () => {
         setModal(null);
@@ -36,10 +36,6 @@ const QualityIndicatorModal = () => {
         resetFormState(originalFormState);
         setModal(null);
     };
-
-    useEffect(() => {
-        setDisabled(!qualityModelIsValid);
-    }, [qualityModelIsValid]);
 
     const body = (
         <div className={classes.container}>
@@ -56,7 +52,7 @@ const QualityIndicatorModal = () => {
 
     const footer = (
         <>
-            <Button disabled={disabled} theme="primary" fontSize={16} onClick={onConfirm}>
+            <Button theme="primary" fontSize={16} onClick={onConfirm}>
                 Confirm
             </Button>
             <Button theme="reversePrimary" fontSize={16} onClick={onClose}>

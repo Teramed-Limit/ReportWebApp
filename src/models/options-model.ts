@@ -56,8 +56,8 @@ export const OptionStoreModel = types
         //             .set('YesNo', staticOptionType.YesNo)
         //             .set('Dosage', staticOptionType.Dosage)
         //             .set(
-        //                 'ReportERSTypeList',
-        //                 uniqBy(settingRes.data.ReportERSTypeList, R.path(['Name'])),
+        //                 'ReportReportTemplateList',
+        //                 uniqBy(settingRes.data.ReportReportTemplateList, R.path(['Name'])),
         //             ),
         //     );
         // };

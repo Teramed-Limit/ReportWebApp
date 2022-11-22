@@ -42,7 +42,7 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
 
     const selection = (rendererField: SelectionField<any>, rendererValue) => {
         if (rendererField.isMulti) {
-            const newValue = (rendererValue as string[]).join('\r\n');
+            const newValue = (rendererValue as string[])?.join('\r\n') || '';
             return text(rendererField, newValue);
         }
 

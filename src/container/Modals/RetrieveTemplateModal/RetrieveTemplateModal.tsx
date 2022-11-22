@@ -31,7 +31,7 @@ const colDef: ColDef[] = [
 
 const RetrieveTemplateModal = () => {
     const setModal = useContext(ModalContext);
-    const { valueChanged, ersType, findings } = useReportDataStore();
+    const { valueChanged, reportTemplate, findings } = useReportDataStore();
     const searchTextSubject$ = useRef(new Subject<string>());
 
     const [selectedItem, setSelectedItem] = useState<TemplateFinding>();
@@ -41,17 +41,17 @@ const RetrieveTemplateModal = () => {
     const [oriItemList, setOriItemList] = useState<TemplateFinding[]>([]);
 
     useEffect(() => {
-        retrieveFindingsTemplate(ersType)
+        retrieveFindingsTemplate(reportTemplate)
             .pipe(first())
             .subscribe((res) => {
                 setItemList(res.data);
                 setOriItemList(res.data);
             });
-    }, [ersType]);
+    }, [reportTemplate]);
 
     useEffect(() => {
-        setHintVisible(isEmptyOrNil(ersType));
-    }, [ersType]);
+        setHintVisible(isEmptyOrNil(reportTemplate));
+    }, [reportTemplate]);
 
     useEffect(() => {
         const subscription = searchTextSubject$.current

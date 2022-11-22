@@ -23,18 +23,18 @@ interface Props {
 }
 
 const FillInDetailsModal = ({ fieldId }: Props) => {
-    const { valueChanged, ersType } = useReportDataStore();
+    const { valueChanged, reportTemplate } = useReportDataStore();
     const setModal = useContext(ModalContext);
-    const { findingList, setFindingList, activeIndex, setActiveIndex } =
+    const { findingList, setFindingList, activeIndex, setActiveIndex, edit } =
         useContext(FindingTemplateContext);
 
     const [itemList, setItemList] = useState<ReportFindingItemList[]>([]);
 
     useEffect(() => {
-        getReportFindings(ersType, fieldId)
+        getReportFindings(reportTemplate, fieldId)
             .pipe(
                 first(),
-                filter((res) => !isEmptyOrNil(res.data) && !isEmptyOrNil(ersType)),
+                filter((res) => !isEmptyOrNil(res.data) && !isEmptyOrNil(reportTemplate)),
             )
             .subscribe((res) => {
                 const dataList = res.data;
@@ -42,7 +42,7 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                 setActiveIndex(0);
                 setItemList(dataList[0].ReportFindingsItemList);
             });
-    }, [ersType, fieldId, setActiveIndex, setFindingList]);
+    }, [fieldId, reportTemplate, setActiveIndex, setFindingList]);
 
     const onClose = () => {
         setModal(null);
@@ -130,7 +130,7 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                 <ViewEditSwitcher
                     editComponent={
                         <SectionListEdit
-                            ersType={ersType}
+                            ReportTemplate={reportTemplate}
                             fieldId={fieldId}
                             onCategoryFocus={onCategoryFocus}
                             onCancelFocus={onCancelFocus}
@@ -170,13 +170,13 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
     const footer = (
         <>
             <div className={[classes.footer, classes.content, classes.left].join(' ')}>
-                Current ERS Type: {ersType}, Field: {fieldId}
+                Current Report: {reportTemplate}, Field: {fieldId}
             </div>
             <div className={[classes.footer, classes.content, classes.right].join(' ')}>
-                <Button theme="primary" onClick={onConfirmSelect}>
+                <Button disabled={edit} theme="primary" onClick={onConfirmSelect}>
                     Confirm
                 </Button>
-                <Button theme="reversePrimary" onClick={onClose}>
+                <Button disabled={edit} theme="reversePrimary" onClick={onClose}>
                     Cancel
                 </Button>
             </div>

@@ -1,7 +1,7 @@
 import { getRoot, Instance, types } from 'mst-effect';
 import * as R from 'ramda';
 
-import { ReportImageDataset, ReportMark } from '../interface/document-data';
+import { ReportImageData, ReportMark } from '../interface/document-data';
 import { CanvasHandle } from '../interface/konva-stage-event';
 import { MarkerPoint } from '../interface/marker';
 import { isEmptyOrNil } from '../utils/general';
@@ -10,7 +10,7 @@ import { DataStore } from './report-data-model';
 const maxSelection = 50;
 export const ImageModel = types
     .model('image', {
-        images: types.array(types.frozen<ReportImageDataset>()),
+        images: types.array(types.frozen<ReportImageData>()),
         diagramChanged: types.string,
         diagramHandle: types.frozen<CanvasHandle>(),
     })
@@ -36,7 +36,7 @@ export const ImageModel = types
     })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
-        const initImages = (reportImageDataset: ReportImageDataset[]) => {
+        const initImages = (reportImageDataset: ReportImageData[]) => {
             self.images.replace(reportImageDataset);
         };
 
@@ -52,7 +52,7 @@ export const ImageModel = types
             self.diagramChanged = new Date().toString();
         };
 
-        const deleteMarker = (marker: Partial<ReportMark>): ReportImageDataset[] => {
+        const deleteMarker = (marker: Partial<ReportMark>): ReportImageData[] => {
             markDiagramChanged();
             return self.images.map((item) => {
                 const deletedMappingNum = +(marker.MappingNumber || 0);
@@ -225,10 +225,10 @@ export const ImageModel = types
             );
         };
 
-        const setReportImage = (imageDatasets: ReportImageDataset[]) => {
+        const setReportImage = (imageDatasets: ReportImageData[]) => {
             self.images.replace(imageDatasets);
             const { valueChanged } = getRoot<any>(self).dataStore as DataStore;
-            valueChanged('ReportImageDataset', imageDatasets);
+            valueChanged('ReportImageData', imageDatasets);
         };
 
         return {

@@ -38,8 +38,8 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
     };
 
     const onValueGetter = (idx: number, id: string): string => {
-        const valueList = formData.get(id).split('@');
-        return valueList[idx] || '';
+        const valueList = formData.get(id)?.split('@');
+        return valueList?.[idx] || '';
     };
 
     const addField = () => {

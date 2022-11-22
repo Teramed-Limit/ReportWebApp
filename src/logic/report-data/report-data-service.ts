@@ -3,7 +3,6 @@ import { FormControl } from '../../interface/form-state';
 import { ReportField } from '../../interface/report-data';
 import { ReportInjector } from '../../interface/report-injector';
 import { BowelPrep } from './fields/bowel-prep';
-import { ERSType } from './fields/ers-type';
 import { ReportTemplate } from './fields/report-template';
 
 export class ReportDataService implements ReportInjector {
@@ -12,7 +11,6 @@ export class ReportDataService implements ReportInjector {
     factoryMapper = new Map<string, ReportField>();
 
     constructor() {
-        this.factoryMapper.set('ERSType', new ERSType());
         this.factoryMapper.set('ReportTemplate', new ReportTemplate());
         this.factoryMapper.set('QualityOfBowelPreparation', new BowelPrep());
         this.factoryMapper.set('BBPS_Right', new BowelPrep());

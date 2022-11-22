@@ -5,7 +5,7 @@ import { useEventListener } from './useEventListener';
 export const useKeyPress = (
     key: string,
     callback: (event: KeyboardEvent) => void,
-    element?: RefObject<Element> | Document | Window | null,
+    element?: RefObject<Element>,
 ): void => {
     const handleKeydown = useCallback(
         (event) => {

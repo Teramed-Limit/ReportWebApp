@@ -30,14 +30,14 @@ const GallerySelector = () => {
 
     const [findingsOptions] = useObjectState(
         optionStore.getCodeList('ImageFindings', {
-            filterById: 'ERSType',
-            filterOptionKey: 'ERSType',
+            filterById: 'ReportTemplate',
+            filterOptionKey: 'ReportTemplate',
         }) || [],
     );
     const [sitesOptions] = useObjectState(
         optionStore.getCodeList('ImageSites', {
-            filterById: 'ERSType',
-            filterOptionKey: 'ERSType',
+            filterById: 'ReportTemplate',
+            filterOptionKey: 'ReportTemplate',
         }) || [],
     );
 

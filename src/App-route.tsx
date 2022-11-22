@@ -4,6 +4,7 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 import Account from './container/Account/Account';
+import History from './container/History/History';
 import Query from './container/Query/Query';
 import Report from './container/Report/Report';
 import Settings from './container/Settings/Settings';
@@ -20,6 +21,7 @@ function AppRoutes() {
                 component={<Report />}
             />
             <PrivateRoute path="/account" component={<Account />} exact />
+            <PrivateRoute path="/history" component={<History />} exact />
             <PrivateRoute path="/settings" component={<Settings />} exact />
             <Route path="*" component={NotFoundPage} />
         </Switch>

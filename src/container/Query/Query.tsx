@@ -148,9 +148,8 @@ const Query: React.FC = () => {
 
     // Call api when row data is empty
     useEffect(() => {
-        if (!isEmptyOrNil(rowData)) return;
         onQuery();
-    }, [onQuery, rowData]);
+    }, [onQuery]);
 
     return (
         <Stack direction="column" spacing={1} className={classes.container}>

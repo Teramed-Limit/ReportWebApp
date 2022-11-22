@@ -17,19 +17,19 @@ import Section from './Section/Section';
 import classes from './SectionListEdit.module.scss';
 
 interface Props {
-    ersType: string;
+    ReportTemplate: string;
     fieldId: string;
     onCategoryFocus: (index: number) => void;
     onCancelFocus: () => void;
 }
 
-const SectionListEdit = ({ ersType, fieldId, onCategoryFocus, onCancelFocus }: Props) => {
+const SectionListEdit = ({ ReportTemplate, fieldId, onCategoryFocus, onCancelFocus }: Props) => {
     const { setSuccessNotification, setErrorNotification } = useContext(NotificationContext);
     const { setEdit, findingList, setFindingList, activeIndex, backupFindingList } =
         useContext(FindingTemplateContext);
 
     const onConfirm = useCallback(() => {
-        saveReportFindings(ersType, fieldId, findingList)
+        saveReportFindings(ReportTemplate, fieldId, findingList)
             .pipe(
                 first(),
                 finalize(() => {
@@ -49,7 +49,7 @@ const SectionListEdit = ({ ersType, fieldId, onCategoryFocus, onCancelFocus }: P
             );
     }, [
         backupFindingList,
-        ersType,
+        ReportTemplate,
         fieldId,
         findingList,
         onCancelFocus,
@@ -91,7 +91,7 @@ const SectionListEdit = ({ ersType, fieldId, onCategoryFocus, onCancelFocus }: P
         (sectionName: string) => {
             setFindingList((sectionList) => {
                 const insertSection: ReportFinding = {
-                    ERSType: ersType,
+                    ReportTemplate,
                     FieldId: fieldId,
                     ItemName: sectionName,
                     DisplayIndex: sectionList.length,
@@ -103,7 +103,7 @@ const SectionListEdit = ({ ersType, fieldId, onCategoryFocus, onCancelFocus }: P
             });
             onCancelFocus();
         },
-        [ersType, fieldId, onCancelFocus, setFindingList],
+        [ReportTemplate, fieldId, onCancelFocus, setFindingList],
     );
 
     const onDragEnd = (result) => {

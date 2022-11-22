@@ -9,6 +9,7 @@ export const generateUUID = () => {
             .toString(16)
             .substring(1);
     }
+
     return `${s4() + s4()}-${s4()}-${s4()}-${s4()}-${s4()}${s4()}${s4()}`;
 };
 
@@ -19,9 +20,7 @@ export const coerceArray = (ary: string | any[]) => {
     return [ary];
 };
 
-export const getRefElement = <T>(
-    element?: RefObject<Element> | T,
-): Element | T | undefined | null => {
+export const getRefElement = (element?: RefObject<Element>): Element | undefined | null => {
     if (element && 'current' in element) {
         return element.current;
     }

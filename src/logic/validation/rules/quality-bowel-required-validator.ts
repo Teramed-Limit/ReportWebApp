@@ -11,7 +11,7 @@ export class QualityBowelRequiredValidator extends RequireValidator {
         validateParams: ValidateParams,
         documentData: DocumentData,
     ): ValidateResult {
-        if (documentData.ERSType === 'Colonoscopy') {
+        if (documentData?.ReportTemplate === 'Colonoscopy') {
             return super.validate(value, validateParams, documentData);
         }
         return {

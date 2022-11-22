@@ -9,7 +9,6 @@ import { tap } from 'rxjs/operators';
 import Icon from '../../components/UI/Icon/Icon';
 import { NotificationContext } from '../../context/notification-context';
 import { Section } from '../../interface/define';
-import { ReportStatus } from '../../interface/document-data';
 import { MessageType } from '../../interface/notification';
 import ReportSection from '../../layout/ReportSection/ReportSection';
 import { useOptionStore, useReportDataStore, useReportDefineStore } from '../../models/useStore';
@@ -25,7 +24,7 @@ const Report = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
-    const { reportStatus, modifiable, fetchReport } = useReportDataStore();
+    const { modifiable, fetchReport } = useReportDataStore();
     const { loading: fetchDefineLoading } = useReportDefineStore();
     const { loading: fetchOptionsLoading } = useOptionStore();
     const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
@@ -57,11 +56,7 @@ const Report = () => {
             <ReportActionProvider>
                 <div className={classes.header}>
                     <Stack direction="row" spacing={2}>
-                        {reportStatus === ReportStatus.Signed && !modifiable ? (
-                            <ReportViewActionBar />
-                        ) : (
-                            <ReportEditActionBar />
-                        )}
+                        {!modifiable ? <ReportViewActionBar /> : <ReportEditActionBar />}
                     </Stack>
                 </div>
                 <div className={classes.reportLayout}>

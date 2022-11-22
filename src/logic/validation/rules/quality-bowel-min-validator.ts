@@ -10,7 +10,7 @@ export class QualityBowelMinValidator extends MinValidator {
         validateParams: { min: number },
         documentData: DocumentData,
     ): ValidateResult {
-        if (documentData.ERSType === 'Colonoscopy') {
+        if (documentData?.ReportTemplate === 'Colonoscopy') {
             return super.validate(value, validateParams, documentData);
         }
         return {

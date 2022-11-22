@@ -5,14 +5,14 @@ export class QualityBowelValidator extends Validator {
     errorMessage = 'The total score must be 6 or above';
 
     validate(value: any, validateParams: any, documentData: DocumentData): ValidateResult {
-        if (documentData.ERSType !== 'Colonoscopy') {
+        if (documentData?.ReportTemplate !== 'Colonoscopy') {
             return {
                 isValid: true,
                 errorMessage: '',
             };
         }
 
-        if (documentData.QualityOfBowelPreparation === 'Inadequate') {
+        if (documentData?.QualityOfBowelPreparation === 'Inadequate') {
             return {
                 isValid: true,
                 errorMessage: '',

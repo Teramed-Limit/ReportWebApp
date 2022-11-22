@@ -9,11 +9,10 @@ import {
     Instance,
     types,
 } from 'mst-effect';
-import { iif, interval, Observable, throwError } from 'rxjs';
-import { catchError, concatMap, filter, map, startWith, switchMap } from 'rxjs/operators';
+import { iif, interval, Observable, of, throwError } from 'rxjs';
+import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
-import { fetchReport, saveReport, saveReportPDF, signOffReport } from '../axios/api';
-import { AnyObject } from '../interface/anyObject';
+import { fetchReport, saveReport } from '../axios/api';
 import { DocumentData, ReportStatus } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
@@ -25,11 +24,12 @@ import { isEmptyOrNil } from '../utils/general';
 const dateModel = types.union(types.frozen<DocumentData>());
 const formState = types.union(types.frozen<FormState>());
 
-const formInvalidError = { response: { data: { Message: 'Required fields are not filled.' } } };
+const formInvalidError = {
+    response: { data: { Message: 'Required fields are not filled.' } },
+};
 
 export const DataModel = types
     .model('report', {
-        reportReady: types.optional(types.enumeration(['prepare', 'success', 'error']), 'prepare'),
         modifiable: types.optional(types.boolean, false),
         // report data is latest, no edit
         reportHasChanged: types.optional(types.boolean, false),
@@ -46,11 +46,10 @@ export const DataModel = types
         return {
             get reportDisabled() {
                 if (self.modifiable) return false;
-                return self.formData.get('ReportStatus') === ReportStatus.Signed;
-            },
-            get reportStatus() {
-                // 'saved' | 'newly' | 'signed'
-                return self.formData.get('ReportStatus');
+                return (
+                    self.formData.get('ReportStatus') === ReportStatus.Signed ||
+                    self.formData.get('ReportStatus') === ReportStatus.History
+                );
             },
             get pdfFile() {
                 if (isEmptyOrNil(self.formData.get('PDFFilePath'))) {
@@ -59,28 +58,17 @@ export const DataModel = types
 
                 return `${self.formData.get('PDFFilePath')}`;
             },
-            get qualityModelIsValid() {
-                return (
-                    self.formState.get('QualityBowelScore').isValid &&
-                    self.formState.get('QualityOfBowelPreparation').isValid &&
-                    self.formState.get('IsCaecumReached').isValid &&
-                    self.formState.get('WithdrawalTime').isValid
-                );
+            get reportTemplate() {
+                return self.formData.get('ReportTemplate');
             },
-            get ersType() {
-                return self.formData.get('ERSType');
+            get findings() {
+                return self.formData.get('Findings');
             },
             get studyInsUID() {
                 return self.formData.get('StudyInstanceUID');
             },
-            get user() {
-                return self.formData.get('StaffCode');
-            },
             get diagramData() {
                 return self.formData.get('DiagramData');
-            },
-            get findings() {
-                return self.formData.get('Findings');
             },
         };
     })
@@ -112,7 +100,7 @@ export const DataModel = types
                     ...staticState,
                 });
 
-                if (targetId === 'ERSType') setFormDefine(self.formData.toJSON());
+                if (targetId === 'ReportTemplate') setFormDefine(self.formData.toJSON());
             };
             changeValue(id, value);
             reportDataService.inject(id);
@@ -120,7 +108,12 @@ export const DataModel = types
         };
 
         const validate = (id: string, value: any): FormControl => {
-            const state = { isDirty: true, isValid: true, errorMessage: '', fromModal: '' };
+            const state = {
+                isDirty: true,
+                isValid: true,
+                errorMessage: '',
+                fromModal: '',
+            };
 
             const field = reportDefineService.getField(id);
             if (!field) return state;
@@ -146,31 +139,38 @@ export const DataModel = types
         };
 
         const initialFormControl = () => {
-            const initialState = {};
             const documentData = self.formData.toJSON();
+            const { fields } = reportDefineService.getFormDefine(
+                documentData?.ReportTemplate || 'Blank',
+            );
 
-            Object.keys(self.formData.toJSON()).forEach((key) => {
-                const state = { isDirty: false, isValid: true, errorMessage: '', fromModal: '' };
-
-                const field = reportDefineService.getField(key);
+            const initialState = {};
+            Object.entries(fields).forEach(([fieldId, field]) => {
+                const state = {
+                    isDirty: false,
+                    isValid: true,
+                    errorMessage: '',
+                    fromModal: '',
+                };
                 if (!field?.validate) {
-                    initialState[key] = state;
+                    initialState[fieldId] = state;
                     return;
                 }
 
                 const { isValid, errorMessage } = validationService.validate(
-                    documentData[key],
+                    documentData[fieldId],
                     field.validate,
                     documentData,
                 );
 
-                initialState[key] = {
+                initialState[fieldId] = {
                     ...state,
                     isValid,
                     errorMessage,
                     fromModal: field.fromModal || '',
                 };
             });
+
             self.formState.replace(initialState);
         };
 
@@ -205,33 +205,24 @@ export const DataModel = types
         };
 
         const saveReport$ = () => {
-            self.formData.set('SignOffsDateTime', '');
-            self.formData.set('PDFFilePath', '');
+            self.formData.set('ReportStatus', ReportStatus.Saved);
+
+            // 沒編輯過不要做任何動作
+            if (!self.reportHasChanged) return of({ response: { data: { Message: '' } } });
+
             return iif(
-                checkFormIsValid,
+                () => checkFormIsValid(),
                 saveReport(self.formData.toJSON()),
                 throwError(formInvalidError),
             );
         };
 
-        const savePDF$ = (pdfBase64: string) => {
-            return saveReportPDF(self.studyInsUID, { ByteData: pdfBase64 });
-        };
-
-        const signOffReport$ = () => {
-            const signOffOnly$ = signOffReport(self.studyInsUID, self.formData.toJSON());
-            const saveAndSignOff$ = saveReport$().pipe(
-                concatMap(() => signOffReport(self.studyInsUID, self.formData.toJSON())),
-            );
-
+        const signReport$ = () => {
+            self.formData.set('ReportStatus', ReportStatus.Signed);
             return iif(
-                () =>
-                    self.reportHasChanged ||
-                    self.formData.get('ReportStatus') === ReportStatus.Newly,
-                // if report content has changed or report is newly, save and signOff
-                saveAndSignOff$,
-                // otherwise, just do  signOff
-                signOffOnly$,
+                () => checkFormIsValid(),
+                saveReport(self.formData.toJSON()),
+                throwError(formInvalidError),
             );
         };
 
@@ -262,8 +253,7 @@ export const DataModel = types
             );
         };
 
-        const fetchSuccess = (response: AxiosResponse<AnyObject>, callback?: () => void) => {
-            Object.entries(response.data).forEach(([key, value]) => self.formData.set(key, value));
+        const fetchSuccess = (response: AxiosResponse, callback?: () => void) => {
             self.loading = false;
             self.reportHasChanged = false;
             callback?.();
@@ -278,16 +268,6 @@ export const DataModel = types
                     );
                 },
             ),
-            savePdf: dollEffect<string, ReportResponseNotification>(
-                self,
-                (payload$, dollSignal) => {
-                    return payload$.pipe(
-                        switchMap((base64) =>
-                            callApi(savePDF$(base64), dollSignal, 'Report save success'),
-                        ),
-                    );
-                },
-            ),
             signOffReport: dollEffect<null, ReportResponseNotification>(
                 self,
                 (payload$, dollSignal) => {
@@ -297,12 +277,7 @@ export const DataModel = types
                     };
                     return payload$.pipe(
                         switchMap(() =>
-                            callApi(
-                                signOffReport$(),
-                                dollSignal,
-                                'Report sign off success',
-                                callback,
-                            ),
+                            callApi(signReport$(), dollSignal, 'Report sign-off success', callback),
                         ),
                     );
                 },
@@ -314,17 +289,9 @@ export const DataModel = types
                         JSON.stringify(self.formData.toJSON()),
                     );
                 }
+
                 return payload$.pipe(
-                    switchMap(() =>
-                        interval(5000).pipe(
-                            filter(
-                                () =>
-                                    self.formData.get('ReportStatus') === ReportStatus.Newly &&
-                                    self.reportReady === 'success',
-                            ),
-                            map(() => action(update)),
-                        ),
-                    ),
+                    switchMap(() => interval(5000).pipe(map(() => action(update)))),
                 );
             }),
         };
@@ -333,7 +300,6 @@ export const DataModel = types
         const beforeFetch = () => (self.loading = true);
 
         const fetchError = () => {
-            self.reportReady = 'error';
             self.loading = false;
         };
 
@@ -341,20 +307,19 @@ export const DataModel = types
             const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
 
             // set initialize data
-            response.data.OwnerId = authStore.loginUser;
             response.data.Author = authStore.loginUser;
             self.formData.replace(response.data);
 
-            imageStore.initImages(response.data?.ReportImageDataset || []);
+            imageStore.initImages(response.data?.ReportImageData || []);
 
             // report not existed, auto set value
-            if (response.data.ReportStatus === ReportStatus.Newly) {
-                // autofill studyDescription in ERSType
+            if (response.data.ReportStatus === ReportStatus.InComplete) {
+                // autofill studyDescription in ReportTemplate
                 if (
                     response.data.StudyDescription &&
                     RegisterReportDefineMap[response.data.StudyDescription]
                 ) {
-                    self.formData.set('ERSType', response.data.StudyDescription);
+                    self.formData.set('ReportTemplate', response.data.StudyDescription);
                 }
 
                 // apply local storage data, when newly report
@@ -363,7 +328,7 @@ export const DataModel = types
                         <string>window.localStorage.getItem(self.studyInsUID),
                     );
                     self.formData.replace(tempData);
-                    imageStore.initImages(tempData.ReportImageDataset || []);
+                    imageStore.initImages(tempData.ReportImageData || []);
                 }
             }
 
@@ -371,8 +336,11 @@ export const DataModel = types
             defineStore.setFormDefine(self.formData.toJSON());
             self.reportHasChanged = false;
             self.initialFormControl();
+            self.modifiable = !(
+                response.data.ReportStatus === ReportStatus.Signed ||
+                response.data.ReportStatus === ReportStatus.History
+            );
             self.loading = false;
-            self.reportReady = 'success';
         };
 
         return {

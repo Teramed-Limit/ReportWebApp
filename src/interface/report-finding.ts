@@ -1,5 +1,5 @@
 export interface ReportFinding {
-    ERSType: string;
+    ReportTemplate: string;
     FieldId: string;
     ItemName: string;
     DisplayIndex: number;
@@ -17,5 +17,5 @@ export interface TemplateFinding {
     Content: string;
     DisplayIndex: number;
     Number: number;
-    ERSType?: string;
+    ReportTemplate?: string;
 }

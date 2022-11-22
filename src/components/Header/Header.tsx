@@ -1,6 +1,7 @@
 import React from 'react';
 
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import HistoryIcon from '@mui/icons-material/History';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -39,6 +40,12 @@ const Header = () => {
                         <Button id="btn__setting" color="black">
                             <SettingsIcon className={classes.iconButton} />
                             Settings
+                        </Button>
+                    </NavigationItem>
+                    <NavigationItem link="/history" id="navigation__history">
+                        <Button id="btn__history" color="black">
+                            <HistoryIcon className={classes.iconButton} />
+                            History
                         </Button>
                     </NavigationItem>
                     {/* <WithElementVisibility */}

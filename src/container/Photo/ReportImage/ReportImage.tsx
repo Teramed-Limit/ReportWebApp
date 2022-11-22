@@ -21,7 +21,7 @@ const ReportImage = () => {
     const [containerHeight, setContainerHeight] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
 
-    const { valueChanged, reportDisabled, ersType, diagramData } = useReportDataStore();
+    const { valueChanged, reportDisabled, reportTemplate, diagramData } = useReportDataStore();
     const {
         imageMarkers,
         onMarkerDelete,
@@ -63,12 +63,12 @@ const ReportImage = () => {
             setImageSrc(`data:image/jpeg;base64, ${diagramData}`);
             return;
         }
-        if (isEmptyOrNil(ersType)) {
+        if (isEmptyOrNil(reportTemplate)) {
             fetchReportDiagram('BLANK');
             return;
         }
-        fetchReportDiagram(ersType);
-    }, [diagramData, ersType, fetchReportDiagram]);
+        fetchReportDiagram(reportTemplate);
+    }, [diagramData, reportTemplate, fetchReportDiagram]);
 
     useEffect(() => {
         if (containerRef === null || containerRef.current === null) return;
@@ -81,7 +81,7 @@ const ReportImage = () => {
     };
 
     const onNewDiagram = () => {
-        fetchReportDiagram(ersType);
+        fetchReportDiagram(reportTemplate);
     };
 
     const onEditDiagram = () => {

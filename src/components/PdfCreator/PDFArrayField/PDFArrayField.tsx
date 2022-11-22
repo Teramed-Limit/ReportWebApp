@@ -26,7 +26,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
         let maxCountOfArray = 0;
         // 抓出Composite裡面的Fields哪一個陣列長度最長，作為畫面顯示的欄位數量
         (templateField as CompositeField).fields.forEach((compositeChildField) => {
-            const count = (formData[compositeChildField.id].split('@') as string[]).length;
+            const count = (formData[compositeChildField.id]?.split('@') as string[])?.length || 0;
             if (maxCountOfArray < count) maxCountOfArray = count;
         });
 

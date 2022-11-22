@@ -6,12 +6,9 @@ import { LoginResult } from '../interface/auth';
 import { CodeListMap } from '../interface/code-list';
 import { FormDefineMap } from '../interface/define';
 import { Diagram } from '../interface/diagram';
-import { DocumentData, ReportImageDataset } from '../interface/document-data';
+import { DocumentData } from '../interface/document-data';
 import { HkcctCode } from '../interface/hkcct';
-import { MergeStudyParams } from '../interface/merge-study';
 import { ReportFinding, TemplateFinding } from '../interface/report-finding';
-import { ReportSetting } from '../interface/report-setting';
-import { Study } from '../interface/study';
 import { StudyData } from '../interface/study-data';
 import { axiosIns } from './axios';
 
@@ -42,17 +39,8 @@ export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
     return axiosIns.post(`api/standard/report`, body);
 }
 
-export function signOffReport(studyInsUid: string, body): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/signOff`, body);
-}
-
 export function saveReportPDF(studyInsUid: string, body): Observable<AxiosResponse<AnyObject>> {
     return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/pdfSave`, body);
-}
-
-// Report setting
-export function fetchReportSetting(): Observable<AxiosResponse<ReportSetting>> {
-    return axiosIns.get(`api/report/setting`);
 }
 
 // 獲取 Code list
@@ -71,8 +59,8 @@ export function deleteCodeListByCodeName(codeName: string): Observable<any> {
 }
 
 // Report Diagram
-export function fetchDiagram(ersType: string): Observable<AxiosResponse<Diagram[]>> {
-    return axiosIns.get(`api/diagrams/ersType/${ersType}`);
+export function fetchDiagram(ReportTemplate: string): Observable<AxiosResponse<Diagram[]>> {
+    return axiosIns.get(`api/diagrams/ReportTemplate/${ReportTemplate}`);
 }
 
 // HKCTT Lexicon
@@ -120,16 +108,4 @@ export function deleteFindingsTemplate(
 
 export function fetchStudy(queryParams: any): Observable<AxiosResponse<StudyData[]>> {
     return axiosIns.get('api/queryStudy', queryParams);
-}
-
-export function fetchSamePatientStudies(
-    studyInstanceUID: string,
-): Observable<AxiosResponse<Study[]>> {
-    return axiosIns.get(`api/GetOtherStudy/studyInstanceUID/${studyInstanceUID}`);
-}
-
-export function mergeStudy(
-    body: MergeStudyParams,
-): Observable<AxiosResponse<ReportImageDataset[]>> {
-    return axiosIns.post(`api/MergeStudy`, body);
 }

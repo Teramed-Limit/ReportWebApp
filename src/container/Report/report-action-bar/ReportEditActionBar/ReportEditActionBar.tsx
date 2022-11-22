@@ -1,20 +1,19 @@
-import React, { CSSProperties, useCallback, useContext } from 'react';
+import React, { CSSProperties, useContext } from 'react';
 
 import { observer } from 'mobx-react';
-import { tap } from 'rxjs/operators';
+import { filter, tap } from 'rxjs/operators';
 
 import Modal from '../../../../components/Modal/Modal';
 import PdfCreator from '../../../../components/PdfCreator/PdfCreator';
 import Button from '../../../../components/UI/Button/Button';
 import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
-import { MessageType } from '../../../../interface/notification';
 import { useReportDataStore } from '../../../../models/useStore';
 
 const ReportEditActionBar: React.FC = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
-    const { saveReport, savePdf, signOffReport } = useReportDataStore();
+    const { reportHasChanged, saveReport, signOffReport, valueChanged } = useReportDataStore();
 
     const openPreviewModal = (isSignOff: boolean): JSX.Element => {
         return (
@@ -27,7 +26,7 @@ const ReportEditActionBar: React.FC = () => {
                 body={
                     <PdfCreator
                         showToolbar={isSignOff}
-                        onRenderCallback={isSignOff ? onSavePdf : () => {}}
+                        onPdfRenderCallback={isSignOff ? onSignOffReport : undefined}
                     />
                 }
                 bodyCSS={{ padding: '0' } as CSSProperties}
@@ -40,53 +39,32 @@ const ReportEditActionBar: React.FC = () => {
         );
     };
 
-    const onSavePdf = useCallback(
-        (blob: Blob, base64Str: string) => {
-            savePdf(base64Str, (signal$) =>
-                signal$.pipe(tap(({ notification }) => showNotifyMsg(notification))),
-            );
-        },
-        [savePdf, showNotifyMsg],
-    );
-
-    const onSaveReport = useCallback(() => {
-        saveReport(null, (signal$) =>
-            signal$.pipe(tap(({ notification }) => showNotifyMsg(notification))),
-        );
-    }, [saveReport, showNotifyMsg]);
-
-    const onPreviewReport = () => {
+    const onSaveReport = (previewPdf) => {
         saveReport(null, (signal$) =>
             signal$.pipe(
-                tap(({ notification }) => {
-                    showNotifyMsg(notification);
-                    if (notification.messageType === MessageType.Error) return;
-                    setModal(openPreviewModal(false));
-                }),
+                tap(({ notification }) => showNotifyMsg(notification)),
+                filter(() => previewPdf),
+                tap(() => setModal(openPreviewModal(false))),
             ),
         );
     };
 
-    const onSignOffReport = () => {
+    const onSignOffReport = (pdfBase64: string) => {
+        valueChanged('PDFFilePath', pdfBase64);
         signOffReport(null, (signal$) =>
-            signal$.pipe(
-                tap(({ notification }) => {
-                    showNotifyMsg(notification);
-                    if (notification.messageType === MessageType.Error) return;
-                    setModal(openPreviewModal(true));
-                }),
-            ),
+            signal$.pipe(tap(({ notification }) => showNotifyMsg(notification))),
         );
     };
 
     return (
         <>
             <Button
+                disabled={!reportHasChanged}
                 theme="primary"
                 icon="save"
                 iconPosition="left"
                 fontSize={16}
-                onClick={() => onSaveReport()}
+                onClick={() => onSaveReport(false)}
             >
                 Save
             </Button>
@@ -95,7 +73,7 @@ const ReportEditActionBar: React.FC = () => {
                 icon="preview"
                 iconPosition="left"
                 fontSize={16}
-                onClick={() => onPreviewReport()}
+                onClick={() => onSaveReport(true)}
             >
                 Preview
             </Button>
@@ -104,7 +82,7 @@ const ReportEditActionBar: React.FC = () => {
                 icon="signOff"
                 iconPosition="left"
                 fontSize={16}
-                onClick={() => onSignOffReport()}
+                onClick={() => setModal(openPreviewModal(true))}
             >
                 SignOff
             </Button>

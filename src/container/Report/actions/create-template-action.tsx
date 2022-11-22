@@ -11,8 +11,8 @@ import { isEmptyOrNil } from '../../../utils/general';
 export const createTemplateAction = (actionParams: BaseActionParams) => {
     if (
         (actionParams.ref as MutableRefObject<HTMLTextAreaElement>).current === undefined ||
-        actionParams.formData.ERSType === undefined ||
-        actionParams.formData.ERSType === ''
+        actionParams.formData?.ReportTemplate === undefined ||
+        actionParams.formData?.ReportTemplate === ''
     ) {
         actionParams.openNotification(MessageType.Warning, 'ERS type not selected yet');
         return;
@@ -28,7 +28,7 @@ export const createTemplateAction = (actionParams: BaseActionParams) => {
 
     const body = {
         Content: selectionText,
-        ERSType: actionParams.formData.ERSType,
+        ReportTemplate: actionParams.formData?.ReportTemplate,
     } as TemplateFinding;
 
     createFindingsTemplate(body).subscribe((res: AxiosResponse) => {
