@@ -42,7 +42,15 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
 
     const selection = (rendererField: SelectionField<any>, rendererValue) => {
         if (rendererField.isMulti) {
-            const newValue = (rendererValue as string[])?.join('\r\n') || '';
+            // 一律用Label顯示
+            const labelList = (rendererValue as string[])?.map((optValue) => {
+                const foundOption: CodeList = getOptions(
+                    (rendererField as SelectionField<any>).optionSource.source,
+                ).find((option: CodeList) => option.Value === optValue);
+                return foundOption?.Label || '';
+            });
+
+            const newValue = (labelList as string[])?.join('\r\n') || '';
             return text(rendererField, newValue);
         }
 
