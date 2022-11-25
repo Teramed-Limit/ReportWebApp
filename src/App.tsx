@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { ThemeProvider } from '@mui/material';
 import { Font } from '@react-pdf/renderer';
 import { Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
+import { fetchSystemConfig } from './axios/api';
 import InjectAxiosInterceptors from './axios/InjectAxiosInterceptors ';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 import Login from './container/Login/Login';
@@ -14,6 +15,7 @@ import { ModalProvider } from './context/modal-context';
 import { NotificationProvider } from './context/notification-context';
 import fonts from './fonts';
 import { createStore } from './models/store';
+import ConfigService from './service/config-service';
 import { rootTheme } from './theme/rootTheme';
 import './styles/ag-grid/ag-theme-modal.scss';
 
@@ -29,6 +31,14 @@ fonts.map((font) => {
 });
 
 function App() {
+    useEffect(() => {
+        const subscription = fetchSystemConfig().subscribe((res) => {
+            ConfigService.setDateFormat(res.data.DateFormat);
+            ConfigService.setDateTimeFormat(res.data.DateTimeFormat);
+        });
+        return () => subscription.unsubscribe();
+    }, []);
+
     return (
         <MobxStateProvider store={rootStore}>
             <RecoilRoot>
@@ -48,4 +58,5 @@ function App() {
         </MobxStateProvider>
     );
 }
+
 export default App;

@@ -38,7 +38,7 @@ const FormSectionFieldContainer = ({
     const actionDispatcher = useContext(actionContext);
     const { openNotification } = useContext(NotificationContext);
     const inputRef = useRef();
-    const { formState, formData, reportDisabled } = useReportDataStore();
+    const { formState, formData, modifiable } = useReportDataStore();
 
     const { isDirty, isValid, errorMessage } = formState.get(field.id) || {
         isDirty: false,
@@ -70,7 +70,7 @@ const FormSectionFieldContainer = ({
                         <Button
                             key={buttonMeta.id}
                             theme="primary"
-                            disabled={buttonMeta?.disable !== 'never' && reportDisabled}
+                            disabled={buttonMeta?.disable !== 'never' && !modifiable}
                             onClick={() =>
                                 executeAction(buttonMeta.action, buttonMeta.actionParams)
                             }
@@ -110,7 +110,7 @@ const FormSectionFieldContainer = ({
                 isDirty={isDirty}
                 isValid={isValid}
                 errorMessage={errorMessage}
-                disabled={reportDisabled}
+                disabled={!modifiable}
                 noBorder={noBorderField[field.type]}
                 buttonBarComponent={buttonBarComponent}
                 fieldComponent={

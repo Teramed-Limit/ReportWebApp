@@ -8,7 +8,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 
 import { FormField } from '../../../../interface/form-editor-define';
-import { dateToStr, isEmptyOrNil, strToDate } from '../../../../utils/general';
+import { convertToDate, isEmptyOrNil, stringFormatDate } from '../../../../utils/general';
 
 interface Props {
     field: FormField;
@@ -27,7 +27,7 @@ const DateRangeSelector = ({ field, value, onValueChanged }: Props) => {
     useEffect(() => {
         if (isEmptyOrNil(value)) return;
         const dateStrRange = value.split('-');
-        const dateRange = value.split('-').map((dateStr) => strToDate(dateStr));
+        const dateRange = value.split('-').map((dateStr) => stringFormatDate(dateStr, 'yyyyMMdd'));
         setDate([dateRange[0], dateRange[1]]);
         setStartDate(dateStrRange[0]);
         setEndDate(dateStrRange[1]);
@@ -53,7 +53,9 @@ const DateRangeSelector = ({ field, value, onValueChanged }: Props) => {
                         onValueChanged('', field.id);
                         return;
                     }
-                    const dateBetween = newValue.map((dateVal) => dateToStr(dateVal)).join('-');
+                    const dateBetween = newValue
+                        .map((dateVal) => convertToDate(dateVal, 'yyyyMMdd'))
+                        .join('-');
                     onValueChanged(dateBetween, field.id);
                 }}
                 renderInput={(startProps, endProps) => {

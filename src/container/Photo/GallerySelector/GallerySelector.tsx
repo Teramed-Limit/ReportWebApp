@@ -16,7 +16,7 @@ const GallerySelector = () => {
     const [slider, setSlider] = useState(3);
     const store = useStore();
     const { dataStore, optionStore, imageStore } = store;
-    const { reportDisabled } = dataStore;
+    const { modifiable } = dataStore;
     const {
         images,
         imageSelectCount,
@@ -45,10 +45,10 @@ const GallerySelector = () => {
         <>
             <div className={classes.header}>Images</div>
             <Stack className={classes['gallery-toolbar']} direction="row" spacing={2}>
-                <Button disabled={reportDisabled} theme="primary" onClick={selectAllImage}>
+                <Button disabled={!modifiable} theme="primary" onClick={selectAllImage}>
                     Attach All
                 </Button>
-                <Button disabled={reportDisabled} theme="primary" onClick={deselectAllImage}>
+                <Button disabled={!modifiable} theme="primary" onClick={deselectAllImage}>
                     Unattached All
                 </Button>
                 <span className={classes.imageInfo}>
@@ -63,7 +63,7 @@ const GallerySelector = () => {
                 <Gallery>
                     {images.map((image, index) => (
                         <ImageSelector
-                            disabled={reportDisabled}
+                            disabled={!modifiable}
                             key={image.SOPInstanceUID}
                             index={index}
                             size={100 / (7 - slider)}

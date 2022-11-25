@@ -1,4 +1,7 @@
+import { ValueFormatterParams } from 'ag-grid-community/dist/lib/entities/colDef';
+
 import { dateFilterParams } from '../utils/ag-grid-utils';
+import { convertToDate, convertToDateTime, stringFormatDate } from '../utils/general';
 
 export const define = {
     study: {
@@ -10,7 +13,9 @@ export const define = {
                 width: 45,
                 cellStyle: { padding: 0 },
                 cellRenderer: 'editRowRenderer',
-                cellRendererParams: { onClick: () => {} },
+                cellRendererParams: {
+                    onClick: () => {},
+                },
                 pinned: 'left',
             },
             {
@@ -20,6 +25,14 @@ export const define = {
                 cellStyle: { padding: 0 },
                 cellRenderer: 'statusRenderer',
                 cellRendererParams: { Saved: 'warning', Signed: 'success', InComplete: 'error' },
+                pinned: 'left',
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'Author',
+                headerName: 'Author',
+                width: 120,
                 pinned: 'left',
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
@@ -52,6 +65,10 @@ export const define = {
                 filter: 'agDateColumnFilter',
                 filterParams: dateFilterParams,
                 floatingFilter: true,
+                valueFormatter: (params: ValueFormatterParams) => {
+                    const date = stringFormatDate(params.value, 'yyyyMMdd');
+                    return convertToDate(date);
+                },
             },
             {
                 field: 'StudyDate',
@@ -60,6 +77,122 @@ export const define = {
                 filter: 'agDateColumnFilter',
                 filterParams: dateFilterParams,
                 floatingFilter: true,
+                valueFormatter: (params: ValueFormatterParams) => {
+                    const date = stringFormatDate(params.value, 'yyyyMMdd');
+                    return convertToDate(date);
+                },
+            },
+            {
+                field: 'Modality',
+                headerName: 'Modality',
+                width: 120,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'StudyDescription',
+                headerName: 'Description',
+                flex: 1,
+                minWidth: 200,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            { field: 'StudyInstanceUID', headerName: 'StudyInstanceUID', hide: true },
+            { field: 'PDFFilePath', headerName: 'PDFFilePath', hide: true },
+        ],
+    },
+    historyStudy: {
+        colDef: [
+            {
+                field: 'navigateReport',
+                colId: 'navigation__report',
+                headerName: '',
+                width: 45,
+                cellStyle: { padding: 0 },
+                cellRenderer: 'editRowRenderer',
+                cellRendererParams: {
+                    onClick: () => {},
+                },
+                pinned: 'left',
+            },
+            {
+                field: 'ReportStatus',
+                headerName: 'Status',
+                width: 130,
+                cellStyle: { padding: 0 },
+                cellRenderer: 'statusRenderer',
+                cellRendererParams: { Saved: 'warning', Signed: 'success', InComplete: 'error' },
+                pinned: 'left',
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'Version',
+                headerName: 'Version',
+                width: 100,
+                pinned: 'left',
+            },
+            {
+                field: 'Author',
+                headerName: 'Author',
+                width: 120,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+                pinned: 'left',
+            },
+            {
+                field: 'DateTime',
+                headerName: 'Date',
+                width: 180,
+                pinned: 'left',
+                valueFormatter: (params: ValueFormatterParams) => {
+                    return convertToDateTime(params.value);
+                },
+            },
+            {
+                field: 'PatientId',
+                headerName: 'Patient Id',
+                width: 160,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'PatientsName',
+                headerName: 'Patient Name',
+                width: 160,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'AccessionNumber',
+                headerName: 'Accession No.',
+                width: 180,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
+            },
+            {
+                field: 'PatientsBirthDate',
+                headerName: 'BirthDate',
+                width: 160,
+                filter: 'agDateColumnFilter',
+                filterParams: dateFilterParams,
+                floatingFilter: true,
+                valueFormatter: (params: ValueFormatterParams) => {
+                    const date = stringFormatDate(params.value, 'yyyyMMdd');
+                    return convertToDate(date);
+                },
+            },
+            {
+                field: 'StudyDate',
+                headerName: 'Study Date',
+                width: 160,
+                filter: 'agDateColumnFilter',
+                filterParams: dateFilterParams,
+                floatingFilter: true,
+                valueFormatter: (params: ValueFormatterParams) => {
+                    const date = stringFormatDate(params.value, 'yyyyMMdd');
+                    return convertToDate(date);
+                },
             },
             {
                 field: 'Modality',
@@ -247,17 +380,3 @@ export const define = {
         },
     },
 };
-
-export const defaultQueryFields = ['PatientId', 'AccessionNumber', 'Modality', 'StudyDate'];
-export const dbQueryField = [
-    { id: 'PatientId', label: 'Patient ID', type: 'Text' },
-    { id: 'PatientsName', label: 'Patient Name', type: 'Text' },
-    { id: 'AccessionNumber', label: 'Accession No.', type: 'Text' },
-    {
-        id: 'Modality',
-        label: 'Modality',
-        type: 'SingleSelect',
-        optionSource: { type: 'static', source: 'Modality' },
-    },
-    { id: 'StudyDate', label: 'Study Date', type: 'DataRange' },
-];

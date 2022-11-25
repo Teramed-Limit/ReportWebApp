@@ -21,7 +21,7 @@ const ReportImage = () => {
     const [containerHeight, setContainerHeight] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
 
-    const { valueChanged, reportDisabled, reportTemplate, diagramData } = useReportDataStore();
+    const { valueChanged, modifiable, reportTemplate, diagramData } = useReportDataStore();
     const {
         imageMarkers,
         onMarkerDelete,
@@ -102,19 +102,19 @@ const ReportImage = () => {
                     markers={imageMarkers}
                     containerWidth={containerWidth}
                     containerHeight={containerHeight}
-                    disabled={reportDisabled}
+                    disabled={!modifiable}
                     onMarkerPlace={onMarkerPlace}
                     onMarkerDelete={onMarkerDelete}
                 />
             </div>
             <div className={classes['bottom-container']}>
-                <Button disabled={reportDisabled} theme="primary" onClick={onBlankDiagram}>
+                <Button disabled={!modifiable} theme="primary" onClick={onBlankDiagram}>
                     Blank Diagram
                 </Button>
-                <Button disabled={reportDisabled} theme="primary" onClick={onNewDiagram}>
+                <Button disabled={!modifiable} theme="primary" onClick={onNewDiagram}>
                     New Diagram
                 </Button>
-                <Button disabled={reportDisabled} theme="primary" onClick={onEditDiagram}>
+                <Button disabled={!modifiable} theme="primary" onClick={onEditDiagram}>
                     Edit Diagram
                 </Button>
             </div>

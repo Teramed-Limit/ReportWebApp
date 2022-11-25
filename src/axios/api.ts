@@ -4,12 +4,14 @@ import { Observable } from 'rxjs';
 import { AnyObject } from '../interface/anyObject';
 import { LoginResult } from '../interface/auth';
 import { CodeListMap } from '../interface/code-list';
-import { FormDefineMap } from '../interface/define';
+import { FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { Diagram } from '../interface/diagram';
 import { DocumentData } from '../interface/document-data';
 import { HkcctCode } from '../interface/hkcct';
 import { ReportFinding, TemplateFinding } from '../interface/report-finding';
+import { ReportTimelineData } from '../interface/report-timeline';
 import { StudyData } from '../interface/study-data';
+import { SystemConfig } from '../interface/system-config';
 import { axiosIns } from './axios';
 
 export function login(username: string, password: string): Observable<AxiosResponse<LoginResult>> {
@@ -31,8 +33,32 @@ export function fetchReport(studyInsUid: string): Observable<AxiosResponse<Docum
     return axiosIns.get<DocumentData>(`api/standard/report/studyInstanceUID/${studyInsUid}`);
 }
 
+export function fetchHistoryReport(
+    studyInsUid: string,
+    version: string,
+): Observable<AxiosResponse<DocumentData>> {
+    return axiosIns.get<DocumentData>(
+        `api/standard/report/history/studyInstanceUID/${studyInsUid}/version/${version}`,
+    );
+}
+
+export function fetchReportTimeline(
+    studyInsUid: string,
+): Observable<AxiosResponse<ReportTimelineData>> {
+    return axiosIns.get(`api/standard/report/timeline/studyInstanceUID/${studyInsUid}`);
+}
+
 export function fetchReportDefine(): Observable<AxiosResponse<FormDefineMap>> {
     return axiosIns.get(`api/standard/report/define`);
+}
+
+export function fetchReportHistoryDefine(
+    studyInsUid: string,
+    version: string,
+): Observable<AxiosResponse<FormHistoryDefine>> {
+    return axiosIns.get(
+        `api/standard/report/define/studyInstanceUID/${studyInsUid}/version/${version}`,
+    );
 }
 
 export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
@@ -108,4 +134,12 @@ export function deleteFindingsTemplate(
 
 export function fetchStudy(queryParams: any): Observable<AxiosResponse<StudyData[]>> {
     return axiosIns.get('api/queryStudy', queryParams);
+}
+
+export function fetchHistoryStudy(queryParams: any): Observable<AxiosResponse<StudyData[]>> {
+    return axiosIns.get('api/queryHistoryStudy', queryParams);
+}
+
+export function fetchSystemConfig(): Observable<AxiosResponse<SystemConfig>> {
+    return axiosIns.get('api/systemConfig');
 }

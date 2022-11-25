@@ -12,7 +12,7 @@ import {
 import { iif, interval, Observable, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
-import { fetchReport, saveReport } from '../axios/api';
+import { fetchHistoryReport, fetchReport, saveReport } from '../axios/api';
 import { DocumentData, ReportStatus } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
@@ -44,13 +44,6 @@ export const DataModel = types
     /* eslint-disable no-param-reassign */
     .views((self) => {
         return {
-            get reportDisabled() {
-                if (self.modifiable) return false;
-                return (
-                    self.formData.get('ReportStatus') === ReportStatus.Signed ||
-                    self.formData.get('ReportStatus') === ReportStatus.History
-                );
-            },
             get pdfFile() {
                 if (isEmptyOrNil(self.formData.get('PDFFilePath'))) {
                     return undefined;
@@ -296,12 +289,11 @@ export const DataModel = types
             }),
         };
     })
+    // Report
     .actions((self) => {
         const beforeFetch = () => (self.loading = true);
 
-        const fetchError = () => {
-            self.loading = false;
-        };
+        const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
             const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
@@ -336,10 +328,7 @@ export const DataModel = types
             defineStore.setFormDefine(self.formData.toJSON());
             self.reportHasChanged = false;
             self.initialFormControl();
-            self.modifiable = !(
-                response.data.ReportStatus === ReportStatus.Signed ||
-                response.data.ReportStatus === ReportStatus.History
-            );
+            self.modifiable = response.data.ReportStatus !== ReportStatus.Signed;
             self.loading = false;
         };
 
@@ -348,7 +337,7 @@ export const DataModel = types
                 self,
                 (payload$, dollSignal) => {
                     return payload$.pipe(
-                        switchMap((studyInstanceUID: string) =>
+                        switchMap((studyInstanceUID) =>
                             fetchReport(studyInstanceUID).pipe(
                                 map((response) => [
                                     action(fetchSuccess, response),
@@ -374,6 +363,57 @@ export const DataModel = types
                     );
                 },
             ),
+        };
+    })
+    // History Report
+    .actions((self) => {
+        const beforeFetch = () => (self.loading = true);
+
+        const fetchError = () => (self.loading = false);
+
+        const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
+            const { imageStore } = getRoot<IAnyModelType>(self);
+
+            // set initialize data
+            self.formData.replace(response.data);
+            imageStore.initImages(response.data?.ReportImageData || []);
+
+            self.reportHasChanged = false;
+            self.modifiable = false;
+            self.loading = false;
+        };
+
+        return {
+            fetchHistoryReport: dollEffect<
+                { studyInstanceUID: string; version: string },
+                ReportResponseNotification
+            >(self, (payload$, dollSignal) => {
+                return payload$.pipe(
+                    switchMap(({ studyInstanceUID, version }) =>
+                        fetchHistoryReport(studyInstanceUID, version).pipe(
+                            map((response) => [
+                                action(fetchSuccess, response),
+                                action(dollSignal, {
+                                    notification: {
+                                        message: 'Fetch report success',
+                                        messageType: MessageType.Success,
+                                    },
+                                }),
+                            ]),
+                            startWith(action(beforeFetch)),
+                            catchError((error: AxiosError) => [
+                                action(fetchError),
+                                action(dollSignal, {
+                                    notification: {
+                                        message: error.response?.data.Message,
+                                        messageType: MessageType.Error,
+                                    },
+                                }),
+                            ]),
+                        ),
+                    ),
+                );
+            }),
         };
     });
 

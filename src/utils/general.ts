@@ -1,7 +1,9 @@
 import { RefObject } from 'react';
 
-import { differenceInYears, format, parse } from 'date-fns';
+import { format, parse } from 'date-fns';
 import * as R from 'ramda';
+
+import ConfigService from '../service/config-service';
 
 export const generateUUID = () => {
     function s4() {
@@ -53,42 +55,37 @@ export const reorder = <T>(list: Array<T>, startIndex, endIndex): Array<T> => {
     return result.slice();
 };
 
-export const calculateAge = (dob): string => {
-    if (!dob) return '';
-    const date = parse(dob, 'yyyyMMdd', new Date());
-    return `${differenceInYears(new Date(), date)}y`;
-};
-
-export const stringFormatDate = (value, fromFormat): Date => {
+export const stringFormatDate = (value: string, fromFormat: string): Date => {
     return parse(value, fromFormat, new Date());
 };
 
-export const dataFormatString = (value, fromFormat, toFormat): string => {
-    if (!value) return '';
-    const date = parse(value, fromFormat, new Date());
-
-    return format(date, toFormat);
+export const convertToDateTime = (
+    value: string | Date,
+    fromFormat: string = ConfigService.getDateTimeFormat(),
+) => {
+    try {
+        if (value instanceof Date) {
+            return format(value, fromFormat);
+        }
+        return format(new Date(value), fromFormat);
+    } catch {
+        return '';
+    }
 };
 
-export function dateToStr(date) {
-    let d = new Date();
-    if (date !== null) d = new Date(date);
-    let month = `${d.getMonth() + 1}`;
-    let day = `${d.getDate()}`;
-    const year = d.getFullYear();
-
-    if (month.length < 2) month = `0${month}`;
-    if (day.length < 2) day = `0${day}`;
-
-    return `${year}${month}${day}`;
-}
-
-export function strToDate(dateString: string) {
-    const year = dateString.substring(0, 4);
-    const month = dateString.substring(4, 6);
-    const day = dateString.substring(6, 8);
-    return new Date(+year, +month - 1, +day);
-}
+export const convertToDate = (
+    value: string | Date,
+    fromFormat: string = ConfigService.getDateFormat(),
+) => {
+    try {
+        if (value instanceof Date) {
+            return format(value, fromFormat);
+        }
+        return format(new Date(value), fromFormat);
+    } catch {
+        return '';
+    }
+};
 
 export const emptyBaseImage = () =>
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';

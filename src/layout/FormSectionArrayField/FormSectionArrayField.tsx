@@ -22,7 +22,7 @@ interface Props {
 }
 
 const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
-    const { formData, valueChanged } = useReportDataStore();
+    const { formData, valueChanged, modifiable } = useReportDataStore();
 
     const [fields, setFields] = useState<Field[]>([]);
 
@@ -146,7 +146,12 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
                     }
                 })}
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <Button sx={{ width: '65%' }} variant="contained" onClick={addField}>
+                <Button
+                    disabled={!modifiable}
+                    sx={{ width: '65%' }}
+                    variant="contained"
+                    onClick={addField}
+                >
                     Add
                 </Button>
             </Box>

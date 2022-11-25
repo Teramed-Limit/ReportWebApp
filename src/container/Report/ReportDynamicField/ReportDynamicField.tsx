@@ -15,7 +15,7 @@ interface DynamicFieldProps {
 const ReportDynamicField = React.forwardRef(
     ({ field, customValueGetter, customValueChange }: DynamicFieldProps, ref) => {
         const store = useReportDataStore();
-        const { formData, valueChanged, reportDisabled } = store;
+        const { formData, valueChanged, modifiable } = store;
 
         const value = customValueGetter ? customValueGetter(field.id) : formData.get(field.id);
 
@@ -36,7 +36,7 @@ const ReportDynamicField = React.forwardRef(
         return (
             <RenderComponent
                 ref={ref}
-                disabled={reportDisabled}
+                disabled={!modifiable}
                 field={field}
                 value={value}
                 onValueChange={onValueChange}

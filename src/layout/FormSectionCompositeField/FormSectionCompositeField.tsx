@@ -13,12 +13,12 @@ import { CompositeField } from '../../interface/composite-field';
 import { Field } from '../../interface/field';
 import { useReportDataStore } from '../../models/useStore';
 import {
-    fieldSectionValue,
     compositeFieldSpacing,
     fieldButtonBar,
+    fieldFlex,
     fieldGutter,
     fieldSectionContainer,
-    fieldFlex,
+    fieldSectionValue,
 } from '../../styles/report/style';
 import FormSectionField from '../FormSectionField/FormSectionField';
 
@@ -39,7 +39,7 @@ const FormSectionCompositeField = ({
     prefixComp,
     suffixComp,
 }: FormSectionFieldProps) => {
-    const { formState, formData, reportDisabled } = useReportDataStore();
+    const { formState, formData, modifiable } = useReportDataStore();
 
     const actionDispatcher = useContext(actionContext);
     const { openNotification } = useContext(NotificationContext);
@@ -69,7 +69,7 @@ const FormSectionCompositeField = ({
                         <Button
                             key={buttonMeta.id}
                             theme="primary"
-                            disabled={buttonMeta?.disable !== 'never' && reportDisabled}
+                            disabled={buttonMeta?.disable !== 'never' && !modifiable}
                             onClick={() =>
                                 executeAction(buttonMeta.action, {
                                     ...buttonMeta.actionParams,
@@ -127,7 +127,7 @@ const FormSectionCompositeField = ({
                             isValid={isValid}
                             buttonBarComponent={buttonBarComponent(field)}
                             errorMessage={errorMessage}
-                            disabled={reportDisabled}
+                            disabled={!modifiable}
                             noBorder={noBorderField[field.type]}
                             fieldComponent={
                                 <ReportDynamicField

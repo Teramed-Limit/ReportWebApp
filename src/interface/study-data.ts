@@ -1,20 +1,17 @@
 export interface StudyData {
-    ReportStatus: string;
-    CountOfSeries: number;
-    PatientId: string;
-    PatientsName: string;
     StudyInstanceUID: string;
     StudyDate: string;
-    ReferringPhysiciansName: string;
+    PatientId: string;
+    PatientsName: string;
+    PatientsSex: string;
+    PatientsBirthDate: string;
+    PatientsAge: number;
+    Version: number;
+    ReportStatus: string;
+    Author: string;
+    PDFFilePath: string;
     AccessionNumber: string;
     StudyDescription: string;
     Modality: string;
-    PerformingPhysiciansName: string;
-    NameofPhysiciansReading: string;
-    Merged: number;
-    PatientsSex: string;
-    PatientsBirthDate: string;
-    OtherPatientNames: string;
-    OtherPatientId: string;
-    PDFFilePath: string;
+    DateTime?: Date;
 }

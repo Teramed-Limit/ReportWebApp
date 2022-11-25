@@ -10,6 +10,11 @@ export interface FormDefineDto {
     PDFDefine: string;
 }
 
+export interface FormHistoryDefine {
+    ReportDefine: string;
+    PDFDefine: string;
+}
+
 export interface FormDefine {
     sections: Section[];
     modal?: ModalSection;

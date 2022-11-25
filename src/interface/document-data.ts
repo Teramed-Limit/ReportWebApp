@@ -8,7 +8,6 @@ export interface DocumentData {
     PatientsAge?: string;
     Version?: string;
     ReportTemplate?: string;
-    ReportDefine?: string;
     ReportStatus?: ReportStatus;
     Author?: string;
     PDFFilePath?: string;
@@ -24,7 +23,6 @@ export enum ReportStatus {
     InComplete = 'InComplete',
     Saved = 'Saved',
     Signed = 'Signed',
-    History = 'History',
 }
 
 export interface ReportImageData {

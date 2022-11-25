@@ -7,6 +7,7 @@ import Account from './container/Account/Account';
 import History from './container/History/History';
 import Query from './container/Query/Query';
 import Report from './container/Report/Report';
+import ReportHistory from './container/ReportHistory/ReportHistory';
 import Settings from './container/Settings/Settings';
 import PrivateRoute from './Private-route';
 
@@ -19,6 +20,11 @@ function AppRoutes() {
                 exact
                 path="/reporting/studyInstanceUID/:studyInstanceUID"
                 component={<Report />}
+            />
+            <PrivateRoute
+                exact
+                path="/reporting/history/studyInstanceUID/:studyInstanceUID/version/:version"
+                component={<ReportHistory />}
             />
             <PrivateRoute path="/account" component={<Account />} exact />
             <PrivateRoute path="/history" component={<History />} exact />

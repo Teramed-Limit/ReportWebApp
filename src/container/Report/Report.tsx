@@ -56,7 +56,7 @@ const Report = () => {
             <ReportActionProvider>
                 <div className={classes.header}>
                     <Stack direction="row" spacing={2}>
-                        {!modifiable ? <ReportViewActionBar /> : <ReportEditActionBar />}
+                        {modifiable ? <ReportEditActionBar /> : <ReportViewActionBar />}
                     </Stack>
                 </div>
                 <div className={classes.reportLayout}>
