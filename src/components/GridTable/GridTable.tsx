@@ -18,7 +18,7 @@ interface TableProps {
     rowData: any[];
     onSelectionChanged?: (param) => void;
     onFirstDataRendered?: (param) => void;
-    rowSelection?: string;
+    rowSelection?: 'single' | 'multiple';
     checkboxSelect?: boolean;
     gridReady?: (gridReadyEvent: GridReadyEvent) => void;
     getRowId?: GetRowIdFunc;

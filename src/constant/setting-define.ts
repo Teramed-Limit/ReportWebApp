@@ -1,3 +1,4 @@
+import { ColDef } from 'ag-grid-community';
 import { ValueFormatterParams } from 'ag-grid-community/dist/lib/entities/colDef';
 
 import { dateFilterParams } from '../utils/ag-grid-utils';
@@ -99,7 +100,7 @@ export const define = {
             },
             { field: 'StudyInstanceUID', headerName: 'StudyInstanceUID', hide: true },
             { field: 'PDFFilePath', headerName: 'PDFFilePath', hide: true },
-        ],
+        ] as ColDef[],
     },
     historyStudy: {
         colDef: [
@@ -211,13 +212,13 @@ export const define = {
             },
             { field: 'StudyInstanceUID', headerName: 'StudyInstanceUID', hide: true },
             { field: 'PDFFilePath', headerName: 'PDFFilePath', hide: true },
-        ],
+        ] as ColDef[],
     },
     userRoleGroup: {
         colDef: [
             { field: 'RoleName', headerName: 'Role Name', width: 200 },
             { field: 'Description', headerName: 'Description', width: 200 },
-        ],
+        ] as ColDef[],
         formDef: {
             sections: [
                 {
@@ -271,7 +272,7 @@ export const define = {
                 cellRenderer: 'chipRenderer',
                 flex: 1,
             },
-        ],
+        ] as ColDef[],
         formDef: {
             sections: [
                 {
@@ -342,7 +343,7 @@ export const define = {
                 headerName: 'Ordering',
                 minWidth: 120,
             },
-        ],
+        ] as ColDef[],
         formDef: {
             sections: [
                 {
