@@ -1,6 +1,7 @@
 import { DocumentData } from '../../../interface/document-data';
 import { FormControl } from '../../../interface/form-state';
 import { ReportField } from '../../../interface/report-data';
+import { emptyImage } from '../../../utils/general';
 
 export class ReportTemplate extends ReportField {
     postValueChanged = (
@@ -8,7 +9,7 @@ export class ReportTemplate extends ReportField {
         changeValue: (id, value, state?: Partial<FormControl>) => void,
     ) => {
         changeValue('Indication', '');
-        changeValue('DiagramData', '');
+        changeValue('DiagramData', emptyImage());
 
         if (data?.ReportTemplate !== 'Colonoscopy') {
             changeValue('Other', '');

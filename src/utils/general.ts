@@ -90,6 +90,9 @@ export const convertToDate = (
 export const emptyBaseImage = () =>
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
 
+export const emptyImage = () =>
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
+
 export const convertFileToBase64 = (file: File) => {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();

@@ -41,7 +41,7 @@ const ReportImage = () => {
     const setModal = useContext(ModalContext);
 
     const fetchReportDiagram = useCallback(
-        (ers: string) => {
+        (ers: string, openModal: boolean) => {
             fetchDiagram(ers)
                 .pipe(first())
                 .subscribe(async (res) => {
@@ -51,7 +51,7 @@ const ReportImage = () => {
                         valueChanged('DiagramData', diagramBase64);
                         return;
                     }
-                    setModal(<DiagramSelectModal diagramList={res.data} />);
+                    if (openModal) setModal(<DiagramSelectModal diagramList={res.data} />);
                 });
 
             return () => setModal(null);
@@ -65,10 +65,10 @@ const ReportImage = () => {
             return;
         }
         if (isEmptyOrNil(reportTemplate)) {
-            fetchReportDiagram('BLANK');
+            fetchReportDiagram('BLANK', false);
             return;
         }
-        fetchReportDiagram(reportTemplate);
+        fetchReportDiagram(reportTemplate, false);
     }, [diagramData, reportTemplate, fetchReportDiagram]);
 
     useEffect(() => {
@@ -77,12 +77,8 @@ const ReportImage = () => {
         setContainerHeight(containerRef.current.offsetHeight);
     }, []);
 
-    // const onBlankDiagram = () => {
-    //     fetchReportDiagram('BLANK');
-    // };
-
     const onNewDiagram = () => {
-        fetchReportDiagram(reportTemplate);
+        fetchReportDiagram(reportTemplate, true);
     };
 
     const onEditDiagram = () => {
