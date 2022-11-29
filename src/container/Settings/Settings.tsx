@@ -4,6 +4,7 @@ import { Box, Stack, Tab, Tabs } from '@mui/material';
 
 import TabPanel from '../../components/TabPanel/TabPanel';
 import CodeListTab from './CodeListTab/CodeListTab';
+import ReportDiagramTab from './ReportDiagramTab/ReportDiagramTab';
 
 const Settings = () => {
     const [value, setValue] = React.useState(0);
@@ -17,10 +18,14 @@ const Settings = () => {
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs value={value} onChange={handleChange}>
                     <Tab label="Options" />
+                    <Tab label="Diagram" />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
                 <CodeListTab />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
+                <ReportDiagramTab />
             </TabPanel>
         </Stack>
     );

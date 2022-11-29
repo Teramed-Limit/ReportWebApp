@@ -11,7 +11,7 @@ import { ModalContext } from '../../../context/modal-context';
 import { useResize } from '../../../hooks/useResize';
 import { CanvasHandle } from '../../../interface/konva-stage-event';
 import { useReportDataStore, useReportImageStore } from '../../../models/useStore';
-import { isEmptyOrNil } from '../../../utils/general';
+import { convertUrlToBase64, isEmptyOrNil } from '../../../utils/general';
 import DiagramSelectModal from '../../Modals/DiagramSelectModal/DiagramSelectModal';
 import ImageCanvasModal from '../../Modals/ImageCanvasModal/ImageCanvasModal';
 import classes from './ReportImage.module.scss';
@@ -44,10 +44,11 @@ const ReportImage = () => {
         (ers: string) => {
             fetchDiagram(ers)
                 .pipe(first())
-                .subscribe((res) => {
+                .subscribe(async (res) => {
                     onImageStateInitialize();
                     if (res.data.length === 1) {
-                        valueChanged('DiagramData', res.data[0].DiagramData);
+                        const diagramBase64 = await convertUrlToBase64(res.data[0].DiagramUrl);
+                        valueChanged('DiagramData', diagramBase64);
                         return;
                     }
                     setModal(<DiagramSelectModal diagramList={res.data} />);
@@ -76,9 +77,9 @@ const ReportImage = () => {
         setContainerHeight(containerRef.current.offsetHeight);
     }, []);
 
-    const onBlankDiagram = () => {
-        fetchReportDiagram('BLANK');
-    };
+    // const onBlankDiagram = () => {
+    //     fetchReportDiagram('BLANK');
+    // };
 
     const onNewDiagram = () => {
         fetchReportDiagram(reportTemplate);
@@ -108,11 +109,8 @@ const ReportImage = () => {
                 />
             </div>
             <div className={classes['bottom-container']}>
-                <Button disabled={!modifiable} theme="primary" onClick={onBlankDiagram}>
-                    Blank Diagram
-                </Button>
                 <Button disabled={!modifiable} theme="primary" onClick={onNewDiagram}>
-                    New Diagram
+                    Select Diagram
                 </Button>
                 <Button disabled={!modifiable} theme="primary" onClick={onEditDiagram}>
                     Edit Diagram

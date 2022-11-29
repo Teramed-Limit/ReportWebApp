@@ -7,7 +7,7 @@ import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
 import { Diagram } from '../../../interface/diagram';
 import { useReportDataStore } from '../../../models/useStore';
-import { isEmptyOrNil } from '../../../utils/general';
+import { convertUrlToBase64, isEmptyOrNil } from '../../../utils/general';
 import classes from './DiagramSelectModal.module.scss';
 
 interface Props {
@@ -29,16 +29,16 @@ const DiagramSelectModal = ({ diagramList }: Props) => {
         onClose();
     };
 
-    const onSelect = (id: number) => {
+    const onSelect = async (id: number) => {
         const diagram = diagramList.find((image) => image.Number === id);
         setSelectedNumber(diagram?.Number || -1);
-        setSelectedDiagram(diagram?.DiagramData || '');
+        const diagramBase64 = await convertUrlToBase64(diagram?.DiagramUrl);
+        setSelectedDiagram(diagramBase64 || '');
     };
 
     const body = (
         <div className={classes.container}>
             {diagramList.map((diagram) => {
-                const imageSrc = `data:image/jpg;base64, ${diagram.DiagramData}`;
                 return (
                     <div
                         className={cx(classes.imageContainer, {
@@ -51,8 +51,7 @@ const DiagramSelectModal = ({ diagramList }: Props) => {
                             onConfirmSelect();
                         }}
                     >
-                        <img draggable={false} src={imageSrc} alt="None" />
-                        {diagram.DisplayName}
+                        <img draggable={false} src={diagram.DiagramUrl} alt="None" />
                     </div>
                 );
             })}
@@ -77,7 +76,7 @@ const DiagramSelectModal = ({ diagramList }: Props) => {
         <Modal
             open
             width="80%"
-            height="80%"
+            height="auto"
             headerTitle="New Diagram"
             body={body}
             footer={footer}

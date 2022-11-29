@@ -11,6 +11,7 @@ import List from '@mui/material/List';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
+import { observer } from 'mobx-react';
 
 import { deleteCodeListByCodeName, fetchCodeList } from '../../../axios/api';
 import { define } from '../../../constant/setting-define';
@@ -89,6 +90,7 @@ const CodeListTab = () => {
                     return (
                         <ListItemButton
                             key={codeName}
+                            selected={codeName === selectCodeName}
                             onClick={() => {
                                 setSelectCodeName(codeName);
                                 setSelectCodeList(codeListMap[codeName]);
@@ -134,4 +136,4 @@ const CodeListTab = () => {
     );
 };
 
-export default CodeListTab;
+export default observer(CodeListTab);

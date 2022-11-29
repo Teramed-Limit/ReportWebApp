@@ -84,9 +84,25 @@ export function deleteCodeListByCodeName(codeName: string): Observable<any> {
     return axiosIns.delete(`api/codelist/codeName/${codeName}`);
 }
 
-// Report Diagram
-export function fetchDiagram(ReportTemplate: string): Observable<AxiosResponse<Diagram[]>> {
-    return axiosIns.get(`api/diagrams/ReportTemplate/${ReportTemplate}`);
+// 獲取 Report Diagram
+export function fetchDiagram(reportTemplate: string): Observable<AxiosResponse<Diagram[]>> {
+    return axiosIns.get(`api/diagrams/reportTemplate/${reportTemplate}`);
+}
+
+// 儲存 Report Diagram
+export function saveDiagram(
+    reportTemplate: string,
+    data: FormData,
+): Observable<AxiosResponse<Diagram[]>> {
+    return axiosIns.post(`api/diagrams/reportTemplate/${reportTemplate}`, data);
+}
+
+// 刪除 Report Diagram
+export function deleteDiagram(
+    reportTemplate: string,
+    number: number,
+): Observable<AxiosResponse<Diagram[]>> {
+    return axiosIns.delete(`api/diagrams/reportTemplate/${reportTemplate}/number/${number}`);
 }
 
 // HKCTT Lexicon

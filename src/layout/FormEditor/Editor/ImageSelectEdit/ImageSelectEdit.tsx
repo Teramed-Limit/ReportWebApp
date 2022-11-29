@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Stack, TextField } from '@mui/material';
 
 import { FormField } from '../../../../interface/form-editor-define';
+import { convertFileToBase64 } from '../../../../utils/general';
 import { ValidationMessage } from '../validationMapper';
 
 interface Props {
@@ -27,21 +28,6 @@ const ImageSelectEdit = ({
     const [validationMsg] = useState(
         field.validate ? `- ${ValidationMessage[field.validate?.type]}` : '',
     );
-
-    const convertBase64 = (file) => {
-        return new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-            fileReader.readAsDataURL(file);
-
-            fileReader.onload = () => {
-                resolve(fileReader.result);
-            };
-
-            fileReader.onerror = (error) => {
-                reject(error);
-            };
-        });
-    };
 
     useEffect(() => {
         if (/^(f|ht)tps?:\/\//i.test(value)) {
@@ -68,7 +54,7 @@ const ImageSelectEdit = ({
                 size="small"
                 onChange={async (e: React.ChangeEvent<HTMLInputElement>) => {
                     if (!e.target.files) return;
-                    const base64 = (await convertBase64(e.target.files[0])) as string;
+                    const base64 = (await convertFileToBase64(e.target.files[0])) as string;
                     onValueChanged(base64.replace(/^data:image\/\w+;base64,/, ''), field.id);
                     setImageSrc(base64);
                     setDirty(true);

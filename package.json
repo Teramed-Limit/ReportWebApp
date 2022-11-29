@@ -46,7 +46,7 @@
         "react-konva": "^17.0.2-5",
         "react-pdf": "^5.3.0",
         "react-router-dom": "^5.2.0",
-        "react-scripts": "4.0.3",
+        "react-scripts": "^4.0.3",
         "react-select": "^4.3.0",
         "react-virtual": "^2.7.0",
         "recoil": "^0.7.6",
@@ -58,11 +58,11 @@
     },
     "scripts": {
         "start": "react-scripts start",
-        "preinstall": "npx npm-force-resolutions",
         "build": "react-scripts build",
         "build:stage": "env-cmd -f ./.env.staging npm run build && rm -rf build-uat && mv build build-uat",
         "build:prod": "env-cmd -f ./.env.production npm run build && rm -rf build-prod && mv build build-prod",
         "build:all": "npm run build:prod && npm run build:stage",
+        "preinstall": "npx npm-force-resolutions",
         "test": "react-scripts test",
         "eject": "react-scripts eject",
         "gc": "npx generate-react-cli component",
@@ -116,7 +116,6 @@
         "react-error-overlay": "^6.0.9"
     },
     "resolutions": {
-        "//": "See https://github.com/facebook/create-react-app/issues/11773",
         "react-error-overlay": "6.0.9"
     }
 }

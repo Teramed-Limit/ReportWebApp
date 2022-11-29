@@ -1,5 +1,6 @@
 export interface Diagram {
     Number: number;
-    DisplayName: string;
-    DiagramData: string;
+    ReportTemplate: string;
+    DiagramUrl: string;
+    DisplayIndex: number;
 }
