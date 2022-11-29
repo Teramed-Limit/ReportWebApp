@@ -36,28 +36,12 @@ const Header = () => {
                             Home
                         </Button>
                     </NavigationItem>
-                    <NavigationItem link="/settings" id="navigation__setting">
-                        <Button id="btn__setting" color="black">
-                            <SettingsIcon className={classes.iconButton} />
-                            Settings
-                        </Button>
-                    </NavigationItem>
                     <NavigationItem link="/history" id="navigation__history">
                         <Button id="btn__history" color="black">
                             <HistoryIcon className={classes.iconButton} />
                             History
                         </Button>
                     </NavigationItem>
-                    {/* <WithElementVisibility */}
-                    {/*    wrappedComp={ */}
-                    {/*        <NavigationItem link="/settings" id="navigation__setting"> */}
-                    {/*            <Button id="btn__setting" color="black"> */}
-                    {/*                <SettingsIcon className={classes.iconButton} /> */}
-                    {/*                Settings */}
-                    {/*            </Button> */}
-                    {/*        </NavigationItem> */}
-                    {/*    } */}
-                    {/* /> */}
                     <WithElementVisibility
                         wrappedComp={
                             <NavigationItem link="/account" id="navigation__account">
@@ -68,6 +52,12 @@ const Header = () => {
                             </NavigationItem>
                         }
                     />
+                    <NavigationItem link="/settings" id="navigation__setting">
+                        <Button id="btn__setting" color="black">
+                            <SettingsIcon className={classes.iconButton} />
+                            Settings
+                        </Button>
+                    </NavigationItem>
                     <NavigationItem link="/login" id="navigation__logout">
                         <Button id="btn__logout" color="black" onClick={logout}>
                             <LogoutRoundedIcon className={classes.iconButton} />
