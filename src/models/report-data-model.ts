@@ -327,7 +327,6 @@ export const DataModel = types
             // initialize form control
             defineStore.setFormDefine(self.formData.toJSON());
             self.reportHasChanged = false;
-            self.initialFormControl();
             self.modifiable = response.data.ReportStatus !== ReportStatus.Signed;
             self.loading = false;
         };
