@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Text, View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
 import { Field } from '../../../interface/field';
@@ -14,15 +14,15 @@ const PDFFieldLabel = ({ field }: Props) => {
     return (
         <>
             {!field.hideLabel && (
-                <View
+                <ReactPDF.View
                     style={{
                         ...(fieldSectionLabel as Style),
                         ...(fieldFlex.label[field.orientation] as Style),
                         ...(field.labelStyle || {}),
                     }}
                 >
-                    {field.label && <Text>{field.label}</Text>}
-                </View>
+                    {field.label && <ReactPDF.Text>{field.label}</ReactPDF.Text>}
+                </ReactPDF.View>
             )}
         </>
     );

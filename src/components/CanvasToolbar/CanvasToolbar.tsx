@@ -1,12 +1,14 @@
 import React from 'react';
 
 import {
-    FormatColorText,
     CheckBoxOutlineBlank as Square,
+    FormatColorText,
     PanoramaFishEye as Circle,
 } from '@mui/icons-material';
 import { ToggleButton, ToggleButtonGroup } from '@mui/material';
-import { BsArrowsMove, HiOutlineArrowRight, MdGesture } from 'react-icons/all';
+import { BsArrowsMove } from 'react-icons/bs';
+import { HiOutlineArrowRight } from 'react-icons/hi';
+import { MdGesture } from 'react-icons/md';
 
 import { MarkerType } from '../../interface/canvas-maker-attribute';
 import ColorPickerButton from '../ColorPickerButton/ColorPickerButton';

@@ -96,7 +96,7 @@ const Query: React.FC = () => {
     const onNavigateReport = useCallback(
         (data: StudyData) => {
             history.push({
-                pathname: `/reporting/studyInstanceUID/${data.StudyInstanceUID}`,
+                pathname: `/reporting/studyInstanceUID/${data.StudyInstanceUID}/version/latest`,
             });
         },
         [history],

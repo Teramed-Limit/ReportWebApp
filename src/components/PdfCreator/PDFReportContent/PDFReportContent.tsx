@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
 import { FormFieldType } from '../../../container/Report/field/field-type';
@@ -28,8 +28,8 @@ export const margin = 0.25;
 
 const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Props) => {
     return (
-        <View style={{ margin: `${margin}%` }}>
-            <View style={reportPage as Style}>
+        <ReactPDF.View style={{ margin: `${margin}%` }}>
+            <ReactPDF.View style={reportPage as Style}>
                 {formSections
                     .filter((section: Section) => !section.hide)
                     .map((section: Section) => (
@@ -74,8 +74,8 @@ const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Pr
                             ))}
                         </PDFReportSection>
                     ))}
-            </View>
-        </View>
+            </ReactPDF.View>
+        </ReactPDF.View>
     );
 };
 

@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 
 import { IconButton } from '@mui/material';
-import { FaRegEdit } from 'react-icons/all';
+import { FaRegEdit } from 'react-icons/fa';
 
 import BaseTextArea from '../../../../../components/UI/BaseTextArea/BaseTextArea';
 import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';

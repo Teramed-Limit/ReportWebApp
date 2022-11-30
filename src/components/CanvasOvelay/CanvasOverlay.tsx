@@ -4,7 +4,9 @@ import { IconButton } from '@mui/material';
 import cx from 'classnames';
 import Konva from 'konva';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import { BiSelection, BsFillTrashFill, FiCopy } from 'react-icons/all';
+import { BiSelection } from 'react-icons/bi';
+import { BsFillTrashFill } from 'react-icons/bs';
+import { FiCopy } from 'react-icons/fi';
 
 import { CanvasMarker } from '../../interface/canvas-maker-attribute';
 import { reorder } from '../../utils/general';

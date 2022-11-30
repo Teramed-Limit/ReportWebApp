@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
 import { FormFieldType } from '../../../container/Report/field/field-type';
@@ -10,6 +10,7 @@ import { DocumentData } from '../../../interface/document-data';
 import { Field } from '../../../interface/field';
 import { FilterCondition } from '../../../interface/selection-field';
 import { fieldArrayContainer } from '../../../styles/report/style';
+import { generateUUID } from '../../../utils/general';
 import PDFCompositeField from '../PDFCompositeField/PDFCompositeField';
 import PDFField from '../PDFField/PDFField';
 
@@ -32,7 +33,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
 
         const componentList = Array.from(Array(maxCountOfArray).keys());
         return (
-            <View
+            <ReactPDF.View
                 style={{
                     ...(fieldArrayContainer as Style),
                     ...{ flexDirection: field.orientation },
@@ -47,7 +48,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
 
                     return (
                         <PDFCompositeField
-                            key={idx.toString()}
+                            key={generateUUID()}
                             field={
                                 {
                                     ...templateField,
@@ -61,7 +62,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
                         />
                     );
                 })}
-            </View>
+            </ReactPDF.View>
         );
     };
 
@@ -73,7 +74,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
                 {valueList.map((value, idx) => {
                     return (
                         <PDFField
-                            key={idx.toString()}
+                            key={generateUUID()}
                             field={{
                                 ...templateField,
                                 label: `${templateField.label} ${idx + 1}`,

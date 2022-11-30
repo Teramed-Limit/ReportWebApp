@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Image, StyleSheet, Text, View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 
 import {
     CheckboxCheckedIcon,
@@ -11,7 +11,7 @@ import {
     ColonQualityD,
 } from '../../../../assets';
 
-const styles = StyleSheet.create({
+const styles = ReactPDF.StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
@@ -84,23 +84,29 @@ const scoreList = [
 const PDFBowelScore = ({ bowelData }: Props) => {
     const scoreElement = (position: string, id: string) => {
         return (
-            <View style={styles.column}>
-                <View style={styles.item}>
-                    <Text>{position}</Text>
-                </View>
+            <ReactPDF.View style={styles.column}>
+                <ReactPDF.View style={styles.item}>
+                    <ReactPDF.Text>{position}</ReactPDF.Text>
+                </ReactPDF.View>
                 {scoreList.map((scoreDetails) => {
                     return (
-                        <View key={scoreDetails.scoreText} style={styles.item}>
+                        <ReactPDF.View key={scoreDetails.scoreText} style={styles.item}>
                             {bowelData[id] === scoreDetails.score ? (
-                                <Image style={{ ...styles.icon }} src={CheckboxCheckedIcon} />
+                                <ReactPDF.Image
+                                    style={{ ...styles.icon }}
+                                    src={CheckboxCheckedIcon}
+                                />
                             ) : (
-                                <Image style={{ ...styles.icon }} src={CheckboxUnCheckedIcon} />
+                                <ReactPDF.Image
+                                    style={{ ...styles.icon }}
+                                    src={CheckboxUnCheckedIcon}
+                                />
                             )}
-                            <Text>{scoreDetails.scoreText}</Text>
-                        </View>
+                            <ReactPDF.Text>{scoreDetails.scoreText}</ReactPDF.Text>
+                        </ReactPDF.View>
                     );
                 })}
-            </View>
+            </ReactPDF.View>
         );
     };
 
@@ -117,37 +123,37 @@ const PDFBowelScore = ({ bowelData }: Props) => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.gridContainer}>
-                <View style={styles.header}>
-                    <Text>Boston Bowel Preparation Scale</Text>
-                </View>
+        <ReactPDF.View style={styles.container}>
+            <ReactPDF.View style={styles.gridContainer}>
+                <ReactPDF.View style={styles.header}>
+                    <ReactPDF.Text>Boston Bowel Preparation Scale</ReactPDF.Text>
+                </ReactPDF.View>
                 {/* First column */}
-                <View style={styles.column}>
-                    <View style={styles.item} />
-                    <View style={styles.item}>
-                        <Image style={styles.bowelImage} src={ColonQualityD} />
-                    </View>
-                    <View style={styles.item}>
-                        <Image style={styles.bowelImage} src={ColonQualityC} />
-                    </View>
-                    <View style={styles.item}>
-                        <Image style={styles.bowelImage} src={ColonQualityB} />
-                    </View>
-                    <View style={styles.item}>
-                        <Image style={styles.bowelImage} src={ColonQualityA} />
-                    </View>
-                    <View style={styles.item} />
-                </View>
+                <ReactPDF.View style={styles.column}>
+                    <ReactPDF.View style={styles.item} />
+                    <ReactPDF.View style={styles.item}>
+                        <ReactPDF.Image style={styles.bowelImage} src={ColonQualityD} />
+                    </ReactPDF.View>
+                    <ReactPDF.View style={styles.item}>
+                        <ReactPDF.Image style={styles.bowelImage} src={ColonQualityC} />
+                    </ReactPDF.View>
+                    <ReactPDF.View style={styles.item}>
+                        <ReactPDF.Image style={styles.bowelImage} src={ColonQualityB} />
+                    </ReactPDF.View>
+                    <ReactPDF.View style={styles.item}>
+                        <ReactPDF.Image style={styles.bowelImage} src={ColonQualityA} />
+                    </ReactPDF.View>
+                    <ReactPDF.View style={styles.item} />
+                </ReactPDF.View>
                 {/* Score column */}
                 {scoreElement('Right', 'BBPS_Right')}
                 {scoreElement('Transverse', 'BBPS_Transverse')}
                 {scoreElement('Left', 'BBPS_Left')}
-            </View>
-            <View style={styles.footer}>
-                <Text>Total Score: {calculateTotalScore()}</Text>
-            </View>
-        </View>
+            </ReactPDF.View>
+            <ReactPDF.View style={styles.footer}>
+                <ReactPDF.Text>Total Score: {calculateTotalScore()}</ReactPDF.Text>
+            </ReactPDF.View>
+        </ReactPDF.View>
     );
 };
 

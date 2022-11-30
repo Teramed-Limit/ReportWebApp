@@ -18,7 +18,7 @@ function AppRoutes() {
             <PrivateRoute path="/home" component={<Query />} exact />
             <PrivateRoute
                 exact
-                path="/reporting/studyInstanceUID/:studyInstanceUID"
+                path="/reporting/studyInstanceUID/:studyInstanceUID/version/latest"
                 component={<Report />}
             />
             <PrivateRoute

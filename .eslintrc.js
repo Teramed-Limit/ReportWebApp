@@ -6,12 +6,12 @@ module.exports = {
         jest: true,
     },
     extends: [
+        'plugin:import/recommended',
         'airbnb-typescript',
         'airbnb/hooks',
         'plugin:@typescript-eslint/recommended',
-        'plugin:jest/recommended',
-        'plugin:prettier/recommended',
         'prettier',
+        'plugin:prettier/recommended',
     ],
     parser: '@typescript-eslint/parser',
     parserOptions: {
@@ -22,7 +22,7 @@ module.exports = {
         sourceType: 'module',
         project: './tsconfig.json',
     },
-    plugins: ['react', '@typescript-eslint', 'jest'],
+    plugins: ['react', '@typescript-eslint'],
     ignorePatterns: ['.eslintrc.js'],
     globals: {
         Atomics: 'readonly',
@@ -51,6 +51,12 @@ module.exports = {
         'import/prefer-default-export': 0,
         'no-console': ['error', { allow: ['warn', 'error'] }],
         'linebreak-style': 'off',
+        'prettier/prettier': [
+            'error',
+            {
+                endOfLine: 'auto',
+            },
+        ],
         'no-plusplus': 'off',
         'consistent-return': 'off',
         'react/require-default-props': 0,
@@ -58,8 +64,6 @@ module.exports = {
         'react/destructuring-assignment': 0,
         'react/static-property-placement': 0,
         'react/jsx-props-no-spreading': 0,
-        'react/no-array-index-key': 0,
-        'react/jsx-no-bind': 0,
         '@typescript-eslint/no-use-before-define': 0,
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-explicit-any': 'off',
@@ -70,5 +74,7 @@ module.exports = {
         'jsx-a11y/label-has-associated-control': 'off',
         'no-restricted-syntax': ['error'],
         'no-return-assign': 0,
+        'lines-between-class-members': 'off',
+        '@typescript-eslint/lines-between-class-members': 'off',
     },
 };

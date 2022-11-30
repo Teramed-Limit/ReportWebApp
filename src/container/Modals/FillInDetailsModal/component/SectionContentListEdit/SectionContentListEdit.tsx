@@ -10,7 +10,7 @@ import {
     ListItemText,
 } from '@mui/material';
 import * as R from 'ramda';
-import { RiDeleteBin6Fill } from 'react-icons/all';
+import { RiDeleteBin6Fill } from 'react-icons/ri';
 
 import { ReportFindingItemList } from '../../../../../interface/report-finding';
 import SectionAdder from '../SectionAdder/SectionAdder';

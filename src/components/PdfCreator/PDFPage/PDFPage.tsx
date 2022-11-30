@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Page } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 
 import { styles } from '../styles/style';
 
@@ -10,9 +10,9 @@ interface Props {
 
 const PDFPage = ({ children }: Props) => {
     return (
-        <Page size="A4" style={styles.page}>
+        <ReactPDF.Page size="A4" style={styles.page}>
             {children}
-        </Page>
+        </ReactPDF.Page>
     );
 };
 

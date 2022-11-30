@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
 import { fieldSectionContainer } from '../../../styles/report/style';
@@ -13,7 +13,7 @@ interface Props {
 
 const PDFFieldContainer = ({ orientation, children }: Props) => {
     return (
-        <View
+        <ReactPDF.View
             style={{
                 ...(fieldSectionContainer as Style),
                 ...{ flexDirection: orientation },
@@ -21,7 +21,7 @@ const PDFFieldContainer = ({ orientation, children }: Props) => {
             }}
         >
             {children}
-        </View>
+        </ReactPDF.View>
     );
 };
 

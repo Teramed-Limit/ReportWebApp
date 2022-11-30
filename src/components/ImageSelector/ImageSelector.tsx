@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { Badge, Checkbox } from '@mui/material';
-import { FaMapMarkerAlt } from 'react-icons/all';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 import { CodeList } from '../../interface/code-list';
 import BaseLexiconInput from '../UI/BaseLexiconInput/BaseLexiconInput';

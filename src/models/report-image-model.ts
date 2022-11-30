@@ -53,7 +53,6 @@ export const ImageModel = types
         };
 
         const deleteMarker = (marker: Partial<ReportMark>): ReportImageData[] => {
-            markDiagramChanged();
             return self.images.map((item) => {
                 const deletedMappingNum = +(marker.MappingNumber || 0);
                 if (item.SOPInstanceUID === marker.SOPInstanceUID) {
@@ -81,6 +80,7 @@ export const ImageModel = types
 
         const onMarkerDelete = (marker: ReportMark) => {
             setReportImage(deleteMarker(marker));
+            markDiagramChanged();
         };
 
         const onMarkerPlace = (marker: MarkerPoint, sopInstanceUID: string) => {
@@ -139,6 +139,7 @@ export const ImageModel = types
                     IsAttachInReport: false,
                 })),
             );
+            markDiagramChanged();
         };
 
         const onImageCheck = (sopInsUid: string, check: boolean) => {
@@ -177,6 +178,7 @@ export const ImageModel = types
                     return image;
                 }),
             );
+            markDiagramChanged();
         };
 
         const onFindingsChanged = (sopInsUid: string, findings: string) => {
@@ -223,12 +225,14 @@ export const ImageModel = types
                     MappingNumber: 0,
                 })),
             );
+            markDiagramChanged();
         };
 
         const setReportImage = (imageDatasets: ReportImageData[]) => {
             self.images.replace(imageDatasets);
             const { valueChanged } = getRoot<any>(self).dataStore as DataStore;
             valueChanged('ReportImageData', imageDatasets);
+            markDiagramChanged();
         };
 
         return {

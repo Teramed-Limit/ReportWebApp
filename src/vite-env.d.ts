@@ -11,3 +11,8 @@ declare module '*.otf' {
 
 declare module '*.pdf';
 declare module '*.scss';
+declare module '*.png';
+declare module '*.jpg';
+declare module '*.bmp';
+declare module '*.svg';
+declare module '*.css';

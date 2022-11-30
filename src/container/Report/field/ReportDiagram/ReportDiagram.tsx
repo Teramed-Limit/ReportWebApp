@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import cx from 'classnames';
 import { observer } from 'mobx-react';
@@ -16,18 +16,28 @@ interface Props {
 const ReportDiagram = React.forwardRef(({ field, value }: Props, ref) => {
     const { exportDiagramUrl, diagramChanged } = useReportImageStore();
 
-    const [imageSrc, setImageSrc] = useState<string>(`data:image/jpg;base64, ${value}`);
+    const [imageSrc, setImageSrc] = useState<string>(value);
 
+    // const lastDiagramChangedMark = useRef('');
+    // useEffect(() => {
+    //     if (lastDiagramChangedMark.current === diagramChanged) return;
+    //     const modifiedImage = exportDiagramUrl();
+    //     if (!modifiedImage) return;
+    //     setImageSrc(modifiedImage);
+    //     lastDiagramChangedMark.current = diagramChanged;
+    // }, [diagramChanged, exportDiagramUrl]);
+
+    const lastBase64 = useRef('');
     useEffect(() => {
-        const timer = setTimeout(() => {
+        const timer = setInterval(() => {
             const modifiedImage = exportDiagramUrl();
+            if (lastBase64.current === modifiedImage) return;
             setImageSrc(modifiedImage);
+            lastBase64.current = modifiedImage;
         }, 200);
 
-        return () => {
-            clearTimeout(timer);
-        };
-    }, [value, diagramChanged, exportDiagramUrl]);
+        return () => clearInterval(timer);
+    }, [diagramChanged, exportDiagramUrl]);
 
     return (
         <>

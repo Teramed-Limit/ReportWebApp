@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { FaFilePdf } from 'react-icons/all';
+import { FaFilePdf } from 'react-icons/fa';
 
 import { generateUUID } from '../../../../utils/general';
 import classes from './FileCell.module.scss';

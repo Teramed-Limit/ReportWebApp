@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import InfoIcon from '@mui/icons-material/Info';
 import { IconButton, Slider, Stack } from '@mui/material';
 import { observer } from 'mobx-react';
-import { RiZoomInLine, RiZoomOutLine } from 'react-icons/all';
+import { RiZoomInLine, RiZoomOutLine } from 'react-icons/ri';
 
 import Gallery from '../../../components/Gallery/Gallery';
 import ImageSelector from '../../../components/ImageSelector/ImageSelector';

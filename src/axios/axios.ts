@@ -4,11 +4,11 @@ import Axios from 'axios-observable';
 import { LoginResult } from '../interface/auth';
 
 export const axiosIns = Axios.create({
-    baseURL: process.env.REACT_APP_REST_API,
+    baseURL: import.meta.env.VITE_BASE_URL,
 });
 
 const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_REST_API,
+    baseURL: import.meta.env.VITE_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use((config) => {

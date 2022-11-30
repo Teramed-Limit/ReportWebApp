@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
 import { IconContext } from 'react-icons';
-import { HiOutlineMinusSm, IoMdAdd } from 'react-icons/all';
+import { HiOutlineMinusSm } from 'react-icons/hi';
+import { IoMdAdd } from 'react-icons/io';
 import { Document, Page } from 'react-pdf';
 
 import Spinner from '../Spinner/Spinner';
@@ -46,6 +47,7 @@ const PdfPreview = ({ pdfUrl }: Props) => {
                         </button>
                     </IconContext.Provider>
                 </div>
+                {/* eslint-disable-next-line react/jsx-no-bind */}
                 <Document file={pdfUrl} onLoadSuccess={onDocumentLoadSuccess} loading={<Spinner />}>
                     {Array.from(new Array(pages), (el, index) => (
                         <Page scale={scale} key={`page_${index + 1}`} pageNumber={index + 1} />

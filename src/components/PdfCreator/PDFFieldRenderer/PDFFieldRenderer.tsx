@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Font, Image, Text, View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 
 import { CheckboxCheckedIcon, CheckboxUnCheckedIcon } from '../../../assets';
 import { FormFieldType } from '../../../container/Report/field/field-type';
@@ -13,7 +13,7 @@ import { FilterCondition, SelectionField } from '../../../interface/selection-fi
 import { isEmptyOrNil } from '../../../utils/general';
 import { styles } from '../styles/style';
 
-Font.registerHyphenationCallback((word) => [word]);
+ReactPDF.Font.registerHyphenationCallback((word) => [word]);
 
 interface Props {
     field: Field;
@@ -73,13 +73,13 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
     const checkBox = (rendererField, rendererValue) => {
         return (
             <>
-                <View style={{ marginLeft: '8px', alignItems: 'center' }}>
+                <ReactPDF.View style={{ marginLeft: '8px', alignItems: 'center' }}>
                     {rendererValue === '1' ? (
-                        <Image style={{ ...styles.icon }} src={CheckboxCheckedIcon} />
+                        <ReactPDF.Image style={{ ...styles.icon }} src={CheckboxCheckedIcon} />
                     ) : (
-                        <Image style={{ ...styles.icon }} src={CheckboxUnCheckedIcon} />
+                        <ReactPDF.Image style={{ ...styles.icon }} src={CheckboxUnCheckedIcon} />
                     )}
-                </View>
+                </ReactPDF.View>
                 {text(rendererField, (rendererField as CheckboxField).checkboxLabel)}
             </>
         );
@@ -87,15 +87,22 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
 
     const text = (renderedField: Field, rendererValue: string) => {
         return (
-            <Text>
-                {!isEmptyOrNil(rendererValue) && renderedField?.prefix} {rendererValue}{' '}
-                {!isEmptyOrNil(rendererValue) && renderedField?.suffix}
-            </Text>
+            <>
+                <ReactPDF.Text>
+                    {!isEmptyOrNil(rendererValue) && !isEmptyOrNil(renderedField?.prefix) && (
+                        <ReactPDF.Text>{renderedField?.prefix}&nbsp;</ReactPDF.Text>
+                    )}
+                    {rendererValue}
+                    {!isEmptyOrNil(rendererValue) && !isEmptyOrNil(renderedField?.suffix) && (
+                        <ReactPDF.Text>&nbsp;{renderedField?.suffix}</ReactPDF.Text>
+                    )}
+                </ReactPDF.Text>
+            </>
         );
     };
 
     const reportDiagram = () => {
-        return <Image src={diagramUrl} />;
+        return <ReactPDF.Image src={diagramUrl} />;
     };
 
     return fieldRenderer(field, value);

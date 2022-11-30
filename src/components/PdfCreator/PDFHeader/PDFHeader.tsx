@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Image, Text, View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 
 import { isEmptyOrNil } from '../../../utils/general';
 import { styles } from '../styles/style';
@@ -14,14 +14,16 @@ interface Props {
 const PDFHeader = ({ logoUrl, reportName, children }: Props) => {
     return (
         <>
-            <View style={styles.header} fixed>
-                {!isEmptyOrNil(logoUrl) && <Image style={styles.hospitalLogo} src={logoUrl} />}
-                <View style={styles.headerReportContainer}>
-                    <Text style={styles.headerReport}>{reportName}</Text>
-                </View>
-            </View>
-            <View style={styles.divider} fixed />
-            <View fixed>{children}</View>
+            <ReactPDF.View style={styles.header} fixed>
+                {!isEmptyOrNil(logoUrl) && (
+                    <ReactPDF.Image style={styles.hospitalLogo} src={logoUrl} />
+                )}
+                <ReactPDF.View style={styles.headerReportContainer}>
+                    <ReactPDF.Text style={styles.headerReport}>{reportName}</ReactPDF.Text>
+                </ReactPDF.View>
+            </ReactPDF.View>
+            <ReactPDF.View style={styles.divider} fixed />
+            <ReactPDF.View fixed>{children}</ReactPDF.View>
         </>
     );
 };

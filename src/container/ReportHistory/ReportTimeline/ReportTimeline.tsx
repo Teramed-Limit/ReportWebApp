@@ -7,7 +7,7 @@ import TimelineDot from '@mui/lab/TimelineDot';
 import TimelineItem from '@mui/lab/TimelineItem';
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
 import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import { Chip, ChipPropsColorOverrides, Link } from '@mui/material';
+import { Chip, Link } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { OverridableStringUnion } from '@mui/types';
 import { useHistory, useParams } from 'react-router-dom';
@@ -27,8 +27,7 @@ const ReportTimeline = ({ reportTimeline }: Props) => {
 
     const chipComp = (value: ReportStatus) => {
         let color: OverridableStringUnion<
-            'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning',
-            ChipPropsColorOverrides
+            'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'
         >;
 
         switch (value) {
@@ -67,10 +66,10 @@ const ReportTimeline = ({ reportTimeline }: Props) => {
                     Timeline
                 </Typography>
                 <div className={classes.timelineContainer}>
-                    <Timeline position="right">
-                        {reportTimeline.map((operationRecord, index) => {
+                    <Timeline position="right" onResize onResizeCapture>
+                        {reportTimeline.map((operationRecord) => {
                             return (
-                                <TimelineItem key={index.toString()}>
+                                <TimelineItem key={operationRecord.Version.toString()}>
                                     <TimelineOppositeContent
                                         sx={{ m: 'auto 0', flex: 'none' }}
                                         align="right"

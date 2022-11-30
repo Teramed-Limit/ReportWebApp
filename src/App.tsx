@@ -1,3 +1,5 @@
+import './styles/ag-grid/ag-theme-modal.scss';
+
 import React, { useEffect } from 'react';
 
 import { ThemeProvider } from '@mui/material';
@@ -17,7 +19,6 @@ import fonts from './fonts';
 import { createStore } from './models/store';
 import ConfigService from './service/config-service';
 import { rootTheme } from './theme/rootTheme';
-import './styles/ag-grid/ag-theme-modal.scss';
 
 const rootStore = createStore();
 // Register asynchronous loaded fronts before rendering anything.

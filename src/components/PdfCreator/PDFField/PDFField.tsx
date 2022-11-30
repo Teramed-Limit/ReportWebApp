@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
 import { Field } from '../../../interface/field';
@@ -23,7 +23,7 @@ const PDFField = ({ field, value, diagramUrl, getOptions }: Props) => {
             {/* Label */}
             <PDFFieldLabel field={field} />
             {/* Value */}
-            <View
+            <ReactPDF.View
                 style={{
                     ...(fieldSectionValue as Style),
                     ...(fieldFlex.value[field.orientation] as Style),
@@ -35,7 +35,7 @@ const PDFField = ({ field, value, diagramUrl, getOptions }: Props) => {
                     diagramUrl={diagramUrl}
                     getOptions={getOptions}
                 />
-            </View>
+            </ReactPDF.View>
         </PDFFieldContainer>
     );
 };

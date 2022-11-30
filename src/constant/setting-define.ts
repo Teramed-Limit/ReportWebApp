@@ -1,5 +1,4 @@
-import { ColDef } from 'ag-grid-community';
-import { ValueFormatterParams } from 'ag-grid-community/dist/lib/entities/colDef';
+import { ColDef, ValueFormatterParams } from 'ag-grid-community/dist/lib/entities/colDef';
 
 import { dateFilterParams } from '../utils/ag-grid-utils';
 import { convertToDate, convertToDateTime, stringFormatDate } from '../utils/general';
@@ -220,6 +219,7 @@ export const define = {
             { field: 'Description', headerName: 'Description', width: 200 },
         ] as ColDef[],
         formDef: {
+            id: 'form',
             sections: [
                 {
                     fields: [
@@ -274,6 +274,7 @@ export const define = {
             },
         ] as ColDef[],
         formDef: {
+            id: 'form',
             sections: [
                 {
                     fields: [
@@ -345,6 +346,7 @@ export const define = {
             },
         ] as ColDef[],
         formDef: {
+            id: 'form',
             sections: [
                 {
                     fields: [

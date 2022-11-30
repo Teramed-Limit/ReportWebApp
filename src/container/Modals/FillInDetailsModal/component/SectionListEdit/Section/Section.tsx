@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Checkbox, FormControlLabel, IconButton } from '@mui/material';
 import { Draggable } from 'react-beautiful-dnd';
-import { RiDeleteBin6Fill, RiDragMove2Line } from 'react-icons/all';
+import { RiDeleteBin6Fill, RiDragMove2Line } from 'react-icons/ri';
 
 import classes from './Section.module.scss';
 

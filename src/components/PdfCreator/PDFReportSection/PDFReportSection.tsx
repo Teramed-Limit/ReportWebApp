@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
 import { Section } from '../../../interface/define';
@@ -15,7 +15,7 @@ export const margin = 0.25;
 
 const PDFReportSection = ({ section, children }: Props) => {
     return (
-        <View
+        <ReactPDF.View
             style={{
                 ...(reportSection as Style),
                 maxWidth: section.maxWidth,
@@ -23,7 +23,7 @@ const PDFReportSection = ({ section, children }: Props) => {
             }}
         >
             {children}
-        </View>
+        </ReactPDF.View>
     );
 };
 

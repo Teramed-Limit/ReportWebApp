@@ -6,6 +6,7 @@ export interface FormEditorDef {
 }
 
 export interface FormSection {
+    id: string;
     fields: FormField[];
 }
 

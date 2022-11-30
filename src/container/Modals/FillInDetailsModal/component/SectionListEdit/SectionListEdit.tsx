@@ -4,7 +4,8 @@ import { IconButton } from '@mui/material';
 import { AxiosError } from 'axios';
 import * as R from 'ramda';
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { FaCheck, MdCancel } from 'react-icons/all';
+import { FaCheck } from 'react-icons/fa';
+import { MdCancel } from 'react-icons/md';
 import { finalize, first } from 'rxjs/operators';
 
 import { saveReportFindings } from '../../../../../axios/api';

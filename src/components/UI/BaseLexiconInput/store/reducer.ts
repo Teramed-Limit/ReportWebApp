@@ -23,6 +23,7 @@ const initialState: State = {
     filterable: false,
 };
 
+// eslint-disable-next-line @typescript-eslint/default-param-last
 export const LexiconReducer = (state = initialState, action: any) => {
     let focusOptionIdx = -1;
     let filteredOptions;

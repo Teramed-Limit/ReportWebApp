@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Image, Text, View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 
 import { ReportImageData } from '../../../interface/document-data';
 import { margin } from '../PDFReportContent/PDFReportContent';
@@ -12,10 +12,10 @@ interface Props {
 
 const PDFPhoto = ({ imageList }: Props) => {
     return (
-        <View style={styles.gallery}>
+        <ReactPDF.View style={styles.gallery}>
             {imageList.map((image: ReportImageData) => {
                 return (
-                    <View
+                    <ReactPDF.View
                         key={image.SOPInstanceUID}
                         style={{
                             ...styles.imageContainer,
@@ -26,18 +26,22 @@ const PDFPhoto = ({ imageList }: Props) => {
                         }}
                         wrap={false}
                     >
-                        <Image style={styles.image} src={image.thumbnailImageSrc} />
-                        <Text style={styles.imageNum}>
+                        <ReactPDF.Image style={styles.image} src={image.thumbnailImageSrc} />
+                        <ReactPDF.Text style={styles.imageNum}>
                             {image.MappingNumber > 0 && `${image.MappingNumber}`}
-                        </Text>
-                        <View style={styles.imageDescContainer}>
-                            <Text style={styles.imageDesc}>{image.DescriptionOfSites}</Text>
-                            <Text style={styles.imageDesc}>{image.DescriptionOfFindings}</Text>
-                        </View>
-                    </View>
+                        </ReactPDF.Text>
+                        <ReactPDF.View style={styles.imageDescContainer}>
+                            <ReactPDF.Text style={styles.imageDesc}>
+                                {image.DescriptionOfSites}
+                            </ReactPDF.Text>
+                            <ReactPDF.Text style={styles.imageDesc}>
+                                {image.DescriptionOfFindings}
+                            </ReactPDF.Text>
+                        </ReactPDF.View>
+                    </ReactPDF.View>
                 );
             })}
-        </View>
+        </ReactPDF.View>
     );
 };
 

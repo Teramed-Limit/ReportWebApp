@@ -44,10 +44,7 @@ const ImageCanvasModal = ({ imageSrc }: Props) => {
     const onConfirm = () => {
         setSelectMarkerId(-1);
         setTimeout(() => {
-            valueChanged(
-                'DiagramData',
-                canvasRef.current?.onExport().replace('data:image/jpeg;base64,', ''),
-            );
+            valueChanged('DiagramData', canvasRef.current?.onExport());
             markDiagramChanged();
             setModal(null);
         });

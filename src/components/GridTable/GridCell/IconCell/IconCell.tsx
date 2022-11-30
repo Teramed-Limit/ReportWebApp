@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { FaCheck, IoMdWarning } from 'react-icons/all';
+import { FaCheck } from 'react-icons/fa';
+import { IoMdWarning } from 'react-icons/io';
 
 import classes from './IconCell.module.scss';
 

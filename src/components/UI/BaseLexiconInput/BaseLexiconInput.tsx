@@ -2,7 +2,8 @@ import React, { useEffect, useReducer } from 'react';
 
 import { Tooltip } from '@mui/material';
 import classNames from 'classnames/bind';
-import { MdClear, RiBook3Line as BookIcon } from 'react-icons/all';
+import { MdClear } from 'react-icons/md';
+import { RiBook3Line as BookIcon } from 'react-icons/ri';
 
 import { useKeyPress } from '../../../hooks/useKeyPress';
 import { generateUUID } from '../../../utils/general';

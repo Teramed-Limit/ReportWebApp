@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
 import { SubSection } from '../../../interface/define';
@@ -13,7 +13,7 @@ interface Props {
 
 const PDFReportSubSection = ({ subSection, children }: Props) => {
     return (
-        <View
+        <ReactPDF.View
             style={{
                 ...(reportSubsection as Style),
                 maxWidth: subSection.maxWidth,
@@ -21,7 +21,7 @@ const PDFReportSubSection = ({ subSection, children }: Props) => {
             }}
         >
             {children}
-        </View>
+        </ReactPDF.View>
     );
 };
 

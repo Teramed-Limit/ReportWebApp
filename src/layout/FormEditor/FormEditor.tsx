@@ -55,16 +55,16 @@ const FormEditor = ({
         <>
             {header === '' ? null : <h2>{header}</h2>}
             <div className={classes.container}>
-                {formDef.sections.map((section, index) => {
+                {formDef.sections.map((form) => {
                     let autoFocusIdx = 0;
 
                     return (
                         <div
-                            key={index.toString()}
+                            key={form.id}
                             style={{ flex: `${100 / sectionCount}%` }}
                             className={classes.section}
                         >
-                            {section.fields.map((fieldDef: FormField, idx) => {
+                            {form.fields.map((fieldDef: FormField, idx) => {
                                 const RenderComponent = EditorMapper[fieldDef.type];
                                 let readonly = fieldDef.readOnly;
                                 // Is primary key for table and is type is updated

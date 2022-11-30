@@ -90,9 +90,6 @@ export const convertToDate = (
 export const emptyBaseImage = () =>
     'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
 
-export const emptyImage = () =>
-    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+ip1sAAAAASUVORK5CYII=';
-
 export const convertFileToBase64 = (file: File) => {
     return new Promise((resolve, reject) => {
         const fileReader = new FileReader();
@@ -115,7 +112,7 @@ export const convertUrlToBase64 = async (url): Promise<string> => {
         const reader = new FileReader();
         reader.readAsDataURL(blob);
         reader.onloadend = () => {
-            const base64data = (reader.result as string).replace(/^data:image\/[a-z]+;base64,/, '');
+            const base64data = reader.result as string;
             resolve(base64data);
         };
     });

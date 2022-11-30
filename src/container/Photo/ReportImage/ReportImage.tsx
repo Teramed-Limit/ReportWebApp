@@ -41,8 +41,8 @@ const ReportImage = () => {
     const setModal = useContext(ModalContext);
 
     const fetchReportDiagram = useCallback(
-        (ers: string, openModal: boolean) => {
-            fetchDiagram(ers)
+        (openModal: boolean) => {
+            fetchDiagram(reportTemplate)
                 .pipe(first())
                 .subscribe(async (res) => {
                     onImageStateInitialize();
@@ -56,19 +56,18 @@ const ReportImage = () => {
 
             return () => setModal(null);
         },
-        [onImageStateInitialize, setModal, valueChanged],
+        [onImageStateInitialize, reportTemplate, setModal, valueChanged],
     );
 
     useEffect(() => {
         if (!isEmptyOrNil(diagramData)) {
-            setImageSrc(`data:image/jpeg;base64, ${diagramData}`);
+            setImageSrc(diagramData);
             return;
         }
         if (isEmptyOrNil(reportTemplate)) {
-            fetchReportDiagram('BLANK', false);
             return;
         }
-        fetchReportDiagram(reportTemplate, false);
+        fetchReportDiagram(false);
     }, [diagramData, reportTemplate, fetchReportDiagram]);
 
     useEffect(() => {
@@ -78,7 +77,7 @@ const ReportImage = () => {
     }, []);
 
     const onNewDiagram = () => {
-        fetchReportDiagram(reportTemplate, true);
+        fetchReportDiagram(true);
     };
 
     const onEditDiagram = () => {
@@ -94,7 +93,9 @@ const ReportImage = () => {
             </span>
             <div ref={containerRef} className={classes['image-container']}>
                 <ImagePositionMarkerCanvas
-                    ref={(canvasHandle: CanvasHandle) => registerDiagramCanvas(canvasHandle)}
+                    ref={(canvasHandle: CanvasHandle) => {
+                        registerDiagramCanvas(canvasHandle);
+                    }}
                     src={imageSrc}
                     markers={imageMarkers}
                     containerWidth={containerWidth}

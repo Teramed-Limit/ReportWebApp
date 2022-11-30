@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Image, Text, View } from '@react-pdf/renderer';
+import ReactPDF from '@react-pdf/renderer';
 
 import { UserSignature } from '../../../interface/user-signature';
 import { styles } from '../styles/style';
@@ -12,28 +12,31 @@ interface Props {
 const PDFFooter = ({ signatureData }: Props) => {
     return (
         <>
-            <Text
+            <ReactPDF.Text
                 style={styles.pageNumber}
                 render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`}
                 fixed
             />
-            <View fixed style={styles.footer}>
-                <View style={styles.signatureContainer}>
-                    <Image style={styles.signatureImage} src={signatureData.signatureUrl} />
-                    <View style={styles.divider} />
-                    <View style={styles.signatureTextContainer}>
-                        <Text style={styles.signatureTitle}>Endoscopist</Text>
-                        <View style={styles.signatureContent}>
-                            <Text style={{ ...styles.signatureDoctor }}>
+            <ReactPDF.View fixed style={styles.footer}>
+                <ReactPDF.View style={styles.signatureContainer}>
+                    <ReactPDF.Image
+                        style={styles.signatureImage}
+                        src={signatureData.signatureUrl}
+                    />
+                    <ReactPDF.View style={styles.divider} />
+                    <ReactPDF.View style={styles.signatureTextContainer}>
+                        <ReactPDF.Text style={styles.signatureTitle}>Endoscopist</ReactPDF.Text>
+                        <ReactPDF.View style={styles.signatureContent}>
+                            <ReactPDF.Text style={{ ...styles.signatureDoctor }}>
                                 {signatureData.signatureEName}
-                            </Text>
-                            <Text style={{ ...styles.signatureSummary }}>
+                            </ReactPDF.Text>
+                            <ReactPDF.Text style={{ ...styles.signatureSummary }}>
                                 Specialist in General Surgery
-                            </Text>
-                        </View>
-                    </View>
-                </View>
-            </View>
+                            </ReactPDF.Text>
+                        </ReactPDF.View>
+                    </ReactPDF.View>
+                </ReactPDF.View>
+            </ReactPDF.View>
         </>
     );
 };
