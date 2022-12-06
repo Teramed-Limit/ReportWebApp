@@ -14,9 +14,9 @@ import { StudyData } from '../interface/study-data';
 import { SystemConfig } from '../interface/system-config';
 import { axiosIns } from './axios';
 
-export function login(username: string, password: string): Observable<AxiosResponse<LoginResult>> {
+export function login(userId: string, password: string): Observable<AxiosResponse<LoginResult>> {
     return axiosIns.post<LoginResult>(`api/login`, {
-        username,
+        userId,
         password,
     });
 }
@@ -25,8 +25,8 @@ export function logout() {
     return axiosIns.post(`api/logout`);
 }
 
-export function refreshToken(token: string, userName: string) {
-    return axiosIns.post(`api/refreshtoken`, { refreshToken: token, userName });
+export function refreshToken(userId: string) {
+    return axiosIns.post(`api/refreshtoken`, { userId });
 }
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {

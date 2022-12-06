@@ -18,8 +18,11 @@ export interface UserAccountInfo {
 }
 
 export interface LoginResult {
-    UserName: string;
+    UserId: string;
     AccessToken: string;
-    RefreshToken: string;
     FunctionList: RoleFunction[];
+}
+
+export interface RefreshTokenResult {
+    AccessToken: string;
 }

@@ -1,9 +1,9 @@
 import { AxiosError } from 'axios';
-import { action, dollEffect, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
+import { action, dollEffect, Instance, types } from 'mst-effect';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
 import { login, logout } from '../axios/api';
-import { LoginResult } from '../interface/auth';
+import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { RoleFunction } from '../interface/user-role';
 
 export const AuthModel = types
@@ -11,72 +11,45 @@ export const AuthModel = types
         loginUser: types.maybe(types.string),
         functionList: types.frozen<RoleFunction[]>([]),
         accessToken: types.maybe(types.string),
-        refreshToken: types.maybe(types.string),
         isAuth: types.optional(types.boolean, false),
     })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
-        // let timer: Subscription | undefined;
-
-        // const getTokenRemainingTime = (): number => {
-        //     const { accessToken } = self;
-        //     if (!accessToken) {
-        //         return 0;
-        //     }
-        //     const jwtToken = JSON.parse(atob(accessToken.split('.')[1]));
-        //     const expires = new Date(jwtToken.exp * 1000);
-        //     return expires.getTime() - Date.now();
-        // };
-        //
-        // const stopTokenTimer = () => {
-        //     timer?.unsubscribe();
-        //     timer = undefined;
-        // };
-        //
-        // const startTokenTimer = () => {
-        //     const delayTime = getTokenRemainingTime();
-        //
-        //     if (timer) return;
-        //
-        //     timer = interval(delayTime - 5000)
-        //         .pipe(concatMap(() => refreshToken(self?.refreshToken || '')))
-        //         .subscribe({
-        //             next: () => {},
-        //             error: () => {
-        //                 action(removeAuth);
-        //             },
-        //         });
-        // };
-
         const registerAuth = (data: LoginResult) => {
             self.isAuth = true;
             self.functionList = data.FunctionList;
             self.accessToken = data.AccessToken;
-            self.refreshToken = data.RefreshToken;
-            self.loginUser = data.UserName;
-            // startTokenTimer();
+            self.loginUser = data.UserId;
             localStorage.setItem('user', JSON.stringify(data));
+        };
+
+        const refreshToken = (data: RefreshTokenResult) => {
+            self.accessToken = data.AccessToken;
+            localStorage.setItem(
+                'user',
+                JSON.stringify({
+                    UserId: self.loginUser,
+                    AccessToken: data.AccessToken,
+                    FunctionList: self.functionList,
+                }),
+            );
         };
 
         const removeAuth = () => {
             self.isAuth = false;
             self.functionList = [];
             self.accessToken = undefined;
-            self.refreshToken = undefined;
             self.loginUser = undefined;
-            // stopTokenTimer();
             localStorage.removeItem('user');
-            const { dataStore } = getRoot<IAnyModelType>(self);
-            dataStore.init();
         };
 
         return {
-            onLogin: dollEffect<{ username: string; password: string }, string>(
+            onLogin: dollEffect<{ userId: string; password: string }, string>(
                 self,
                 (payload$, dollSignal) =>
                     payload$.pipe(
-                        switchMap(({ username, password }) =>
-                            login(username, password).pipe(
+                        switchMap(({ userId, password }) =>
+                            login(userId, password).pipe(
                                 map((response) => [
                                     action(registerAuth, response.data),
                                     action(dollSignal, ''),
@@ -99,6 +72,7 @@ export const AuthModel = types
                 ),
             ),
             registerAuth,
+            refreshToken,
             removeAuth,
         };
     });

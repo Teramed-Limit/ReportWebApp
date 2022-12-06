@@ -1,40 +1,29 @@
 import axios, { AxiosError } from 'axios';
 import Axios from 'axios-observable';
 
-import { LoginResult } from '../interface/auth';
+import { LoginResult, RefreshTokenResult } from '../interface/auth';
 
 export const axiosIns = Axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
-});
-
-const axiosInstance = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL,
-});
-
-axiosInstance.interceptors.request.use((config) => {
-    const newConfig = { ...config };
-    const accessToken = (JSON.parse(<string>localStorage.getItem('user')) as LoginResult)
-        ?.AccessToken;
-    if (accessToken) {
-        if (!newConfig?.headers) newConfig.headers = {};
-        newConfig.headers.Authorization = `Bearer ${accessToken}`;
-    }
-    return config;
+    withCredentials: true,
 });
 
 export const setupInterceptors = (
-    registerAuth: (result: LoginResult) => void,
+    refreshToken: (result: RefreshTokenResult) => void,
     removeAuth: () => void,
 ) => {
     axiosIns.interceptors.request.use((config) => {
         const newConfig = { ...config };
+
         const accessToken = (JSON.parse(<string>localStorage.getItem('user')) as LoginResult)
             ?.AccessToken;
+
         if (accessToken) {
             if (!newConfig?.headers) newConfig.headers = {};
             newConfig.headers.Authorization = `Bearer ${accessToken}`;
         }
-        return config;
+
+        return newConfig;
     });
 
     axiosIns.interceptors.response.use(
@@ -52,13 +41,23 @@ export const setupInterceptors = (
                             <string>localStorage.getItem('user'),
                         ) as LoginResult;
 
-                        const rs = await axiosInstance.post<LoginResult>(`api/refreshtoken`, {
-                            RefreshToken: loginUser?.RefreshToken,
-                            UserName: loginUser?.UserName,
+                        // 重新發送一次，Axios必須是新的物件，否則會重複打Api
+                        const retryAxios = axios.create({
+                            baseURL: import.meta.env.VITE_BASE_URL,
+                            withCredentials: true,
                         });
 
-                        registerAuth(rs.data);
-                        return await axiosInstance(originalConfig);
+                        const rs = await retryAxios.post<RefreshTokenResult>(`api/refreshtoken`, {
+                            UserId: loginUser?.UserId,
+                        });
+
+                        refreshToken(rs.data);
+
+                        const newConfig = { ...originalConfig };
+                        if (!newConfig?.headers) newConfig.headers = {};
+                        newConfig.headers.Authorization = `Bearer ${rs.data.AccessToken}`;
+
+                        return await retryAxios(newConfig);
                     } catch (_error) {
                         removeAuth();
                         return Promise.reject(_error);

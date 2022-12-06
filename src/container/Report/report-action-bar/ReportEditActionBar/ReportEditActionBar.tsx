@@ -8,6 +8,7 @@ import PdfCreator from '../../../../components/PdfCreator/PdfCreator';
 import Button from '../../../../components/UI/Button/Button';
 import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
+import { MessageType } from '../../../../interface/notification';
 import { useReportDataStore } from '../../../../models/useStore';
 
 const ReportEditActionBar: React.FC = () => {
@@ -43,6 +44,7 @@ const ReportEditActionBar: React.FC = () => {
         saveReport(null, (signal$) =>
             signal$.pipe(
                 tap(({ notification }) => showNotifyMsg(notification)),
+                filter(({ notification }) => notification.messageType !== MessageType.Error),
                 filter(() => previewPdf),
                 tap(() => setModal(openPreviewModal(false))),
             ),

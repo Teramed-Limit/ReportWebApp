@@ -29,7 +29,7 @@ function Login() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        onLogin({ username: userId, password }, (signal$) =>
+        onLogin({ userId, password }, (signal$) =>
             signal$.pipe(
                 tap((message: string) => {
                     if (isEmptyOrNil(message)) history.replace(from);
@@ -57,9 +57,9 @@ function Login() {
                             margin="normal"
                             required
                             fullWidth
-                            id="username"
+                            id="userId"
                             label="User"
-                            name="username"
+                            name="userId"
                             autoFocus
                             autoComplete="off"
                             value={userId}

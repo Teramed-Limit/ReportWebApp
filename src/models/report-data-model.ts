@@ -69,12 +69,6 @@ export const DataModel = types
         const { reportDataService, reportDefineService, validationService } =
             getEnv<RootService>(self);
 
-        const init = () => {
-            self.formData.replace({});
-            self.formState.replace({});
-            self.formValidation = { isValid: true, openModalName: '' };
-        };
-
         const modify = () => {
             self.modifiable = true;
         };
@@ -168,7 +162,6 @@ export const DataModel = types
         };
 
         return {
-            init,
             modify,
             valueChanged,
             validate,
