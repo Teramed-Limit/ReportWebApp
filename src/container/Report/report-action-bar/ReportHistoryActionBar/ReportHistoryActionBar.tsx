@@ -25,7 +25,7 @@ const ReportHistoryActionBar: React.FC = () => {
                             height="80%"
                             overflow="hidden hidden"
                             headerTitle="PDF Preview"
-                            body={<PdfCreator showToolbar={false} />}
+                            body={<PdfCreator />}
                             bodyCSS={{ padding: '0' } as CSSProperties}
                             footer={
                                 <Button theme="reversePrimary" onClick={() => setModal(null)}>

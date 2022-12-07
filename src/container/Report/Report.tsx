@@ -8,6 +8,7 @@ import { tap } from 'rxjs/operators';
 
 import Icon from '../../components/UI/Icon/Icon';
 import { NotificationContext } from '../../context/notification-context';
+import { useModal } from '../../hooks/useModal';
 import { Section } from '../../interface/define';
 import { MessageType } from '../../interface/notification';
 import ReportSection from '../../layout/ReportSection/ReportSection';
@@ -24,10 +25,16 @@ const Report = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
-    const { modifiable, fetchReport } = useReportDataStore();
+    const { modifiable, fetchReport, formValidation, cleanupAllReportState } = useReportDataStore();
     const { loading: fetchDefineLoading } = useReportDefineStore();
     const { loading: fetchOptionsLoading } = useOptionStore();
     const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
+    const [setModalName] = useModal();
+
+    // open modal when field is in modal
+    useEffect(() => {
+        if (!formValidation.isValid) setModalName(formValidation.openModalName);
+    }, [formValidation, setModalName]);
 
     useEffect(() => {
         // wait ready
@@ -43,13 +50,18 @@ const Report = () => {
             ),
         );
     }, [
-        fetchOptionsLoading,
         fetchDefineLoading,
+        fetchOptionsLoading,
         fetchReport,
         history,
         showNotifyMsg,
         studyInstanceUID,
     ]);
+
+    // clean up all report state
+    useEffect(() => {
+        return () => cleanupAllReportState();
+    }, [cleanupAllReportState]);
 
     return (
         <>
@@ -73,7 +85,6 @@ const Report = () => {
                     </Box>
                 </div>
             </ReportActionProvider>
-
             {/* Photo Drawer */}
             <button
                 style={{ top: '245px' }}

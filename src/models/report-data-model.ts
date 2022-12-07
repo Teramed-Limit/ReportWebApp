@@ -125,6 +125,13 @@ export const DataModel = types
             };
         };
 
+        const cleanupAllReportState = () => {
+            self.loading = false;
+            self.formData.clear();
+            self.formState.replace({});
+            self.formValidation = { isValid: true, openModalName: '' };
+        };
+
         const initialFormControl = () => {
             const documentData = self.formData.toJSON();
             const { fields } = reportDefineService.getFormDefine(
@@ -159,6 +166,7 @@ export const DataModel = types
             });
 
             self.formState.replace(initialState);
+            self.formValidation = { isValid: true, openModalName: '' };
         };
 
         return {
@@ -166,6 +174,7 @@ export const DataModel = types
             valueChanged,
             validate,
             initialFormControl,
+            cleanupAllReportState,
             resetFormData: (formData: DocumentData) => self.formData.replace(formData),
             resetFormState: (state: FormState) => self.formState.replace(state),
         };

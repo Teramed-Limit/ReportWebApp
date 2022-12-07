@@ -32,6 +32,11 @@ export const ImageModel = types
                     return image.IsAttachInReport;
                 }).length;
             },
+            get selectedImage(): ReportImageData[] {
+                return self.images.filter((image) => {
+                    return image.IsAttachInReport;
+                });
+            },
         };
     })
     /* eslint-disable no-param-reassign */

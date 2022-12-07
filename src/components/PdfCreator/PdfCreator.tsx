@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
-import { observer } from 'mobx-react';
 
 import { axiosIns } from '../../axios/axios';
 import { Section } from '../../interface/define';
@@ -22,13 +21,13 @@ import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
 
 interface Props {
-    showToolbar: boolean;
+    showToolbar?: boolean;
     onPdfRenderCallback?: (base64: string) => void;
 }
 
-const PdfCreator = ({ showToolbar, onPdfRenderCallback }: Props) => {
+const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
     const { formData, studyInsUID } = useReportDataStore();
-    const { exportDiagramUrl, images } = useReportImageStore();
+    const { exportDiagramUrl, selectedImage } = useReportImageStore();
     const { pdfDefine } = useReportDefineStore();
     const { getCodeList } = useOptionStore();
     const [loading, setLoading] = useState(true);
@@ -102,7 +101,7 @@ const PdfCreator = ({ showToolbar, onPdfRenderCallback }: Props) => {
                     <Spinner />
                 </Block>
             )}
-            {images && logoUrl && signatureData && diagramUrl && (
+            {logoUrl && signatureData && diagramUrl && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
                         title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}
@@ -131,7 +130,7 @@ const PdfCreator = ({ showToolbar, onPdfRenderCallback }: Props) => {
                                 diagramUrl={diagramUrl}
                                 getOptions={getCodeList}
                             />
-                            <PDFPhoto imageList={images} />
+                            {selectedImage.length && <PDFPhoto imageList={selectedImage} />}
                             {/* Footer */}
                             <PDFFooter signatureData={signatureData} />
                         </PDFPage>
@@ -142,4 +141,4 @@ const PdfCreator = ({ showToolbar, onPdfRenderCallback }: Props) => {
     );
 };
 
-export default observer(PdfCreator);
+export default PdfCreator;
