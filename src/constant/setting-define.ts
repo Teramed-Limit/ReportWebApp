@@ -219,9 +219,9 @@ export const define = {
             { field: 'Description', headerName: 'Description', width: 200 },
         ] as ColDef[],
         formDef: {
-            id: 'form',
             sections: [
                 {
+                    id: 'form',
                     fields: [
                         {
                             id: 'RoleName',
@@ -274,9 +274,9 @@ export const define = {
             },
         ] as ColDef[],
         formDef: {
-            id: 'form',
             sections: [
                 {
+                    id: 'form',
                     fields: [
                         {
                             id: 'UserID',
@@ -346,9 +346,9 @@ export const define = {
             },
         ] as ColDef[],
         formDef: {
-            id: 'form',
             sections: [
                 {
+                    id: 'form',
                     fields: [
                         { id: 'Id', label: 'Id', type: 'Number', hide: true, isKey: true },
                         {
