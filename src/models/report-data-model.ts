@@ -301,7 +301,7 @@ export const DataModel = types
             const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
 
             // set initialize data
-            response.data.Author = authStore.loginUser;
+            response.data.Author = authStore.userId;
             self.formData.replace(response.data);
 
             imageStore.initImages(response.data?.ReportImageData || []);

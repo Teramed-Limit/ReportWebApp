@@ -19,7 +19,9 @@ export interface UserAccountInfo {
 
 export interface LoginResult {
     UserId: string;
+    UserName: string;
     AccessToken: string;
+    AvatarImg: string;
     FunctionList: RoleFunction[];
 }
 

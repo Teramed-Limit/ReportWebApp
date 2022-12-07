@@ -12,9 +12,8 @@
 
 .headerInfo {
     padding: 5px;
-    width: 926px;
     max-width: 926px;
-    flex-grow: 4;
+    flex: 1 1 50%;
     color: white;
     font-family: Tahoma, serif;
     font-size: 20px;
@@ -24,7 +23,7 @@
 }
 
 .headerSidebar {
-    flex-grow: 2;
+    flex: 2 1 auto;
 }
 
 .iconText {
@@ -40,4 +39,26 @@
 .iconButton {
     font-size: 40px !important;
     color: #4eacf1;
+}
+
+.avatar {
+    width: fit-content;
+    min-width: 100px;
+    height: 87px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: black;
+}
+
+.avatarImg {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 2px;
 }

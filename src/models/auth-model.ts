@@ -8,7 +8,9 @@ import { RoleFunction } from '../interface/user-role';
 
 export const AuthModel = types
     .model('auth', {
-        loginUser: types.maybe(types.string),
+        userId: types.maybe(types.string),
+        userName: types.maybe(types.string),
+        avatarImg: types.maybe(types.string),
         functionList: types.frozen<RoleFunction[]>([]),
         accessToken: types.maybe(types.string),
         isAuth: types.optional(types.boolean, false),
@@ -19,7 +21,9 @@ export const AuthModel = types
             self.isAuth = true;
             self.functionList = data.FunctionList;
             self.accessToken = data.AccessToken;
-            self.loginUser = data.UserId;
+            self.userId = data.UserId;
+            self.userName = data?.UserName || undefined;
+            self.avatarImg = data?.AvatarImg || undefined;
             localStorage.setItem('user', JSON.stringify(data));
         };
 
@@ -28,9 +32,11 @@ export const AuthModel = types
             localStorage.setItem(
                 'user',
                 JSON.stringify({
-                    UserId: self.loginUser,
-                    AccessToken: data.AccessToken,
+                    UserId: self.userId,
+                    UserName: self.userName,
+                    AvatarImg: self.avatarImg,
                     FunctionList: self.functionList,
+                    AccessToken: data.AccessToken,
                 }),
             );
         };
@@ -39,7 +45,9 @@ export const AuthModel = types
             self.isAuth = false;
             self.functionList = [];
             self.accessToken = undefined;
-            self.loginUser = undefined;
+            self.userId = undefined;
+            self.userName = undefined;
+            self.avatarImg = undefined;
             localStorage.removeItem('user');
         };
 

@@ -19,7 +19,7 @@ import classes from './Header.module.scss';
 
 const Header = () => {
     const history = useHistory();
-    const { onLogout } = useAuthStore();
+    const { onLogout, userName, avatarImg } = useAuthStore();
 
     const logout = () => {
         onLogout(null, (signal$) => signal$.pipe(tap(() => history.push({ pathname: `/login` }))));
@@ -58,12 +58,16 @@ const Header = () => {
                             Settings
                         </Button>
                     </NavigationItem>
-                    <NavigationItem link="/login" id="navigation__logout">
-                        <Button id="btn__logout" color="black" onClick={logout}>
-                            <LogoutRoundedIcon className={classes.iconButton} />
-                            Logout
-                        </Button>
-                    </NavigationItem>
+                    <Button id="btn__logout" color="black" onClick={logout}>
+                        <LogoutRoundedIcon className={classes.iconButton} />
+                        Logout
+                    </Button>
+                    <div className={classes.avatar}>
+                        <div className={classes.avatarImg}>
+                            <img src={avatarImg} alt="" />
+                        </div>
+                        {userName}
+                    </div>
                 </ButtonGroup>
             </div>
         </div>
