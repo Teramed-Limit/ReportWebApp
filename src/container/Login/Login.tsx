@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Paper } from '@mui/material';
@@ -14,13 +14,16 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
 import { LoginBackground } from '../../assets';
+import { ModalContext } from '../../context/modal-context';
 import { useAuthStore } from '../../models/useStore';
 import { isEmptyOrNil } from '../../utils/general';
+import MessageModal from '../Modals/MessageModal/MessageModal';
 import classes from './Login.module.scss';
 
 function Login() {
     const history = useHistory();
-    const { onLogin } = useAuthStore();
+    const setModal = useContext(ModalContext);
+    const { onLogin, onCheckIsRepeatLogin } = useAuthStore();
     const location = useLocation<{ from: { pathname: string; search: string } }>();
     const [password, setPassword] = useState('');
     const [userId, setUserId] = useState('');
@@ -29,11 +32,30 @@ function Login() {
 
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        onLogin({ userId, password }, (signal$) =>
+
+        const login = () => {
+            onLogin({ userId, password }, (signal$) =>
+                signal$.pipe(
+                    tap((message: string) => {
+                        if (isEmptyOrNil(message)) history.replace(from);
+                        else setLoginMsg(message);
+                    }),
+                ),
+            );
+        };
+
+        onCheckIsRepeatLogin({ userId }, (signal$) =>
             signal$.pipe(
-                tap((message: string) => {
-                    if (isEmptyOrNil(message)) history.replace(from);
-                    else setLoginMsg(message);
+                tap((isRepeatLogin: boolean) => {
+                    if (isRepeatLogin)
+                        setModal(
+                            <MessageModal
+                                headerTitle="Repeat Login"
+                                bodyContent="You are logged in elsewhere, do you want to force logout and log in here?"
+                                onConfirmCallback={() => login()}
+                            />,
+                        );
+                    else login();
                 }),
             ),
         );

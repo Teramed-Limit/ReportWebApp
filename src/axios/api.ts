@@ -14,6 +14,10 @@ import { StudyData } from '../interface/study-data';
 import { SystemConfig } from '../interface/system-config';
 import { axiosIns } from './axios';
 
+export function checkIsRepeatLogin(userId: string): Observable<AxiosResponse<boolean>> {
+    return axiosIns.get<boolean>(`api/checkIsRepeatLogin/userId/${userId}`);
+}
+
 export function login(userId: string, password: string): Observable<AxiosResponse<LoginResult>> {
     return axiosIns.post<LoginResult>(`api/login`, {
         userId,

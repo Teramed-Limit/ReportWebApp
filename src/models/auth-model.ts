@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { action, dollEffect, Instance, types } from 'mst-effect';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
-import { login, logout } from '../axios/api';
+import { checkIsRepeatLogin, login, logout } from '../axios/api';
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { RoleFunction } from '../interface/user-role';
 
@@ -52,6 +52,20 @@ export const AuthModel = types
         };
 
         return {
+            onCheckIsRepeatLogin: dollEffect<{ userId: string }, boolean>(
+                self,
+                (payload$, dollSignal) =>
+                    payload$.pipe(
+                        switchMap(({ userId }) =>
+                            checkIsRepeatLogin(userId).pipe(
+                                map((response) => [action(dollSignal, response.data)]),
+                                catchError((error: AxiosError) => [
+                                    action(dollSignal, error.response?.data.Message),
+                                ]),
+                            ),
+                        ),
+                    ),
+            ),
             onLogin: dollEffect<{ userId: string; password: string }, string>(
                 self,
                 (payload$, dollSignal) =>
