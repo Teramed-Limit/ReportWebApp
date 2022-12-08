@@ -6,6 +6,7 @@ import AuthRoute from './Auth-route';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 import Account from './container/Account/Account';
 import History from './container/History/History';
+import LoginStatus from './container/LoginStatus/LoginStatus';
 import Query from './container/Query/Query';
 import Report from './container/Report/Report';
 import ReportHistory from './container/ReportHistory/ReportHistory';
@@ -28,6 +29,12 @@ function AppRoutes() {
                 exact
                 path="/reporting/studyInstanceUID/:studyInstanceUID/version/latest"
                 component={<Report />}
+            />
+            <AuthRoute
+                id="navigation__loginStatusManagement"
+                exact
+                path="/login-status-management"
+                component={<LoginStatus />}
             />
             <AuthRoute id="navigation__account" exact path="/account" component={<Account />} />
             <AuthRoute id="navigation__setting" exact path="/settings" component={<Settings />} />

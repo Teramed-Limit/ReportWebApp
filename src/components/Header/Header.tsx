@@ -1,6 +1,7 @@
 import React from 'react';
 
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import FaceIcon from '@mui/icons-material/Face';
 import HistoryIcon from '@mui/icons-material/History';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
@@ -58,6 +59,19 @@ const Header = () => {
                                 <Button id="btn__setting" color="black">
                                     <SettingsIcon className={classes.iconButton} />
                                     Settings
+                                </Button>
+                            </NavigationItem>
+                        }
+                    />
+                    <WithElementVisibility
+                        wrappedComp={
+                            <NavigationItem
+                                link="/login-status-management"
+                                id="navigation__loginStatusManagement"
+                            >
+                                <Button id="btn__login-status-management" color="black">
+                                    <FaceIcon className={classes.iconButton} />
+                                    Login Status
                                 </Button>
                             </NavigationItem>
                         }

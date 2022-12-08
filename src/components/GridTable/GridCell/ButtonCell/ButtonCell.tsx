@@ -1,6 +1,6 @@
 import React, { useImperativeHandle } from 'react';
 
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { ICellRendererParams } from 'ag-grid-community/dist/lib/rendering/cellRenderers/iCellRenderer';
 import { AgReactComponent } from 'ag-grid-react';
 
@@ -23,14 +23,24 @@ const ButtonCell = React.forwardRef<AgReactComponent, Props>((props, ref) => {
     }));
 
     return (
-        <Button
-            sx={{ fontSize: '0.8125rem !important' }}
-            variant={props.variant}
-            color={props.color}
-            onClick={() => props.onClick(props)}
+        <Box
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                width: '100%',
+                height: '100%',
+            }}
         >
-            {props.label}
-        </Button>
+            <Button
+                fullWidth
+                sx={{ fontSize: '0.8125rem !important' }}
+                variant={props.variant}
+                color={props.color}
+                onClick={() => props.onClick(props.data)}
+            >
+                {props.label}
+            </Button>
+        </Box>
     );
 });
 

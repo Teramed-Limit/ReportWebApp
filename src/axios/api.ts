@@ -25,8 +25,16 @@ export function login(userId: string, password: string): Observable<AxiosRespons
     });
 }
 
+export function fetchLoginStatus(): Observable<AxiosResponse<StudyData[]>> {
+    return axiosIns.get('api/login/status');
+}
+
 export function logout() {
     return axiosIns.post(`api/logout`);
+}
+
+export function logoutSpecifyUser(userId: string) {
+    return axiosIns.post(`api/logout/userId/${userId}`);
 }
 
 export function refreshToken(userId: string) {

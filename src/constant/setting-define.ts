@@ -212,6 +212,49 @@ export const define = {
             { field: 'PDFFilePath', headerName: 'PDFFilePath', hide: true },
         ] as ColDef[],
     },
+    loginStatus: {
+        colDef: [
+            {
+                field: 'userId',
+                headerName: 'UserId',
+                width: 180,
+            },
+            {
+                field: 'expireAt',
+                headerName: 'Expire At',
+                width: 180,
+                valueFormatter: (params: ValueFormatterParams) => {
+                    return convertToDateTime(params.value);
+                },
+            },
+            {
+                field: 'created',
+                headerName: 'Created',
+                width: 180,
+                valueFormatter: (params: ValueFormatterParams) => {
+                    return convertToDateTime(params.value);
+                },
+            },
+            {
+                field: 'createdByIp',
+                headerName: 'Created By Ip',
+                width: 180,
+            },
+            {
+                field: 'logoutUser',
+                headerName: '',
+                width: 100,
+                cellStyle: { padding: 0 },
+                cellRenderer: 'buttonRenderer',
+                cellRendererParams: {
+                    label: 'Logout',
+                    color: 'error',
+                    variant: 'contained',
+                    onClick: () => {},
+                },
+            },
+        ] as ColDef[],
+    },
     userRoleGroup: {
         colDef: [
             { field: 'RoleName', headerName: 'Role Name', width: 200 },
