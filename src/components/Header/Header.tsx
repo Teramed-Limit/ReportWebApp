@@ -52,12 +52,16 @@ const Header = () => {
                             </NavigationItem>
                         }
                     />
-                    <NavigationItem link="/settings" id="navigation__setting">
-                        <Button id="btn__setting" color="black">
-                            <SettingsIcon className={classes.iconButton} />
-                            Settings
-                        </Button>
-                    </NavigationItem>
+                    <WithElementVisibility
+                        wrappedComp={
+                            <NavigationItem link="/settings" id="navigation__setting">
+                                <Button id="btn__setting" color="black">
+                                    <SettingsIcon className={classes.iconButton} />
+                                    Settings
+                                </Button>
+                            </NavigationItem>
+                        }
+                    />
                     <Button id="btn__logout" color="black" onClick={logout}>
                         <LogoutRoundedIcon className={classes.iconButton} />
                         Logout

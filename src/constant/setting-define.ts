@@ -105,7 +105,6 @@ export const define = {
         colDef: [
             {
                 field: 'navigateReport',
-                colId: 'navigation__report',
                 headerName: '',
                 width: 45,
                 cellStyle: { padding: 0 },
