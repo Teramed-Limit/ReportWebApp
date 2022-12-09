@@ -42,7 +42,7 @@ export function refreshToken(userId: string) {
 }
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {
-    return axiosIns.get<DocumentData>(`api/standard/report/studyInstanceUID/${studyInsUid}`);
+    return axiosIns.get<DocumentData>(`api/report/studyInstanceUID/${studyInsUid}`);
 }
 
 export function fetchHistoryReport(
@@ -50,35 +50,33 @@ export function fetchHistoryReport(
     version: string,
 ): Observable<AxiosResponse<DocumentData>> {
     return axiosIns.get<DocumentData>(
-        `api/standard/report/history/studyInstanceUID/${studyInsUid}/version/${version}`,
+        `api/report/history/studyInstanceUID/${studyInsUid}/version/${version}`,
     );
 }
 
 export function fetchReportTimeline(
     studyInsUid: string,
 ): Observable<AxiosResponse<ReportTimelineData>> {
-    return axiosIns.get(`api/standard/report/timeline/studyInstanceUID/${studyInsUid}`);
+    return axiosIns.get(`api/report/timeline/studyInstanceUID/${studyInsUid}`);
 }
 
 export function fetchReportDefine(): Observable<AxiosResponse<FormDefineMap>> {
-    return axiosIns.get(`api/standard/report/define`);
+    return axiosIns.get(`api/report/define`);
 }
 
 export function fetchReportHistoryDefine(
     studyInsUid: string,
     version: string,
 ): Observable<AxiosResponse<FormHistoryDefine>> {
-    return axiosIns.get(
-        `api/standard/report/define/studyInstanceUID/${studyInsUid}/version/${version}`,
-    );
+    return axiosIns.get(`api/report/define/studyInstanceUID/${studyInsUid}/version/${version}`);
 }
 
 export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.post(`api/standard/report`, body);
+    return axiosIns.post(`api/report`, body);
 }
 
 export function saveReportPDF(studyInsUid: string, body): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.post(`api/standard/report/studyInstanceUID/${studyInsUid}/pdfSave`, body);
+    return axiosIns.post(`api/report/studyInstanceUID/${studyInsUid}/pdfSave`, body);
 }
 
 // 獲取 Code list
