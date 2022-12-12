@@ -1,0 +1,13 @@
+.blinkText {
+    animation: blinker 1s linear infinite;
+    color: red;
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+}
+
+@keyframes blinker {
+    50% {
+        opacity: 0;
+    }
+}

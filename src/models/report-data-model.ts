@@ -12,7 +12,14 @@ import {
 import { iif, interval, Observable, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
-import { fetchHistoryReport, fetchReport, saveReport } from '../axios/api';
+import {
+    fetchHistoryReport,
+    fetchReport,
+    getReportLockStatus,
+    lockReport,
+    saveReport,
+    unlockReport,
+} from '../axios/api';
 import { DocumentData, ReportStatus } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
@@ -30,6 +37,7 @@ const formInvalidError = {
 
 export const DataModel = types
     .model('report', {
+        lockByUser: types.optional(types.string, ''),
         modifiable: types.optional(types.boolean, false),
         // report data is latest, no edit
         reportHasChanged: types.optional(types.boolean, false),
@@ -68,10 +76,6 @@ export const DataModel = types
     .actions((self) => {
         const { reportDataService, reportDefineService, validationService } =
             getEnv<RootService>(self);
-
-        const modify = () => {
-            self.modifiable = true;
-        };
 
         const valueChanged = (id: string, value: any) => {
             const {
@@ -170,7 +174,6 @@ export const DataModel = types
         };
 
         return {
-            modify,
             valueChanged,
             validate,
             initialFormControl,
@@ -287,6 +290,36 @@ export const DataModel = types
 
                 return payload$.pipe(
                     switchMap(() => interval(5000).pipe(map(() => action(update)))),
+                );
+            }),
+            fetchReportLockStatus: dollEffect<string, string>(self, (payload$, dollSignal) => {
+                return payload$.pipe(
+                    switchMap((studyInstanceUID) =>
+                        getReportLockStatus(studyInstanceUID).pipe(
+                            map((res) => [
+                                action(() => {
+                                    self.lockByUser = res.data || '';
+                                    // is null or userId
+                                    self.modifiable = isEmptyOrNil(res.data);
+                                }),
+                                action(dollSignal, res.data),
+                            ]),
+                        ),
+                    ),
+                );
+            }),
+            lockReport: effect<string>(self, (payload$) => {
+                return payload$.pipe(
+                    switchMap((studyInstanceUID) =>
+                        lockReport(studyInstanceUID).pipe(map(() => action(() => {}))),
+                    ),
+                );
+            }),
+            unlockReport: effect<string>(self, (payload$) => {
+                return payload$.pipe(
+                    switchMap((studyInstanceUID) =>
+                        unlockReport(studyInstanceUID).pipe(map(() => action(() => {}))),
+                    ),
                 );
             }),
         };

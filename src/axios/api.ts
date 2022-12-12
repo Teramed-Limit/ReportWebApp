@@ -169,3 +169,15 @@ export function fetchHistoryStudy(queryParams: any): Observable<AxiosResponse<St
 export function fetchSystemConfig(): Observable<AxiosResponse<SystemConfig>> {
     return axiosIns.get('api/systemConfig');
 }
+
+export function getReportLockStatus(studyInstanceUid: string): Observable<AxiosResponse<string>> {
+    return axiosIns.get(`api/report/lock/status/studyInstanceUID/${studyInstanceUid}`);
+}
+
+export function lockReport(studyInstanceUid: string): Observable<AxiosResponse<boolean>> {
+    return axiosIns.post(`api/report/lock/studyInstanceUID/${studyInstanceUid}`);
+}
+
+export function unlockReport(studyInstanceUid: string): Observable<AxiosResponse<boolean>> {
+    return axiosIns.post(`api/report/unlock/studyInstanceUID/${studyInstanceUid}`);
+}
