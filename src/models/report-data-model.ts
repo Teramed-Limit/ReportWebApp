@@ -203,10 +203,9 @@ export const DataModel = types
         };
 
         const saveReport$ = () => {
-            self.formData.set('ReportStatus', ReportStatus.Saved);
-
             // 沒編輯過不要做任何動作
             if (!self.reportHasChanged) return of({ response: { data: { Message: '' } } });
+            self.formData.set('ReportStatus', ReportStatus.Saved);
 
             return iif(
                 () => checkFormIsValid(),
@@ -217,6 +216,7 @@ export const DataModel = types
 
         const signReport$ = () => {
             self.formData.set('ReportStatus', ReportStatus.Signed);
+
             return iif(
                 () => checkFormIsValid(),
                 saveReport(self.formData.toJSON()),
@@ -334,7 +334,6 @@ export const DataModel = types
             const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
 
             // set initialize data
-            response.data.Author = authStore.userId;
             self.formData.replace(response.data);
 
             imageStore.initImages(response.data?.ReportImageData || []);

@@ -291,21 +291,9 @@ export const define = {
                 width: 200,
             },
             {
-                field: 'DoctorCName',
-                headerName: 'Doctor CName',
-                width: 200,
-            },
-            {
                 field: 'DoctorEName',
-                headerName: 'Doctor EName',
+                headerName: 'User Name',
                 width: 200,
-            },
-            {
-                field: 'SignatureBase64',
-                headerName: 'Signature',
-                width: 120,
-                cellRenderer: 'imageRowRenderer',
-                cellRendererParams: { type: 'base64' },
             },
             {
                 field: 'RoleList',
@@ -333,9 +321,12 @@ export const define = {
                             type: 'Text',
                             validate: { type: 'Required' },
                         },
-                        { id: 'DoctorCName', label: 'User CName', type: 'Text' },
-                        { id: 'DoctorEName', label: 'User EName', type: 'Text' },
-                        { id: 'SignatureBase64', label: 'Signature', type: 'ImageSelect' },
+                        {
+                            id: 'DoctorEName',
+                            label: 'User Name',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                        },
                         {
                             id: 'RoleList',
                             label: 'Role Group',
@@ -347,6 +338,54 @@ export const define = {
                                 labelKey: 'RoleName',
                             },
                         },
+                    ],
+                },
+            ],
+        },
+    },
+    doctorSignature: {
+        colDef: [
+            {
+                field: 'userId',
+                headerName: 'User Id',
+                width: 200,
+            },
+            {
+                field: 'title',
+                headerName: 'Title',
+                width: 80,
+            },
+            {
+                field: 'name',
+                headerName: 'Name',
+                width: 250,
+            },
+            {
+                field: 'signatureUrl',
+                headerName: 'Signature',
+                width: 120,
+                cellRenderer: 'imageRowRenderer',
+            },
+        ] as ColDef[],
+        formDef: {
+            sections: [
+                {
+                    id: 'form',
+                    fields: [
+                        {
+                            id: 'userId',
+                            label: 'User Id',
+                            type: 'Text',
+                            isKey: true,
+                            validate: { type: 'Required' },
+                        },
+                        {
+                            id: 'title',
+                            label: 'Title',
+                            type: 'Text',
+                        },
+                        { id: 'name', label: 'Name', type: 'Text', validate: { type: 'Required' } },
+                        { id: 'signatureUrl', label: 'Signature', type: 'ImageSelect' },
                     ],
                 },
             ],

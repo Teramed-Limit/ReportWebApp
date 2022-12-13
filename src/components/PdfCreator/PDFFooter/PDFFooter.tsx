@@ -2,11 +2,11 @@ import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
 
-import { UserSignature } from '../../../interface/user-signature';
+import { DoctorSignature } from '../../../interface/doctor-signature';
 import { styles } from '../styles/style';
 
 interface Props {
-    signatureData: UserSignature;
+    signatureData: DoctorSignature;
 }
 
 const PDFFooter = ({ signatureData }: Props) => {
@@ -28,7 +28,7 @@ const PDFFooter = ({ signatureData }: Props) => {
                         <ReactPDF.Text style={styles.signatureTitle}>Endoscopist</ReactPDF.Text>
                         <ReactPDF.View style={styles.signatureContent}>
                             <ReactPDF.Text style={{ ...styles.signatureDoctor }}>
-                                {signatureData.signatureEName}
+                                {signatureData.title} {signatureData.name}
                             </ReactPDF.Text>
                             <ReactPDF.Text style={{ ...styles.signatureSummary }}>
                                 Specialist in General Surgery

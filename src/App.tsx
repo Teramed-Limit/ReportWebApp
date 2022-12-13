@@ -36,6 +36,7 @@ function App() {
         const subscription = fetchSystemConfig().subscribe((res) => {
             ConfigService.setDateFormat(res.data.DateFormat);
             ConfigService.setDateTimeFormat(res.data.DateTimeFormat);
+            ConfigService.setSignatureCorrespondingField(res.data.SignatureCorrespondingField);
         });
         return () => subscription.unsubscribe();
     }, []);

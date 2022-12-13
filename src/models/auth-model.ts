@@ -10,7 +10,6 @@ export const AuthModel = types
     .model('auth', {
         userId: types.maybe(types.string),
         userName: types.maybe(types.string),
-        avatarImg: types.maybe(types.string),
         functionList: types.frozen<RoleFunction[]>([]),
         accessToken: types.maybe(types.string),
         isAuth: types.optional(types.boolean, false),
@@ -23,7 +22,6 @@ export const AuthModel = types
             self.accessToken = data.AccessToken;
             self.userId = data.UserId;
             self.userName = data?.UserName || undefined;
-            self.avatarImg = data?.AvatarImg || undefined;
             localStorage.setItem('user', JSON.stringify(data));
         };
 
@@ -34,7 +32,6 @@ export const AuthModel = types
                 JSON.stringify({
                     UserId: self.userId,
                     UserName: self.userName,
-                    AvatarImg: self.avatarImg,
                     FunctionList: self.functionList,
                     AccessToken: data.AccessToken,
                 }),
@@ -47,7 +44,6 @@ export const AuthModel = types
             self.accessToken = undefined;
             self.userId = undefined;
             self.userName = undefined;
-            self.avatarImg = undefined;
             localStorage.removeItem('user');
         };
 

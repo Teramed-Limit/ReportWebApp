@@ -8,6 +8,7 @@ import PdfCreator from '../../../../components/PdfCreator/PdfCreator';
 import Button from '../../../../components/UI/Button/Button';
 import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
+import WithElementVisibility from '../../../../HOC/WithElementVisiblity/WithElementVisibility';
 import { MessageType } from '../../../../interface/notification';
 import { useReportDataStore } from '../../../../models/useStore';
 
@@ -79,15 +80,20 @@ const ReportEditActionBar: React.FC = () => {
             >
                 Preview
             </Button>
-            <Button
-                theme="primary"
-                icon="signOff"
-                iconPosition="left"
-                fontSize={16}
-                onClick={() => setModal(openPreviewModal(true))}
-            >
-                SignOff
-            </Button>
+            <WithElementVisibility
+                wrappedComp={
+                    <Button
+                        id="button__reportSignOff"
+                        theme="primary"
+                        icon="signOff"
+                        iconPosition="left"
+                        fontSize={16}
+                        onClick={() => setModal(openPreviewModal(true))}
+                    >
+                        SignOff
+                    </Button>
+                }
+            />
         </>
     );
 };

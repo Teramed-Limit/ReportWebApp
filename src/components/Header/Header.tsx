@@ -6,7 +6,8 @@ import HistoryIcon from '@mui/icons-material/History';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { Stack } from '@mui/material';
+import { Avatar, Stack } from '@mui/material';
+import { deepOrange } from '@mui/material/colors';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
@@ -20,7 +21,7 @@ import classes from './Header.module.scss';
 
 const Header = () => {
     const history = useHistory();
-    const { onLogout, userName, avatarImg } = useAuthStore();
+    const { onLogout, userName } = useAuthStore();
 
     const logout = () => {
         onLogout(null, (signal$) => signal$.pipe(tap(() => history.push({ pathname: `/login` }))));
@@ -81,9 +82,11 @@ const Header = () => {
                         Logout
                     </Button>
                     <div className={classes.avatar}>
-                        <div className={classes.avatarImg}>
-                            <img src={avatarImg} alt="" />
-                        </div>
+                        <Avatar
+                            className={classes.avatarImg}
+                            sx={{ bgcolor: deepOrange[500] }}
+                            src="/broken-image.jpg"
+                        />
                         {userName}
                     </div>
                 </ButtonGroup>

@@ -5,13 +5,14 @@ import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
 
 import { axiosIns } from '../../axios/axios';
 import { Section } from '../../interface/define';
-import { UserSignature } from '../../interface/user-signature';
+import { DoctorSignature } from '../../interface/doctor-signature';
 import {
     useOptionStore,
     useReportDataStore,
     useReportDefineStore,
     useReportImageStore,
 } from '../../models/useStore';
+import ConfigService from '../../service/config-service';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
 import PDFFooter from './PDFFooter/PDFFooter';
@@ -32,7 +33,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
     const { getCodeList } = useOptionStore();
     const [loading, setLoading] = useState(true);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
-    const [signatureData, setSignatureData] = useState<UserSignature | undefined>(undefined);
+    const [signatureData, setSignatureData] = useState<DoctorSignature | undefined>(undefined);
     const [diagramUrl, setDiagramUrl] = useState<string | undefined>(undefined);
     const [reportName] = useState<string>(
         getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
@@ -75,10 +76,12 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
 
     // Get signature
     useEffect(() => {
-        if (!formData.get('Endoscopist')) return;
-
         const subscription = axiosIns
-            .get<UserSignature>(`api/account/signature/userId/${formData.get('Endoscopist')}`)
+            .get<DoctorSignature>(
+                `api/doctor-signature/userId/${formData.get(
+                    ConfigService.getSignatureCorrespondingField(),
+                )}`,
+            )
             .subscribe((res) => {
                 setSignatureData(res.data);
             });

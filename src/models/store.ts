@@ -17,7 +17,6 @@ export function createStore() {
                 accessToken: user?.AccessToken,
                 userId: user?.UserId,
                 userName: user?.UserName || undefined,
-                avatarImg: user?.AvatarImg || undefined,
             },
             defineStore: {},
             dataStore: { loading: false },
