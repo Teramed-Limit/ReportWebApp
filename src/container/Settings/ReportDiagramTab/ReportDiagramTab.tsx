@@ -105,26 +105,21 @@ const ReportDiagramTab = () => {
                         </Card>
                     );
                 })}
-                {diagramList.length > 0 && (
-                    <Card className={classes.gridItem}>
-                        <div
-                            className={classes.addItem}
-                            onClick={() => fileInputRef?.current?.click()}
-                        >
-                            <AddIcon color="primary" sx={{ fontSize: '64px' }} />
-                        </div>
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            style={{ display: 'none' }}
-                            accept={'image/*'}
-                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                if (!e.target.files) return;
-                                onSaveDiagram(e.target.files[0]);
-                            }}
-                        />
-                    </Card>
-                )}
+                <Card className={classes.gridItem}>
+                    <div className={classes.addItem} onClick={() => fileInputRef?.current?.click()}>
+                        <AddIcon color="primary" sx={{ fontSize: '64px' }} />
+                    </div>
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        style={{ display: 'none' }}
+                        accept={'image/*'}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                            if (!e.target.files) return;
+                            onSaveDiagram(e.target.files[0]);
+                        }}
+                    />
+                </Card>
             </div>
         </Stack>
     );
