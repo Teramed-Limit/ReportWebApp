@@ -42,7 +42,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
                 {componentList.map((v, idx) => {
                     const valueFormatter = (compositeField: Field) => {
                         const value = formData[compositeField.id];
-                        const valueList = value.split('@') as string[];
+                        const valueList = value?.split('@') as string[];
                         return valueList?.[idx] || '';
                     };
 
