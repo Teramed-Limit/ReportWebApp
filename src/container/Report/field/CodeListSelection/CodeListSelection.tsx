@@ -30,9 +30,7 @@ const CodeListSelection = React.forwardRef(
         const { source } = optionSource;
         const selectedIsNotInOptions = useRef(false);
 
-        const options = useOptionStore()
-            .getCodeList(source, filterCondition)
-            ?.map((option) => ({ ...option, value: option.Value, label: option.Label }));
+        const options = useOptionStore().getCodeList(source, filterCondition);
 
         useEffect(() => {
             if (selectedIsNotInOptions.current) {
@@ -59,8 +57,13 @@ const CodeListSelection = React.forwardRef(
             }
         }
 
-        const setSelectedOption = (option) =>
-            onSelectionChanged(isMulti ? option.map((opt: CodeList) => opt.Value) : option.Value);
+        const setSelectedOption = (option) => {
+            if (isMulti) {
+                onSelectionChanged(option?.map((opt: CodeList) => opt.Value) || []);
+                return;
+            }
+            onSelectionChanged(option?.Value || '');
+        };
 
         return (
             <BaseSelection
@@ -70,6 +73,8 @@ const CodeListSelection = React.forwardRef(
                 selectedOption={formatSelectedOption}
                 onSelectionChanged={setSelectedOption}
                 isMulti={field.isMulti || false}
+                getOptionValue={(option) => `${option.Value}`}
+                getOptionLabel={(option) => `${option.Label}`}
             />
         );
     },

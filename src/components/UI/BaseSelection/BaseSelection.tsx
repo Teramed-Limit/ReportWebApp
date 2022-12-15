@@ -14,6 +14,8 @@ interface Props {
     isMulti: boolean;
     isLoading?: false;
     isSearchable?: true;
+    getOptionValue?: (option) => void;
+    getOptionLabel?: (option) => void;
 }
 
 // label is display text in dropdown
@@ -29,6 +31,8 @@ const BaseSelection = ({
     isLoading = false,
     isSearchable = true,
     onInputChange = () => {},
+    getOptionValue,
+    getOptionLabel,
 }: Props) => {
     return (
         <Select
@@ -42,12 +46,15 @@ const BaseSelection = ({
             isMulti={isMulti}
             isLoading={isLoading}
             isSearchable={isSearchable}
+            isClearable
             closeMenuOnSelect={!isMulti}
             onInputChange={onInputChange}
             menuPortalTarget={document.body}
             menuPosition="fixed"
             menuShouldScrollIntoView={false}
             menuShouldBlockScroll
+            getOptionValue={getOptionValue}
+            getOptionLabel={getOptionLabel}
         />
     );
 };
