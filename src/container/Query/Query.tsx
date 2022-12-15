@@ -31,6 +31,7 @@ const Query: React.FC = () => {
     const [filterBurnStatus, setFilterBurnStatus] = useRecoilState(queryReportStatus);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
     const [pdfUrl, setPdfUrl] = useState<string>('');
+    const [highlighted, setHighlighted] = useState<string>('All');
     // function available
     const { checkAvailable } = useRoleFunctionAvailable();
     // dispatch event for cell event
@@ -64,6 +65,7 @@ const Query: React.FC = () => {
         gridApiRef.current?.showLoadingOverlay();
         fetchStudy({ params: {} }).subscribe({
             next: (res) => {
+                setHighlighted('All');
                 setRowData(res.data);
                 gridApiRef.current?.deselectAll();
                 gridApiRef.current?.hideOverlay();
@@ -75,12 +77,13 @@ const Query: React.FC = () => {
     }, [setRowData]);
 
     const onRapidQuery = useCallback(
-        (days: number) => {
+        (days: number, type: string) => {
             const today = format(new Date(), 'yyyyMMdd');
             const pastDay = format(sub(new Date(), { days }), 'yyyyMMdd');
             gridApiRef.current?.showLoadingOverlay();
             fetchStudy({ params: { StudyDate: `${pastDay}-${today}` } }).subscribe({
                 next: (res) => {
+                    setHighlighted(type);
                     setRowData(res.data);
                     gridApiRef.current?.deselectAll();
                     gridApiRef.current?.hideOverlay();
@@ -154,16 +157,32 @@ const Query: React.FC = () => {
     return (
         <Stack direction="column" spacing={1} className={classes.container}>
             <Stack direction="row" spacing={1} className={classes.rapidQuery}>
-                <Button variant="contained" color="primary" onClick={() => onQuery()}>
+                <Button
+                    variant="contained"
+                    color={highlighted === 'All' ? 'secondary' : 'primary'}
+                    onClick={() => onQuery()}
+                >
                     All
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => onRapidQuery(0)}>
+                <Button
+                    variant="contained"
+                    color={highlighted === 'Today' ? 'secondary' : 'primary'}
+                    onClick={() => onRapidQuery(0, 'Today')}
+                >
                     Today
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => onRapidQuery(7)}>
+                <Button
+                    variant="contained"
+                    color={highlighted === 'Week' ? 'secondary' : 'primary'}
+                    onClick={() => onRapidQuery(7, 'Week')}
+                >
                     Week
                 </Button>
-                <Button variant="contained" color="primary" onClick={() => onRapidQuery(30)}>
+                <Button
+                    variant="contained"
+                    color={highlighted === 'Month' ? 'secondary' : 'primary'}
+                    onClick={() => onRapidQuery(30, 'Month')}
+                >
                     Month
                 </Button>
             </Stack>
