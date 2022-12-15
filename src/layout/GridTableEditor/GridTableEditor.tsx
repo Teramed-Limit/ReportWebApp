@@ -8,6 +8,7 @@ import { AxiosObservable } from 'axios-observable/dist/axios-observable.interfac
 import GridTable from '../../components/GridTable/GridTable';
 import { useGridTable } from '../../hooks/useGridTable';
 import { FormEditorDef } from '../../interface/form-editor-define';
+import { camelize } from '../../utils/general';
 import classes from './GridTableEditor.module.scss';
 
 interface Props {
@@ -86,7 +87,7 @@ const GridTableEditor = ({
                 <div className={classes.buttonGroup}>
                     {enableButtonBar && (
                         <Button variant="text" onClick={() => openEditor(initFormData, 'add')}>
-                            Add Row
+                            Add {camelize(apiPath)}
                         </Button>
                     )}
                 </div>
