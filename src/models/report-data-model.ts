@@ -134,6 +134,8 @@ export const DataModel = types
             self.formData.clear();
             self.formState.replace({});
             self.formValidation = { isValid: true, openModalName: '' };
+            const { imageStore } = getRoot<IAnyModelType>(self);
+            imageStore.initImages([]);
         };
 
         const initialFormControl = () => {
