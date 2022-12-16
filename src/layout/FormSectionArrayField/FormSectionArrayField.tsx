@@ -31,9 +31,12 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
             ? []
             : (formData.get(id).split('@') as string[]);
 
-        if (valueList[idx] === undefined) valueList.push(text);
-        else valueList[idx] = text;
+        // 確保所有index都不為undefined，中間空洞才不會造成邏輯錯誤
+        for (let i = 0; i < idx; i++) {
+            if (valueList[idx] === undefined) valueList.push('');
+        }
 
+        valueList[idx] = text;
         valueChanged(id, valueList.join('@'));
     };
 
