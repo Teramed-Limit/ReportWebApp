@@ -1,17 +1,23 @@
-import axios, { AxiosError } from 'axios';
+import { AxiosError } from 'axios';
 import Axios from 'axios-observable';
 
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
+import { delay } from '../utils/general';
+import { RequestCollector } from './request-collector';
 
 export const axiosIns = Axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     withCredentials: true,
 });
 
+const requestCollector = new RequestCollector();
+
 export const setupInterceptors = (
     refreshToken: (result: RefreshTokenResult) => void,
     removeAuth: () => void,
 ) => {
+    requestCollector.registerRefreshToken(refreshToken);
+
     axiosIns.interceptors.request.use((config) => {
         const newConfig = { ...config };
 
@@ -27,7 +33,7 @@ export const setupInterceptors = (
     });
 
     axiosIns.interceptors.response.use(
-        (res) => {
+        async (res) => {
             return res;
         },
         async (err: AxiosError) => {
@@ -37,27 +43,9 @@ export const setupInterceptors = (
                 // Access Token was expired
                 if (err.response.status === 401) {
                     try {
-                        const loginUser = JSON.parse(
-                            <string>localStorage.getItem('user'),
-                        ) as LoginResult;
-
-                        // 重新發送一次，Axios必須是新的物件，否則會重複打Api
-                        const retryAxios = axios.create({
-                            baseURL: import.meta.env.VITE_BASE_URL,
-                            withCredentials: true,
-                        });
-
-                        const rs = await retryAxios.post<RefreshTokenResult>(`api/refreshtoken`, {
-                            UserId: loginUser?.UserId,
-                        });
-
-                        refreshToken(rs.data);
-
-                        const newConfig = { ...originalConfig };
-                        if (!newConfig?.headers) newConfig.headers = {};
-                        newConfig.headers.Authorization = `Bearer ${rs.data.AccessToken}`;
-
-                        return await retryAxios(newConfig);
+                        const requestIndex = requestCollector.queueRequest();
+                        await delay(500);
+                        return await requestCollector.request(originalConfig, requestIndex);
                     } catch (_error) {
                         removeAuth();
                         return Promise.reject(_error);

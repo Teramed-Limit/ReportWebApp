@@ -123,3 +123,5 @@ export function camelize(str) {
         return index === 0 ? match.toUpperCase() : match.toUpperCase();
     });
 }
+
+export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
