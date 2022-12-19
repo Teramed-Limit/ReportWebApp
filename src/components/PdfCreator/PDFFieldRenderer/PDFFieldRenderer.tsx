@@ -88,7 +88,11 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
     const text = (renderedField: Field, rendererValue: string) => {
         return (
             <>
-                <ReactPDF.Text>
+                <ReactPDF.Text
+                    style={{
+                        ...(renderedField.valueStyle || {}),
+                    }}
+                >
                     {!isEmptyOrNil(rendererValue) && !isEmptyOrNil(renderedField?.prefix) && (
                         <ReactPDF.Text>{renderedField?.prefix}&nbsp;</ReactPDF.Text>
                     )}
