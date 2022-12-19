@@ -54,12 +54,14 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
 
         if (arrayField.templateField.type === FormFieldType.Composite) {
             (arrayField.templateField as CompositeField).fields.forEach((field) => {
+                if (isEmptyOrNil(formData.get(field.id))) return;
                 const valueList = formData.get(field.id).split('@');
                 const newValueList = R.remove(idx, 1, valueList);
                 valueChanged(field.id, newValueList.join('@'));
             });
         } else {
-            const valueList = formData.get(arrayField.templateField.id).split('@');
+            if (isEmptyOrNil(formData.get(arrayField.templateField.id))) return;
+            const valueList = formData.get(arrayField.templateField.id)?.split('@');
             const newValueList = R.remove(idx, 1, valueList);
             valueChanged(arrayField.templateField.id, newValueList.join('@'));
         }
@@ -77,11 +79,12 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
                 const count = (formData.get(field.id).split('@') as string[]).length;
                 if (maxCountOfArray < count) maxCountOfArray = count;
             });
+        } else if (isEmptyOrNil(formData.get(arrayField.templateField.id))) {
+            maxCountOfArray = 1;
         } else {
             maxCountOfArray = (formData.get(arrayField.templateField.id).split('@') as string[])
                 .length;
         }
-
         const renderFields: Field[] = [];
         for (let i = 0; i < maxCountOfArray; i++) renderFields.push(arrayField.templateField);
         setFields(renderFields);
