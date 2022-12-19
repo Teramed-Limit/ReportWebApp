@@ -27,6 +27,7 @@ const Report = () => {
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
     const {
+        loading,
         modifiable,
         fetchReport,
         fetchReportLockStatus,
@@ -103,17 +104,19 @@ const Report = () => {
                     </Stack>
                 </div>
                 <div className={classes.reportLayout}>
-                    <Box sx={reportPage}>
-                        {formDefine.sections
-                            .filter((section: Section) => !section.hide)
-                            .map((section: Section) => (
-                                <ReportSection
-                                    key={section.id}
-                                    section={section}
-                                    actionContext={ReportActionContext}
-                                />
-                            ))}
-                    </Box>
+                    {!loading && (
+                        <Box sx={reportPage}>
+                            {formDefine.sections
+                                .filter((section: Section) => !section.hide)
+                                .map((section: Section) => (
+                                    <ReportSection
+                                        key={section.id}
+                                        section={section}
+                                        actionContext={ReportActionContext}
+                                    />
+                                ))}
+                        </Box>
+                    )}
                 </div>
             </ReportActionProvider>
             {/* Photo Drawer */}
