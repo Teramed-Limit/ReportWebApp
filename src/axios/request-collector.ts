@@ -1,5 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
-import Axios from 'axios-observable';
+import axios, { AxiosRequestConfig } from 'axios';
 
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { delay, generateUUID, isEmptyOrNil } from '../utils/general';
@@ -14,7 +13,7 @@ export class RequestCollector {
 
     refreshToken: (result: RefreshTokenResult) => void = () => {};
 
-    queueRequest = (): number => {
+    queueRequest = async (): Promise<number> => {
         this.queueRequests.push(generateUUID());
         return this.queueRequests.length - 1;
     };
@@ -33,7 +32,7 @@ export class RequestCollector {
         requestConfig: AxiosRequestConfig,
         requestIndex: number,
     ): Promise<AxiosRequestConfig> => {
-        const retryAxios = Axios.create({
+        const retryAxios = axios.create({
             baseURL: import.meta.env.VITE_BASE_URL,
             withCredentials: true,
         });
@@ -43,14 +42,14 @@ export class RequestCollector {
 
             const loginUser = JSON.parse(<string>localStorage.getItem('user')) as LoginResult;
 
-            const refreshTokenResponse = await retryAxios
-                .post<RefreshTokenResult>(`api/refreshtoken`, {
+            const refreshTokenResponse = await retryAxios.post<RefreshTokenResult>(
+                `api/refreshtoken`,
+                {
                     UserId: loginUser?.UserId,
-                })
-                .toPromise();
+                },
+            );
 
             this.refreshToken(refreshTokenResponse.data);
-
             this.accessToken = refreshTokenResponse.data.AccessToken;
         }
 
@@ -62,11 +61,15 @@ export class RequestCollector {
         const newConfig = { ...requestConfig };
         if (!newConfig?.headers) newConfig.headers = {};
         newConfig.headers.Authorization = `Bearer ${this.accessToken}`;
+        // cancelToken
+        const cancelToken = axios.CancelToken;
+        const source = cancelToken.source();
+        newConfig.cancelToken = source.token;
 
         if (requestIndex === this.queueRequests.length - 1) {
             this.clearRequest();
         }
 
-        return retryAxios.request(newConfig).toPromise();
+        return retryAxios.request(newConfig);
     };
 }

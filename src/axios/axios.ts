@@ -1,4 +1,4 @@
-import { AxiosError } from 'axios';
+import axios, { AxiosError } from 'axios';
 import Axios from 'axios-observable';
 
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
@@ -43,11 +43,15 @@ export const setupInterceptors = (
                 // Access Token was expired
                 if (err.response.status === 401) {
                     try {
-                        const requestIndex = requestCollector.queueRequest();
-                        await delay(500);
+                        const requestIndex = await requestCollector.queueRequest();
+                        await delay(300);
                         return await requestCollector.request(originalConfig, requestIndex);
                     } catch (_error) {
+                        if (axios.isCancel(_error)) {
+                            return Promise.reject(_error);
+                        }
                         removeAuth();
+                        requestCollector.clearRequest();
                         return Promise.reject(_error);
                     }
                 }
