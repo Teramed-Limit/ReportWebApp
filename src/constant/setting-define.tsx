@@ -1,8 +1,12 @@
+import React from 'react';
+
+import EditIcon from '@mui/icons-material/Edit';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ColDef, ValueFormatterParams } from 'ag-grid-community/dist/lib/entities/colDef';
 
 import { dateFilterParams } from '../utils/ag-grid-utils';
 import { convertToDate, convertToDateTime, stringFormatDate } from '../utils/general';
-
+// eslint-disable react/react-in-jsx-scope
 export const define = {
     study: {
         colDef: [
@@ -12,9 +16,10 @@ export const define = {
                 headerName: '',
                 width: 45,
                 cellStyle: { padding: 0 },
-                cellRenderer: 'editRowRenderer',
+                cellRenderer: 'iconButtonRenderer',
                 cellRendererParams: {
                     onClick: () => {},
+                    icon: <EditIcon />,
                 },
                 pinned: 'left',
             },
@@ -108,9 +113,10 @@ export const define = {
                 headerName: '',
                 width: 45,
                 cellStyle: { padding: 0 },
-                cellRenderer: 'editRowRenderer',
+                cellRenderer: 'iconButtonRenderer',
                 cellRendererParams: {
                     onClick: () => {},
+                    icon: <VisibilityIcon />,
                 },
                 pinned: 'left',
             },
@@ -127,21 +133,21 @@ export const define = {
             },
             {
                 field: 'Version',
-                headerName: 'Version',
-                width: 100,
+                headerName: 'Num of version',
+                width: 150,
                 pinned: 'left',
             },
             {
                 field: 'Author',
-                headerName: 'Author',
-                width: 120,
+                headerName: 'Last modified by',
+                width: 170,
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
                 pinned: 'left',
             },
             {
                 field: 'DateTime',
-                headerName: 'Date',
+                headerName: 'Last modified',
                 width: 180,
                 pinned: 'left',
                 valueFormatter: (params: ValueFormatterParams) => {

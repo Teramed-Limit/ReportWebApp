@@ -4,6 +4,7 @@ import ChipCell from './ChipCell/ChipCell';
 import DeleteRowCell from './DeleteRowCell/DeleteRowCell';
 import EditRowCell from './EditRowCell/EditRowCell';
 import FileCell from './FileCell/FileCell';
+import IconButtonCell from './IconButtonCell/IconButtonCell';
 import IconCell from './IconCell/IconCell';
 import ImageCell from './ImageCell/ImageCell';
 import LinkCell from './LinkCell/LinkCell';
@@ -19,6 +20,7 @@ export const CellMapper = {
     chipRenderer: ChipCell,
     checkboxRenderer: CheckboxCell,
     buttonRenderer: ButtonCell,
+    iconButtonRenderer: IconButtonCell,
     linkRenderer: LinkCell,
     statusRenderer: StatusChipCell,
     editRowRenderer: EditRowCell,
