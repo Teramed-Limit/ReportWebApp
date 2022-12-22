@@ -11,7 +11,7 @@ import { ArrayField } from '../../interface/array-field';
 import { CompositeField } from '../../interface/composite-field';
 import { Field } from '../../interface/field';
 import { useReportDataStore } from '../../models/useStore';
-import { fieldArrayContainer } from '../../styles/report/style';
+import { fieldArrayContainer, fieldGutter, valueWidth } from '../../styles/report/style';
 import { isEmptyOrNil } from '../../utils/general';
 import FormSectionCompositeField from '../FormSectionCompositeField/FormSectionCompositeField';
 import classes from './FormSectionArrayField.module.scss';
@@ -151,10 +151,10 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
                             );
                     }
                 })}
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', padding: fieldGutter }}>
                 <Button
                     disabled={!modifiable}
-                    sx={{ width: '65%' }}
+                    sx={{ width: valueWidth }}
                     variant="contained"
                     onClick={addField}
                 >

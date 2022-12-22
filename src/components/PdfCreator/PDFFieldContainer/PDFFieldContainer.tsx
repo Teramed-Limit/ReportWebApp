@@ -3,7 +3,7 @@ import React from 'react';
 import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
-import { fieldSectionContainer } from '../../../styles/report/style';
+import { fieldGutter, fieldSectionContainer } from '../../../styles/report/style';
 import { fontSize } from '../styles/style';
 
 interface Props {
@@ -17,7 +17,7 @@ const PDFFieldContainer = ({ orientation, children }: Props) => {
             style={{
                 ...(fieldSectionContainer as Style),
                 ...{ flexDirection: orientation },
-                ...{ fontSize },
+                ...{ fontSize, paddingLeft: fieldGutter },
             }}
         >
             {children}

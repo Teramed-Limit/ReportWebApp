@@ -1,6 +1,8 @@
 // Report Page
 export const fieldGutter = '2px';
 export const compositeFieldSpacing = '4px';
+export const labelWidth = '35%';
+export const valueWidth = '65%';
 
 // Report Page
 export const reportPage = {
@@ -31,8 +33,8 @@ export const fieldArrayContainer = {
 
 // Field Section
 export const fieldFlex = {
-    label: { row: { flex: '0 0 35%' }, column: {} },
-    value: { row: { flex: '1 1 65%' }, column: {} },
+    label: { row: { flex: `0 0 ${labelWidth}` }, column: {} },
+    value: { row: { flex: `1 1 ${valueWidth}` }, column: {} },
 };
 
 export const fieldSectionContainer = {
