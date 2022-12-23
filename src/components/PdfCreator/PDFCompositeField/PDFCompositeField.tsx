@@ -5,7 +5,6 @@ import { Style } from '@react-pdf/types/style';
 
 import { CompositeField } from '../../../interface/composite-field';
 import { DocumentData } from '../../../interface/document-data';
-import { Field } from '../../../interface/field';
 import { FilterCondition } from '../../../interface/selection-field';
 import { fieldFlex, fieldSectionValue } from '../../../styles/report/style';
 import PDFFieldContainer from '../PDFFieldContainer/PDFFieldContainer';
@@ -14,13 +13,12 @@ import PDFFieldRenderer from '../PDFFieldRenderer/PDFFieldRenderer';
 
 interface Props {
     field: CompositeField;
-    valueFormatter?: (field: Field) => string;
     formData: DocumentData;
     diagramUrl: string;
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFCompositeField = ({ field, valueFormatter, formData, diagramUrl, getOptions }: Props) => {
+const PDFCompositeField = ({ field, formData, diagramUrl, getOptions }: Props) => {
     return (
         <PDFFieldContainer orientation={field.orientation}>
             {/* Label */}
@@ -33,9 +31,7 @@ const PDFCompositeField = ({ field, valueFormatter, formData, diagramUrl, getOpt
                 }}
             >
                 {field.fields.map((compositeChildField) => {
-                    const compositeChildValue = valueFormatter
-                        ? valueFormatter(compositeChildField)
-                        : formData[compositeChildField.id];
+                    const compositeChildValue = formData[compositeChildField.id];
 
                     return (
                         <ReactPDF.View
