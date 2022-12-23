@@ -27,14 +27,13 @@ interface Props {
 }
 
 const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
-    const { formData, studyInsUID } = useReportDataStore();
-    const { exportDiagramUrl, selectedImage } = useReportImageStore();
+    const { formData, diagramData, studyInsUID } = useReportDataStore();
+    const { selectedImage } = useReportImageStore();
     const { pdfDefine } = useReportDefineStore();
     const { getCodeList } = useOptionStore();
     const [loading, setLoading] = useState(true);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
     const [signatureData, setSignatureData] = useState<DoctorSignature | undefined>(undefined);
-    const [diagramUrl, setDiagramUrl] = useState<string | undefined>(undefined);
     const [reportName] = useState<string>(
         getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
             '',
@@ -69,11 +68,6 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
         return () => subscription.unsubscribe();
     }, []);
 
-    // Get diagram
-    useEffect(() => {
-        setDiagramUrl(exportDiagramUrl());
-    }, [exportDiagramUrl]);
-
     // Get signature
     useEffect(() => {
         const subscription = axiosIns
@@ -104,7 +98,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                     <Spinner />
                 </Block>
             )}
-            {logoUrl && signatureData && diagramUrl && (
+            {logoUrl && signatureData && diagramData && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
                         title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}
@@ -120,7 +114,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                         (section: Section) => section.isHeader,
                                     )}
                                     formData={formData.toJSON()}
-                                    diagramUrl={diagramUrl}
+                                    diagramUrl={diagramData}
                                     getOptions={getCodeList}
                                 />
                             </PDFHeader>
@@ -130,7 +124,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                     (section: Section) => !section?.isHeader,
                                 )}
                                 formData={formData.toJSON()}
-                                diagramUrl={diagramUrl}
+                                diagramUrl={diagramData}
                                 getOptions={getCodeList}
                             />
                             {selectedImage.length && <PDFPhoto imageList={selectedImage} />}

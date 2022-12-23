@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 
-import { Box, Stack } from '@mui/material';
+import { Box, Drawer, Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -12,7 +12,12 @@ import { useModal } from '../../hooks/useModal';
 import { Section } from '../../interface/define';
 import { MessageType } from '../../interface/notification';
 import ReportSection from '../../layout/ReportSection/ReportSection';
-import { useOptionStore, useReportDataStore, useReportDefineStore } from '../../models/useStore';
+import {
+    useOptionStore,
+    useReportDataStore,
+    useReportDefineStore,
+    useReportImageStore,
+} from '../../models/useStore';
 import { reportPage } from '../../styles/report/style';
 import { isEmptyOrNil } from '../../utils/general';
 import Photo from '../Photo/Photo';
@@ -27,7 +32,6 @@ const Report = () => {
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
     const {
-        loading,
         modifiable,
         fetchReport,
         fetchReportLockStatus,
@@ -37,8 +41,17 @@ const Report = () => {
     } = useReportDataStore();
     const { loading: fetchDefineLoading } = useReportDefineStore();
     const { loading: fetchOptionsLoading } = useOptionStore();
+    const { exportDiagramUrl } = useReportImageStore();
     const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
     const [setModalName] = useModal();
+
+    const toggleImageDrawer = () => {
+        setPhotoDrawerOpen((pre) => {
+            // 關閉時記錄Report Diagram
+            if (pre) exportDiagramUrl();
+            return !pre;
+        });
+    };
 
     // open modal when field is in modal
     useEffect(() => {
@@ -104,33 +117,36 @@ const Report = () => {
                     </Stack>
                 </div>
                 <div className={classes.reportLayout}>
-                    {!loading && (
-                        <Box sx={reportPage}>
-                            {formDefine.sections
-                                .filter((section: Section) => !section.hide)
-                                .map((section: Section) => (
-                                    <ReportSection
-                                        key={section.id}
-                                        section={section}
-                                        actionContext={ReportActionContext}
-                                    />
-                                ))}
-                        </Box>
-                    )}
+                    <Box sx={reportPage}>
+                        {formDefine.sections
+                            .filter((section: Section) => !section.hide)
+                            .map((section: Section) => (
+                                <ReportSection
+                                    key={section.id}
+                                    section={section}
+                                    actionContext={ReportActionContext}
+                                />
+                            ))}
+                    </Box>
                 </div>
             </ReportActionProvider>
             {/* Photo Drawer */}
             <button
                 style={{ top: '245px' }}
-                className={cx(classes.drawerBtn, { [classes.open]: photoDrawerOpen })}
+                className={cx(classes.drawerBtn)}
                 type="button"
-                onClick={() => setPhotoDrawerOpen(!photoDrawerOpen)}
+                onClick={toggleImageDrawer}
             >
                 <Icon type="photos" size={40} />
             </button>
-            <div className={cx(classes.drawer, { [classes.open]: photoDrawerOpen })}>
+            <Drawer
+                PaperProps={{ sx: { maxWidth: '90%' } }}
+                anchor="left"
+                open={photoDrawerOpen}
+                onClose={toggleImageDrawer}
+            >
                 <Photo />
-            </div>
+            </Drawer>
         </>
     );
 };

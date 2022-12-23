@@ -11,7 +11,6 @@ const maxSelection = 50;
 export const ImageModel = types
     .model('image', {
         images: types.array(types.frozen<ReportImageData>()),
-        diagramChanged: types.string,
         diagramHandle: types.frozen<CanvasHandle>(),
     })
     .views((self) => {
@@ -49,12 +48,10 @@ export const ImageModel = types
             self.diagramHandle = canvasHandle;
         };
 
-        const exportDiagramUrl = (): string => {
-            return self?.diagramHandle?.onExport();
-        };
-
-        const markDiagramChanged = () => {
-            self.diagramChanged = new Date().toString();
+        const exportDiagramUrl = () => {
+            if (!self?.diagramHandle) console.warn('Diagram handle not found.');
+            const { valueChanged } = getRoot<any>(self).dataStore as DataStore;
+            valueChanged('DiagramData', self.diagramHandle.onExport());
         };
 
         const deleteMarker = (marker: Partial<ReportMark>): ReportImageData[] => {
@@ -85,11 +82,9 @@ export const ImageModel = types
 
         const onMarkerDelete = (marker: ReportMark) => {
             setReportImage(deleteMarker(marker));
-            markDiagramChanged();
         };
 
         const onMarkerPlace = (marker: MarkerPoint, sopInstanceUID: string) => {
-            markDiagramChanged();
             const targetImageIsAttach = self.images.find(
                 (image) => image.SOPInstanceUID === sopInstanceUID,
             )?.IsAttachInReport;
@@ -144,7 +139,6 @@ export const ImageModel = types
                     IsAttachInReport: false,
                 })),
             );
-            markDiagramChanged();
         };
 
         const onImageCheck = (sopInsUid: string, check: boolean) => {
@@ -183,7 +177,6 @@ export const ImageModel = types
                     return image;
                 }),
             );
-            markDiagramChanged();
         };
 
         const onFindingsChanged = (sopInsUid: string, findings: string) => {
@@ -230,14 +223,12 @@ export const ImageModel = types
                     MappingNumber: 0,
                 })),
             );
-            markDiagramChanged();
         };
 
         const setReportImage = (imageDatasets: ReportImageData[]) => {
             self.images.replace(imageDatasets);
             const { valueChanged } = getRoot<any>(self).dataStore as DataStore;
             valueChanged('ReportImageData', imageDatasets);
-            markDiagramChanged();
         };
 
         return {
@@ -254,7 +245,6 @@ export const ImageModel = types
             setReportImage,
             registerDiagramCanvas,
             exportDiagramUrl,
-            markDiagramChanged,
         };
     });
 

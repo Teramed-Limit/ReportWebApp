@@ -42,8 +42,12 @@ const ReportHistory = () => {
     const [maxVersion, setMaxVersion] = useState(0);
     const [minVersion, setMinVersion] = useState(0);
 
-    const toggleDrawer = () => {
+    const toggleTimelineDrawer = () => {
         setTimelineDrawerOpen((pre) => !pre);
+    };
+
+    const toggleImageDrawer = () => {
+        setPhotoDrawerOpen((pre) => !pre);
     };
 
     // fetch history report
@@ -158,25 +162,30 @@ const ReportHistory = () => {
             {/* Photo Drawer */}
             <button
                 style={{ top: '245px' }}
-                className={cx(classes.drawerBtn, { [classes.open]: photoDrawerOpen })}
+                className={cx(classes.drawerBtn)}
                 type="button"
-                onClick={() => setPhotoDrawerOpen(!photoDrawerOpen)}
+                onClick={toggleImageDrawer}
             >
                 <PhotoCameraIcon fontSize="large" />
             </button>
-            <div className={cx(classes.drawer, { [classes.open]: photoDrawerOpen })}>
+            <Drawer
+                PaperProps={{ sx: { maxWidth: '90%' } }}
+                anchor="left"
+                open={photoDrawerOpen}
+                onClose={toggleImageDrawer}
+            >
                 <Photo />
-            </div>
+            </Drawer>
             {/* Timeline Drawer */}
             <button
                 style={{ top: '325px' }}
-                className={cx(classes.drawerBtn, { [classes.open]: photoDrawerOpen })}
+                className={cx(classes.drawerBtn)}
                 type="button"
-                onClick={toggleDrawer}
+                onClick={toggleTimelineDrawer}
             >
                 <TimelineIcon fontSize="large" />
             </button>
-            <Drawer anchor="left" open={timelineDrawerOpen} onClose={toggleDrawer}>
+            <Drawer anchor="left" open={timelineDrawerOpen} onClose={toggleTimelineDrawer}>
                 <ReportTimeline reportTimeline={reportStatusTimeline} />
             </Drawer>
         </>
