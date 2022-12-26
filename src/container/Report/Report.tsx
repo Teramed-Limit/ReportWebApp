@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Box, Drawer, Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
-import { useHistory, useParams } from 'react-router-dom';
+import { Prompt, useHistory, useParams } from 'react-router-dom';
 import { filter, tap } from 'rxjs/operators';
 
 import Icon from '../../components/UI/Icon/Icon';
@@ -32,6 +32,7 @@ const Report = () => {
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
     const {
+        reportHasChanged,
         modifiable,
         fetchReport,
         fetchReportLockStatus,
@@ -110,6 +111,10 @@ const Report = () => {
 
     return (
         <>
+            <Prompt
+                when={reportHasChanged}
+                message="The report was not saved, are you sure to leave?"
+            />
             <ReportActionProvider>
                 <div className={classes.header}>
                     <Stack direction="row" spacing={2}>
