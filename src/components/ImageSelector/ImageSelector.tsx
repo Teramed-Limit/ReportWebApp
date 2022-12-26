@@ -1,8 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 
-import { Badge, Checkbox } from '@mui/material';
+import AutorenewIcon from '@mui/icons-material/Autorenew';
+import FormatPaintIcon from '@mui/icons-material/FormatPaint';
+import { Badge, Checkbox, IconButton } from '@mui/material';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
+import ImageCanvasModal from '../../container/Modals/ImageCanvasModal/ImageCanvasModal';
+import MessageModal from '../../container/Modals/MessageModal/MessageModal';
+import { ModalContext } from '../../context/modal-context';
 import { CodeList } from '../../interface/code-list';
 import BaseLexiconInput from '../UI/BaseLexiconInput/BaseLexiconInput';
 import classes from './ImageSelector.module.scss';
@@ -20,6 +25,8 @@ interface ImageSelectorProps {
     markerMappingNumber: number;
     disabled: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
+    onImageMark: (sopInsUid: string, base64: string) => void;
+    onClearImageMark: (sopInsUid: string) => void;
     onFindingsChange: (sopInsUid: string, findings: string) => void;
     onSitesChange: (sopInsUid: string, sites: string) => void;
     onImageReorder: (fromIdx: number, toIdx: number) => void;
@@ -35,6 +42,8 @@ const ImageSelector = ({
     findings,
     markerMappingNumber,
     onImageCheck,
+    onImageMark,
+    onClearImageMark,
     onFindingsChange,
     onSitesChange,
     findingsOptions,
@@ -42,6 +51,27 @@ const ImageSelector = ({
     disabled,
     onImageReorder,
 }: ImageSelectorProps) => {
+    const setModal = useContext(ModalContext);
+
+    const onEditDiagram = () => {
+        setModal(
+            <ImageCanvasModal
+                imageSrc={src}
+                onExportCanvas={(base64) => onImageMark(id, base64)}
+            />,
+        );
+    };
+
+    const onClearImage = () => {
+        setModal(
+            <MessageModal
+                headerTitle="Message"
+                bodyContent="The operation cannot return, are you sure to redraw the image?"
+                onConfirmCallback={() => onClearImageMark(id)}
+            />,
+        );
+    };
+
     return (
         <div
             style={{ width: `${size}%`, height: `${size}%` }}
@@ -54,7 +84,7 @@ const ImageSelector = ({
                 onImageReorder(+event.dataTransfer.getData('index'), index);
             }}
         >
-            <div className={classes.floatWrapper}>
+            <div className={classes.floatWrapperTopLeft}>
                 <Checkbox
                     disableRipple
                     className={classes.checkboxRoot}
@@ -70,7 +100,20 @@ const ImageSelector = ({
                     </Badge>
                 )}
             </div>
-
+            <div className={classes.floatWrapperTopRight}>
+                <IconButton
+                    style={{ display: disabled ? 'none' : 'unset' }}
+                    onClick={onEditDiagram}
+                >
+                    <FormatPaintIcon color="primary" />
+                </IconButton>
+                <IconButton
+                    style={{ display: disabled ? 'none' : 'unset' }}
+                    onClick={() => onClearImage()}
+                >
+                    <AutorenewIcon color="warning" />
+                </IconButton>
+            </div>
             <img
                 className={classes.image}
                 id={id}

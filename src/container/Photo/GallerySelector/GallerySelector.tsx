@@ -10,6 +10,7 @@ import ImageSelector from '../../../components/ImageSelector/ImageSelector';
 import Button from '../../../components/UI/Button/Button';
 import { useObjectState } from '../../../hooks/useObjectState';
 import { useStore } from '../../../models/useStore';
+import { isEmptyOrNil } from '../../../utils/general';
 import classes from './GallerySelector.module.scss';
 
 const GallerySelector = () => {
@@ -21,6 +22,8 @@ const GallerySelector = () => {
         images,
         imageSelectCount,
         onImageCheck,
+        onClearImageMark,
+        onImageMark,
         onFindingsChanged,
         onSitesChanged,
         selectAllImage,
@@ -68,7 +71,11 @@ const GallerySelector = () => {
                             index={index}
                             size={100 / (7 - slider)}
                             id={image.SOPInstanceUID}
-                            src={image.ImageSrc}
+                            src={
+                                isEmptyOrNil(image?.EditedImageSrc)
+                                    ? image.ImageSrc
+                                    : image.EditedImageSrc
+                            }
                             checked={image.IsAttachInReport}
                             findings={image.DescriptionOfFindings}
                             sites={image.DescriptionOfSites}
@@ -76,6 +83,8 @@ const GallerySelector = () => {
                             sitesOptions={sitesOptions}
                             markerMappingNumber={image.MappingNumber}
                             onImageCheck={onImageCheck}
+                            onClearImageMark={onClearImageMark}
+                            onImageMark={onImageMark}
                             onFindingsChange={onFindingsChanged}
                             onSitesChange={onSitesChanged}
                             onImageReorder={onImageReorder}

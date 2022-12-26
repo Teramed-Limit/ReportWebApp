@@ -10,15 +10,14 @@ import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
 import { CanvasMarker, MarkerType } from '../../../interface/canvas-maker-attribute';
-import { useReportDataStore } from '../../../models/useStore';
 import classes from './ImageCanvasModal.module.scss';
 
 interface Props {
     imageSrc: string;
+    onExportCanvas?: (base64: string) => void;
 }
 
-const ImageCanvasModal = ({ imageSrc }: Props) => {
-    const { valueChanged } = useReportDataStore();
+const ImageCanvasModal = ({ imageSrc, onExportCanvas }: Props) => {
     type CanvasHandle = React.ElementRef<typeof Canvas>;
     const canvasRef = React.useRef<CanvasHandle>(null);
     const containerRef = useRef<HTMLDivElement>(null);
@@ -42,10 +41,8 @@ const ImageCanvasModal = ({ imageSrc }: Props) => {
 
     const onConfirm = () => {
         setSelectMarkerId(-1);
-        setTimeout(() => {
-            valueChanged('DiagramData', canvasRef.current?.onExport());
-            setModal(null);
-        });
+        onExportCanvas?.(canvasRef.current?.onExport() || '');
+        setModal(null);
     };
 
     useEffect(() => {

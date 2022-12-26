@@ -81,7 +81,12 @@ const ReportImage = () => {
     };
 
     const onEditDiagram = () => {
-        setModal(<ImageCanvasModal imageSrc={imageSrc} />);
+        setModal(
+            <ImageCanvasModal
+                imageSrc={imageSrc}
+                onExportCanvas={(base64) => valueChanged('DiagramData', base64)}
+            />,
+        );
     };
 
     return (

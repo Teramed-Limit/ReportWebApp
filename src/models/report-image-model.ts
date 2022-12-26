@@ -214,6 +214,34 @@ export const ImageModel = types
             setReportImage(R.move(fromIdx, toIdx, self.images));
         };
 
+        const onImageMark = (sopInsUid: string, base64: string) => {
+            setReportImage(
+                self.images.map((image) => {
+                    if (image.SOPInstanceUID === sopInsUid) {
+                        return {
+                            ...image,
+                            EditedImageSrc: base64,
+                        };
+                    }
+                    return image;
+                }),
+            );
+        };
+
+        const onClearImageMark = (sopInsUid: string) => {
+            setReportImage(
+                self.images.map((image) => {
+                    if (image.SOPInstanceUID === sopInsUid) {
+                        return {
+                            ...image,
+                            EditedImageSrc: '',
+                        };
+                    }
+                    return image;
+                }),
+            );
+        };
+
         const onImageStateInitialize = () => {
             setReportImage(
                 self.images.map((item) => ({
@@ -236,6 +264,8 @@ export const ImageModel = types
             onMarkerDelete,
             onMarkerPlace,
             onImageCheck,
+            onImageMark,
+            onClearImageMark,
             onFindingsChanged,
             onSitesChanged,
             onImageStateInitialize,

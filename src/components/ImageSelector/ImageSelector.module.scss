@@ -10,9 +10,18 @@ $inputHeight: 30px;
     padding: 2px;
 }
 
-.floatWrapper {
+.floatWrapperTopLeft {
+    top:0;
+    left: 0;
     position: absolute !important;
     margin: 4px;
+    z-index: 2;
+}
+
+.floatWrapperTopRight {
+    top:0;
+    right: 0;
+    position: absolute !important;
     z-index: 2;
 }
 
