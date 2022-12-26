@@ -112,7 +112,7 @@ const Report = () => {
     return (
         <>
             <Prompt
-                when={reportHasChanged}
+                when={reportHasChanged && modifiable}
                 message="The report was not saved, are you sure to leave?"
             />
             <ReportActionProvider>

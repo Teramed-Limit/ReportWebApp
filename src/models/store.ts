@@ -22,6 +22,7 @@ export function createStore() {
             dataStore: { loading: false },
             imageStore: {
                 images: [],
+                diagramChanged: false,
                 diagramHandle: {
                     onExport(): string {
                         return emptyBaseImage();

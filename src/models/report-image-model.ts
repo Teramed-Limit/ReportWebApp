@@ -11,6 +11,7 @@ const maxSelection = 50;
 export const ImageModel = types
     .model('image', {
         images: types.array(types.frozen<ReportImageData>()),
+        diagramChanged: types.boolean,
         diagramHandle: types.frozen<CanvasHandle>(),
     })
     .views((self) => {
@@ -50,6 +51,7 @@ export const ImageModel = types
 
         const exportDiagramUrl = () => {
             if (!self?.diagramHandle) console.warn('Diagram handle not found.');
+            if (!self.diagramChanged) return;
             const { valueChanged } = getRoot<any>(self).dataStore as DataStore;
             valueChanged('DiagramData', self.diagramHandle.onExport());
         };
@@ -81,10 +83,12 @@ export const ImageModel = types
         };
 
         const onMarkerDelete = (marker: ReportMark) => {
+            self.diagramChanged = true;
             setReportImage(deleteMarker(marker));
         };
 
         const onMarkerPlace = (marker: MarkerPoint, sopInstanceUID: string) => {
+            self.diagramChanged = true;
             const targetImageIsAttach = self.images.find(
                 (image) => image.SOPInstanceUID === sopInstanceUID,
             )?.IsAttachInReport;
@@ -254,6 +258,7 @@ export const ImageModel = types
         };
 
         const setReportImage = (imageDatasets: ReportImageData[]) => {
+            self.diagramChanged = true;
             self.images.replace(imageDatasets);
             const { valueChanged } = getRoot<any>(self).dataStore as DataStore;
             valueChanged('ReportImageData', imageDatasets);
