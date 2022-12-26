@@ -145,6 +145,7 @@ const Report = () => {
                 <Icon type="photos" size={40} />
             </button>
             <Drawer
+                disableEnforceFocus
                 PaperProps={{ sx: { maxWidth: '90%' } }}
                 anchor="left"
                 open={photoDrawerOpen}
