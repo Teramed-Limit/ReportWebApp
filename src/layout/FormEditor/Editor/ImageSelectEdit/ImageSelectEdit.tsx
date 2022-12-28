@@ -47,7 +47,7 @@ const ImageSelectEdit = ({
                 InputLabelProps={{
                     shrink: true,
                 }}
-                inputProps={{ accept: 'image/*' }}
+                inputProps={{ accept: 'image/jpeg,image/png' }}
                 label={`${field.label} ${validationMsg}`}
                 id={field.id}
                 error={!isValid && isDirty}
