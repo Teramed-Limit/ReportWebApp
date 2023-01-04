@@ -10,7 +10,7 @@ export enum MarkerType {
 }
 
 export interface CanvasMarker<T extends ShapeConfig> {
-    id: number;
+    id: string;
     type: MarkerType;
     name: string;
     attribute: T;

@@ -21,7 +21,8 @@ const ReportImage = () => {
     const [containerHeight, setContainerHeight] = useState(0);
     const [containerWidth, setContainerWidth] = useState(0);
 
-    const { valueChanged, modifiable, reportTemplate, diagramData } = useReportDataStore();
+    const { valueChanged, modifiable, reportTemplate, diagramData, diagramMarkers } =
+        useReportDataStore();
     const {
         imageMarkers,
         onMarkerDelete,
@@ -49,6 +50,7 @@ const ReportImage = () => {
                     if (res.data.length === 1) {
                         const diagramBase64 = await convertUrlToBase64(res.data[0].DiagramUrl);
                         valueChanged('DiagramData', diagramBase64);
+                        valueChanged('DiagramMarkers', []);
                         return;
                     }
                     if (openModal) setModal(<DiagramSelectModal diagramList={res.data} />);
@@ -84,7 +86,10 @@ const ReportImage = () => {
         setModal(
             <ImageCanvasModal
                 imageSrc={imageSrc}
-                onExportCanvas={(base64) => valueChanged('DiagramData', base64)}
+                initMarkers={diagramMarkers}
+                onExportCanvas={(canvasMarkers) => {
+                    valueChanged('DiagramMarkers', canvasMarkers);
+                }}
             />,
         );
     };
@@ -102,7 +107,8 @@ const ReportImage = () => {
                         registerDiagramCanvas(canvasHandle);
                     }}
                     src={imageSrc}
-                    markers={imageMarkers}
+                    canvasMarkers={diagramMarkers}
+                    imagePositionMarkers={imageMarkers}
                     containerWidth={containerWidth}
                     containerHeight={containerHeight}
                     disabled={!modifiable}

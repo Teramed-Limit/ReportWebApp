@@ -15,11 +15,11 @@ import classes from './CanvasOverlay.module.scss';
 
 interface Props {
     canvasMarkers: CanvasMarker<Konva.ShapeConfig>[];
-    selectMarkerId: number;
+    selectMarkerId: string;
     setCanvasMarkers: React.Dispatch<React.SetStateAction<CanvasMarker<Konva.ShapeConfig>[]>>;
-    setSelectMarkerId: React.Dispatch<React.SetStateAction<number>>;
-    deleteMarker: (markerId: number) => void;
-    copyMarker: (markerId: number) => void;
+    setSelectMarkerId: React.Dispatch<React.SetStateAction<string>>;
+    deleteMarker: (markerId: string) => void;
+    copyMarker: (markerId: string) => void;
 }
 
 const CanvasOverlay = ({
@@ -73,7 +73,9 @@ const CanvasOverlay = ({
                                                     {...itemProvided.draggableProps}
                                                     {...itemProvided.dragHandleProps}
                                                 >
-                                                    {marker.name}
+                                                    {`${marker.name.replace(/_(.*)/g, '')}_${
+                                                        index + 1
+                                                    }`}
                                                     <div className={classes.buttonContainer}>
                                                         {NodeEnableMapper[marker.type] ? (
                                                             <>

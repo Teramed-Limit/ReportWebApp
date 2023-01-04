@@ -8,12 +8,12 @@ import MarkerNode from '../../MarkerNode/MarkerNode';
 import { MarkerMapper, NodeEnableMapper } from '../marker-mapper';
 
 interface Props {
-    id: number;
+    id: string;
     markerType: MarkerType;
     attribute: Konva.ShapeConfig;
     isSelected: boolean;
-    onMarkerSelect: (id: number) => void;
-    onUpdateAttr: (id: number, attr: Konva.ShapeConfig) => void;
+    onMarkerSelect: (id: string) => void;
+    onUpdateAttr: (id: string, attr: Konva.ShapeConfig) => void;
 }
 
 const RenderMaker = ({

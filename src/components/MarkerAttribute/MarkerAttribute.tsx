@@ -34,7 +34,7 @@ const filterAttribute = [
 ];
 
 interface Props {
-    id: number;
+    id: string;
     attribute: Konva.ShapeConfig;
     setAttribute: (attrName: string, attrValue: number | string | boolean) => void;
 }
@@ -71,7 +71,7 @@ const MarkerAttribute = ({ id, attribute, setAttribute }: Props) => {
                             <div className={classes.attributeName}>{key}</div>
                             <RenderComponent
                                 customClass={classes.attributeValue}
-                                id={id.toString()}
+                                id={id}
                                 value={sortAttribute[key]}
                                 onValueChange={(value: number | string | boolean) => {
                                     setAttribute(key, value);

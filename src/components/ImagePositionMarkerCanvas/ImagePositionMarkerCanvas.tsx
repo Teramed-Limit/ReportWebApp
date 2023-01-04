@@ -1,19 +1,23 @@
 import React, { forwardRef } from 'react';
 
 import { Menu, MenuItem } from '@mui/material';
+import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
 
 import { useImageScaleToFit } from '../../hooks/useImageScaleToFit';
 import { useKonva } from '../../hooks/useKonva';
+import { CanvasMarker } from '../../interface/canvas-maker-attribute';
 import { ReportMark } from '../../interface/document-data';
 import { CanvasHandle } from '../../interface/konva-stage-event';
 import { MarkerPoint } from '../../interface/marker';
 import classes from '../Canvas/Canvas.module.scss';
+import RenderMaker from '../Canvas/Tools/RenderMaker/RenderMaker';
 
 interface Props {
     src: string;
-    markers: ReportMark[];
+    imagePositionMarkers: ReportMark[];
+    canvasMarkers: CanvasMarker<Konva.ShapeConfig>[];
     containerWidth: number;
     containerHeight: number;
     disabled: boolean;
@@ -33,7 +37,16 @@ const initialMenuState = {
 
 const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
     (
-        { src, markers, containerWidth, containerHeight, disabled, onMarkerPlace, onMarkerDelete },
+        {
+            src,
+            imagePositionMarkers,
+            containerWidth,
+            containerHeight,
+            canvasMarkers,
+            disabled,
+            onMarkerPlace,
+            onMarkerDelete,
+        },
         ref,
     ) => {
         const [activeMarker, setActiveMarker] = React.useState<ReportMark | undefined>(undefined);
@@ -102,7 +115,20 @@ const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
                 >
                     <Layer>
                         <Image ref={imageRef} image={image} />
-                        {markers.map((marker) => {
+                        {canvasMarkers.map((marker) => {
+                            return (
+                                <RenderMaker
+                                    id={marker.id}
+                                    key={marker.id}
+                                    markerType={marker.type}
+                                    attribute={marker.attribute}
+                                    isSelected={false}
+                                    onMarkerSelect={() => {}}
+                                    onUpdateAttr={() => {}}
+                                />
+                            );
+                        })}
+                        {imagePositionMarkers.map((marker) => {
                             return (
                                 <Group
                                     key={marker.SOPInstanceUID}

@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 
 import Konva from 'konva';
 import { Image, Layer, Stage } from 'react-konva';
@@ -7,6 +7,7 @@ import { useCanvasTool } from '../../hooks/useCanvasTool';
 import { useImageScaleToFit } from '../../hooks/useImageScaleToFit';
 import { useKonva } from '../../hooks/useKonva';
 import { CanvasMarker, MarkerType } from '../../interface/canvas-maker-attribute';
+import { isEmptyOrNil } from '../../utils/general';
 import classes from './Canvas.module.scss';
 import RenderMaker from './Tools/RenderMaker/RenderMaker';
 
@@ -20,13 +21,11 @@ interface Props {
     markerType: MarkerType;
     canvasMarkers: CanvasMarker<Konva.ShapeConfig>[];
     setCanvasMarkers: React.Dispatch<React.SetStateAction<CanvasMarker<Konva.ShapeConfig>[]>>;
-    selectMarkerId: number;
-    setSelectMarkerId: React.Dispatch<React.SetStateAction<number>>;
+    selectMarkerId: string;
+    setSelectMarkerId: React.Dispatch<React.SetStateAction<string>>;
     imageSrc: string;
     containerWidth: number;
     containerHeight: number;
-    markerSeq: number;
-    setMarkerSeq: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const Canvas = forwardRef<CanvasHandle, Props>(
@@ -42,8 +41,6 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             imageSrc,
             containerWidth,
             containerHeight,
-            markerSeq,
-            setMarkerSeq,
         },
         ref,
     ) => {
@@ -57,11 +54,7 @@ const Canvas = forwardRef<CanvasHandle, Props>(
             containerHeight,
         );
 
-        useEffect(() => {
-            setSelectMarkerId(-1);
-        }, [markerType, setSelectMarkerId]);
-
-        const updateMarkerAttr = (id: number, attr: Konva.ShapeConfig) => {
+        const updateMarkerAttr = (id: string, attr: Konva.ShapeConfig) => {
             setCanvasMarkers((markers) => {
                 return markers.map((marker) => {
                     if (marker.id === id) {
@@ -87,66 +80,32 @@ const Canvas = forwardRef<CanvasHandle, Props>(
                 height={canvasHeight || 0}
                 onClick={(e: Konva.KonvaEventObject<MouseEvent>) => {
                     e.evt.stopPropagation();
-                    if (selectMarkerId === -1) {
-                        onClick(
-                            e,
-                            mainColor,
-                            subColor,
-                            markerSeq,
-                            setMarkerSeq,
-                            canvasMarkers,
-                            setCanvasMarkers,
-                        );
-                        return;
-                    }
-                    setSelectMarkerId(-1);
+                    setSelectMarkerId('');
+                    if (!isEmptyOrNil(selectMarkerId)) return;
+                    onClick(e, mainColor, subColor, canvasMarkers, setCanvasMarkers);
                 }}
                 onDbClick={(e: Konva.KonvaEventObject<MouseEvent>) => {
                     e.evt.stopPropagation();
-                    setSelectMarkerId(-1);
+                    setSelectMarkerId('');
                 }}
                 onMouseDown={(e: Konva.KonvaEventObject<MouseEvent>) => {
-                    if (selectMarkerId !== -1) return;
+                    if (!isEmptyOrNil(selectMarkerId)) return;
                     if (e.evt.which === 1) {
                         setIsDrawing(true);
-                        onMouseDown(
-                            e,
-                            mainColor,
-                            subColor,
-                            markerSeq,
-                            setMarkerSeq,
-                            canvasMarkers,
-                            setCanvasMarkers,
-                        );
+                        onMouseDown(e, mainColor, subColor, canvasMarkers, setCanvasMarkers);
                     }
                 }}
                 onMouseMove={(e: Konva.KonvaEventObject<MouseEvent>) => {
-                    if (selectMarkerId !== -1) return;
+                    if (!isEmptyOrNil(selectMarkerId)) return;
                     if (e.evt.which === 1 && isDrawing) {
-                        onMouseMove(
-                            e,
-                            mainColor,
-                            subColor,
-                            markerSeq,
-                            setMarkerSeq,
-                            canvasMarkers,
-                            setCanvasMarkers,
-                        );
+                        onMouseMove(e, mainColor, subColor, canvasMarkers, setCanvasMarkers);
                     }
                 }}
                 onMouseUp={(e: Konva.KonvaEventObject<MouseEvent>) => {
-                    if (selectMarkerId !== -1) return;
+                    if (!isEmptyOrNil(selectMarkerId)) return;
                     if (e.evt.which === 1 && isDrawing) {
                         setIsDrawing(false);
-                        onMouseUp(
-                            e,
-                            mainColor,
-                            subColor,
-                            markerSeq,
-                            setMarkerSeq,
-                            canvasMarkers,
-                            setCanvasMarkers,
-                        );
+                        onMouseUp(e, mainColor, subColor, canvasMarkers, setCanvasMarkers);
                     }
                 }}
             >

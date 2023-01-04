@@ -10,6 +10,7 @@ export class ReportTemplate extends ReportField {
     ) => {
         changeValue('Indication', '');
         changeValue('DiagramData', emptyBaseImage());
+        changeValue('DiagramMarkers', []);
 
         if (data?.ReportTemplate !== 'Colonoscopy') {
             changeValue('Other', '');

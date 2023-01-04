@@ -57,7 +57,10 @@ const ImageSelector = ({
         setModal(
             <ImageCanvasModal
                 imageSrc={src}
-                onExportCanvas={(base64) => onImageMark(id, base64)}
+                initMarkers={[]}
+                onExportCanvas={(canvasMarkers, base64) => {
+                    onImageMark(id, base64);
+                }}
             />,
         );
     };

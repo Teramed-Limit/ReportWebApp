@@ -49,11 +49,9 @@ export const ImageModel = types
             self.diagramHandle = canvasHandle;
         };
 
-        const exportDiagramUrl = () => {
+        const exportDiagramUrl = (): string => {
             if (!self?.diagramHandle) console.warn('Diagram handle not found.');
-            if (!self.diagramChanged) return;
-            const { valueChanged } = getRoot<any>(self).dataStore as DataStore;
-            valueChanged('DiagramData', self.diagramHandle.onExport());
+            return self?.diagramHandle?.onExport();
         };
 
         const deleteMarker = (marker: Partial<ReportMark>): ReportImageData[] => {

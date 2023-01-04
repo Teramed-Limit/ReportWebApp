@@ -8,8 +8,6 @@ const NoneMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -17,8 +15,6 @@ const NoneMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -26,8 +22,6 @@ const NoneMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -35,8 +29,6 @@ const NoneMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;

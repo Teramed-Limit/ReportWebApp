@@ -1,6 +1,7 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
+import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent } from '../../canvas-utils';
 
 const markerType = MarkerType.Arrow;
@@ -10,8 +11,6 @@ const ArrowMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -19,8 +18,6 @@ const ArrowMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -28,8 +25,6 @@ const ArrowMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -37,8 +32,6 @@ const ArrowMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -47,15 +40,14 @@ const ArrowMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
         const point = getRelativePointerPosition(e.target.getStage());
+        const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.ShapeConfig> = {
-            id: markerSeq,
-            name: `${markerType}_${markerSeq}`,
+            id: uuid,
+            name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
                 fill: subColor,
@@ -79,8 +71,6 @@ const ArrowMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
@@ -92,9 +82,10 @@ const ArrowMarkerMouseEvent = (): {
             return;
         }
 
+        const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.ShapeConfig> = {
-            id: markerSeq,
-            name: `${markerType}_${markerSeq}`,
+            id: uuid,
+            name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
                 fill: subColor,
@@ -119,8 +110,6 @@ const ArrowMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
@@ -137,8 +126,6 @@ const ArrowMarkerMouseEvent = (): {
             setCanvasMarkers(canvasMarkers.concat());
             return;
         }
-
-        setMarkerSeq(markerSeq + 1);
     };
 
     return { onClick: nullMouseEvent, onMouseDown, onMouseMove, onMouseUp };

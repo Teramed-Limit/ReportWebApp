@@ -4,8 +4,8 @@ import Konva from 'konva';
 import { Transformer } from 'react-konva';
 
 interface Props {
-    id: number;
-    onUpdateAttr: (id: number, attr: Konva.ShapeConfig) => void;
+    id: string;
+    onUpdateAttr: (id: string, attr: Konva.ShapeConfig) => void;
 }
 
 const MarkerNode = React.forwardRef<Konva.Transformer, Props>(({ id, onUpdateAttr }, trRef) => {

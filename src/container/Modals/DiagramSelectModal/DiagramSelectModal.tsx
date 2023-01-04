@@ -26,6 +26,7 @@ const DiagramSelectModal = ({ diagramList }: Props) => {
 
     const onConfirmSelect = () => {
         valueChanged('DiagramData', selectedDiagram);
+        valueChanged('DiagramMarkers', []);
         onClose();
     };
 

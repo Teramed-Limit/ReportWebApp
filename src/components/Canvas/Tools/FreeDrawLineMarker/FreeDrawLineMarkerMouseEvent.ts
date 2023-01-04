@@ -1,6 +1,7 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
+import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent } from '../../canvas-utils';
 
 const markerType = MarkerType.FreeDraw;
@@ -11,26 +12,6 @@ const FreeDrawLineMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseDown: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseMove: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -38,8 +19,20 @@ const FreeDrawLineMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
+        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
+        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
+    ) => void;
+    onMouseMove: (
+        e: Konva.KonvaEventObject<MouseEvent>,
+        mainColor: string,
+        subColor: string,
+        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
+        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
+    ) => void;
+    onMouseDown: (
+        e: Konva.KonvaEventObject<MouseEvent>,
+        mainColor: string,
+        subColor: string,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
@@ -48,15 +41,14 @@ const FreeDrawLineMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
         const point = getRelativePointerPosition(e.target.getStage());
+        const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.LineConfig> = {
-            id: markerSeq,
-            name: `${markerType}_${markerSeq}`,
+            id: uuid,
+            name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
                 fill: subColor,
@@ -75,8 +67,6 @@ const FreeDrawLineMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
@@ -95,13 +85,9 @@ const FreeDrawLineMarkerMouseEvent = (): {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => {
-        setMarkerSeq(markerSeq + 1);
-    };
+    ) => {};
 
     return { onClick: nullMouseEvent, onMouseDown, onMouseMove, onMouseUp };
 };

@@ -147,6 +147,7 @@ const Report = () => {
             <Drawer
                 disableEnforceFocus
                 PaperProps={{ sx: { maxWidth: '90%' } }}
+                ModalProps={{ keepMounted: true }}
                 anchor="left"
                 open={photoDrawerOpen}
                 onClose={toggleImageDrawer}

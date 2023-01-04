@@ -71,6 +71,9 @@ export const DataModel = types
             get diagramData() {
                 return self.formData.get('DiagramData');
             },
+            get diagramMarkers() {
+                return self.formData.get('DiagramMarkers') || [];
+            },
         };
     })
     .actions((self) => {

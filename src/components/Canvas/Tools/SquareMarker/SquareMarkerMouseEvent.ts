@@ -1,6 +1,7 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
+import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent, reverse } from '../../canvas-utils';
 
 const markerType = MarkerType.Square;
@@ -10,15 +11,14 @@ const SquareMarkerMouseEvent = () => {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
         const point = getRelativePointerPosition(e.target.getStage());
+        const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.RectConfig> = {
-            id: markerSeq,
-            name: `${markerType}_${markerSeq}`,
+            id: uuid,
+            name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
                 fill: subColor,
@@ -40,8 +40,6 @@ const SquareMarkerMouseEvent = () => {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
@@ -50,10 +48,10 @@ const SquareMarkerMouseEvent = () => {
         const movePoint = getRelativePointerPosition(e.target.getStage());
 
         const posRect = reverse(beginPoint, movePoint);
-
+        const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.RectConfig> = {
-            id: markerSeq,
-            name: `${markerType}_${markerSeq}`,
+            id: uuid,
+            name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
                 fill: subColor,
@@ -76,8 +74,6 @@ const SquareMarkerMouseEvent = () => {
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
         subColor: string,
-        markerSeq: number,
-        setMarkerSeq: (value: number) => void,
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
@@ -87,8 +83,6 @@ const SquareMarkerMouseEvent = () => {
             setCanvasMarkers(canvasMarkers.concat());
             return;
         }
-
-        setMarkerSeq(markerSeq + 1);
     };
 
     return { onClick: nullMouseEvent, onMouseDown, onMouseMove, onMouseUp };
