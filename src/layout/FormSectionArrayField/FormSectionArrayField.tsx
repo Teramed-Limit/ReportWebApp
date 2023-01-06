@@ -21,7 +21,7 @@ interface Props {
 
 const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
     const { formData, valueChanged, modifiable, loading } = useReportDataStore();
-    const [fieldValue, setFieldValue] = useState<any[]>(formData.get(arrayField.id));
+    const [fieldValue, setFieldValue] = useState<any[]>(formData.get(arrayField.id) || []);
 
     const onValueChange = (idx: number, id: string, text: string) => {
         setFieldValue((pre) => {
@@ -34,22 +34,27 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
         return R.path([idx, id], fieldValue) || '';
     };
 
+    const newTemplateValue = useCallback(() => {
+        const addedValue = {};
+        if (arrayField.templateField.type === FormFieldType.Composite) {
+            (arrayField.templateField as CompositeField).fields.forEach((field) => {
+                addedValue[field.id] = '';
+            });
+        } else {
+            addedValue[arrayField.templateField.id] = '';
+        }
+
+        return addedValue;
+    }, [arrayField.templateField]);
+
     const addField = useCallback(() => {
         setFieldValue((pre) => {
             // 新增對應Template Id的欄位
-            const addedValue = {};
-            if (arrayField.templateField.type === FormFieldType.Composite) {
-                (arrayField.templateField as CompositeField).fields.forEach((field) => {
-                    addedValue[field.id] = '';
-                });
-            } else {
-                addedValue[arrayField.templateField.id] = '';
-            }
-
+            const addedValue = newTemplateValue();
             valueChanged(arrayField.id, R.append(addedValue, pre));
             return R.append(addedValue, pre);
         });
-    }, [arrayField.id, arrayField.templateField, valueChanged]);
+    }, [arrayField.id, newTemplateValue, valueChanged]);
 
     const deleteField = (idx: number) => {
         setFieldValue((pre) => {
@@ -62,14 +67,20 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
     useEffect(() => {
         if (loading) return;
 
-        let valueList = formData.get(arrayField.id) || [];
-        if (!Array.isArray(valueList)) {
-            valueList = Array.from(formData.get(arrayField.id));
-        }
-        // 預設給一個Item
-        if (valueList.length === 0) addField();
-        setFieldValue(valueList);
-    }, [formData, arrayField.id, loading, addField]);
+        setFieldValue(() => {
+            let valueList = formData.get(arrayField.id) || [];
+            // 預設給一個Item
+            if (!valueList || valueList.length === 0) {
+                const addedValue = newTemplateValue();
+                valueChanged(arrayField.id, [addedValue]);
+                return [addedValue];
+            }
+
+            // 已經有值
+            if (!Array.isArray(valueList)) valueList = Array.from(valueList);
+            return valueList;
+        });
+    }, [arrayField.id, arrayField.templateField, formData, loading, valueChanged]);
 
     return (
         <Box
@@ -107,6 +118,7 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
                             />
                         );
                     default:
+                        debugger;
                         return (
                             <FormSectionFieldContainer
                                 key={`${arrayField.templateField.id}_${idx.toString()}`}
@@ -140,7 +152,7 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
                     variant="contained"
                     onClick={addField}
                 >
-                    Add
+                    Add {arrayField.templateField.label}
                 </Button>
             </Box>
         </Box>
