@@ -23,6 +23,7 @@ const IconButtonCell = React.forwardRef<AgReactComponent, Props>((props, ref) =>
 
     return (
         <IconButton
+            style={{ color: props.colDef?.cellRendererParams.color }}
             color="primary"
             component="span"
             onClick={() => props.onClick(props.data, 'update')}

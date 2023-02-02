@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import { Button, Chip, ChipPropsColorOverrides, Radio, Stack } from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
@@ -9,23 +9,27 @@ import { format, sub } from 'date-fns';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { concatMap, finalize } from 'rxjs/operators';
 
 import {
     queryFilterModel,
     queryReportStatus,
     queryRowDataState,
 } from '../../atom/query-row-data-state';
-import { fetchStudy } from '../../axios/api';
+import { deleteStudy, fetchStudy } from '../../axios/api';
 import GridTable from '../../components/GridTable/GridTable';
 import { define } from '../../constant/setting-define';
+import { ModalContext } from '../../context/modal-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
+import MessageModal from '../Modals/MessageModal/MessageModal';
 import classes from './Query.module.scss';
 
 const Query: React.FC = () => {
     const history = useHistory();
+    const setModal = useContext(ModalContext);
     const [rowData, setRowData] = useRecoilState(queryRowDataState);
     const [filterModel, setFilterModel] = useRecoilState(queryFilterModel);
     const [filterBurnStatus, setFilterBurnStatus] = useRecoilState(queryReportStatus);
@@ -105,6 +109,34 @@ const Query: React.FC = () => {
         [history],
     );
 
+    const onDeleteReport = useCallback(
+        (data: StudyData) => {
+            setModal(
+                <MessageModal
+                    headerTitle="Message"
+                    bodyContent="Are you sure to delete the study?"
+                    onConfirmCallback={() =>
+                        deleteStudy(data.StudyInstanceUID)
+                            .pipe(
+                                concatMap(() => fetchStudy({ params: {} })),
+                                finalize(() => gridApiRef.current?.hideOverlay()),
+                            )
+                            .subscribe({
+                                next: (res) => {
+                                    setHighlighted('All');
+                                    setRowData(res.data);
+                                    gridApiRef.current?.deselectAll();
+                                    gridApiRef.current?.hideOverlay();
+                                },
+                                error: () => {},
+                            })
+                    }
+                />,
+            );
+        },
+        [setModal, setRowData],
+    );
+
     const onRenderPDF = useCallback((gridApi: GridApi) => {
         const selectedRow = gridApi.getSelectedRows()[0] as StudyData;
         if (!selectedRow) {
@@ -146,8 +178,10 @@ const Query: React.FC = () => {
         let mutateColDef: ColDef[] = [...define.study.colDef];
         mutateColDef = dispatchCellEvent(mutateColDef, 'navigateReport', onNavigateReport);
         mutateColDef = assignCellVisibility(mutateColDef, 'navigateReport', checkAvailable);
+        mutateColDef = dispatchCellEvent(mutateColDef, 'deleteReport', onDeleteReport);
+        mutateColDef = assignCellVisibility(mutateColDef, 'deleteReport', checkAvailable);
         setColDefs(mutateColDef);
-    }, [assignCellVisibility, checkAvailable, dispatchCellEvent, onNavigateReport]);
+    }, [assignCellVisibility, checkAvailable, dispatchCellEvent, onDeleteReport, onNavigateReport]);
 
     // Call api when row data is empty
     useEffect(() => {

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ColDef, ValueFormatterParams } from 'ag-grid-community/dist/lib/entities/colDef';
@@ -20,6 +21,20 @@ export const define = {
                 cellRendererParams: {
                     onClick: () => {},
                     icon: <EditIcon />,
+                },
+                pinned: 'left',
+            },
+            {
+                field: 'deleteReport',
+                colId: 'delete__report',
+                headerName: '',
+                width: 45,
+                cellStyle: { padding: 0 },
+                cellRenderer: 'iconButtonRenderer',
+                cellRendererParams: {
+                    onClick: () => {},
+                    icon: <DeleteIcon />,
+                    color: 'rgba(255, 86, 48)',
                 },
                 pinned: 'left',
             },
@@ -86,6 +101,14 @@ export const define = {
                     const date = stringFormatDate(params.value, 'yyyyMMdd');
                     return convertToDate(date);
                 },
+            },
+            {
+                field: 'ReferringPhysiciansName',
+                headerName: 'Referring Physician',
+                flex: 1,
+                width: 200,
+                filter: 'agTextColumnFilter',
+                floatingFilter: true,
             },
             {
                 field: 'Modality',

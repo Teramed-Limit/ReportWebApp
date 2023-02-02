@@ -158,6 +158,10 @@ export function deleteFindingsTemplate(
     return axiosIns.delete(`api/deleteFindingsTemplate/number/${number}`);
 }
 
+export function deleteStudy(studyInstanceUid: string): Observable<AxiosResponse> {
+    return axiosIns.delete(`api/deleteStudy/studyInstanceUID/${studyInstanceUid}`);
+}
+
 export function fetchStudy(queryParams: any): Observable<AxiosResponse<StudyData[]>> {
     return axiosIns.get('api/queryStudy', queryParams);
 }
