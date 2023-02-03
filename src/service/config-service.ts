@@ -1,6 +1,7 @@
 let dateFormat = 'yyyy/MM/dd';
 let dateTimeFormat = 'yyyy/MM/dd HH:mm';
 let signatureCorrespondingField = '';
+let enableDeleteProtection = false;
 
 const getDateFormat = () => {
     return dateFormat;
@@ -26,6 +27,14 @@ const setSignatureCorrespondingField = (value: string) => {
     signatureCorrespondingField = value;
 };
 
+const getEnableDeleteProtection = () => {
+    return enableDeleteProtection;
+};
+
+const setEnableDeleteProtection = (value: boolean) => {
+    enableDeleteProtection = value;
+};
+
 const ConfigService = {
     getDateFormat,
     setDateFormat,
@@ -33,6 +42,8 @@ const ConfigService = {
     setDateTimeFormat,
     getSignatureCorrespondingField,
     setSignatureCorrespondingField,
+    getEnableDeleteProtection,
+    setEnableDeleteProtection,
 };
 
 export default ConfigService;

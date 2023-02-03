@@ -37,6 +37,7 @@ function App() {
             ConfigService.setDateFormat(res.data.DateFormat);
             ConfigService.setDateTimeFormat(res.data.DateTimeFormat);
             ConfigService.setSignatureCorrespondingField(res.data.SignatureCorrespondingField);
+            ConfigService.setEnableDeleteProtection(res.data.EnableDeleteProtection);
         });
         return () => subscription.unsubscribe();
     }, []);

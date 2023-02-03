@@ -3,4 +3,5 @@ export interface SystemConfig {
     DateTimeFormat: string;
     AuthorCorrespondingField: string;
     SignatureCorrespondingField: string;
+    EnableDeleteProtection: boolean;
 }

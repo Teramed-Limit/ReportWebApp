@@ -17,14 +17,13 @@ import { format, sub } from 'date-fns';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
-import { concatMap, finalize } from 'rxjs/operators';
 
 import {
     queryFilterModel,
     queryReportStatus,
     queryRowDataState,
 } from '../../atom/query-row-data-state';
-import { deleteStudy, fetchStudy } from '../../axios/api';
+import { fetchStudy } from '../../axios/api';
 import GridTable from '../../components/GridTable/GridTable';
 import { define } from '../../constant/setting-define';
 import { ModalContext } from '../../context/modal-context';
@@ -32,7 +31,7 @@ import { useGridColDef } from '../../hooks/useGridColDef';
 import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
-import MessageModal from '../Modals/MessageModal/MessageModal';
+import DeleteStudyProtectorModal from '../Modals/DeleteStudyProtectorModal/DeleteStudyProtectorModal';
 import classes from './Query.module.scss';
 
 const Query: React.FC = () => {
@@ -121,29 +120,15 @@ const Query: React.FC = () => {
     const onDeleteReport = useCallback(
         (data: StudyData) => {
             setModal(
-                <MessageModal
-                    headerTitle="Message"
-                    bodyContent="Are you sure to delete the study?"
-                    onConfirmCallback={() =>
-                        deleteStudy(data.StudyInstanceUID)
-                            .pipe(
-                                concatMap(() => fetchStudy({ params: {} })),
-                                finalize(() => gridApiRef.current?.hideOverlay()),
-                            )
-                            .subscribe({
-                                next: (res) => {
-                                    setHighlighted('All');
-                                    setRowData(res.data);
-                                    gridApiRef.current?.deselectAll();
-                                    gridApiRef.current?.hideOverlay();
-                                },
-                                error: () => {},
-                            })
-                    }
+                <DeleteStudyProtectorModal
+                    studyInstanceUid={data.StudyInstanceUID}
+                    onConfirmCallback={() => {
+                        gridApiRef?.current?.applyTransaction({ remove: [data] });
+                    }}
                 />,
             );
         },
-        [setModal, setRowData],
+        [setModal],
     );
 
     const onRenderPDF = useCallback((gridApi: GridApi) => {

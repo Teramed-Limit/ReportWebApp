@@ -9,9 +9,10 @@ interface Props {
     headerTitle: string;
     bodyContent: string;
     onConfirmCallback?: () => void;
+    children?: React.ReactNode;
 }
 
-const MessageModal = ({ headerTitle, bodyContent, onConfirmCallback }: Props) => {
+const MessageModal = ({ headerTitle, bodyContent, children, onConfirmCallback }: Props) => {
     const setModal = useContext(ModalContext);
 
     const onClose = () => {
@@ -23,7 +24,12 @@ const MessageModal = ({ headerTitle, bodyContent, onConfirmCallback }: Props) =>
         onClose();
     };
 
-    const body = <div className={classes.container}>{bodyContent}</div>;
+    const body = (
+        <div className={classes.container}>
+            <div>{bodyContent}</div>
+            {children}
+        </div>
+    );
 
     const footer = (
         <>
