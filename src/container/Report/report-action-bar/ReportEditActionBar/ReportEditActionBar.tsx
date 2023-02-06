@@ -1,5 +1,6 @@
 import React, { CSSProperties, useContext } from 'react';
 
+import { Button as MaterialButton, Link } from '@mui/material';
 import { observer } from 'mobx-react';
 import { filter, tap } from 'rxjs/operators';
 
@@ -15,7 +16,8 @@ import { useReportDataStore } from '../../../../models/useStore';
 const ReportEditActionBar: React.FC = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
-    const { reportHasChanged, saveReport, signOffReport, valueChanged } = useReportDataStore();
+    const { reportHasChanged, studyInsUID, saveReport, signOffReport, valueChanged } =
+        useReportDataStore();
 
     const openPreviewModal = (isSignOff: boolean): JSX.Element => {
         return (
@@ -33,9 +35,30 @@ const ReportEditActionBar: React.FC = () => {
                 }
                 bodyCSS={{ padding: '0' } as CSSProperties}
                 footer={
-                    <Button theme="reversePrimary" onClick={() => setModal(null)}>
-                        Close
-                    </Button>
+                    <>
+                        <MaterialButton
+                            size="large"
+                            variant="outlined"
+                            onClick={() => setModal(null)}
+                        >
+                            Close
+                        </MaterialButton>
+                        {isSignOff && (
+                            <>
+                                <MaterialButton
+                                    size="large"
+                                    variant="contained"
+                                    component={Link}
+                                    download
+                                    href={`${
+                                        import.meta.env.VITE_BASE_URL
+                                    }/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
+                                >
+                                    Download
+                                </MaterialButton>
+                            </>
+                        )}
+                    </>
                 }
             />
         );

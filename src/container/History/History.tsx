@@ -15,7 +15,6 @@ import { define } from '../../constant/setting-define';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
-import { generateUUID, isEmptyOrNil } from '../../utils/general';
 import classes from '../Query/Query.module.scss';
 
 function History() {
@@ -125,14 +124,6 @@ function History() {
                         onSelectionChanged={onRenderPDF}
                     />
                 </div>
-                {!isEmptyOrNil(pdfUrl) && (
-                    <iframe
-                        className={classes.pdfPreview}
-                        id="pdfPreview"
-                        title="pdfPreview"
-                        src={`${pdfUrl}?a=${generateUUID()}`}
-                    />
-                )}
             </div>
         </Stack>
     );

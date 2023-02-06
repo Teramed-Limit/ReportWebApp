@@ -1,5 +1,6 @@
 import React, { CSSProperties, useContext } from 'react';
 
+import { Button as MaterialButton, Link } from '@mui/material';
 import { observer } from 'mobx-react';
 import { filter, tap } from 'rxjs/operators';
 
@@ -71,9 +72,26 @@ const ReportViewActionBar: React.FC = () => {
                             body={<PdfCreator showToolbar />}
                             bodyCSS={{ padding: '0' } as CSSProperties}
                             footer={
-                                <Button theme="reversePrimary" onClick={() => setModal(null)}>
-                                    Close
-                                </Button>
+                                <>
+                                    <MaterialButton
+                                        size="large"
+                                        variant="outlined"
+                                        onClick={() => setModal(null)}
+                                    >
+                                        Close
+                                    </MaterialButton>
+                                    <MaterialButton
+                                        size="large"
+                                        variant="contained"
+                                        component={Link}
+                                        download
+                                        href={`${
+                                            import.meta.env.VITE_BASE_URL
+                                        }/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
+                                    >
+                                        Download
+                                    </MaterialButton>
+                                </>
                             }
                         />,
                     );

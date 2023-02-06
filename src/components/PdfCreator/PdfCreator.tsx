@@ -47,6 +47,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
             if (!renderProps?.blob) return;
             const reader = new FileReader();
             reader.readAsDataURL(renderProps.blob);
+
             reader.onloadend = () => {
                 setTimeout(() => {
                     if (!renderProps?.blob || !reader?.result) return;
@@ -100,7 +101,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                     <Spinner />
                 </Block>
             )}
-            {logoUrl && signatureData && diagramUrl && (
+            {logoUrl && signatureData && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
                         title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}

@@ -75,8 +75,8 @@ export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
     return axiosIns.post(`api/report`, body);
 }
 
-export function saveReportPDF(studyInsUid: string, body): Observable<AxiosResponse<AnyObject>> {
-    return axiosIns.post(`api/report/studyInstanceUID/${studyInsUid}/pdfSave`, body);
+export function downloadReportPdf(studyInsUid): Observable<AxiosResponse<AnyObject>> {
+    return axiosIns.get(`api/report/studyInstanceUID/${studyInsUid}/downloadPDF`);
 }
 
 // 獲取 Code list

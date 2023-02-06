@@ -19,13 +19,19 @@
         flex: 1 1 auto;
     }
 
-    .pdfPreview {
+    .pdfPreviewContainer {
         max-width: 40%;
         width: 40%;
         height: 100%;
+    }
+
+    .pdfPreview {
+        width: 100%;
+        height: 100%;
         overflow: auto;
         border: 0;
-        padding-top: 11px;
+        margin: 0;
+        padding: 1px;
     }
 }
 

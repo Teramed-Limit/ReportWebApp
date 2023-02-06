@@ -59,6 +59,9 @@ export const DataModel = types
 
                 return `${self.formData.get('PDFFilePath')}`;
             },
+            get reportStatus(): ReportStatus {
+                return `${self.formData.get('ReportStatus')}` as ReportStatus;
+            },
             get reportTemplate() {
                 return self.formData.get('ReportTemplate');
             },

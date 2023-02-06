@@ -1,6 +1,14 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
-import { Button, Chip, ChipPropsColorOverrides, Radio, Stack } from '@mui/material';
+import {
+    Button as MaterialButton,
+    Button,
+    Chip,
+    ChipPropsColorOverrides,
+    Link,
+    Radio,
+    Stack,
+} from '@mui/material';
 import { OverridableStringUnion } from '@mui/types';
 import { ColDef, ColumnApi, IFilter } from 'ag-grid-community';
 import { FilterChangedEvent, GridReadyEvent } from 'ag-grid-community/dist/lib/events';
@@ -30,6 +38,7 @@ import classes from './Query.module.scss';
 const Query: React.FC = () => {
     const history = useHistory();
     const setModal = useContext(ModalContext);
+    const [studyInstanceUid, setStudyInstanceUid] = useState('');
     const [rowData, setRowData] = useRecoilState(queryRowDataState);
     const [filterModel, setFilterModel] = useRecoilState(queryFilterModel);
     const [filterBurnStatus, setFilterBurnStatus] = useRecoilState(queryReportStatus);
@@ -143,6 +152,7 @@ const Query: React.FC = () => {
             setPdfUrl('');
             return;
         }
+        setStudyInstanceUid(selectedRow.StudyInstanceUID);
         setPdfUrl(selectedRow.PDFFilePath);
     }, []);
 
@@ -239,12 +249,25 @@ const Query: React.FC = () => {
                     />
                 </div>
                 {!isEmptyOrNil(pdfUrl) && (
-                    <iframe
-                        className={classes.pdfPreview}
-                        id="pdfPreview"
-                        title="pdfPreview"
-                        src={`${pdfUrl}?a=${generateUUID()}`}
-                    />
+                    <Stack className={classes.pdfPreviewContainer} direction="column">
+                        <MaterialButton
+                            size="large"
+                            variant="contained"
+                            component={Link}
+                            download
+                            href={`${
+                                import.meta.env.VITE_BASE_URL
+                            }/api/report/studyInstanceUID/${studyInstanceUid}/downloadPDF`}
+                        >
+                            Download
+                        </MaterialButton>
+                        <iframe
+                            className={classes.pdfPreview}
+                            id="pdfPreview"
+                            title="pdfPreview"
+                            src={`${pdfUrl}?a=${generateUUID()}`}
+                        />
+                    </Stack>
                 )}
             </div>
         </Stack>
