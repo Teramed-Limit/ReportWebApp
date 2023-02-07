@@ -70,8 +70,8 @@ const CodeListSelection = React.forwardRef(
                 id={field.id}
                 disabled={disabled || field.readOnly}
                 options={options || []}
-                selectedOption={formatSelectedOption}
-                onSelectionChanged={setSelectedOption}
+                value={formatSelectedOption}
+                onValueChange={setSelectedOption}
                 isMulti={field.isMulti || false}
                 getOptionValue={(option) => `${option.Value}`}
                 getOptionLabel={(option) => `${option.Label}`}

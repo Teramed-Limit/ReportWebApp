@@ -5,6 +5,7 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 import { fetchReportDefine, fetchReportHistoryDefine } from '../axios/api';
 import { FormDefine, FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { DocumentData } from '../interface/document-data';
+import { RepPage } from '../interface/rep-report';
 import { RootService } from '../interface/root-service';
 
 export const DefineModel = types
@@ -12,6 +13,8 @@ export const DefineModel = types
         loading: types.optional(types.boolean, true),
         formDefineMap: types.frozen<FormDefineMap>({}),
         formDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
+        headerDefine: types.optional(types.frozen<RepPage>(), { name: 'header', components: {} }),
+        footerDefine: types.optional(types.frozen<RepPage>(), { name: 'footer', components: {} }),
         pdfDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
         normalizeFields: types.map(types.frozen<any>()),
     })
@@ -58,12 +61,13 @@ export const DefineModel = types
             ),
             setFormDefine: (formData: DocumentData) => {
                 const { reportDefineService } = getEnv<RootService>(self);
-                const { formDefine, pdfDefine } = reportDefineService.getFormDefine(
-                    formData?.ReportTemplate || 'Blank',
-                );
+                const { formDefine, pdfDefine, headerDefine, footerDefine } =
+                    reportDefineService.getFormDefine(formData?.ReportTemplate || 'Blank');
 
                 self.formDefine = formDefine;
                 self.pdfDefine = pdfDefine;
+                self.headerDefine = headerDefine;
+                self.footerDefine = footerDefine;
 
                 const { dataStore } = getRoot<IAnyModelType>(self);
                 dataStore.initialFormControl();

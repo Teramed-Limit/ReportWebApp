@@ -6,6 +6,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import { Avatar, Stack } from '@mui/material';
 import { deepOrange } from '@mui/material/colors';
 import { observer } from 'mobx-react';
@@ -21,7 +22,7 @@ import classes from './Header.module.scss';
 
 const Header = () => {
     const history = useHistory();
-    const { onLogout, userName } = useAuthStore();
+    const { onLogout, userName, isAdmin } = useAuthStore();
 
     const logout = () => {
         onLogout(null, (signal$) => signal$.pipe(tap(() => history.push({ pathname: `/login` }))));
@@ -77,6 +78,14 @@ const Header = () => {
                             </NavigationItem>
                         }
                     />
+                    {isAdmin && (
+                        <NavigationItem link="/report-generator">
+                            <Button id="btn__report-generator" color="black">
+                                <SummarizeIcon className={classes.iconButton} />
+                                Report Generator
+                            </Button>
+                        </NavigationItem>
+                    )}
                     <Button id="btn__logout" color="black" onClick={logout}>
                         <LogoutRoundedIcon className={classes.iconButton} />
                         Logout

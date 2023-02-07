@@ -2,6 +2,7 @@ import { FormFieldType } from '../../container/Report/field/field-type';
 import { CompositeField } from '../../interface/composite-field';
 import { FormDefine, FormDefineMap, Section } from '../../interface/define';
 import { Field } from '../../interface/field';
+import { RepPage } from '../../interface/rep-report';
 
 export const normalizeFields = (sections: any[] | undefined, modalName: string | undefined) => {
     if (sections === undefined) return;
@@ -28,6 +29,8 @@ export const normalizeFields = (sections: any[] | undefined, modalName: string |
 export interface RegisterReportDefine {
     formDefine: FormDefine;
     pdfDefine: FormDefine;
+    headerDefine: RepPage;
+    footerDefine: RepPage;
     fields: { [props: string]: Field };
 }
 
@@ -42,9 +45,13 @@ export class ReportDefineService {
             // register
             const formDefine = JSON.parse(v.FormDefine) as FormDefine;
             const pdfDefine = JSON.parse(v.PDFDefine) as FormDefine;
+            const headerDefine = JSON.parse(v.Header) as RepPage;
+            const footerDefine = JSON.parse(v.Footer) as RepPage;
             RegisterReportDefineMap[k] = {
                 formDefine,
                 pdfDefine,
+                headerDefine,
+                footerDefine,
                 fields: {
                     ...normalizeFields(formDefine.sections, ''),
                     ...normalizeFields(formDefine?.modal?.sections, formDefine?.modal?.modalName),

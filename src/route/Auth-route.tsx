@@ -3,8 +3,8 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Redirect, Route } from 'react-router-dom';
 
-import NotFoundPage from './components/NotFoundPage/NotFoundPage';
-import { useAuthStore } from './models/useStore';
+import NotFoundPage from '../components/NotFoundPage/NotFoundPage';
+import { useAuthStore } from '../models/useStore';
 
 interface Props {
     id: string;

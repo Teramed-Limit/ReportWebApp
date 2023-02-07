@@ -9,13 +9,14 @@ import PdfCreator from '../../../../components/PdfCreator/PdfCreator';
 import Button from '../../../../components/UI/Button/Button';
 import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
-import { useReportDataStore } from '../../../../models/useStore';
+import { useReportDataStore, useReportDefineStore } from '../../../../models/useStore';
 import { isEmptyOrNil } from '../../../../utils/general';
 import MessageModal from '../../../Modals/MessageModal/MessageModal';
 import classes from './ReportViewActionBar.module.scss';
 
 const ReportViewActionBar: React.FC = () => {
     const { fetchReportLockStatus, lockReport, studyInsUID, lockByUser } = useReportDataStore();
+    const { pdfDefine, headerDefine, footerDefine } = useReportDefineStore();
     const { setWarningNotification } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
 
@@ -69,7 +70,14 @@ const ReportViewActionBar: React.FC = () => {
                             height="80%"
                             overflow="hidden hidden"
                             headerTitle="PDF Preview"
-                            body={<PdfCreator showToolbar />}
+                            body={
+                                <PdfCreator
+                                    headerDefine={headerDefine}
+                                    pdfDefine={pdfDefine}
+                                    footerDefine={footerDefine}
+                                    showToolbar
+                                />
+                            }
                             bodyCSS={{ padding: '0' } as CSSProperties}
                             footer={
                                 <>

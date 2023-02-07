@@ -14,6 +14,13 @@ export const AuthModel = types
         accessToken: types.maybe(types.string),
         isAuth: types.optional(types.boolean, false),
     })
+    .views((self) => {
+        return {
+            get isAdmin() {
+                return self.userId?.toLowerCase() === 'admin';
+            },
+        };
+    })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
         const registerAuth = (data: LoginResult) => {

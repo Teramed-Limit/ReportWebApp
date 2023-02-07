@@ -8,8 +8,8 @@ interface Props {
     id?: string;
     disabled?: boolean;
     options: any[];
-    selectedOption: any;
-    onSelectionChanged: (options: any) => void;
+    value: any;
+    onValueChange: (options: any) => void;
     onInputChange?: (value: string) => void;
     isMulti: boolean;
     isLoading?: false;
@@ -24,8 +24,8 @@ interface Props {
 const BaseSelection = ({
     id,
     disabled = false,
-    selectedOption = null,
-    onSelectionChanged,
+    value = null,
+    onValueChange,
     options,
     isMulti = false,
     isLoading = false,
@@ -40,8 +40,8 @@ const BaseSelection = ({
             isDisabled={disabled}
             className={classes.report__container}
             classNamePrefix="report"
-            value={selectedOption}
-            onChange={onSelectionChanged}
+            value={value}
+            onChange={onValueChange}
             options={options}
             isMulti={isMulti}
             isLoading={isLoading}

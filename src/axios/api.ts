@@ -71,6 +71,22 @@ export function fetchReportHistoryDefine(
     return axiosIns.get(`api/report/define/studyInstanceUID/${studyInsUid}/version/${version}`);
 }
 
+export function addReportDefine(
+    reportType: string,
+    defineType: string,
+): Observable<AxiosResponse<string>> {
+    return axiosIns.post(
+        `api/report/define/reportType/${reportType}/defineType/${defineType}/newly`,
+    );
+}
+
+export function modifyReportDefine(
+    reportType: string,
+    defineType: string,
+): Observable<AxiosResponse<string>> {
+    return axiosIns.post(`api/report/define/reportType/${reportType}/defineType/${defineType}`);
+}
+
 export function saveReport(body): Observable<AxiosResponse<AnyObject>> {
     return axiosIns.post(`api/report`, body);
 }

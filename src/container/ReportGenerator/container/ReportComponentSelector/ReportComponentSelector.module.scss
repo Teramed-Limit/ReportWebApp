@@ -1,0 +1,32 @@
+.container {
+    height: 100%;
+    overflow: auto;
+    background-color: #fbfbfb;
+    border-right: 1px solid #dadce0;
+}
+
+.drawer {
+    width: auto;
+    height: 100%;
+    background-color: #eeeef2;
+    border-right: 1px solid #cccedb;
+}
+
+.drawerExpand {
+    width: 100%;
+    border-right: 1px solid #cccedb;
+}
+
+.verticalText {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    user-select: none;
+    border-right: 5px solid transparent;
+    border-left: 5px solid transparent;
+    padding: 2px;
+
+    &:hover {
+        border-right: 5px solid red;
+        background-color: darken(#eeeef2, 5);
+    }
+}

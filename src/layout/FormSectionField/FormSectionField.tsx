@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { CSSProperties, useState } from 'react';
 
 import { Box, Tooltip } from '@mui/material';
 import cx from 'classnames';
@@ -8,6 +8,7 @@ import classes from './FormSectionField.module.scss';
 
 interface FormSectionFieldProps {
     id: string;
+    valueStyle?: CSSProperties;
     orientation: string;
     readOnly: boolean;
     isDirty: boolean;
@@ -30,6 +31,7 @@ const FormSectionField = ({
     noBorder = false,
     buttonBarComponent = null,
     fieldComponent,
+    valueStyle = {},
 }: FormSectionFieldProps) => {
     const [hover, setHover] = useState(false);
 
@@ -46,6 +48,7 @@ const FormSectionField = ({
                         [classes.invalid]: isDirty && !isValid,
                         [classes.disabled]: disabled,
                     })}
+                    style={valueStyle}
                     onMouseOver={() => setHover(true)}
                     onMouseOut={() => setHover(false)}
                     onFocus={() => 0}

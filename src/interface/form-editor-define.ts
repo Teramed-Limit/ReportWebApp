@@ -10,10 +10,22 @@ export interface FormSection {
     fields: FormField[];
 }
 
+export enum FormFieldEditorType {
+    Text = 'Text',
+    TextArea = 'TextArea',
+    Dropdown = 'Dropdown',
+    Number = 'Number',
+    DataRange = 'DataRange',
+    ImageSelect = 'ImageSelect',
+    Checkbox = 'Checkbox',
+    SingleSelect = 'SingleSelect',
+    MultiSelect = 'MultiSelect',
+}
+
 export interface FormField {
     id: string;
     label: string;
-    type: string;
+    type: FormFieldEditorType | string;
     validate?: Validate;
     isKey?: boolean;
     readOnly?: boolean;

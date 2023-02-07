@@ -28,7 +28,7 @@ export const margin = 0.25;
 
 const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Props) => {
     return (
-        <ReactPDF.View style={{ margin: `${margin}%` }}>
+        <ReactPDF.View style={{ margin: `${margin}%`, padding: '0 14px' }}>
             <ReactPDF.View style={reportPage as Style}>
                 {formSections
                     .filter((section: Section) => !section.hide)

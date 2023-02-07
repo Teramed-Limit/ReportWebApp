@@ -1,35 +1,43 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 
 import Box from '@mui/material/Box';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
 
 import { axiosIns } from '../../axios/axios';
-import { Section } from '../../interface/define';
+import { NotificationContext } from '../../context/notification-context';
+import { FormDefine, Section } from '../../interface/define';
 import { DoctorSignature } from '../../interface/doctor-signature';
-import {
-    useOptionStore,
-    useReportDataStore,
-    useReportDefineStore,
-    useReportImageStore,
-} from '../../models/useStore';
+import { RepPage } from '../../interface/rep-report';
+import { useOptionStore, useReportDataStore, useReportImageStore } from '../../models/useStore';
 import ConfigService from '../../service/config-service';
+import { isEmptyOrNil } from '../../utils/general';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
+import PDFCustomHeader from './PDFCustomHeader/PDFCustomHeader';
 import PDFFooter from './PDFFooter/PDFFooter';
-import PDFHeader from './PDFHeader/PDFHeader';
 import PDFPage from './PDFPage/PDFPage';
 import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
 
 interface Props {
     showToolbar?: boolean;
+    pdfDefine: FormDefine;
+    headerDefine: RepPage;
+    footerDefine: RepPage;
     onPdfRenderCallback?: (base64: string) => void;
 }
 
-const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
+const PdfCreator = ({
+    showToolbar = false,
+    pdfDefine,
+    headerDefine,
+    footerDefine,
+    onPdfRenderCallback,
+}: Props) => {
+    const { setErrorNotification } = useContext(NotificationContext);
     const { formData, studyInsUID } = useReportDataStore();
     const { selectedImage, exportDiagramUrl } = useReportImageStore();
-    const { pdfDefine } = useReportDefineStore();
+
     const { getCodeList } = useOptionStore();
     const [loading, setLoading] = useState(true);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
@@ -73,18 +81,27 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
 
     // Get signature
     useEffect(() => {
+        const signatureField = ConfigService.getSignatureCorrespondingField();
+        const signatureValue = formData.get(ConfigService.getSignatureCorrespondingField());
+
+        if (isEmptyOrNil(signatureValue)) {
+            setErrorNotification(`Get signature error, ${signatureField} is empty`);
+            return;
+        }
+
         const subscription = axiosIns
-            .get<DoctorSignature>(
-                `api/doctor-signature/userId/${formData.get(
-                    ConfigService.getSignatureCorrespondingField(),
-                )}`,
-            )
-            .subscribe((res) => {
-                setSignatureData(res.data);
+            .get<DoctorSignature>(`api/doctor-signature/userId/${signatureValue}`)
+            .subscribe({
+                next: (res) => {
+                    setSignatureData(res.data);
+                },
+                error: () => {
+                    setErrorNotification(`Get signature error, ${signatureValue} not found`);
+                },
             });
 
         return () => subscription.unsubscribe();
-    }, [formData]);
+    }, [formData, setErrorNotification]);
 
     return (
         <Box
@@ -111,7 +128,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                     >
                         <PDFPage>
                             {/* Header */}
-                            <PDFHeader logoUrl={logoUrl} reportName={reportName}>
+                            <PDFCustomHeader components={headerDefine.components}>
                                 <PDFReportContent
                                     formSections={pdfDefine.sections.filter(
                                         (section: Section) => section.isHeader,
@@ -120,7 +137,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                     diagramUrl={diagramUrl}
                                     getOptions={getCodeList}
                                 />
-                            </PDFHeader>
+                            </PDFCustomHeader>
                             {/* Body */}
                             <PDFReportContent
                                 formSections={pdfDefine.sections.filter(

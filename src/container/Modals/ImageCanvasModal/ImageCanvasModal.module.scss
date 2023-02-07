@@ -8,3 +8,15 @@
     align-items: center;
     justify-content: center;
 }
+
+.attributeContainer {
+    max-width: 300px;
+    width: 300px;
+    position: absolute;
+    bottom: 4px;
+    right: 0;
+    overflow: hidden;
+    color: rgba(0, 0, 0, 0.38);
+    border: 1px solid rgba(0, 0, 0, 0.35);
+    border-radius: 4px;
+}

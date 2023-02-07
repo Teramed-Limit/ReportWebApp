@@ -20,10 +20,10 @@ export default [
         ],
     },
     {
-        family: 'MicrosoftBlack',
+        family: 'Microsoft JhengHei',
         fontStyle: 'normal',
         fontWeight: 'normal',
-        name: 'MicrosoftBlack',
+        name: 'Microsoft JhengHei',
         fonts: [
             {
                 src: MicrosoftBlack,

@@ -31,7 +31,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
                     ...{ flexDirection: field.orientation },
                 }}
             >
-                {valueList.map((value, idx) => {
+                {valueList?.map((value, idx) => {
                     return (
                         <PDFCompositeField
                             key={generateUUID()}
@@ -56,7 +56,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
         const valueList = formData[field.id];
         return (
             <>
-                {valueList.map((value, idx) => {
+                {valueList?.map((value, idx) => {
                     return (
                         <PDFField
                             key={generateUUID()}

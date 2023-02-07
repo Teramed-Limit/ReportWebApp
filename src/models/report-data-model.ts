@@ -339,7 +339,7 @@ export const DataModel = types
         const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
+            const { defineStore, imageStore } = getRoot<IAnyModelType>(self);
 
             // set initialize data
             self.formData.replace(response.data);
@@ -456,6 +456,47 @@ export const DataModel = types
                 );
             }),
         };
+    }) // Report Generator
+    .actions((self) => {
+        const simulateReport = () => {
+            self.reportHasChanged = false;
+            self.modifiable = true;
+            self.loading = false;
+            self.formData.replace({
+                StudyInstanceUID: '1.3.6.1.4.1.29974.12.20221024.100121.102062',
+                StudyDate: '20221026',
+                PatientId: 'K0844950',
+                PatientsName: 'TEST102062',
+                PatientsSex: 'F',
+                PatientsBirthDate: '19910101',
+                PatientsAge: '31',
+                Version: '1',
+                ReportStatus: 'Incomplete',
+                AccessionNumber: 'AP20221024102062',
+                StudyDescription: 'Colonoscopy',
+                Modality: 'SC',
+                DateTime: '2022-12-28T14:45:36',
+                DiagramData: 'https://picsum.photos/320/180',
+                ReportImageData: [
+                    {
+                        SOPInstanceUID: '1.3.6.1.4.1.29974.12.20221024.100121.102062.2.1',
+                        ImageSrc: 'https://picsum.photos/1920/1080',
+                        thumbnailImageSrc: 'https://picsum.photos/320/180',
+                        EditedImageSrc: '',
+                        IsAttachInReport: false,
+                        MappingNumber: 0,
+                        DescriptionOfSites: '',
+                        DescriptionOfFindings: '',
+                        ReportMark: null,
+                    },
+                ],
+            });
+
+            const { imageStore } = getRoot<IAnyModelType>(self);
+            imageStore.initImages(self.formData.get('ReportImageData'));
+        };
+
+        return { simulateReport };
     });
 
 export type DataStore = Instance<typeof DataModel>;

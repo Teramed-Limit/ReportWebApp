@@ -1,5 +1,5 @@
 import { DocumentData } from '../../interface/document-data';
-import { Validate } from '../../interface/validate';
+import { Validate, ValidateType } from '../../interface/validate';
 import { ValidateResult, Validator } from '../../interface/validator';
 import { MinValidator } from './rules/min-validator';
 import { QualityBowelMinValidator } from './rules/quality-bowel-min-validator';
@@ -13,11 +13,14 @@ export class ValidationService {
     factoryMapper = new Map<string, Validator>();
 
     constructor() {
-        this.factoryMapper.set('required', new RequireValidator());
-        this.factoryMapper.set('min', new MinValidator());
-        this.factoryMapper.set('qualityBowelScore', new QualityBowelValidator());
-        this.factoryMapper.set('qualityBowelRequired', new QualityBowelRequiredValidator());
-        this.factoryMapper.set('qualityBowelMin', new QualityBowelMinValidator());
+        this.factoryMapper.set(ValidateType.Required, new RequireValidator());
+        this.factoryMapper.set(ValidateType.Min, new MinValidator());
+        this.factoryMapper.set(ValidateType.QualityBowelScore, new QualityBowelValidator());
+        this.factoryMapper.set(
+            ValidateType.QualityBowelRequired,
+            new QualityBowelRequiredValidator(),
+        );
+        this.factoryMapper.set(ValidateType.QualityBowelMin, new QualityBowelMinValidator());
         // this.factoryMapper.set('greaterThanField', new GreaterThanFieldValidator());
         // this.factoryMapper.set('lesserThanField', new LesserThanFieldValidator());
     }

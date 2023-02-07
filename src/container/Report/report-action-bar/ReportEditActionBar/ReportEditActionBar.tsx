@@ -11,10 +11,11 @@ import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
 import WithElementVisibility from '../../../../HOC/WithElementVisiblity/WithElementVisibility';
 import { MessageType } from '../../../../interface/notification';
-import { useReportDataStore } from '../../../../models/useStore';
+import { useReportDataStore, useReportDefineStore } from '../../../../models/useStore';
 
 const ReportEditActionBar: React.FC = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
+    const { pdfDefine, headerDefine, footerDefine } = useReportDefineStore();
     const setModal = useContext(ModalContext);
     const { reportHasChanged, studyInsUID, saveReport, signOffReport, valueChanged } =
         useReportDataStore();
@@ -30,6 +31,9 @@ const ReportEditActionBar: React.FC = () => {
                 body={
                     <PdfCreator
                         showToolbar={isSignOff}
+                        headerDefine={headerDefine}
+                        pdfDefine={pdfDefine}
+                        footerDefine={footerDefine}
                         onPdfRenderCallback={isSignOff ? onSignOffReport : undefined}
                     />
                 }

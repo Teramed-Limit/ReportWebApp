@@ -50,7 +50,6 @@ export const ImageModel = types
         };
 
         const exportDiagramUrl = (): string => {
-            if (!self?.diagramHandle) console.warn('Diagram handle not found.');
             return self?.diagramHandle?.onExport();
         };
 

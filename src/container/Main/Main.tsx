@@ -2,7 +2,7 @@ import React from 'react';
 
 import { observer } from 'mobx-react';
 
-import AppRoutes from '../../App-route';
+import AppRoutes from '../../route/App-route';
 import Block from '../../components/Block/Block';
 import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';

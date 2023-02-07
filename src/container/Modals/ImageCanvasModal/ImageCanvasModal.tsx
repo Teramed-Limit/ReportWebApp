@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 
 import Konva from 'konva';
+import * as R from 'ramda';
 
+import AttributeList from '../../../components/AttributeList/AttributeList';
 import Canvas from '../../../components/Canvas/Canvas';
 import CanvasOverlay from '../../../components/CanvasOvelay/CanvasOverlay';
 import CanvasToolbar from '../../../components/CanvasToolbar/CanvasToolbar';
-import MarkerAttribute from '../../../components/MarkerAttribute/MarkerAttribute';
+import ColorPickerButton from '../../../components/ColorPickerButton/ColorPickerButton';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
@@ -56,12 +58,6 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
         setContainerHeight(containerRef.current.offsetHeight - 4);
     }, []);
 
-    useEffect(() => {
-        setSelectMarkerAttrs(
-            canvasMarkers.find((marker) => marker.id === selectMarkerId)?.attribute,
-        );
-    }, [canvasMarkers, selectMarkerId]);
-
     const handleCanvasTool = (event: React.MouseEvent<HTMLElement>, newFormat: string) => {
         if (!MarkerType[newFormat]) {
             console.error('tool not implemented!');
@@ -90,23 +86,23 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
         });
     };
 
-    const setAttribute = (attrName: string, attrValue: number | string | boolean) => {
+    const setAttribute = (attrPath: (number | string)[], attrValue: number | string | boolean) => {
         if (isEmptyOrNil(selectMarkerId)) return;
         setCanvasMarkers((markers) => {
             return markers.map((marker) => {
                 if (marker.id === selectMarkerId) {
-                    return {
-                        ...marker,
-                        attribute: {
-                            ...marker.attribute,
-                            [attrName]: attrValue,
-                        },
-                    };
+                    return R.assocPath(['attribute', attrPath], attrValue, marker);
                 }
                 return marker;
             });
         });
     };
+
+    useEffect(() => {
+        setSelectMarkerAttrs(
+            canvasMarkers.find((marker) => marker.id === selectMarkerId)?.attribute,
+        );
+    }, [canvasMarkers, selectMarkerId]);
 
     const body = (
         <div ref={containerRef} className={classes.canvasContainer}>
@@ -119,11 +115,45 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
                 setSubColor={setSubColor}
             />
             {selectMarkerAttrs ? (
-                <MarkerAttribute
-                    id={selectMarkerId}
-                    attribute={selectMarkerAttrs}
-                    setAttribute={setAttribute}
-                />
+                <div className={classes.attributeContainer}>
+                    <AttributeList
+                        attribute={selectMarkerAttrs}
+                        attributeComponentMapper={{
+                            fill: [
+                                {
+                                    name: '',
+                                    component: ColorPickerButton,
+                                },
+                            ],
+                            stroke: [
+                                {
+                                    name: '',
+                                    component: ColorPickerButton,
+                                },
+                            ],
+                        }}
+                        filterType="include"
+                        includeAttribute={[
+                            'width',
+                            'height',
+                            'text',
+                            'fill',
+                            'stroke',
+                            'fontSize',
+                            'radius',
+                            'strokeWidth',
+                            'pointerLength',
+                            'pointerWidth',
+                            'scaleX',
+                            'scaleY',
+                            'rotation',
+                            'x',
+                            'y',
+                            'dashEnabled',
+                        ]}
+                        setAttribute={setAttribute}
+                    />
+                </div>
             ) : null}
             <CanvasOverlay
                 canvasMarkers={canvasMarkers}

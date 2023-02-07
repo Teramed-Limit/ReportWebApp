@@ -3,7 +3,7 @@ import React from 'react';
 import { observer } from 'mobx-react';
 import { Redirect, Route } from 'react-router-dom';
 
-import { useAuthStore } from './models/useStore';
+import { useAuthStore } from '../models/useStore';
 
 interface Props {
     exact: boolean;
@@ -11,14 +11,14 @@ interface Props {
     component: JSX.Element;
 }
 
-function PrivateRoute({ component, ...rest }: Props) {
-    const { isAuth } = useAuthStore();
+function AdminRoute({ component, ...rest }: Props) {
+    const { isAdmin } = useAuthStore();
     return (
         <Route
             {...rest}
-            render={() => (isAuth ? component : <Redirect to={{ pathname: '/login' }} />)}
+            render={() => (isAdmin ? component : <Redirect to={{ pathname: '/' }} />)}
         />
     );
 }
 
-export default observer(PrivateRoute);
+export default observer(AdminRoute);
