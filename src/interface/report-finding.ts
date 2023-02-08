@@ -17,5 +17,6 @@ export interface TemplateFinding {
     Content: string;
     DisplayIndex: number;
     Number: number;
-    ReportTemplate?: string;
+    ReportTemplate: string;
+    FieldId: string;
 }

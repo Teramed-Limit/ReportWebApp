@@ -14,6 +14,7 @@ interface Props {
     maxLength?: number;
     onValueChange: (str: string) => void;
     onFocusChange?: () => void;
+    onSelectString?: (str: string) => void;
 }
 
 const BaseTextArea = forwardRef(
@@ -28,6 +29,7 @@ const BaseTextArea = forwardRef(
             disabled = false,
             onValueChange,
             onFocusChange = () => {},
+            onSelectString = () => {},
         }: Props,
         ref: ForwardedRef<HTMLTextAreaElement>,
     ) => {
@@ -48,6 +50,13 @@ const BaseTextArea = forwardRef(
                 tabIndex={0}
                 minRows={rows}
                 value={value}
+                onSelect={(event: any) => {
+                    const selectionTxt = event.target?.value?.substring(
+                        event.target.selectionStart,
+                        event.target.selectionEnd,
+                    );
+                    onSelectString(selectionTxt);
+                }}
                 onClick={(event) => event.stopPropagation()}
                 onChange={handleChange}
                 onFocus={() => onFocusChange()}

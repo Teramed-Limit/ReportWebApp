@@ -140,22 +140,21 @@ export function saveReportFindings(
 }
 
 // old ver.
-export function retrieveFindingsTemplate(
-    type: string,
+export function retrieveTemplate(
+    template: string,
+    fieldId: string,
 ): Observable<AxiosResponse<TemplateFinding[]>> {
-    return axiosIns.get(`api/retrieveFindingsTemplate/type/${type}`);
+    return axiosIns.get(`api/retrieveTemplate/template/${template}/field/${fieldId}`);
 }
 
 // old ver.
-export function createFindingsTemplate(body): Observable<AxiosResponse<TemplateFinding[]>> {
-    return axiosIns.post(`api/createFindingsTemplate`, body);
+export function createTemplate(body): Observable<AxiosResponse<TemplateFinding[]>> {
+    return axiosIns.post(`api/createTemplate`, body);
 }
 
 // old ver.
-export function deleteFindingsTemplate(
-    number: number,
-): Observable<AxiosResponse<TemplateFinding[]>> {
-    return axiosIns.delete(`api/deleteFindingsTemplate/number/${number}`);
+export function deleteTemplate(number: number): Observable<AxiosResponse<TemplateFinding[]>> {
+    return axiosIns.delete(`api/deleteTemplate/number/${number}`);
 }
 
 export function deleteStudy(studyInstanceUid: string, password = ''): Observable<AxiosResponse> {

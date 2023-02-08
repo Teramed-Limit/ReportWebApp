@@ -18,7 +18,7 @@ interface Props {
 
 const modalMapper = {
     colonoscopyQualityIndicators: () => <QualityIndicatorModal />,
-    retrieveTemplate: () => <RetrieveTemplateModal />,
+    retrieveTemplate: (actionParams) => <RetrieveTemplateModal fieldId={actionParams.field.id} />,
     fillInDetails: (actionParams) => (
         <FindingTemplateProvider>
             <FillInDetailsModal fieldId={actionParams.field.id} />

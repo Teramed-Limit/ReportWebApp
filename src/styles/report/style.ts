@@ -57,6 +57,7 @@ export const fieldSectionValue = {
 
 export const fieldButtonBar = {
     display: 'flex',
+    justifyContent: 'end',
     alignItems: 'end',
     marginTop: '2px',
 };
