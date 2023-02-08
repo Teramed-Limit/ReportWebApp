@@ -103,6 +103,7 @@ export const styles = ReactPDF.StyleSheet.create({
     gallery: {
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-around',
         flexWrap: 'wrap',
         width: '100%',
         maxWidth: '100%',

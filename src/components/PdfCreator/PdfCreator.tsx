@@ -1,9 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { Check } from '@mui/icons-material';
+import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
 
 import { axiosIns } from '../../axios/axios';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import { Section } from '../../interface/define';
 import { DoctorSignature } from '../../interface/doctor-signature';
 import {
@@ -26,11 +30,15 @@ interface Props {
     onPdfRenderCallback?: (base64: string) => void;
 }
 
+export const padding = 0.2;
+
 const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
     const { formData, studyInsUID } = useReportDataStore();
     const { selectedImage, exportDiagramUrl } = useReportImageStore();
     const { pdfDefine } = useReportDefineStore();
     const { getCodeList } = useOptionStore();
+    const [row, setRow] = useLocalStorage('imagePerRow', 4);
+    const [pageBreak, setPageBreak] = useLocalStorage('imagePageBreak', false);
     const [loading, setLoading] = useState(true);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
     const [signatureData, setSignatureData] = useState<DoctorSignature | undefined>(undefined);
@@ -96,6 +104,45 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                 position: 'relative',
             }}
         >
+            <Stack spacing={1} direction="row" style={{ padding: '6px' }}>
+                <Stack direction="column">
+                    <Typography variant="caption" component="div">
+                        Image per row
+                    </Typography>
+                    <ToggleButtonGroup
+                        size="small"
+                        color="warning"
+                        value={row}
+                        exclusive
+                        onChange={(event: React.MouseEvent<HTMLElement>, value: number) =>
+                            setRow(value)
+                        }
+                    >
+                        <ToggleButton value={1}>1</ToggleButton>
+                        <ToggleButton value={2}>2</ToggleButton>
+                        <ToggleButton value={3}>3</ToggleButton>
+                        <ToggleButton value={4}>4</ToggleButton>
+                        <ToggleButton value={5}>5</ToggleButton>
+                        <ToggleButton value={6}>6</ToggleButton>
+                    </ToggleButtonGroup>
+                </Stack>
+
+                <Stack direction="column">
+                    <Typography variant="caption" component="div">
+                        Page break (Image)
+                    </Typography>
+                    <ToggleButton
+                        sx={{ width: '36px' }}
+                        size="small"
+                        color="warning"
+                        value="check"
+                        selected={pageBreak}
+                        onChange={() => setPageBreak(!pageBreak)}
+                    >
+                        <Check />
+                    </ToggleButton>
+                </Stack>
+            </Stack>
             {loading && (
                 <Block enableScroll>
                     <Spinner />
@@ -130,7 +177,13 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                 diagramUrl={diagramUrl}
                                 getOptions={getCodeList}
                             />
-                            {selectedImage.length && <PDFPhoto imageList={selectedImage} />}
+                            {selectedImage.length && (
+                                <PDFPhoto
+                                    row={row}
+                                    pageBreak={pageBreak}
+                                    imageList={selectedImage}
+                                />
+                            )}
                             {/* Footer */}
                             <PDFFooter signatureData={signatureData} />
                         </PDFPage>

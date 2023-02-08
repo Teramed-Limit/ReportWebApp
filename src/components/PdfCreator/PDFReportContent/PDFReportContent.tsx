@@ -24,11 +24,9 @@ interface Props {
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-export const margin = 0.25;
-
 const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Props) => {
     return (
-        <ReactPDF.View style={{ margin: `${margin}%` }}>
+        <ReactPDF.View>
             <ReactPDF.View style={reportPage as Style}>
                 {formSections
                     .filter((section: Section) => !section.hide)
