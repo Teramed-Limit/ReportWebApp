@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 
 import {
     Checkbox,
@@ -9,84 +9,59 @@ import {
     ListItem,
     ListItemText,
 } from '@mui/material';
-import * as R from 'ramda';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
 
-import { ReportFindingItemList } from '../../../../../interface/report-finding';
+import { CategoryContents } from '../../../../../interface/form-field-lexicon-category';
 import SectionAdder from '../SectionAdder/SectionAdder';
 import classes from './SectionContentListEdit.module.scss';
 
 interface Props {
     activeIndex: number;
-    findingItems: ReportFindingItemList[];
-    updateFindingItems: (index: number, findingItems: ReportFindingItemList[]) => void;
-    updateIsDefaultOnItemList: (setDefaultIdx: number) => void;
+    contentList: CategoryContents[];
+    onAddCategoryContent: (categoryContent: string) => void;
+    onUpdateCategoryContent: (updateIdx: number, isDefault: boolean) => void;
+    onDeleteCategoryContent: (deleteId: string, index: number) => void;
 }
 
 const SectionContentListEdit = ({
     activeIndex,
-    findingItems: findingItemsProp,
-    updateFindingItems,
-    updateIsDefaultOnItemList,
+    contentList,
+    onAddCategoryContent,
+    onUpdateCategoryContent,
+    onDeleteCategoryContent,
 }: Props) => {
-    const [findingItems, setFindingItems] = useState(findingItemsProp);
-
-    useEffect(() => {
-        setFindingItems(findingItemsProp);
-    }, [findingItemsProp]);
-
-    const onDelete = useCallback(
-        (content: string) => {
-            setFindingItems((items) => {
-                const updateItems = items.filter((item) => item.Content !== content);
-                updateFindingItems(activeIndex, updateItems);
-                return updateItems;
-            });
-        },
-        [activeIndex, updateFindingItems],
-    );
-
-    const onAddContent = useCallback(
-        (content: string) => {
-            setFindingItems((items) => {
-                const insertSection: ReportFindingItemList = {
-                    Content: content,
-                    IsDefault: '0',
-                };
-                const updateItems = R.append(insertSection, items);
-                updateFindingItems(activeIndex, updateItems);
-                return updateItems;
-            });
-        },
-        [activeIndex, updateFindingItems],
-    );
-
     return (
         <>
-            <div className={classes.section}>Sections Content List</div>
             {activeIndex === -1 ? (
                 <div className={classes.emptyList}>Please select a section</div>
             ) : (
                 <List component="nav" className={classes.list}>
                     <>
-                        {findingItems.map((item, index) => (
-                            <React.Fragment key={item.Content}>
+                        {contentList.map((item, index) => (
+                            <React.Fragment key={item.ContentId}>
                                 <ListItem>
                                     <ListItemText primary={item.Content} />
                                     <div>
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
-                                                    checked={item.IsDefault === '1'}
-                                                    onChange={() =>
-                                                        updateIsDefaultOnItemList(index)
+                                                    checked={item.IsDefault}
+                                                    onChange={(e) =>
+                                                        onUpdateCategoryContent(
+                                                            index,
+                                                            e.target.checked,
+                                                        )
                                                     }
                                                     color="primary"
                                                 />
                                             }
                                             label="default"
                                         />
-                                        <IconButton onClick={() => onDelete(item.Content)}>
+                                        <IconButton
+                                            onClick={() =>
+                                                onDeleteCategoryContent(item.ContentId, index)
+                                            }
+                                        >
                                             <RiDeleteBin6Fill />
                                         </IconButton>
                                     </div>
@@ -95,9 +70,9 @@ const SectionContentListEdit = ({
                             </React.Fragment>
                         ))}
                         <SectionAdder
-                            itemNameList={findingItems.map((item) => item.Content)}
+                            itemNameList={contentList.map((item) => item.Content)}
                             isDragging={false}
-                            onAddSection={onAddContent}
+                            onAddSection={onAddCategoryContent}
                         />
                     </>
                 </List>

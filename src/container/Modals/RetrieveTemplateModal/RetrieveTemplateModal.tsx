@@ -7,12 +7,12 @@ import { BiError } from 'react-icons/bi';
 import { Subject } from 'rxjs';
 import { debounceTime, first, map } from 'rxjs/operators';
 
-import { deleteTemplate, retrieveTemplate } from '../../../axios/api';
+import { deleteFieldLexicon, getFieldLexicon } from '../../../axios/api';
 import GridTable from '../../../components/GridTable/GridTable';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
-import { TemplateFinding } from '../../../interface/report-finding';
+import { FormFieldLexicon } from '../../../interface/form-field-lexicon-category';
 import { useReportDataStore } from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
 import classes from './RetrieveTemplateModal.module.scss';
@@ -38,14 +38,14 @@ const RetrieveTemplateModal = ({ fieldId }: Props) => {
     const { valueChanged, reportTemplate, formData } = useReportDataStore();
     const searchTextSubject$ = useRef(new Subject<string>());
 
-    const [selectedItem, setSelectedItem] = useState<TemplateFinding>();
+    const [selectedItem, setSelectedItem] = useState<FormFieldLexicon>();
     const [hintVisible, setHintVisible] = useState<boolean>(false);
     const [searchText, setSearchText] = useState('');
-    const [itemList, setItemList] = useState<TemplateFinding[]>([]);
-    const [oriItemList, setOriItemList] = useState<TemplateFinding[]>([]);
+    const [itemList, setItemList] = useState<FormFieldLexicon[]>([]);
+    const [oriItemList, setOriItemList] = useState<FormFieldLexicon[]>([]);
 
     useEffect(() => {
-        retrieveTemplate(reportTemplate, fieldId)
+        getFieldLexicon(reportTemplate, fieldId)
             .pipe(first())
             .subscribe((res) => {
                 setItemList(res.data);
@@ -98,7 +98,7 @@ const RetrieveTemplateModal = ({ fieldId }: Props) => {
             return;
         }
 
-        deleteTemplate(selectedItem.Number).subscribe((res: AxiosResponse) => {
+        deleteFieldLexicon(selectedItem.Number).subscribe((res: AxiosResponse) => {
             if (res.status === 200) {
                 const newItemList = itemList.filter((item) => item.Number !== selectedItem.Number);
                 setSearchText('');

@@ -1,47 +1,35 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { IconButton } from '@mui/material';
-import { FaRegEdit } from 'react-icons/fa';
+import { Stack } from '@mui/material';
 
 import BaseTextArea from '../../../../../components/UI/BaseTextArea/BaseTextArea';
+import { FormFieldLexiconCategory } from '../../../../../interface/form-field-lexicon-category';
 import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';
 import FormSectionFieldLabel from '../../../../Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
-import { FindingTemplateContext } from '../../context/finding-template-context';
 import classes from './SectionListView.module.scss';
 
 interface Props {
+    lexiconCategoryList: FormFieldLexiconCategory[];
     onCategoryTextChange: (index: number, value: string) => void;
-    onCategoryFocus: (index: number) => void;
+    onCategorySelect: (index: number) => void;
 }
 
-const SectionListView = ({ onCategoryTextChange, onCategoryFocus }: Props) => {
-    const { setEdit, findingList, setBackupFindingList } = useContext(FindingTemplateContext);
-
-    const onEdit = () => {
-        setBackupFindingList(findingList);
-        setEdit(true);
-    };
+const SectionListView = ({
+    lexiconCategoryList,
+    onCategoryTextChange,
+    onCategorySelect,
+}: Props) => {
     return (
-        <>
-            <div className={classes.section}>
-                Sections
-                <IconButton onClick={onEdit}>
-                    <FaRegEdit />
-                </IconButton>
-            </div>
-            {findingList.map((field, index) => {
+        <Stack direction="column" sx={{ height: '100%' }} spacing={1}>
+            {lexiconCategoryList.map((field, index) => {
                 return (
-                    <div key={field.ItemName} className={classes.container}>
+                    <div key={field.Id} className={classes.container}>
                         {/* Label */}
                         <FormSectionFieldLabel
                             id={field.ItemName}
                             label={field.ItemName}
                             orientation="row"
-                            hint={
-                                field.AutoFillDefaultWhenEmpty === '1'
-                                    ? 'Auto fill default content'
-                                    : ''
-                            }
+                            hint={field.AutoFillDefaultWhenEmpty ? 'Auto fill default content' : ''}
                             hideLabelSection={false}
                             hasValidation={false}
                         />
@@ -61,14 +49,14 @@ const SectionListView = ({ onCategoryTextChange, onCategoryFocus }: Props) => {
                                     style={{ height: '100%', overflow: 'auto' }}
                                     value={field.Text}
                                     onValueChange={(value) => onCategoryTextChange(index, value)}
-                                    onFocusChange={() => onCategoryFocus(index)}
+                                    onFocusChange={() => onCategorySelect(index)}
                                 />
                             }
                         />
                     </div>
                 );
             })}
-        </>
+        </Stack>
     );
 };
 

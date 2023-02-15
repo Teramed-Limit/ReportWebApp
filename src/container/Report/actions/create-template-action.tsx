@@ -1,9 +1,9 @@
 import { AxiosResponse } from 'axios';
 
-import { createTemplate } from '../../../axios/api';
+import { createFieldLexicon } from '../../../axios/api';
 import { BaseActionParams } from '../../../interface/action';
+import { FormFieldLexicon } from '../../../interface/form-field-lexicon-category';
 import { MessageType } from '../../../interface/notification';
-import { TemplateFinding } from '../../../interface/report-finding';
 import { isEmptyOrNil } from '../../../utils/general';
 
 export const createTemplateAction = (actionParams: BaseActionParams) => {
@@ -28,9 +28,9 @@ export const createTemplateAction = (actionParams: BaseActionParams) => {
         Content: selectionText,
         ReportTemplate: actionParams.formData?.ReportTemplate,
         FieldId: actionParams.field.id,
-    } as TemplateFinding;
+    } as FormFieldLexicon;
 
-    createTemplate(body).subscribe((res: AxiosResponse) => {
+    createFieldLexicon(body).subscribe((res: AxiosResponse) => {
         window.localStorage.removeItem('textareaSelectionText');
         return res.status === 200
             ? actionParams.openNotification(MessageType.Success, 'Create template success')

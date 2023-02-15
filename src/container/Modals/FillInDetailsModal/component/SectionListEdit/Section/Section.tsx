@@ -8,13 +8,14 @@ import classes from './Section.module.scss';
 
 interface Props {
     index: number;
+    id: string;
     itemName: string;
     active: boolean;
-    autoFillDefaultWhenEmpty: string;
+    autoFillDefaultWhenEmpty: boolean;
     toggleAutoFill: (index: number) => void;
     onDelete: (str: string) => void;
-    onCancelFocus?: () => void;
-    onCategoryFocus: (index: number) => void;
+    onCancelSelectCategory?: () => void;
+    onCategorySelect: (index: number) => void;
 }
 
 const getItemStyle = (active, isDragging, draggableStyle) => {
@@ -28,17 +29,17 @@ const getItemStyle = (active, isDragging, draggableStyle) => {
 
 const Section = ({
     index,
+    id,
     itemName,
     autoFillDefaultWhenEmpty,
     toggleAutoFill,
     onDelete,
-    onCancelFocus = () => {},
-    onCategoryFocus,
+    onCategorySelect,
     active,
 }: Props) => {
     return (
         <>
-            <Draggable draggableId={itemName} index={index}>
+            <Draggable draggableId={id} index={index}>
                 {(provided, snapshot) => (
                     <div
                         className={classes.item}
@@ -52,7 +53,7 @@ const Section = ({
                         )}
                         onClick={(event) => {
                             event.stopPropagation();
-                            onCategoryFocus(index);
+                            onCategorySelect(index);
                         }}
                     >
                         <div>
@@ -63,7 +64,7 @@ const Section = ({
                             <FormControlLabel
                                 control={
                                     <Checkbox
-                                        checked={autoFillDefaultWhenEmpty === '1'}
+                                        checked={autoFillDefaultWhenEmpty}
                                         onChange={() => toggleAutoFill(index)}
                                         color="primary"
                                     />
@@ -73,7 +74,6 @@ const Section = ({
                             <IconButton
                                 onClick={(event) => {
                                     event.stopPropagation();
-                                    onCancelFocus();
                                     onDelete(itemName);
                                 }}
                             >

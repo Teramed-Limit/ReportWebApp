@@ -1,136 +1,34 @@
-import React, { useCallback, useContext } from 'react';
+import React from 'react';
 
-import { IconButton } from '@mui/material';
-import { AxiosError } from 'axios';
-import * as R from 'ramda';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { FaCheck } from 'react-icons/fa';
-import { MdCancel } from 'react-icons/md';
-import { finalize, first } from 'rxjs/operators';
+import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 
-import { saveReportFindings } from '../../../../../axios/api';
-import { NotificationContext } from '../../../../../context/notification-context';
-import { ReportFinding } from '../../../../../interface/report-finding';
-import { reorder } from '../../../../../utils/general';
-import { FindingTemplateContext } from '../../context/finding-template-context';
+import { FormFieldLexiconCategory } from '../../../../../interface/form-field-lexicon-category';
 import SectionAdder from '../SectionAdder/SectionAdder';
 import Section from './Section/Section';
 import classes from './SectionListEdit.module.scss';
 
 interface Props {
-    ReportTemplate: string;
-    fieldId: string;
-    onCategoryFocus: (index: number) => void;
-    onCancelFocus: () => void;
+    lexiconCategoryList: FormFieldLexiconCategory[];
+    activeIndex: number;
+    onAddCategory: (category: string) => void;
+    onUpdateCategory: (updateIdx: number) => void;
+    onDeleteCategory: (deleteId: string, index: number) => void;
+    onReorderLexiconCategory: (result: DropResult) => void;
+    onCategorySelect: (index: number) => void;
 }
 
-const SectionListEdit = ({ ReportTemplate, fieldId, onCategoryFocus, onCancelFocus }: Props) => {
-    const { setSuccessNotification, setErrorNotification } = useContext(NotificationContext);
-    const { setEdit, findingList, setFindingList, activeIndex, backupFindingList } =
-        useContext(FindingTemplateContext);
-
-    const onConfirm = useCallback(() => {
-        saveReportFindings(ReportTemplate, fieldId, findingList)
-            .pipe(
-                first(),
-                finalize(() => {
-                    setEdit(false);
-                    onCancelFocus();
-                }),
-            )
-            .subscribe(
-                (res) => {
-                    setFindingList(res.data);
-                    setSuccessNotification('Editing success');
-                },
-                (error: AxiosError) => {
-                    setFindingList(backupFindingList);
-                    setErrorNotification(error.response?.data.Message || 'Error occurs');
-                },
-            );
-    }, [
-        backupFindingList,
-        ReportTemplate,
-        fieldId,
-        findingList,
-        onCancelFocus,
-        setEdit,
-        setErrorNotification,
-        setFindingList,
-        setSuccessNotification,
-    ]);
-
-    const onCancel = useCallback(() => {
-        setEdit(false);
-        setFindingList(backupFindingList);
-    }, [backupFindingList, setEdit, setFindingList]);
-
-    const onDelete = useCallback(
-        (itemName: string) => {
-            setFindingList((sectionList) =>
-                sectionList.filter((item) => item.ItemName !== itemName),
-            );
-        },
-        [setFindingList],
-    );
-
-    const toggleAutoFill = useCallback(
-        (updateIdx: number) => {
-            setFindingList((sectionList) => {
-                const updateSection = {
-                    ...sectionList[updateIdx],
-                    AutoFillDefaultWhenEmpty:
-                        sectionList[updateIdx].AutoFillDefaultWhenEmpty === '1' ? '0' : '1',
-                };
-                return R.update(updateIdx, updateSection, sectionList);
-            });
-        },
-        [setFindingList],
-    );
-
-    const onAddSection = useCallback(
-        (sectionName: string) => {
-            setFindingList((sectionList) => {
-                const insertSection: ReportFinding = {
-                    ReportTemplate,
-                    FieldId: fieldId,
-                    ItemName: sectionName,
-                    DisplayIndex: sectionList.length,
-                    AutoFillDefaultWhenEmpty: '0',
-                    ReportFindingsItemList: [],
-                    Text: '',
-                };
-                return R.append(insertSection, sectionList);
-            });
-            onCancelFocus();
-        },
-        [ReportTemplate, fieldId, onCancelFocus, setFindingList],
-    );
-
-    const onDragEnd = (result) => {
-        if (!result.destination) {
-            return;
-        }
-
-        setFindingList(
-            reorder<ReportFinding>(findingList, result.source.index, result.destination.index),
-        );
-        onCancelFocus();
-    };
-
+const SectionListEdit = ({
+    activeIndex,
+    lexiconCategoryList,
+    onAddCategory,
+    onUpdateCategory,
+    onDeleteCategory,
+    onReorderLexiconCategory,
+    onCategorySelect,
+}: Props) => {
     return (
         <>
-            <div className={classes.section}>
-                Sections
-                <IconButton onClick={onConfirm}>
-                    <FaCheck className={classes.iconCheck} />
-                </IconButton>
-                <IconButton onClick={onCancel}>
-                    <MdCancel className={classes.iconCancel} />
-                </IconButton>
-            </div>
-
-            <DragDropContext onDragEnd={onDragEnd}>
+            <DragDropContext onDragEnd={onReorderLexiconCategory}>
                 <Droppable droppableId="droppable">
                     {(provided, snapshot) => (
                         <div
@@ -138,23 +36,23 @@ const SectionListEdit = ({ ReportTemplate, fieldId, onCategoryFocus, onCancelFoc
                             {...provided.droppableProps}
                             ref={provided.innerRef}
                         >
-                            {findingList.map((item, index) => (
+                            {lexiconCategoryList.map((item, index) => (
                                 <Section
-                                    key={item.ItemName}
+                                    key={item.Id}
+                                    id={item.Id}
                                     index={index}
                                     active={index === activeIndex}
                                     itemName={item.ItemName}
                                     autoFillDefaultWhenEmpty={item.AutoFillDefaultWhenEmpty}
-                                    toggleAutoFill={toggleAutoFill}
-                                    onDelete={onDelete}
-                                    onCancelFocus={onCancelFocus}
-                                    onCategoryFocus={onCategoryFocus}
+                                    toggleAutoFill={onUpdateCategory}
+                                    onDelete={() => onDeleteCategory(item.Id, index)}
+                                    onCategorySelect={onCategorySelect}
                                 />
                             ))}
                             <SectionAdder
-                                itemNameList={findingList.map((item) => item.ItemName)}
+                                itemNameList={lexiconCategoryList.map((item) => item.ItemName)}
                                 isDragging={snapshot.isDraggingOver}
-                                onAddSection={onAddSection}
+                                onAddSection={onAddCategory}
                             />
                             {provided.placeholder}
                         </div>
