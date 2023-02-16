@@ -3,7 +3,6 @@ import './styles/ag-grid/ag-theme-modal.scss';
 import React, { useEffect } from 'react';
 
 import { ThemeProvider } from '@mui/material';
-import { Font } from '@react-pdf/renderer';
 import { Route, Switch } from 'react-router-dom';
 import { RecoilRoot } from 'recoil';
 
@@ -15,21 +14,13 @@ import Main from './container/Main/Main';
 import { MobxStateProvider } from './context/mobx-custom-provider';
 import { ModalProvider } from './context/modal-context';
 import { NotificationProvider } from './context/notification-context';
-import fonts from './fonts';
+import { registerFont } from './fonts';
 import { createStore } from './models/store';
 import ConfigService from './service/config-service';
 import { rootTheme } from './theme/rootTheme';
 
 const rootStore = createStore();
-// Register asynchronous loaded fronts before rendering anything.
-fonts.map((font) => {
-    return Font.register({
-        family: font.family,
-        fontStyle: font.fontStyle,
-        fontWeight: font.fontWeight,
-        fonts: font.fonts,
-    });
-});
+registerFont();
 
 function App() {
     useEffect(() => {

@@ -83,7 +83,7 @@ const RetrieveTemplateModal = ({ fieldId }: Props) => {
         if (isEmptyOrNil(formData.get(fieldId))) {
             valueChanged(fieldId, `${selectedItem?.Content}`);
         } else {
-            valueChanged(fieldId, `${formData.get(fieldId)}\r\n${selectedItem?.Content}`);
+            valueChanged(fieldId, `${formData.get(fieldId)}\n${selectedItem?.Content}`);
         }
         onClose();
     };

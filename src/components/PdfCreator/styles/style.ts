@@ -11,7 +11,7 @@ export const styles = ReactPDF.StyleSheet.create({
         backgroundColor: 'white',
         padding: '14px',
         paddingBottom: footerHeight,
-        fontFamily: 'MicrosoftBlack',
+        fontFamily: 'NotoSansTC',
     },
     pageNumber: {
         position: 'absolute',

@@ -50,7 +50,7 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
                 return foundOption?.Label || '';
             });
 
-            const newValue = (labelList as string[])?.join('\r\n') || '';
+            const newValue = (labelList as string[])?.join('\n') || '';
             return text(rendererField, newValue);
         }
 
