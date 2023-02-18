@@ -1,20 +1,37 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
+import { IconButton, Stack } from '@mui/material';
+import Typography from '@mui/material/Typography';
+import { AxiosError } from 'axios';
 import * as R from 'ramda';
-import { filter, first } from 'rxjs/operators';
+import { DropResult } from 'react-beautiful-dnd';
+import { FaEdit } from 'react-icons/fa';
+import { FcCancel } from 'react-icons/fc';
+import { filter, finalize, first } from 'rxjs/operators';
 
-import { getReportFindings } from '../../../axios/api';
+import {
+    addFormFieldLexiconCategory,
+    addFormFieldLexiconCategoryContent,
+    deleteFormFieldLexiconCategory,
+    deleteFormFieldLexiconCategoryContent,
+    getFormFieldLexiconCategory,
+    reorderFormFieldLexiconCategory,
+} from '../../../axios/api';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
-import { ReportFindingItemList } from '../../../interface/report-finding';
+import { NotificationContext } from '../../../context/notification-context';
+import {
+    CategoryContents,
+    FormFieldLexiconCategory,
+    ReorderFormFieldLexiconCategoryBody,
+} from '../../../interface/form-field-lexicon-category';
 import { useReportDataStore } from '../../../models/useStore';
-import { isEmptyOrNil } from '../../../utils/general';
+import { generateUUID, isEmptyOrNil, reorder } from '../../../utils/general';
 import SectionContentListEdit from './component/SectionContentListEdit/SectionContentListEdit';
 import SectionContentListView from './component/SectionContentListView/SectionContentListView';
 import SectionListEdit from './component/SectionListEdit/SectionListEdit';
 import SectionListView from './component/SectionListView/SectionListView';
-import { FindingTemplateContext } from './context/finding-template-context';
 import classes from './FillInDetailsModal.module.scss';
 import ViewEditSwitcher from './ViewEditSwitcher/ViewEditSwitcher';
 
@@ -23,70 +40,142 @@ interface Props {
 }
 
 const FillInDetailsModal = ({ fieldId }: Props) => {
-    const { valueChanged, reportTemplate } = useReportDataStore();
     const setModal = useContext(ModalContext);
-    const { findingList, setFindingList, activeIndex, setActiveIndex, edit } =
-        useContext(FindingTemplateContext);
+    const { setErrorNotification } = useContext(NotificationContext);
+    const { valueChanged, reportTemplate } = useReportDataStore();
+    const [edit, setEdit] = useState(false);
+    const [activeIndex, setActiveIndex] = useState<number>(-1);
+    const [lexiconCategoryList, setLexiconCategoryList] = useState<FormFieldLexiconCategory[]>([]);
 
-    const [itemList, setItemList] = useState<ReportFindingItemList[]>([]);
-
-    useEffect(() => {
-        getReportFindings(reportTemplate, fieldId)
+    // 查詢辭庫列表
+    const queryFormFieldLexiconCategory = useCallback(() => {
+        getFormFieldLexiconCategory(reportTemplate, fieldId)
             .pipe(
                 first(),
                 filter((res) => !isEmptyOrNil(res.data) && !isEmptyOrNil(reportTemplate)),
             )
             .subscribe((res) => {
-                const dataList = res.data;
-                setFindingList(dataList);
                 setActiveIndex(0);
-                setItemList(dataList[0].ReportFindingsItemList);
+                setLexiconCategoryList(res.data);
             });
-    }, [fieldId, reportTemplate, setActiveIndex, setFindingList]);
+    }, [fieldId, reportTemplate]);
+
+    // 選取作用中的Category
+    const onCategorySelect = useCallback(
+        (id: number) => {
+            setActiveIndex(id);
+        },
+        [setActiveIndex],
+    );
+
+    // 取消選取作用中的Category
+    const onCancelSelectCategory = useCallback(() => {
+        setActiveIndex(-1);
+    }, [setActiveIndex]);
 
     const onClose = () => {
         setModal(null);
     };
 
     const onConfirmSelect = () => {
-        let findings = '';
-        findingList.forEach((findingCategory) => {
+        let text = '';
+        lexiconCategoryList.forEach((findingCategory) => {
             let section;
             if (isEmptyOrNil(findingCategory.Text)) {
                 section = `${findingCategory.Text}`;
             } else {
                 section = `${findingCategory.Text}\n`;
             }
-            findings += section;
+            text += section;
         });
-        valueChanged(fieldId, findings);
+        valueChanged(fieldId, text);
         onClose();
     };
 
-    const onCategoryTextChange = (index: number, value: string) => {
-        setFindingList((list) => {
-            return list.map((item, updateIdx) =>
-                updateIdx === index ? { ...item, Text: value } : { ...item },
-            );
+    // 排序Category
+    const onReorderLexiconCategory = (result: DropResult) => {
+        if (!result.destination) return;
+        const reorderList = reorder<FormFieldLexiconCategory>(
+            lexiconCategoryList,
+            result.source.index,
+            result.destination.index,
+        );
+
+        let orderIdx = 0;
+        const body = reorderList.map((item) => {
+            orderIdx++;
+            return {
+                Id: item.Id,
+                DisplayIndex: orderIdx,
+            } as ReorderFormFieldLexiconCategoryBody;
+        });
+        reorderFormFieldLexiconCategory(body).subscribe();
+        setLexiconCategoryList(reorderList);
+        onCancelSelectCategory();
+    };
+
+    // 刪除Category
+    const onDeleteCategory = (deleteId: string, index: number) => {
+        deleteFormFieldLexiconCategory(deleteId)
+            .pipe(finalize(() => onCancelSelectCategory()))
+            .subscribe({
+                next: () => {
+                    setLexiconCategoryList((pre) => R.dissocPath([index], pre));
+                },
+                error: (err: AxiosError) => {
+                    setErrorNotification(err.response?.data.Message || 'Http request failed!');
+                },
+            });
+    };
+
+    // 新增Category
+    const onAddCategory = (itemName: string) => {
+        const newCategory: FormFieldLexiconCategory = {
+            Id: generateUUID(),
+            ReportTemplate: reportTemplate,
+            FieldId: fieldId,
+            ItemName: itemName,
+            DisplayIndex: lexiconCategoryList.length,
+            AutoFillDefaultWhenEmpty: false,
+            CategoryContents: [],
+            Text: '',
+        };
+
+        addFormFieldLexiconCategory(newCategory)
+            .pipe(finalize(() => onCancelSelectCategory()))
+            .subscribe({
+                next: () => {
+                    setLexiconCategoryList((sectionList) => R.append(newCategory, sectionList));
+                },
+                error: (err: AxiosError) => {
+                    setErrorNotification(err.response?.data.Message || 'Http request failed!');
+                },
+            });
+    };
+
+    // 修改Category
+    const onUpdateCategory = (updateIdx: number) => {
+        const updateCategory = {
+            ...lexiconCategoryList[updateIdx],
+            AutoFillDefaultWhenEmpty: !lexiconCategoryList[updateIdx].AutoFillDefaultWhenEmpty,
+        };
+
+        addFormFieldLexiconCategory(updateCategory).subscribe({
+            next: () => {
+                setLexiconCategoryList((sectionList) =>
+                    R.update(updateIdx, updateCategory, sectionList),
+                );
+            },
+            error: (err: AxiosError) => {
+                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            },
         });
     };
 
-    const onCancelFocus = useCallback(() => {
-        setActiveIndex(-1);
-        setItemList([]);
-    }, [setActiveIndex]);
-
-    const onCategoryFocus = useCallback(
-        (id: number) => {
-            setActiveIndex(id);
-            setItemList(findingList[id].ReportFindingsItemList);
-        },
-        [findingList, setActiveIndex],
-    );
-
-    const onFindingItemClick = useCallback(
+    // 選擇Content並新增到cache text等待 onConfirm 加入
+    const onCategoryContentClick = useCallback(
         (value: string) => {
-            setFindingList((list) => {
+            setLexiconCategoryList((list) => {
                 return list.map((item, updateIdx) =>
                     updateIdx === activeIndex
                         ? { ...item, Text: `${item.Text}${value}, ` }
@@ -94,52 +183,135 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                 );
             });
         },
-        [activeIndex, setFindingList],
+        [activeIndex, setLexiconCategoryList],
     );
 
-    const updateFindingItems = useCallback(
-        (updateIdx: number, mutateFindingItems: ReportFindingItemList[]) => {
-            setFindingList((list) => {
-                return list.map((item, index) =>
-                    updateIdx === index
-                        ? { ...item, ReportFindingsItemList: mutateFindingItems }
-                        : { ...item },
+    // Category欄位內容更新
+    const onCategoryTextChange = (index: number, value: string) => {
+        setLexiconCategoryList((list) => {
+            return list.map((item, updateIdx) =>
+                updateIdx === index ? { ...item, Text: value } : { ...item },
+            );
+        });
+    };
+
+    // 刪除Category Content
+    const onDeleteCategoryContent = (deleteId: string, index: number) => {
+        if (activeIndex === -1) {
+            setErrorNotification('You do not select any category');
+            return;
+        }
+
+        deleteFormFieldLexiconCategoryContent(deleteId).subscribe({
+            next: () => {
+                setLexiconCategoryList((pre) =>
+                    R.dissocPath([activeIndex, 'CategoryContents', index], pre),
                 );
-            });
-        },
-        [setFindingList],
-    );
+            },
+            error: (err: AxiosError) => {
+                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            },
+        });
+    };
 
-    const updateIsDefaultOnItemList = useCallback(
-        (setDefaultIdx: number) => {
-            setFindingList((list) => {
-                const mutateItems = list[activeIndex].ReportFindingsItemList.map((item, idx) => ({
-                    ...item,
-                    IsDefault: setDefaultIdx === idx ? '1' : '0',
-                }));
-                setItemList(mutateItems);
-                return R.assocPath([activeIndex, 'ReportFindingsItemList'], mutateItems, list);
-            });
-        },
-        [activeIndex, setFindingList],
-    );
+    // 新增Category Content
+    const onAddCategoryContent = (content: string) => {
+        if (activeIndex === -1) {
+            setErrorNotification('You do not select any category');
+            return;
+        }
+
+        const newCategoryContent: CategoryContents = {
+            ContentId: generateUUID(),
+            Content: content,
+            IsDefault: false,
+            DisplayIndex: lexiconCategoryList[activeIndex].CategoryContents.length,
+            ItemId: lexiconCategoryList[activeIndex].Id,
+        };
+
+        addFormFieldLexiconCategoryContent(newCategoryContent).subscribe({
+            next: () => {
+                setLexiconCategoryList((pre) => {
+                    const mutate = R.append(newCategoryContent, pre[activeIndex].CategoryContents);
+                    return R.assocPath([activeIndex, 'CategoryContents'], mutate, pre);
+                });
+            },
+            error: (err: AxiosError) => {
+                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            },
+        });
+    };
+
+    // 修改Category Content
+    const onUpdateCategoryContent = (updateIdx: number, isDefault: boolean) => {
+        if (activeIndex === -1) {
+            setErrorNotification('You do not select any category');
+            return;
+        }
+
+        const updateCategoryContentList = R.assocPath(
+            [activeIndex, 'CategoryContents', updateIdx, 'IsDefault'],
+            isDefault,
+            lexiconCategoryList,
+        ) as FormFieldLexiconCategory[];
+
+        addFormFieldLexiconCategoryContent(
+            R.path([activeIndex, 'CategoryContents', updateIdx], updateCategoryContentList),
+        ).subscribe({
+            next: () => {
+                setLexiconCategoryList(updateCategoryContentList);
+            },
+            error: (err: AxiosError) => {
+                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            },
+        });
+    };
+
+    useEffect(() => {
+        queryFormFieldLexiconCategory();
+    }, [queryFormFieldLexiconCategory]);
 
     const body = (
         <div className={classes.container}>
             <div className={[classes.body, classes.content].join(' ')}>
                 <ViewEditSwitcher
+                    isEditMode={edit}
+                    titleComponent={
+                        <Stack direction="row" alignItems="center">
+                            <Typography variant="h6" component="div">
+                                Section Category
+                            </Typography>
+                            <ViewEditSwitcher
+                                isEditMode={edit}
+                                viewComponent={
+                                    <IconButton onClick={() => setEdit(true)}>
+                                        <FaEdit />
+                                    </IconButton>
+                                }
+                                editComponent={
+                                    <IconButton onClick={() => setEdit(false)}>
+                                        <FcCancel />
+                                    </IconButton>
+                                }
+                            />
+                        </Stack>
+                    }
                     editComponent={
                         <SectionListEdit
-                            ReportTemplate={reportTemplate}
-                            fieldId={fieldId}
-                            onCategoryFocus={onCategoryFocus}
-                            onCancelFocus={onCancelFocus}
+                            lexiconCategoryList={lexiconCategoryList}
+                            activeIndex={activeIndex}
+                            onAddCategory={onAddCategory}
+                            onUpdateCategory={onUpdateCategory}
+                            onDeleteCategory={onDeleteCategory}
+                            onReorderLexiconCategory={onReorderLexiconCategory}
+                            onCategorySelect={onCategorySelect}
                         />
                     }
                     viewComponent={
                         <SectionListView
+                            lexiconCategoryList={lexiconCategoryList}
                             onCategoryTextChange={onCategoryTextChange}
-                            onCategoryFocus={onCategoryFocus}
+                            onCategorySelect={onCategorySelect}
                         />
                     }
                 />
@@ -147,19 +319,28 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
 
             <div className={[classes.body, classes.content].join(' ')}>
                 <ViewEditSwitcher
+                    isEditMode={edit}
+                    titleComponent={
+                        <Stack sx={{ minHeight: '40px' }} direction="row" alignItems="center">
+                            <Typography variant="h6" component="div">
+                                Section Contents
+                            </Typography>
+                        </Stack>
+                    }
                     editComponent={
                         <SectionContentListEdit
                             activeIndex={activeIndex}
-                            findingItems={itemList}
-                            updateFindingItems={updateFindingItems}
-                            updateIsDefaultOnItemList={updateIsDefaultOnItemList}
+                            contentList={lexiconCategoryList?.[activeIndex]?.CategoryContents || []}
+                            onAddCategoryContent={onAddCategoryContent}
+                            onUpdateCategoryContent={onUpdateCategoryContent}
+                            onDeleteCategoryContent={onDeleteCategoryContent}
                         />
                     }
                     viewComponent={
                         <SectionContentListView
                             activeIndex={activeIndex}
-                            findingItems={itemList}
-                            onFindingItemClick={onFindingItemClick}
+                            contentList={lexiconCategoryList?.[activeIndex]?.CategoryContents || []}
+                            onCategoryContentClick={onCategoryContentClick}
                         />
                     }
                 />
@@ -169,9 +350,6 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
 
     const footer = (
         <>
-            <div className={[classes.footer, classes.content, classes.left].join(' ')}>
-                Current Report: {reportTemplate}, Field: {fieldId}
-            </div>
             <div className={[classes.footer, classes.content, classes.right].join(' ')}>
                 <Button disabled={edit} theme="primary" onClick={onConfirmSelect}>
                     Confirm

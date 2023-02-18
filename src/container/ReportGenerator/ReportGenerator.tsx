@@ -25,6 +25,7 @@ import { fetchReportDefine } from '../../axios/api';
 import Modal from '../../components/Modal/Modal';
 import PdfCreator from '../../components/PdfCreator/PdfCreator';
 import { ModalContext } from '../../context/modal-context';
+import { useParentModalMove } from '../../hooks/useModalMove/useParentModalMove';
 import { FormDefineMap, Section } from '../../interface/define';
 import { RepComponent, RepPage } from '../../interface/rep-report';
 import { useReportDataStore } from '../../models/useStore';
@@ -79,6 +80,10 @@ const ReportGenerator: React.FC = () => {
     const [formDefine, setFormDefine] = useRecoilState(selectedReportDefine);
     const [formDefineType, setFormDefineType] = useState<string>('');
 
+    // movable windows
+    const { onRegisterMoveModalId, onModalReadyToMove, onMouseMove, onMouseUp } =
+        useParentModalMove();
+
     useEffect(() => {
         const subscription = fetchReportDefine().subscribe((res) => {
             const templateList = Object.entries(res.data).map(([, v]) => v);
@@ -86,9 +91,9 @@ const ReportGenerator: React.FC = () => {
             setReportTemplateList(templateList.map((v) => v.ReportType));
             setReportTemplateMap(res.data);
             if (!defaultTemplate) return;
+            setFormDefineType('FormDefine');
             setSelectReportTemplate(defaultTemplate.ReportType);
             setFormDefine(JSON.parse(defaultTemplate.FormDefine));
-            setFormDefineType('FormDefine');
             setHeaderPage(JSON.parse(defaultTemplate.Header));
             setFooterPage(JSON.parse(defaultTemplate.Footer));
             simulateReport();
@@ -147,8 +152,6 @@ const ReportGenerator: React.FC = () => {
 
     return (
         <>
-            <ReportDefineAttributeEditor />
-            <ReportComponentSelector attribute={attribute} onSetAttribute={onSetPageAttribute} />
             <ReportActionProvider>
                 <Stack spacing={1} direction="row" className={classes.header}>
                     <IconButton onClick={addNewReportTemplateDefine}>
@@ -236,7 +239,23 @@ const ReportGenerator: React.FC = () => {
                         Save Report Define
                     </Button>
                 </Stack>
-                <div className={classes.reportContainer}>
+                <div
+                    className={classes.reportContainer}
+                    onMouseMove={onMouseMove}
+                    onMouseUp={onMouseUp}
+                >
+                    <ReportDefineAttributeEditor
+                        id="modal1"
+                        ref={(ref) => onRegisterMoveModalId('modal1', ref)}
+                        onModalReadyToMove={onModalReadyToMove}
+                    />
+                    <ReportComponentSelector
+                        id="modal2"
+                        ref={(ref) => onRegisterMoveModalId('modal2', ref)}
+                        attribute={attribute}
+                        onModalReadyToMove={onModalReadyToMove}
+                        onSetAttribute={onSetPageAttribute}
+                    />
                     <div className={classes.reportLayout}>
                         <Box sx={reportPage}>
                             {/* Header */}

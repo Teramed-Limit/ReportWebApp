@@ -1,25 +1,22 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import TreeView from '@mui/lab/TreeView';
-import { Stack } from '@mui/material';
-import { BsCardImage } from 'react-icons/bs';
-import { FaMousePointer } from 'react-icons/fa';
-import { IoMdText } from 'react-icons/io';
-import { useRecoilState } from 'recoil';
+import { lighten, Stack, Tab, Tabs } from '@mui/material';
+import { styled } from '@mui/material/styles';
 
-import { reportSelectedTool } from '../../../../atom/report-generator';
 import AttributeList from '../../../../components/AttributeList/AttributeList';
 import ColorPickerButton from '../../../../components/ColorPickerButton/ColorPickerButton';
-import StyledTreeItem from '../../../../components/StyledTreeItem/StyledTreeItem';
+import TabPanel from '../../../../components/TabPanel/TabPanel';
 import BaseNativeSelection from '../../../../components/UI/BaseNativeSelection/BaseNativeSelection';
+import { useChildModalMove } from '../../../../hooks/useModalMove/useChildModalMove';
+import { ModalMoveEvent } from '../../../../hooks/useModalMove/useParentModalMove';
 import { RepComponent } from '../../../../interface/rep-report';
-import { ReportComponentType } from '../../ReportComponent/report-component-mapper';
+import ComponentSelector from '../../components/ComponentSelector/ComponentSelector';
 import classes from '../ReportDefineAttributeEditor/ReportDefineAttributeEditor.module.scss';
 
 interface Props {
+    id: string;
     attribute?: RepComponent;
+    onModalReadyToMove: (id: string) => void;
     onSetAttribute: (
         uuid: string,
         attrPath: (number | string)[],
@@ -27,126 +24,139 @@ interface Props {
     ) => void;
 }
 
-const ReportComponentSelector = ({ attribute = undefined, onSetAttribute }: Props) => {
-    const [activeTool, setSelectedTool] = useRecoilState(reportSelectedTool);
-    const [modalPosition, setModalPosition] = useState({
-        left: 675,
-        top: 25,
-    });
-    const canMoveRef = useRef(false);
+const StyleTabs = styled(Tabs)({
+    borderBottom: '1px solid #e8e8e8',
+    '& .MuiTabs-indicator': {
+        backgroundColor: 'mediumslateblue',
+    },
+});
 
-    const handleSelect = (event: React.SyntheticEvent, nodeId: string) => {
-        setSelectedTool(nodeId as ReportComponentType);
-    };
+const StyleTab = styled((props: { label: string }) => <Tab disableRipple {...props} />)(
+    ({ theme }) => ({
+        textTransform: 'none',
+        minWidth: 0,
+        marginRight: theme.spacing(1),
 
-    return (
-        <Stack
-            direction="column"
-            style={{ transform: `translate(${modalPosition.top}px,${modalPosition.left}px)` }}
-            className={classes.container}
-        >
-            <div
-                className={classes.moveable}
-                onMouseDown={() => (canMoveRef.current = true)}
-                onMouseUp={() => (canMoveRef.current = false)}
-                onMouseLeave={() => (canMoveRef.current = false)}
-                onMouseMove={(e) => {
-                    if (!canMoveRef.current) return;
-                    setModalPosition((prev) => ({
-                        left: prev.left + e.movementY,
-                        top: prev.top + e.movementX,
-                    }));
+        color: lighten('#7B68EE', 0.5),
+        fontSize: '0.875em',
+        fontWeight: 'bold',
+        fontFamily: ['Roboto', 'Helvetica', 'Arial', 'Roboto', 'sans-serif'].join(','),
+        '&:hover': {
+            color: lighten('#7B68EE', 0.2),
+        },
+        '&.Mui-selected': {
+            color: 'mediumslateblue',
+        },
+        '&.Mui-focusVisible': {
+            color: 'mediumslateblue',
+        },
+    }),
+);
+
+const ReportComponentSelector = React.forwardRef<ModalMoveEvent, Props>(
+    ({ id, attribute = undefined, onModalReadyToMove, onSetAttribute }: Props, ref) => {
+        const { modalPosition, moveElementRef, onMouseDown, onMouseUp } = useChildModalMove(ref, {
+            left: 0,
+            top: 0,
+        });
+
+        const [value, setValue] = React.useState(0);
+        const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+            setValue(newValue);
+        };
+
+        return (
+            <Stack
+                ref={moveElementRef}
+                direction="column"
+                style={{
+                    position: 'absolute',
+                    left: `${modalPosition.left}px`,
+                    top: `${modalPosition.top}px`,
                 }}
-            />
-            <Stack className={classes.title}>
-                <div>Component</div>
-            </Stack>
-            <TreeView
-                sx={{ height: '100%', width: '200px', padding: '8px 8px 8px 0' }}
-                // defaultExpanded={['Categories']}
-                defaultCollapseIcon={<ArrowDropDownIcon />}
-                defaultExpandIcon={<ArrowRightIcon />}
-                defaultEndIcon={<div style={{ width: 24 }} />}
-                selected={activeTool}
-                onNodeSelect={handleSelect}
+                className={classes.container}
             >
-                <StyledTreeItem
-                    nodeId={ReportComponentType.General}
-                    labelText="General"
-                    labelIcon={FaMousePointer}
+                <div
+                    className={classes.moveable}
+                    onMouseDown={(e) => {
+                        onMouseDown(e);
+                        onModalReadyToMove(id);
+                    }}
+                    onMouseUp={onMouseUp}
                 />
-                <StyledTreeItem
-                    nodeId={ReportComponentType.Label}
-                    labelText="Label"
-                    labelIcon={IoMdText}
-                />
-                <StyledTreeItem
-                    nodeId={ReportComponentType.Image}
-                    labelText="Image"
-                    labelIcon={BsCardImage}
-                />
-                <StyledTreeItem
-                    nodeId={ReportComponentType.DynamicLabel}
-                    labelText="Dynamic Label"
-                    labelIcon={IoMdText}
-                />
-            </TreeView>
-            <AttributeList
-                attribute={attribute || {}}
-                setAttribute={(attrName: (string | number)[], attrValue: any) => {
-                    if (!attribute?.uuid) return;
-                    onSetAttribute(attribute.uuid, attrName, attrValue);
-                }}
-                filterType="exclude"
-                excludeAttribute={['componentType', 'x', 'y', 'valueType', 'uuid']}
-                attributeComponentMapper={{
-                    fontColor: [
-                        {
-                            name: '',
-                            component: ColorPickerButton,
-                        },
-                    ],
-                    fontName: [
-                        {
-                            name: '',
-                            component: BaseNativeSelection,
-                            props: {
-                                options: [
-                                    { label: 'Microsoft JhengHei', value: 'Microsoft JhengHei' },
-                                    { label: 'Arial', value: 'Arial' },
+
+                <Stack
+                    sx={{ width: '100%', height: '100%', p: 1, overflow: 'hidden' }}
+                    direction="column"
+                >
+                    <StyleTabs value={value} onChange={handleChange}>
+                        <StyleTab label="Component"></StyleTab>
+                        <StyleTab label="Attribute" />
+                        <StyleTab label="Page" />
+                    </StyleTabs>
+                    <TabPanel value={value} index={0}>
+                        <ComponentSelector />
+                    </TabPanel>
+                    <TabPanel value={value} index={1}>
+                        <AttributeList
+                            attribute={attribute || {}}
+                            setAttribute={(attrName: (string | number)[], attrValue: any) => {
+                                if (!attribute?.uuid) return;
+                                onSetAttribute(attribute.uuid, attrName, attrValue);
+                            }}
+                            filterType="exclude"
+                            excludeAttribute={['componentType', 'x', 'y', 'valueType', 'uuid']}
+                            attributeComponentMapper={{
+                                fontColor: [
+                                    {
+                                        name: '',
+                                        component: ColorPickerButton,
+                                    },
                                 ],
-                            },
-                        },
-                    ],
-                    fontWeight: [
-                        {
-                            name: '',
-                            component: BaseNativeSelection,
-                            props: {
-                                options: [
-                                    { label: 'Thin', value: 200 },
-                                    { label: 'Normal', value: 400 },
-                                    { label: 'Bold', value: 800 },
+                                fontName: [
+                                    {
+                                        name: '',
+                                        component: BaseNativeSelection,
+                                        props: {
+                                            options: [
+                                                { label: 'Noto Sans TC', value: 'Noto Sans TC' },
+                                                { label: 'Arial', value: 'Arial' },
+                                            ],
+                                        },
+                                    },
                                 ],
-                            },
-                        },
-                    ],
-                    fontStyle: [
-                        {
-                            name: '',
-                            component: BaseNativeSelection,
-                            props: {
-                                options: [
-                                    { label: 'Normal', value: 'normal' },
-                                    // { label: 'Italic', value: 'italic' },
+                                fontWeight: [
+                                    {
+                                        name: '',
+                                        component: BaseNativeSelection,
+                                        props: {
+                                            options: [
+                                                { label: 'Thin', value: 200 },
+                                                { label: 'Normal', value: 400 },
+                                                { label: 'Bold', value: 800 },
+                                            ],
+                                        },
+                                    },
                                 ],
-                            },
-                        },
-                    ],
-                }}
-            />
-        </Stack>
-    );
-};
+                                fontStyle: [
+                                    {
+                                        name: '',
+                                        component: BaseNativeSelection,
+                                        props: {
+                                            options: [
+                                                { label: 'Normal', value: 'normal' },
+                                                // { label: 'Italic', value: 'italic' },
+                                            ],
+                                        },
+                                    },
+                                ],
+                            }}
+                        />
+                    </TabPanel>
+                </Stack>
+            </Stack>
+        );
+    },
+);
 
 export default ReportComponentSelector;

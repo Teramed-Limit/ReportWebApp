@@ -1,19 +1,13 @@
-import React, { CSSProperties, useContext, useRef } from 'react';
+import React, { CSSProperties } from 'react';
 
-import { Box, Stack } from '@mui/material';
+import { Box } from '@mui/material';
 import { observer } from 'mobx-react';
 
-import Button from '../../../../components/UI/Button/Button';
-import { NotificationContext } from '../../../../context/notification-context';
-import { BaseActionParams } from '../../../../interface/action';
 import { Field } from '../../../../interface/field';
 import FormSectionField from '../../../../layout/FormSectionField/FormSectionField';
 import { useReportDataStore } from '../../../../models/useStore';
-import {
-    fieldButtonBar,
-    fieldGutter,
-    fieldSectionContainer,
-} from '../../../../styles/report/style';
+import { fieldGutter, fieldSectionContainer } from '../../../../styles/report/style';
+import ButtonBar from '../../button-bar/ButtonBar/ButtonBar';
 import { noBorderField } from '../../field/field-type';
 import ReportDynamicField from '../../ReportDynamicField/ReportDynamicField';
 import FormSectionFieldLabel from '../FormSectionFieldLabel/FormSectionFieldLabel';
@@ -35,51 +29,12 @@ const FormSectionFieldContainer = ({
     prefixComp,
     suffixComp,
 }: FormSectionFieldProps) => {
-    const actionDispatcher = useContext(actionContext);
-    const { openNotification } = useContext(NotificationContext);
-    const inputRef = useRef();
     const { formState, formData, modifiable } = useReportDataStore();
-
     const { isDirty, isValid, errorMessage } = formState.get(field.id) || {
         isDirty: false,
         isValid: false,
         errorMessage: '',
     };
-
-    const executeAction = (action: string, actionParams: BaseActionParams) => {
-        if (!actionDispatcher[action]) {
-            console.error('Action not defined');
-            return;
-        }
-
-        actionDispatcher[action]({
-            ...actionParams,
-            ref: inputRef,
-            formData: formData.toJSON(),
-            field,
-            openNotification,
-        });
-    };
-
-    const buttonBarComponent =
-        field.buttonBar === undefined ? null : (
-            <Stack sx={fieldButtonBar} spacing={1}>
-                {field.buttonBar
-                    .filter((buttonMeta) => !buttonMeta.hide)
-                    .map((buttonMeta) => (
-                        <Button
-                            key={buttonMeta.id}
-                            theme="primary"
-                            disabled={buttonMeta?.disable !== 'never' && !modifiable}
-                            onClick={() =>
-                                executeAction(buttonMeta.action, buttonMeta.actionParams)
-                            }
-                        >
-                            {buttonMeta.label}
-                        </Button>
-                    ))}
-            </Stack>
-        );
 
     return (
         <Box
@@ -112,10 +67,16 @@ const FormSectionFieldContainer = ({
                 errorMessage={errorMessage}
                 disabled={!modifiable}
                 noBorder={noBorderField[field.type]}
-                buttonBarComponent={buttonBarComponent}
+                buttonBarComponent={
+                    <ButtonBar
+                        field={field}
+                        formData={formData}
+                        modifiable={modifiable}
+                        actionContext={actionContext}
+                    />
+                }
                 fieldComponent={
                     <ReportDynamicField
-                        ref={inputRef}
                         field={field}
                         customValueChange={customValueChange}
                         customValueGetter={customValueGetter}

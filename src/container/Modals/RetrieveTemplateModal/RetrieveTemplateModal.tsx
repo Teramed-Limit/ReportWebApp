@@ -7,12 +7,12 @@ import { BiError } from 'react-icons/bi';
 import { Subject } from 'rxjs';
 import { debounceTime, first, map } from 'rxjs/operators';
 
-import { deleteFindingsTemplate, retrieveFindingsTemplate } from '../../../axios/api';
+import { deleteFieldLexicon, getFieldLexicon } from '../../../axios/api';
 import GridTable from '../../../components/GridTable/GridTable';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
-import { TemplateFinding } from '../../../interface/report-finding';
+import { FormFieldLexicon } from '../../../interface/form-field-lexicon-category';
 import { useReportDataStore } from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
 import classes from './RetrieveTemplateModal.module.scss';
@@ -29,25 +29,29 @@ const colDef: ColDef[] = [
     { field: 'DisplayIndex', headerName: 'DisplayIndex', flex: 1, hide: true },
 ];
 
-const RetrieveTemplateModal = () => {
+interface Props {
+    fieldId: string;
+}
+
+const RetrieveTemplateModal = ({ fieldId }: Props) => {
     const setModal = useContext(ModalContext);
-    const { valueChanged, reportTemplate, findings } = useReportDataStore();
+    const { valueChanged, reportTemplate, formData } = useReportDataStore();
     const searchTextSubject$ = useRef(new Subject<string>());
 
-    const [selectedItem, setSelectedItem] = useState<TemplateFinding>();
+    const [selectedItem, setSelectedItem] = useState<FormFieldLexicon>();
     const [hintVisible, setHintVisible] = useState<boolean>(false);
     const [searchText, setSearchText] = useState('');
-    const [itemList, setItemList] = useState<TemplateFinding[]>([]);
-    const [oriItemList, setOriItemList] = useState<TemplateFinding[]>([]);
+    const [itemList, setItemList] = useState<FormFieldLexicon[]>([]);
+    const [oriItemList, setOriItemList] = useState<FormFieldLexicon[]>([]);
 
     useEffect(() => {
-        retrieveFindingsTemplate(reportTemplate)
+        getFieldLexicon(reportTemplate, fieldId)
             .pipe(first())
             .subscribe((res) => {
                 setItemList(res.data);
                 setOriItemList(res.data);
             });
-    }, [reportTemplate]);
+    }, [fieldId, reportTemplate]);
 
     useEffect(() => {
         setHintVisible(isEmptyOrNil(reportTemplate));
@@ -76,10 +80,10 @@ const RetrieveTemplateModal = () => {
     };
 
     const onInsert = () => {
-        if (isEmptyOrNil(findings)) {
-            valueChanged('Findings', `${selectedItem?.Content}`);
+        if (isEmptyOrNil(formData.get(fieldId))) {
+            valueChanged(fieldId, `${selectedItem?.Content}`);
         } else {
-            valueChanged('Findings', `${findings}\r\n${selectedItem?.Content}`);
+            valueChanged(fieldId, `${formData.get(fieldId)}\n${selectedItem?.Content}`);
         }
         onClose();
     };
@@ -94,7 +98,7 @@ const RetrieveTemplateModal = () => {
             return;
         }
 
-        deleteFindingsTemplate(selectedItem.Number).subscribe((res: AxiosResponse) => {
+        deleteFieldLexicon(selectedItem.Number).subscribe((res: AxiosResponse) => {
             if (res.status === 200) {
                 const newItemList = itemList.filter((item) => item.Number !== selectedItem.Number);
                 setSearchText('');
@@ -153,14 +157,7 @@ const RetrieveTemplateModal = () => {
     );
 
     return (
-        <Modal
-            open
-            width="80%"
-            height="80%"
-            headerTitle="Findings Template"
-            body={body}
-            footer={footer}
-        />
+        <Modal open width="80%" height="80%" headerTitle="Template" body={body} footer={footer} />
     );
 };
 

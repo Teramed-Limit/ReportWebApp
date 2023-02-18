@@ -1,20 +1,17 @@
-import React, { CSSProperties, useContext, useRef } from 'react';
+import React, { CSSProperties } from 'react';
 
 import { Box, Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 
-import Button from '../../components/UI/Button/Button';
+import ButtonBar from '../../container/Report/button-bar/ButtonBar/ButtonBar';
 import { noBorderField } from '../../container/Report/field/field-type';
 import FormSectionFieldLabel from '../../container/Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
 import ReportDynamicField from '../../container/Report/ReportDynamicField/ReportDynamicField';
-import { NotificationContext } from '../../context/notification-context';
-import { BaseActionParams } from '../../interface/action';
 import { CompositeField } from '../../interface/composite-field';
 import { Field } from '../../interface/field';
 import { useReportDataStore } from '../../models/useStore';
 import {
     compositeFieldSpacing,
-    fieldButtonBar,
     fieldFlex,
     fieldGutter,
     fieldSectionContainer,
@@ -40,48 +37,6 @@ const FormSectionCompositeField = ({
     suffixComp,
 }: FormSectionFieldProps) => {
     const { formState, formData, modifiable } = useReportDataStore();
-
-    const actionDispatcher = useContext(actionContext);
-    const { openNotification } = useContext(NotificationContext);
-    const inputRef = useRef();
-
-    const executeAction = (action: string, actionParams: BaseActionParams) => {
-        if (!actionDispatcher[action]) {
-            console.error('Action not defined');
-            return;
-        }
-
-        actionDispatcher[action]({
-            ...actionParams,
-            ref: inputRef,
-            formData: formData.toJSON(),
-            compositeField,
-            openNotification,
-        });
-    };
-
-    const buttonBarComponent = (field: Field) =>
-        field.buttonBar === undefined ? null : (
-            <Stack sx={fieldButtonBar} spacing={1}>
-                {field.buttonBar
-                    .filter((buttonMeta) => !buttonMeta.hide)
-                    .map((buttonMeta) => (
-                        <Button
-                            key={buttonMeta.id}
-                            theme="primary"
-                            disabled={buttonMeta?.disable !== 'never' && !modifiable}
-                            onClick={() =>
-                                executeAction(buttonMeta.action, {
-                                    ...buttonMeta.actionParams,
-                                    field,
-                                })
-                            }
-                        >
-                            {buttonMeta.label}
-                        </Button>
-                    ))}
-            </Stack>
-        );
 
     return (
         <Box
@@ -125,7 +80,14 @@ const FormSectionCompositeField = ({
                             readOnly={!!field.readOnly}
                             isDirty={isDirty}
                             isValid={isValid}
-                            buttonBarComponent={buttonBarComponent(field)}
+                            buttonBarComponent={
+                                <ButtonBar
+                                    field={field}
+                                    formData={formData}
+                                    modifiable={modifiable}
+                                    actionContext={actionContext}
+                                />
+                            }
                             errorMessage={errorMessage}
                             disabled={!modifiable}
                             noBorder={noBorderField[field.type]}

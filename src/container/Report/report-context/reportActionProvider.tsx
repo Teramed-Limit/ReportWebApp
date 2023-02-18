@@ -2,7 +2,6 @@ import React, { useContext } from 'react';
 
 import { ModalContext } from '../../../context/modal-context';
 import { BaseActionParams } from '../../../interface/action';
-import { FindingTemplateProvider } from '../../Modals/FillInDetailsModal/context/finding-template-context';
 import FillInDetailsModal from '../../Modals/FillInDetailsModal/FillInDetailsModal';
 import QualityIndicatorModal from '../../Modals/QualityIndicatorModal/QualityIndicatorModal';
 import RetrieveTemplateModal from '../../Modals/RetrieveTemplateModal/RetrieveTemplateModal';
@@ -18,12 +17,8 @@ interface Props {
 
 const modalMapper = {
     colonoscopyQualityIndicators: () => <QualityIndicatorModal />,
-    retrieveTemplate: () => <RetrieveTemplateModal />,
-    fillInDetails: (actionParams) => (
-        <FindingTemplateProvider>
-            <FillInDetailsModal fieldId={actionParams.field.id} />
-        </FindingTemplateProvider>
-    ),
+    retrieveTemplate: (actionParams) => <RetrieveTemplateModal fieldId={actionParams.field.id} />,
+    fillInDetails: (actionParams) => <FillInDetailsModal fieldId={actionParams.field.id} />,
 };
 
 export function ReportActionProvider(props: Props) {

@@ -1,15 +1,28 @@
-import React, { useContext } from 'react';
-
-import { FindingTemplateContext } from '../context/finding-template-context';
+import React from 'react';
 
 interface Props {
+    isEditMode: boolean;
+    titleComponent?: JSX.Element;
     viewComponent: JSX.Element;
     editComponent: JSX.Element;
 }
 
-const ViewEditSwitcher = ({ viewComponent, editComponent }: Props) => {
-    const { edit } = useContext(FindingTemplateContext);
-    return <>{edit ? editComponent : viewComponent}</>;
+const ViewEditSwitcher = ({ isEditMode, titleComponent, viewComponent, editComponent }: Props) => {
+    return (
+        <>
+            {isEditMode ? (
+                <>
+                    {titleComponent}
+                    {editComponent}
+                </>
+            ) : (
+                <>
+                    {titleComponent}
+                    {viewComponent}
+                </>
+            )}
+        </>
+    );
 };
 
 export default ViewEditSwitcher;

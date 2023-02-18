@@ -19,7 +19,7 @@ const ReportLabelComponentEvent = (): {
             valueType: 'string',
             value: 'Label',
             fontSize: 16,
-            fontName: 'Microsoft JhengHei',
+            fontName: 'Noto Sans TC',
             fontStyle: 'normal',
             fontColor: 'black',
             fontWeight: 400,

@@ -13,8 +13,16 @@ export const DefineModel = types
         loading: types.optional(types.boolean, true),
         formDefineMap: types.frozen<FormDefineMap>({}),
         formDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
-        headerDefine: types.optional(types.frozen<RepPage>(), { name: 'header', components: {} }),
-        footerDefine: types.optional(types.frozen<RepPage>(), { name: 'footer', components: {} }),
+        headerDefine: types.optional(types.frozen<RepPage>(), {
+            name: 'header',
+            height: 100,
+            components: {},
+        }),
+        footerDefine: types.optional(types.frozen<RepPage>(), {
+            name: 'footer',
+            height: 100,
+            components: {},
+        }),
         pdfDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
         normalizeFields: types.map(types.frozen<any>()),
     })

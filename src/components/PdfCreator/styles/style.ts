@@ -10,7 +10,7 @@ export const styles = ReactPDF.StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: 'white',
         paddingBottom: footerHeight,
-        fontFamily: 'Microsoft JhengHei',
+        fontFamily: 'Noto Sans TC',
     },
     pageNumber: {
         position: 'absolute',
@@ -37,9 +37,6 @@ export const styles = ReactPDF.StyleSheet.create({
     headerReport: {
         fontSize: 16,
         color: '#0070C0',
-    },
-    dividerContainer: {
-        padding: '0 14px',
     },
     divider: {
         margin: '2px 0',
@@ -103,9 +100,9 @@ export const styles = ReactPDF.StyleSheet.create({
     },
     // Image
     gallery: {
-        padding: '0 14px',
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-around',
         flexWrap: 'wrap',
         width: '100%',
         maxWidth: '100%',

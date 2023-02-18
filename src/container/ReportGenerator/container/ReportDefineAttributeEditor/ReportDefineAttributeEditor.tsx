@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React from 'react';
 
 import { Stack } from '@mui/material';
 import * as R from 'ramda';
@@ -12,6 +12,8 @@ import {
 import AttributeList from '../../../../components/AttributeList/AttributeList';
 import ColorPickerButton from '../../../../components/ColorPickerButton/ColorPickerButton';
 import BaseNativeSelection from '../../../../components/UI/BaseNativeSelection/BaseNativeSelection';
+import { useChildModalMove } from '../../../../hooks/useModalMove/useChildModalMove';
+import { ModalMoveEvent } from '../../../../hooks/useModalMove/useParentModalMove';
 import FieldTypeSelection from '../../attribute/Component/FieldTypeSelection/FieldTypeSelection';
 import ValidateSelection from '../../attribute/Component/ValidateSelection/ValidateSelection';
 import { CSSStyle } from '../../attribute/style/CSSStyle';
@@ -29,82 +31,90 @@ const rowColumnSelectionComp = (name) => ({
     },
 });
 
-const ReportDefineAttributeEditor = () => {
-    const attributePath = useRecoilValue(selectedAttributePath);
-    const setFormDefine = useSetRecoilState(selectedReportDefine);
-    const [attribute, setAttribute] = useRecoilState(selectedAttribute);
-    const [modalPosition, setModalPosition] = useState({
-        left: 70,
-        top: 25,
-    });
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+interface Props {
+    id: string;
+    onModalReadyToMove: (id: string) => void;
+}
 
-    const canMoveRef = useRef(false);
+const ReportDefineAttributeEditor = React.forwardRef<ModalMoveEvent, Props>(
+    ({ id, onModalReadyToMove }: Props, ref) => {
+        const attributePath = useRecoilValue(selectedAttributePath);
+        const setFormDefine = useSetRecoilState(selectedReportDefine);
+        const [attribute, setAttribute] = useRecoilState(selectedAttribute);
+        const { modalPosition, moveElementRef, onMouseDown, onMouseUp } = useChildModalMove(ref, {
+            left: 0,
+            top: 0,
+        });
 
-    const onSetAttribute = (
-        attrPath: (number | string)[],
-        attrValue: number | string | boolean,
-    ) => {
-        setAttribute((pre) => R.assocPath(attrPath, attrValue, pre));
-        setFormDefine((pre) => R.assocPath([...attributePath, ...attrPath], attrValue, pre));
-    };
+        const onSetAttribute = (
+            attrPath: (number | string)[],
+            attrValue: number | string | boolean,
+        ) => {
+            setAttribute((pre) => R.assocPath(attrPath, attrValue, pre));
+            setFormDefine((pre) => R.assocPath([...attributePath, ...attrPath], attrValue, pre));
+        };
 
-    return (
-        <Stack
-            direction="column"
-            style={{ transform: `translate(${modalPosition.top}px,${modalPosition.left}px)` }}
-            className={classes.container}
-        >
-            <div
-                className={classes.moveable}
-                onMouseDown={() => (canMoveRef.current = true)}
-                onMouseUp={() => (canMoveRef.current = false)}
-                onMouseLeave={() => (canMoveRef.current = false)}
-                onMouseMove={(e) => {
-                    if (!canMoveRef.current) return;
-                    setModalPosition((prev) => ({
-                        left: prev.left + e.movementY,
-                        top: prev.top + e.movementX,
-                    }));
+        return (
+            <Stack
+                ref={moveElementRef}
+                direction="column"
+                style={{
+                    position: 'absolute',
+                    left: `${modalPosition.left}px`,
+                    top: `${modalPosition.top}px`,
                 }}
-            />
-            <AttributeList
-                attribute={attribute}
-                attributeComponentMapper={{
-                    orientation: [rowColumnSelectionComp('')],
-                    compositeOrientation: [rowColumnSelectionComp('')],
-                    type: [
-                        {
-                            name: '',
-                            component: FieldTypeSelection,
-                            props: { onValueChange: onSetAttribute },
-                        },
-                        {
-                            name: 'validate',
-                            component: ValidateSelection,
-                            props: { onValueChange: onSetAttribute },
-                        },
-                        {
-                            name: 'optionSource',
-                            component: BaseNativeSelection,
-                            props: { options: [{ label: 'Http', value: 'http' }] },
-                        },
-                    ],
-                    color: [
-                        {
-                            name: '',
-                            component: ColorPickerButton,
-                        },
-                    ],
-                }}
-                attributeConstructorMapper={{
-                    validate: new RequiredValidateAttribute(),
-                    labelStyle: new CSSStyle(),
-                    valueStyle: new CSSStyle(),
-                }}
-                setAttribute={onSetAttribute}
-            />
-        </Stack>
-    );
-};
+                className={classes.container}
+            >
+                <div
+                    className={classes.moveable}
+                    onMouseDown={(e) => {
+                        onMouseDown(e);
+                        onModalReadyToMove(id);
+                    }}
+                    onMouseUp={(e) => {
+                        onMouseUp(e);
+                    }}
+                />
+                <AttributeList
+                    attribute={attribute}
+                    attributeComponentMapper={{
+                        orientation: [rowColumnSelectionComp('')],
+                        compositeOrientation: [rowColumnSelectionComp('')],
+                        type: [
+                            {
+                                name: '',
+                                component: FieldTypeSelection,
+                                props: { onValueChange: onSetAttribute },
+                            },
+                            {
+                                name: 'validate',
+                                component: ValidateSelection,
+                                props: { onValueChange: onSetAttribute },
+                            },
+                            {
+                                name: 'optionSource',
+                                component: BaseNativeSelection,
+                                props: { options: [{ label: 'Http', value: 'http' }] },
+                            },
+                        ],
+                        color: [
+                            {
+                                name: '',
+                                component: ColorPickerButton,
+                            },
+                        ],
+                    }}
+                    attributeConstructorMapper={{
+                        validate: new RequiredValidateAttribute(),
+                        labelStyle: new CSSStyle(),
+                        valueStyle: new CSSStyle(),
+                    }}
+                    setAttribute={onSetAttribute}
+                />
+            </Stack>
+        );
+    },
+);
 
 export default ReportDefineAttributeEditor;

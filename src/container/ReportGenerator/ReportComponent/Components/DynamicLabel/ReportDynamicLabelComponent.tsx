@@ -63,7 +63,7 @@ const ReportDynamicLabelComponent = React.forwardRef<HTMLSelectElement, Props>(
                         width: autoWidth,
                         lineHeight: `${component.fontSize}px`,
                         fontSize: `${component.fontSize}px`,
-                        fontFamily: component.fontName || 'Microsoft JhengHei',
+                        fontFamily: component.fontName || 'Noto Sans TC',
                         fontWeight: component.fontWeight,
                         fontStyle: component.fontStyle,
                         color: component.fontColor,

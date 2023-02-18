@@ -63,9 +63,7 @@ const PDFCustomHeader = ({ components, children }: Props) => {
                     }
                 })}
             </ReactPDF.View>
-            <ReactPDF.View style={styles.dividerContainer} fixed>
-                <ReactPDF.View style={styles.divider} />
-            </ReactPDF.View>
+            <ReactPDF.View fixed style={styles.divider} />
             <ReactPDF.View fixed>{children}</ReactPDF.View>
         </>
     );

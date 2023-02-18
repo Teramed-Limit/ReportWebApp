@@ -19,7 +19,7 @@ const ReportDynamicLabelComponentEvent = (): {
             valueType: 'string',
             value: '{PatientId}',
             fontSize: 16,
-            fontName: 'Microsoft JhengHei',
+            fontName: 'Noto Sans TC',
             fontStyle: 'normal',
             fontColor: 'black',
             fontWeight: 400,

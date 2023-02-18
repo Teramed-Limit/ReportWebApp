@@ -2,36 +2,31 @@ import React from 'react';
 
 import { Divider, List, ListItem, ListItemText } from '@mui/material';
 
-import { ReportFindingItemList } from '../../../../../interface/report-finding';
+import { CategoryContents } from '../../../../../interface/form-field-lexicon-category';
 import classes from './SectionContentListView.module.scss';
 
 interface Props {
     activeIndex: number;
-    findingItems: ReportFindingItemList[];
-    onFindingItemClick: (value: string) => void;
+    contentList: CategoryContents[];
+    onCategoryContentClick: (value: string) => void;
 }
 
-const SectionContentListView = ({ activeIndex, findingItems, onFindingItemClick }: Props) => {
+const SectionContentListView = ({ activeIndex, contentList, onCategoryContentClick }: Props) => {
     return (
         <>
-            <div className={classes.section}>Sections Content List</div>
             {activeIndex === -1 ? (
                 <div className={classes.emptyList}>Please select a section</div>
             ) : (
                 <List component="nav" className={classes.list}>
-                    {findingItems.map((item) => (
+                    {contentList.map((item) => (
                         <React.Fragment key={item.Content}>
                             <ListItem
                                 button
                                 className={classes.item}
-                                onClick={() => onFindingItemClick(item.Content)}
+                                onClick={() => onCategoryContentClick(item.Content)}
                             >
                                 <ListItemText primary={item.Content} />
-                                {item.IsDefault === '1' ? (
-                                    <span className={classes.default}>default</span>
-                                ) : (
-                                    ''
-                                )}
+                                {item.IsDefault && <span className={classes.default}>default</span>}
                             </ListItem>
                             <Divider />
                         </React.Fragment>

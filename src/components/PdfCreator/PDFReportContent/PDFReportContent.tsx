@@ -22,59 +22,57 @@ interface Props {
     formData: DocumentData;
     diagramUrl: string;
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
+    children?: React.ReactNode;
 }
 
-export const margin = 0.25;
-
-const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Props) => {
+const PDFReportContent = ({ formSections, formData, diagramUrl, children, getOptions }: Props) => {
     return (
-        <ReactPDF.View style={{ margin: `${margin}%`, padding: '0 14px' }}>
-            <ReactPDF.View style={reportPage as Style}>
-                {formSections
-                    .filter((section: Section) => !section.hide)
-                    .map((section: Section) => (
-                        <PDFReportSection key={section.id} section={section}>
-                            {section.subSections.map((subSection: SubSection) => (
-                                <PDFReportSubSection key={subSection.id} subSection={subSection}>
-                                    {subSection.fields.map((field: Field) => {
-                                        switch (field.type) {
-                                            case FormFieldType.Array:
-                                                return (
-                                                    <PDFArrayField
-                                                        key={field.id}
-                                                        field={field as ArrayField}
-                                                        formData={formData}
-                                                        diagramUrl={diagramUrl}
-                                                        getOptions={getOptions}
-                                                    />
-                                                );
-                                            case FormFieldType.Composite:
-                                                return (
-                                                    <PDFCompositeField
-                                                        key={field.id}
-                                                        field={field as CompositeField}
-                                                        formData={formData}
-                                                        diagramUrl={diagramUrl}
-                                                        getOptions={getOptions}
-                                                    />
-                                                );
-                                            default:
-                                                return (
-                                                    <PDFField
-                                                        key={field.id}
-                                                        field={field}
-                                                        value={formData[field.id]}
-                                                        diagramUrl={diagramUrl}
-                                                        getOptions={getOptions}
-                                                    />
-                                                );
-                                        }
-                                    })}
-                                </PDFReportSubSection>
-                            ))}
-                        </PDFReportSection>
-                    ))}
-            </ReactPDF.View>
+        <ReactPDF.View style={{ ...(reportPage as Style), padding: '0 14px' }}>
+            {formSections
+                .filter((section: Section) => !section.hide)
+                .map((section: Section) => (
+                    <PDFReportSection key={section.id} section={section}>
+                        {section.subSections.map((subSection: SubSection) => (
+                            <PDFReportSubSection key={subSection.id} subSection={subSection}>
+                                {subSection.fields.map((field: Field) => {
+                                    switch (field.type) {
+                                        case FormFieldType.Array:
+                                            return (
+                                                <PDFArrayField
+                                                    key={field.id}
+                                                    field={field as ArrayField}
+                                                    formData={formData}
+                                                    diagramUrl={diagramUrl}
+                                                    getOptions={getOptions}
+                                                />
+                                            );
+                                        case FormFieldType.Composite:
+                                            return (
+                                                <PDFCompositeField
+                                                    key={field.id}
+                                                    field={field as CompositeField}
+                                                    formData={formData}
+                                                    diagramUrl={diagramUrl}
+                                                    getOptions={getOptions}
+                                                />
+                                            );
+                                        default:
+                                            return (
+                                                <PDFField
+                                                    key={field.id}
+                                                    field={field}
+                                                    value={formData[field.id]}
+                                                    diagramUrl={diagramUrl}
+                                                    getOptions={getOptions}
+                                                />
+                                            );
+                                    }
+                                })}
+                            </PDFReportSubSection>
+                        ))}
+                    </PDFReportSection>
+                ))}
+            {children}
         </ReactPDF.View>
     );
 };

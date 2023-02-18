@@ -36,7 +36,7 @@ const ReportLabelComponent = React.forwardRef<HTMLDivElement, Props>(
                     ...style,
                     lineHeight: `${component.fontSize}px`,
                     fontSize: `${component.fontSize}px`,
-                    fontFamily: component.fontName || 'Microsoft JhengHei',
+                    fontFamily: component.fontName || 'Noto Sans TC',
                     fontWeight: component.fontWeight,
                     fontStyle: component.fontStyle,
                     color: component.fontColor,

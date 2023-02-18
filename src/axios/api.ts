@@ -7,8 +7,13 @@ import { CodeListMap } from '../interface/code-list';
 import { FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { Diagram } from '../interface/diagram';
 import { DocumentData } from '../interface/document-data';
+import {
+    CategoryContents,
+    FormFieldLexicon,
+    FormFieldLexiconCategory,
+    ReorderFormFieldLexiconCategoryBody,
+} from '../interface/form-field-lexicon-category';
 import { HkcctCode } from '../interface/hkcct';
-import { ReportFinding, TemplateFinding } from '../interface/report-finding';
 import { ReportTimelineData } from '../interface/report-timeline';
 import { StudyData } from '../interface/study-data';
 import { SystemConfig } from '../interface/system-config';
@@ -140,38 +145,60 @@ export function getHKCTTAlias(
 }
 
 // fill in details
-export function getReportFindings(
+export function getFormFieldLexiconCategory(
     type: string,
     fieldId: string,
-): Observable<AxiosResponse<ReportFinding[]>> {
-    return axiosIns.get(`api/findingsTemplate/type/${type}/fieldId/${fieldId}`);
+): Observable<AxiosResponse<FormFieldLexiconCategory[]>> {
+    return axiosIns.get(`api/formFieldLexiconCategory/type/${type}/fieldId/${fieldId}`);
 }
 
-export function saveReportFindings(
-    type: string,
+// fill in details insert "FormFieldLexiconCategory"
+export function addFormFieldLexiconCategory(
+    body: FormFieldLexiconCategory,
+): Observable<AxiosResponse> {
+    return axiosIns.post(`api/formFieldLexiconCategory`, body);
+}
+
+// fill in details delete "FormFieldLexiconCategory"
+export function deleteFormFieldLexiconCategory(id: string): Observable<AxiosResponse> {
+    return axiosIns.delete(`api/formFieldLexiconCategory/id/${id}`);
+}
+
+// fill in details insert "FormFieldLexiconCategory"
+export function addFormFieldLexiconCategoryContent(
+    body: CategoryContents,
+): Observable<AxiosResponse> {
+    return axiosIns.post(`api/formFieldLexiconCategoryContent`, body);
+}
+
+// fill in details delete "FormFieldLexiconCategory"
+export function deleteFormFieldLexiconCategoryContent(id: string): Observable<AxiosResponse> {
+    return axiosIns.delete(`api/formFieldLexiconCategoryContent/id/${id}`);
+}
+
+// fill in details reorder "FormFieldLexiconCategory"
+export function reorderFormFieldLexiconCategory(
+    body: ReorderFormFieldLexiconCategoryBody[],
+): Observable<AxiosResponse> {
+    return axiosIns.put(`api/formFieldLexiconCategory/reorder`, body);
+}
+
+// Field Lexicon
+export function getFieldLexicon(
+    template: string,
     fieldId: string,
-    body: ReportFinding[],
-): Observable<AxiosResponse<ReportFinding[]>> {
-    return axiosIns.post(`api/findingsTemplate/type/${type}/fieldId/${fieldId}`, body);
+): Observable<AxiosResponse<FormFieldLexicon[]>> {
+    return axiosIns.get(`api/fieldLexicon/template/${template}/field/${fieldId}`);
 }
 
-// old ver.
-export function retrieveFindingsTemplate(
-    type: string,
-): Observable<AxiosResponse<TemplateFinding[]>> {
-    return axiosIns.get(`api/retrieveFindingsTemplate/type/${type}`);
+// Field Lexicon
+export function createFieldLexicon(body): Observable<AxiosResponse<FormFieldLexicon[]>> {
+    return axiosIns.post(`api/fieldLexicon`, body);
 }
 
-// old ver.
-export function createFindingsTemplate(body): Observable<AxiosResponse<TemplateFinding[]>> {
-    return axiosIns.post(`api/createFindingsTemplate`, body);
-}
-
-// old ver.
-export function deleteFindingsTemplate(
-    number: number,
-): Observable<AxiosResponse<TemplateFinding[]>> {
-    return axiosIns.delete(`api/deleteFindingsTemplate/number/${number}`);
+// Field Lexicon
+export function deleteFieldLexicon(number: number): Observable<AxiosResponse<FormFieldLexicon[]>> {
+    return axiosIns.delete(`api/fieldLexicon/number/${number}`);
 }
 
 export function deleteStudy(studyInstanceUid: string, password = ''): Observable<AxiosResponse> {

@@ -1,37 +1,37 @@
-import { MutableRefObject } from 'react';
-
 import { AxiosResponse } from 'axios';
 
-import { createFindingsTemplate } from '../../../axios/api';
+import { createFieldLexicon } from '../../../axios/api';
 import { BaseActionParams } from '../../../interface/action';
+import { FormFieldLexicon } from '../../../interface/form-field-lexicon-category';
 import { MessageType } from '../../../interface/notification';
-import { TemplateFinding } from '../../../interface/report-finding';
 import { isEmptyOrNil } from '../../../utils/general';
 
 export const createTemplateAction = (actionParams: BaseActionParams) => {
-    if (
-        (actionParams.ref as MutableRefObject<HTMLTextAreaElement>).current === undefined ||
-        actionParams.formData?.ReportTemplate === undefined ||
-        actionParams.formData?.ReportTemplate === ''
-    ) {
-        actionParams.openNotification(MessageType.Warning, 'ERS type not selected yet');
+    const selectionText = JSON.parse(
+        window.localStorage.getItem('textareaSelectionText') as string,
+    );
+
+    if (isEmptyOrNil(actionParams.formData?.ReportTemplate)) {
+        actionParams.openNotification(MessageType.Warning, 'Report template not selected yet');
         return;
     }
 
-    const element = (actionParams.ref as MutableRefObject<HTMLTextAreaElement>).current;
-    const selectionText = element.value.substring(element.selectionStart, element.selectionEnd);
-
     if (isEmptyOrNil(selectionText)) {
-        actionParams.openNotification(MessageType.Warning, 'The selected text(Findings) is empty');
+        actionParams.openNotification(
+            MessageType.Warning,
+            'User has to select text to create template',
+        );
         return;
     }
 
     const body = {
         Content: selectionText,
         ReportTemplate: actionParams.formData?.ReportTemplate,
-    } as TemplateFinding;
+        FieldId: actionParams.field.id,
+    } as FormFieldLexicon;
 
-    createFindingsTemplate(body).subscribe((res: AxiosResponse) => {
+    createFieldLexicon(body).subscribe((res: AxiosResponse) => {
+        window.localStorage.removeItem('textareaSelectionText');
         return res.status === 200
             ? actionParams.openNotification(MessageType.Success, 'Create template success')
             : actionParams.openNotification(MessageType.Error, 'Create template error');
