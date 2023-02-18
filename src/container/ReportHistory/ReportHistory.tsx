@@ -170,9 +170,11 @@ const ReportHistory = () => {
             </button>
             <Drawer
                 PaperProps={{ sx: { maxWidth: '90%' } }}
+                ModalProps={{ keepMounted: true }}
                 anchor="left"
                 open={photoDrawerOpen}
                 onClose={toggleImageDrawer}
+                disableEnforceFocus
             >
                 <Photo />
             </Drawer>
