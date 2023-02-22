@@ -1,12 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 
-import { IconButton, Stack } from '@mui/material';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Button as MaterialButton, Stack } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import { AxiosError } from 'axios';
 import * as R from 'ramda';
 import { DropResult } from 'react-beautiful-dnd';
-import { FaEdit } from 'react-icons/fa';
-import { FcCancel } from 'react-icons/fc';
+import { FaEdit } from 'react-icons/all';
 import { filter, finalize, first } from 'rxjs/operators';
 
 import {
@@ -278,20 +278,34 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                     isEditMode={edit}
                     titleComponent={
                         <Stack direction="row" alignItems="center">
-                            <Typography variant="h6" component="div">
+                            <Typography variant="h6" component="div" sx={{ marginRight: '6px' }}>
                                 Section Category
                             </Typography>
                             <ViewEditSwitcher
                                 isEditMode={edit}
                                 viewComponent={
-                                    <IconButton onClick={() => setEdit(true)}>
-                                        <FaEdit />
-                                    </IconButton>
+                                    <MaterialButton
+                                        variant="contained"
+                                        color="warning"
+                                        startIcon={<FaEdit size={18} />}
+                                        onClick={() => setEdit(true)}
+                                    >
+                                        <Typography variant="subtitle2" component="div">
+                                            Edit Mode
+                                        </Typography>
+                                    </MaterialButton>
                                 }
                                 editComponent={
-                                    <IconButton onClick={() => setEdit(false)}>
-                                        <FcCancel />
-                                    </IconButton>
+                                    <MaterialButton
+                                        variant="contained"
+                                        color="success"
+                                        startIcon={<VisibilityIcon />}
+                                        onClick={() => setEdit(false)}
+                                    >
+                                        <Typography variant="subtitle2" component="div">
+                                            View Mode
+                                        </Typography>
+                                    </MaterialButton>
                                 }
                             />
                         </Stack>
@@ -321,7 +335,7 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                 <ViewEditSwitcher
                     isEditMode={edit}
                     titleComponent={
-                        <Stack sx={{ minHeight: '40px' }} direction="row" alignItems="center">
+                        <Stack sx={{ minHeight: '32px' }} direction="row" alignItems="center">
                             <Typography variant="h6" component="div">
                                 Section Contents
                             </Typography>
