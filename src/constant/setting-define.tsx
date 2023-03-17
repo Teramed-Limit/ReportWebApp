@@ -377,7 +377,12 @@ export const define = {
             {
                 field: 'userId',
                 headerName: 'User Id',
-                width: 200,
+                width: 120,
+            },
+            {
+                field: 'jobTitle',
+                headerName: 'Job Title',
+                width: 150,
             },
             {
                 field: 'title',
@@ -387,6 +392,11 @@ export const define = {
             {
                 field: 'name',
                 headerName: 'Name',
+                width: 250,
+            },
+            {
+                field: 'summary',
+                headerName: 'Summary',
                 width: 250,
             },
             {
@@ -409,11 +419,21 @@ export const define = {
                             validate: { type: 'Required' },
                         },
                         {
+                            id: 'jobTitle',
+                            label: 'Job Title',
+                            type: 'Text',
+                        },
+                        {
                             id: 'title',
                             label: 'Title',
                             type: 'Text',
                         },
                         { id: 'name', label: 'Name', type: 'Text', validate: { type: 'Required' } },
+                        {
+                            id: 'summary',
+                            label: 'Summary',
+                            type: 'Text',
+                        },
                         { id: 'signatureUrl', label: 'Signature', type: 'ImageSelect' },
                     ],
                 },

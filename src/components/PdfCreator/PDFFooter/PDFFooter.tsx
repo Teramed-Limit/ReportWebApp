@@ -25,13 +25,15 @@ const PDFFooter = ({ signatureData }: Props) => {
                     />
                     <ReactPDF.View style={styles.divider} />
                     <ReactPDF.View style={styles.signatureTextContainer}>
-                        <ReactPDF.Text style={styles.signatureTitle}>Endoscopist</ReactPDF.Text>
+                        <ReactPDF.Text style={styles.signatureTitle}>
+                            {signatureData.jobTitle}
+                        </ReactPDF.Text>
                         <ReactPDF.View style={styles.signatureContent}>
                             <ReactPDF.Text style={{ ...styles.signatureDoctor }}>
                                 {signatureData.title} {signatureData.name}
                             </ReactPDF.Text>
                             <ReactPDF.Text style={{ ...styles.signatureSummary }}>
-                                Specialist in General Surgery
+                                {signatureData.summary}
                             </ReactPDF.Text>
                         </ReactPDF.View>
                     </ReactPDF.View>
