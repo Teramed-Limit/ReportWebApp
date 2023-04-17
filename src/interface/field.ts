@@ -5,6 +5,7 @@ import { Validate } from './validate';
 export interface Field {
     id: string;
     label?: string;
+    defaultValue?: string;
     type: string;
     size?: string;
     readOnly?: boolean;
