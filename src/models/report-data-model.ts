@@ -101,7 +101,10 @@ export const DataModel = types
             };
             changeValue(id, value);
             reportDataService.inject(id);
-            reportDataService.postValueChanged(self.formData.toJSON(), changeValue);
+
+            if (!self.reportTemplate) return;
+            const { formDefine } = reportDefineService.getFormDefine(self.reportTemplate);
+            reportDataService.postValueChanged(self.formData.toJSON(), formDefine, changeValue);
         };
 
         const validate = (id: string, value: any): FormControl => {

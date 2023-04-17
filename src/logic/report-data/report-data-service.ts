@@ -1,3 +1,4 @@
+import { FormDefine } from '../../interface/define';
 import { DocumentData } from '../../interface/document-data';
 import { FormControl } from '../../interface/form-state';
 import { ReportField } from '../../interface/report-data';
@@ -24,8 +25,9 @@ export class ReportDataService implements ReportInjector {
 
     postValueChanged(
         data: DocumentData,
+        define: FormDefine,
         changeValue: (id, value, state?: Partial<FormControl>) => void,
     ) {
-        this.report?.postValueChanged(data, changeValue);
+        this.report?.postValueChanged(data, define, changeValue);
     }
 }
