@@ -14,7 +14,7 @@ const NavigationItem = ({ id, link, children }: Props) => {
     return (
         <li id={id} className={classes.navigationItem}>
             <NavLink to={`${link}${window.location.search}`} activeClassName={classes.active}>
-                {children}
+                <>{children}</>
             </NavLink>
         </li>
     );

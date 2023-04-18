@@ -12,10 +12,10 @@ import Typography from '@mui/material/Typography';
 import { OverridableStringUnion } from '@mui/types';
 import { useHistory, useParams } from 'react-router-dom';
 
+import classes from './ReportTimeline.module.scss';
 import { ReportStatus } from '../../../interface/document-data';
 import { ReportStatusTimeline } from '../../../interface/report-timeline';
 import { convertToDateTime } from '../../../utils/general';
-import classes from './ReportTimeline.module.scss';
 
 interface Props {
     reportTimeline: ReportStatusTimeline[];
@@ -66,7 +66,7 @@ const ReportTimeline = ({ reportTimeline }: Props) => {
                     Timeline
                 </Typography>
                 <div className={classes.timelineContainer}>
-                    <Timeline position="right" onResize onResizeCapture>
+                    <Timeline position="right">
                         {reportTimeline.map((operationRecord) => {
                             return (
                                 <TimelineItem key={operationRecord.Version.toString()}>
