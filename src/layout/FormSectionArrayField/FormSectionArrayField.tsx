@@ -80,7 +80,14 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
             if (!Array.isArray(valueList)) valueList = Array.from(valueList);
             return valueList;
         });
-    }, [arrayField.id, arrayField.templateField, formData, loading, valueChanged]);
+    }, [
+        arrayField.id,
+        arrayField.templateField,
+        formData,
+        loading,
+        newTemplateValue,
+        valueChanged,
+    ]);
 
     return (
         <Box
@@ -118,7 +125,6 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
                             />
                         );
                     default:
-                        debugger;
                         return (
                             <FormSectionFieldContainer
                                 key={`${arrayField.templateField.id}_${idx.toString()}`}

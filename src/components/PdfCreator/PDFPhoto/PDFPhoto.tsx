@@ -4,7 +4,6 @@ import ReactPDF from '@react-pdf/renderer';
 
 import { ReportImageData } from '../../../interface/document-data';
 import { generateUUID, isEmptyOrNil } from '../../../utils/general';
-import { padding } from '../PdfCreator';
 import { styles } from '../styles/style';
 
 interface Props {
@@ -12,6 +11,8 @@ interface Props {
     pageBreak: boolean;
     imageList: ReportImageData[];
 }
+
+const padding = 0.2;
 
 const PDFPhoto = ({ row, pageBreak, imageList }: Props) => {
     const [emptyImageList, setEmptyImageList] = useState<string[]>([]);
@@ -72,7 +73,7 @@ const PDFPhoto = ({ row, pageBreak, imageList }: Props) => {
                             padding: `${padding}%`,
                         }}
                         wrap={false}
-                    ></ReactPDF.View>
+                    />
                 );
             })}
         </ReactPDF.View>

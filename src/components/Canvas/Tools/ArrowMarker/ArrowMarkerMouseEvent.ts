@@ -124,7 +124,6 @@ const ArrowMarkerMouseEvent = (): {
         if (Math.abs(beginPoint.x - lastPoint.x) < 5 || Math.abs(beginPoint.y - lastPoint.y) < 5) {
             canvasMarkers.splice(canvasMarkers.length - 1, 1);
             setCanvasMarkers(canvasMarkers.concat());
-            return;
         }
     };
 

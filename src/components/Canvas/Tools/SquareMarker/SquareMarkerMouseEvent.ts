@@ -81,7 +81,6 @@ const SquareMarkerMouseEvent = () => {
         if (!lastMarker.attribute.width || lastMarker.attribute.width < 20) {
             canvasMarkers.splice(canvasMarkers.length - 1, 1);
             setCanvasMarkers(canvasMarkers.concat());
-            return;
         }
     };
 
