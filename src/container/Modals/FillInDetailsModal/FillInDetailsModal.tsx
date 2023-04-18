@@ -122,8 +122,8 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                 next: () => {
                     setLexiconCategoryList((pre) => R.dissocPath([index], pre));
                 },
-                error: (err: AxiosError) => {
-                    setErrorNotification(err.response?.data.Message || 'Http request failed!');
+                error: (err: AxiosError<{ Message: string }>) => {
+                    setErrorNotification(err.response?.data.Message || err.message);
                 },
             });
     };
@@ -147,8 +147,8 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                 next: () => {
                     setLexiconCategoryList((sectionList) => R.append(newCategory, sectionList));
                 },
-                error: (err: AxiosError) => {
-                    setErrorNotification(err.response?.data.Message || 'Http request failed!');
+                error: (err: AxiosError<{ Message: string }>) => {
+                    setErrorNotification(err.response?.data.Message || err.message);
                 },
             });
     };
@@ -166,8 +166,8 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                     R.update(updateIdx, updateCategory, sectionList),
                 );
             },
-            error: (err: AxiosError) => {
-                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            error: (err: AxiosError<{ Message: string }>) => {
+                setErrorNotification(err.response?.data.Message || err.message);
             },
         });
     };
@@ -208,8 +208,8 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                     R.dissocPath([activeIndex, 'CategoryContents', index], pre),
                 );
             },
-            error: (err: AxiosError) => {
-                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            error: (err: AxiosError<{ Message: string }>) => {
+                setErrorNotification(err.response?.data.Message || err.message);
             },
         });
     };
@@ -236,8 +236,8 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
                     return R.assocPath([activeIndex, 'CategoryContents'], mutate, pre);
                 });
             },
-            error: (err: AxiosError) => {
-                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            error: (err: AxiosError<{ Message: string }>) => {
+                setErrorNotification(err.response?.data.Message || err.message);
             },
         });
     };
@@ -261,8 +261,8 @@ const FillInDetailsModal = ({ fieldId }: Props) => {
             next: () => {
                 setLexiconCategoryList(updateCategoryContentList);
             },
-            error: (err: AxiosError) => {
-                setErrorNotification(err.response?.data.Message || 'Http request failed!');
+            error: (err: AxiosError<{ Message: string }>) => {
+                setErrorNotification(err.response?.data.Message || err.message);
             },
         });
     };

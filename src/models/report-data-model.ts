@@ -250,11 +250,11 @@ export const DataModel = types
                     }),
                 ]),
                 startWith(action(() => (self.loading = true))),
-                catchError((error: AxiosError) => [
+                catchError((error: AxiosError<{ Message: string }>) => [
                     action(() => (self.loading = false)),
                     action(dollSignal, {
                         notification: {
-                            message: error.response?.data.Message,
+                            message: error.response?.data.Message || error.message,
                             messageType: MessageType.Error,
                         },
                     }),
@@ -393,11 +393,11 @@ export const DataModel = types
                                     }),
                                 ]),
                                 startWith(action(beforeFetch)),
-                                catchError((error: AxiosError) => [
+                                catchError((error: AxiosError<{ Message: string }>) => [
                                     action(fetchError),
                                     action(dollSignal, {
                                         notification: {
-                                            message: error.response?.data.Message,
+                                            message: error.response?.data.Message || error.message,
                                             messageType: MessageType.Error,
                                         },
                                     }),
@@ -445,11 +445,11 @@ export const DataModel = types
                                 }),
                             ]),
                             startWith(action(beforeFetch)),
-                            catchError((error: AxiosError) => [
+                            catchError((error: AxiosError<{ Message: string }>) => [
                                 action(fetchError),
                                 action(dollSignal, {
                                     notification: {
-                                        message: error.response?.data.Message,
+                                        message: error.response?.data.Message || error.message,
                                         messageType: MessageType.Error,
                                     },
                                 }),

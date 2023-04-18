@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 
-import { axiosIns } from '../axios/axios';
+import { httpReq } from '../axios/axios';
 import { staticOptionType } from '../constant/static-options';
 
 export interface OptionRetriever {
@@ -12,7 +12,11 @@ export interface OptionRetriever {
 
 const OptionRetrieverMapper: { [props: string]: OptionRetriever } = {
     http: {
-        retrieve: (source) => axiosIns.get(`api/${source}`).pipe(map((res) => res.data)),
+        retrieve: (source) =>
+            httpReq<any>()({
+                method: 'get',
+                url: `api/${source}`,
+            }).pipe(map((res) => res.data)),
     },
     static: {
         retrieve: (source) => of(staticOptionType[source]),

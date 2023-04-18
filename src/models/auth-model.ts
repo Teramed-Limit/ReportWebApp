@@ -55,9 +55,7 @@ export const AuthModel = types
                         switchMap(({ userId }) =>
                             checkIsRepeatLogin(userId).pipe(
                                 map((response) => [action(dollSignal, response.data)]),
-                                catchError((error: AxiosError) => [
-                                    action(dollSignal, error.response?.data.Message),
-                                ]),
+                                catchError(() => [action(dollSignal, true)]),
                             ),
                         ),
                     ),
@@ -72,8 +70,11 @@ export const AuthModel = types
                                     action(registerAuth, response.data),
                                     action(dollSignal, ''),
                                 ]),
-                                catchError((error: AxiosError) => [
-                                    action(dollSignal, error.response?.data.Message),
+                                catchError((error: AxiosError<{ Message: string }>) => [
+                                    action(
+                                        dollSignal,
+                                        error?.response?.data.Message || error.message,
+                                    ),
                                 ]),
                             ),
                         ),

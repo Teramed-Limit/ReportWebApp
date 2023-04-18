@@ -5,8 +5,9 @@ import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
+import { map } from 'rxjs/operators';
 
-import { axiosIns } from '../../axios/axios';
+import { httpReq } from '../../axios/axios';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { Section } from '../../interface/define';
 import { DoctorSignature } from '../../interface/doctor-signature';
@@ -73,23 +74,28 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
 
     // Get hospital logo
     useEffect(() => {
-        const subscription = axiosIns.get<string>('api/logo').subscribe((res) => {
-            setLogoUrl(res.data);
-        });
+        const subscription = httpReq<string>()({
+            method: 'get',
+            url: 'api/logo',
+        })
+            .pipe(map((res) => res.data))
+            .subscribe((value) => {
+                setLogoUrl(value);
+            });
+
         return () => subscription.unsubscribe();
     }, []);
 
     // Get signature
     useEffect(() => {
-        const subscription = axiosIns
-            .get<DoctorSignature>(
-                `api/doctor-signature/userId/${formData.get(
-                    ConfigService.getSignatureCorrespondingField(),
-                )}`,
-            )
-            .subscribe((res) => {
-                setSignatureData(res.data);
-            });
+        const subscription = httpReq<DoctorSignature>()({
+            method: 'get',
+            url: `api/doctor-signature/userId/${formData.get(
+                ConfigService.getSignatureCorrespondingField(),
+            )}`,
+        }).subscribe((res) => {
+            setSignatureData(res.data);
+        });
 
         return () => subscription.unsubscribe();
     }, [formData]);

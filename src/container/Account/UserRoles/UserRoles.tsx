@@ -8,7 +8,12 @@ import Switch from '@mui/material/Switch';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { map } from 'rxjs/operators';
 
-import { axiosIns } from '../../../axios/axios';
+import {
+    addFunction,
+    deleteFunction,
+    getRoleFunctions,
+    getRoleFunctionsWithRoleName,
+} from '../../../axios/api';
 import { define } from '../../../constant/setting-define';
 import { RoleFunction, UserRole } from '../../../interface/user-role';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
@@ -26,8 +31,7 @@ const UserRoles = () => {
     const [selectedRoleFunctionList, setSelectedRoleFunctionList] = useState<RoleFunction[]>([]);
 
     useEffect(() => {
-        const subscription = axiosIns
-            .get<RoleFunction[]>('api/role/functions')
+        const subscription = getRoleFunctions()
             .pipe(map((res) => res.data.map((item) => ({ ...item, Checked: false }))))
             .subscribe((data) => {
                 setSelectedRoleFunctionList(data);
@@ -46,21 +50,19 @@ const UserRoles = () => {
         if (!selectedRow) return;
 
         setSelectedRole(selectedRow.RoleName);
-        axiosIns
-            .get<RoleFunction[]>(`api/role/roleName/${selectedRow.RoleName}/functions`)
-            .subscribe({
-                next: (res) => {
-                    setSelectedRoleFunctionList(() => {
-                        return functionList.map((roleFunction) => {
-                            const check = res.data.find(
-                                (checkFunction) =>
-                                    roleFunction.FunctionName === checkFunction.FunctionName,
-                            );
-                            return { ...roleFunction, Checked: check !== undefined };
-                        });
+        getRoleFunctionsWithRoleName(selectedRow.RoleName).subscribe({
+            next: (res) => {
+                setSelectedRoleFunctionList(() => {
+                    return functionList.map((roleFunction) => {
+                        const check = res.data.find(
+                            (checkFunction) =>
+                                roleFunction.FunctionName === checkFunction.FunctionName,
+                        );
+                        return { ...roleFunction, Checked: check !== undefined };
                     });
-                },
-            });
+                });
+            },
+        });
     };
 
     const onFunctionChecked = (
@@ -69,8 +71,6 @@ const UserRoles = () => {
         roleName: string,
     ) => {
         if (roleName === '') return;
-
-        const url = `api/role/roleName/${roleName}/function/${roleFunction.FunctionName}`;
 
         const updateFunctionState = (checked: boolean) =>
             setSelectedRoleFunctionList((itemList) => {
@@ -82,19 +82,15 @@ const UserRoles = () => {
                 });
             });
 
-        const addFunction = () => {
-            axiosIns.post(url, {}).subscribe(() => {
+        if (e.target.checked) {
+            addFunction(roleName, roleFunction.FunctionName).subscribe(() => {
                 updateFunctionState(true);
             });
-        };
-
-        const deleteFunction = () => {
-            axiosIns.delete(url).subscribe(() => {
+        } else {
+            deleteFunction(roleName, roleFunction.FunctionName).subscribe(() => {
                 updateFunctionState(false);
             });
-        };
-
-        return e.target.checked ? addFunction() : deleteFunction();
+        }
     };
 
     return (

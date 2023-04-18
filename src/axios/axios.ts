@@ -1,14 +1,18 @@
 import axios, { AxiosError } from 'axios';
-import Axios from 'axios-observable';
 
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
+import { createObservable } from '../utils/axios-observable';
 import { delay } from '../utils/general';
 import { RequestCollector } from './request-collector';
 
-export const axiosIns = Axios.create({
+const axiosIns = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,
     withCredentials: true,
 });
+
+export function httpReq<T, D = any>() {
+    return (config: D) => createObservable<T, D>(axiosIns, config);
+}
 
 const requestCollector = new RequestCollector();
 
@@ -25,7 +29,6 @@ export const setupInterceptors = (
             ?.AccessToken;
 
         if (accessToken) {
-            if (!newConfig?.headers) newConfig.headers = {};
             newConfig.headers.Authorization = `Bearer ${accessToken}`;
         }
 
@@ -38,6 +41,8 @@ export const setupInterceptors = (
         },
         async (err: AxiosError) => {
             const originalConfig = err?.config;
+
+            if (!originalConfig) return Promise.reject(err);
 
             if (originalConfig.url !== '/auth/login' && err.response) {
                 // Access Token was expired
