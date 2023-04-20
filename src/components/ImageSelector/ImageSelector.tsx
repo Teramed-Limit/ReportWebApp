@@ -5,12 +5,12 @@ import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 import { Badge, Checkbox, IconButton } from '@mui/material';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
+import classes from './ImageSelector.module.scss';
 import ImageCanvasModal from '../../container/Modals/ImageCanvasModal/ImageCanvasModal';
 import MessageModal from '../../container/Modals/MessageModal/MessageModal';
 import { ModalContext } from '../../context/modal-context';
 import { CodeList } from '../../interface/code-list';
 import BaseLexiconInput from '../UI/BaseLexiconInput/BaseLexiconInput';
-import classes from './ImageSelector.module.scss';
 
 interface ImageSelectorProps {
     id: string;
@@ -77,7 +77,7 @@ const ImageSelector = ({
 
     return (
         <div
-            style={{ width: `${size}%`, height: `${size}%` }}
+            style={{ width: `calc(${size}% - 4px)`, height: `calc(${size}% - 4px)` }}
             className={classes.container}
             draggable={!disabled}
             onDragOver={(event) => event.preventDefault()}
