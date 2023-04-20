@@ -56,6 +56,7 @@ export const styles = ReactPDF.StyleSheet.create({
         position: 'absolute',
         bottom: 10,
         right: 10,
+        maxHeight: '84px',
         width: '45%',
     },
     signatureContainer: {
