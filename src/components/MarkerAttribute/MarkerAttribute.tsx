@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import Konva from 'konva';
 
+import classes from './MarkerAttribute.module.scss';
 import ColorPickerButton from '../ColorPickerButton/ColorPickerButton';
 import BaseCheckbox from '../UI/BaseCheckbox/BaseCheckbox';
 import BaseNumber from '../UI/BaseNumber/BaseNumber';
 import BaseTextInput from '../UI/BaseTextInput/BaseTextInput';
-import classes from './MarkerAttribute.module.scss';
 
 const AttributeMapper = {
     number: BaseNumber,
@@ -15,8 +15,6 @@ const AttributeMapper = {
 };
 
 const filterAttribute = [
-    'width',
-    'height',
     'text',
     'fill',
     'stroke',
@@ -25,11 +23,6 @@ const filterAttribute = [
     'strokeWidth',
     'pointerLength',
     'pointerWidth',
-    'scaleX',
-    'scaleY',
-    'rotation',
-    'x',
-    'y',
     'dashEnabled',
 ];
 
