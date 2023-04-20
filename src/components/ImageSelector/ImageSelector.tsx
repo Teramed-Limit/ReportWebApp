@@ -124,6 +124,7 @@ const ImageSelector = ({
                 src={src}
                 alt=""
                 draggable={!disabled}
+                onClick={onEditDiagram}
                 onDragStart={(event) => {
                     event.dataTransfer.setData('sopInsUid', id);
                     event.dataTransfer.setData('index', index.toString());
