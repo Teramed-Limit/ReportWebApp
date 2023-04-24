@@ -13,6 +13,7 @@ import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import { observer } from 'mobx-react';
 
+import classes from './CodeListTab.module.scss';
 import { deleteCodeListByCodeName, fetchCodeList } from '../../../axios/api';
 import { define } from '../../../constant/setting-define';
 import { ModalContext } from '../../../context/modal-context';
@@ -20,7 +21,6 @@ import { CodeList, CodeListMap } from '../../../interface/code-list';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
 import { useOptionStore } from '../../../models/useStore';
 import AddCodeNameModal from '../../Modals/AddCodeNameModal/AddCodeNameModal';
-import classes from './CodeListTab.module.scss';
 
 const CodeListTab = () => {
     const setModal = useContext(ModalContext);
@@ -33,9 +33,10 @@ const CodeListTab = () => {
         fetchCodeList().subscribe((res) => {
             const data = res.data as CodeListMap;
             setCodeListMap(data);
+            setSelectCodeList(data[selectCodeName]);
             setReportCodeListMap(data);
         });
-    }, [setReportCodeListMap]);
+    }, [selectCodeName, setReportCodeListMap]);
 
     const onDeleteCodeListByCodeName = () => {
         deleteCodeListByCodeName(selectCodeName).subscribe(() => {
@@ -128,7 +129,8 @@ const CodeListTab = () => {
                         formDef={define.codeList.formDef}
                         deleteCallBack={initCodeListMap}
                         addCallBack={initCodeListMap}
-                        initFormData={{ Id: '999', CodeName: selectCodeName }}
+                        updateCallBack={initCodeListMap}
+                        initFormData={{ Id: '9999999', CodeName: selectCodeName }}
                     />
                 </CardContent>
             </Card>
