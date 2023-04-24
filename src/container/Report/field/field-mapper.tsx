@@ -1,4 +1,3 @@
-import QualityBowelScore from '../../../components/QualityBowelScore/QualityBowelScore';
 import AsyncLexiconInput from './AsyncLexiconInput/AsyncLexiconInput';
 import Checkbox from './Checkbox/Checkbox';
 import CodeListLexiconInput from './CodeListLexiconInput/CodeListLexiconInput';
@@ -10,6 +9,7 @@ import Radio from './Radio/Radio';
 import ReportDiagram from './ReportDiagram/ReportDiagram';
 import TextArea from './TextArea/TextArea';
 import TextInput from './TextInput/TextInput';
+import QualityBowelScore from '../../../components/QualityBowelScore/QualityBowelScore';
 
 export const FieldMapper = {
     [FormFieldType.Text]: TextInput,

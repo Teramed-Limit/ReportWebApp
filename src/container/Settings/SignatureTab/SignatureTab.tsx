@@ -4,9 +4,9 @@ import { useState } from 'react';
 import { Paper } from '@mui/material';
 import { observer } from 'mobx-react';
 
+import classes from './SignatureTab.module.scss';
 import { define } from '../../../constant/setting-define';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
-import classes from './SignatureTab.module.scss';
 
 const SignatureTab = () => {
     const [initFormData] = useState({

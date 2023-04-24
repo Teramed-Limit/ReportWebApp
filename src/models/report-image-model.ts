@@ -1,11 +1,11 @@
 import { getRoot, Instance, types } from 'mst-effect';
 import * as R from 'ramda';
 
+import { DataStore } from './report-data-model';
 import { ReportImageData, ReportMark } from '../interface/document-data';
 import { CanvasHandle } from '../interface/konva-stage-event';
 import { MarkerPoint } from '../interface/marker';
 import { isEmptyOrNil } from '../utils/general';
-import { DataStore } from './report-data-model';
 
 const maxSelection = 50;
 export const ImageModel = types

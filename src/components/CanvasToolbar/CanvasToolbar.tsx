@@ -10,9 +10,9 @@ import { BsArrowsMove } from 'react-icons/bs';
 import { HiOutlineArrowRight } from 'react-icons/hi';
 import { MdGesture } from 'react-icons/md';
 
+import classes from './CanvasToolbar.module.scss';
 import { MarkerType } from '../../interface/canvas-maker-attribute';
 import ColorPickerButton from '../ColorPickerButton/ColorPickerButton';
-import classes from './CanvasToolbar.module.scss';
 
 interface Props {
     markerType: MarkerType;

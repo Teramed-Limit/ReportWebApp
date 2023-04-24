@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Box, Tooltip } from '@mui/material';
 import cx from 'classnames';
 
-import { fieldFlex, fieldSectionValue } from '../../styles/report/style';
 import classes from './FormSectionField.module.scss';
+import { fieldFlex, fieldSectionValue } from '../../styles/report/style';
 
 interface FormSectionFieldProps {
     id: string;

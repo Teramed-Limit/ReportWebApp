@@ -12,12 +12,12 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
+import classes from './Header.module.scss';
 import WithElementVisibility from '../../HOC/WithElementVisiblity/WithElementVisibility';
 import { useAuthStore } from '../../models/useStore';
 import NavigationItem from '../Navigation/NavigationItem/NavigationItem';
-import ButtonGroup from '../UI/Button-Group/Button-Group';
 import Button from '../UI/Button/Button';
-import classes from './Header.module.scss';
+import ButtonGroup from '../UI/Button-Group/Button-Group';
 
 const Header = () => {
     const history = useHistory();

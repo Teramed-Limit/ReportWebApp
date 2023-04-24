@@ -4,6 +4,7 @@ import { Button as MaterialButton, Link } from '@mui/material';
 import { observer } from 'mobx-react';
 import { filter, tap } from 'rxjs/operators';
 
+import classes from './ReportViewActionBar.module.scss';
 import Modal from '../../../../components/Modal/Modal';
 import PdfCreator from '../../../../components/PdfCreator/PdfCreator';
 import Button from '../../../../components/UI/Button/Button';
@@ -12,7 +13,6 @@ import { NotificationContext } from '../../../../context/notification-context';
 import { useReportDataStore } from '../../../../models/useStore';
 import { isEmptyOrNil } from '../../../../utils/general';
 import MessageModal from '../../../Modals/MessageModal/MessageModal';
-import classes from './ReportViewActionBar.module.scss';
 
 const ReportViewActionBar: React.FC = () => {
     const { fetchReportLockStatus, lockReport, studyInsUID, lockByUser } = useReportDataStore();

@@ -9,6 +9,12 @@ import { DropResult } from 'react-beautiful-dnd';
 import { FaEdit } from 'react-icons/all';
 import { filter, finalize, first } from 'rxjs/operators';
 
+import SectionContentListEdit from './component/SectionContentListEdit/SectionContentListEdit';
+import SectionContentListView from './component/SectionContentListView/SectionContentListView';
+import SectionListEdit from './component/SectionListEdit/SectionListEdit';
+import SectionListView from './component/SectionListView/SectionListView';
+import classes from './FillInDetailsModal.module.scss';
+import ViewEditSwitcher from './ViewEditSwitcher/ViewEditSwitcher';
 import {
     addFormFieldLexiconCategory,
     addFormFieldLexiconCategoryContent,
@@ -28,12 +34,6 @@ import {
 } from '../../../interface/form-field-lexicon-category';
 import { useReportDataStore } from '../../../models/useStore';
 import { generateUUID, isEmptyOrNil, reorder } from '../../../utils/general';
-import SectionContentListEdit from './component/SectionContentListEdit/SectionContentListEdit';
-import SectionContentListView from './component/SectionContentListView/SectionContentListView';
-import SectionListEdit from './component/SectionListEdit/SectionListEdit';
-import SectionListView from './component/SectionListView/SectionListView';
-import classes from './FillInDetailsModal.module.scss';
-import ViewEditSwitcher from './ViewEditSwitcher/ViewEditSwitcher';
 
 interface Props {
     fieldId: string;

@@ -18,6 +18,7 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
+import classes from './Query.module.scss';
 import {
     queryFilterModel,
     queryReportStatus,
@@ -32,7 +33,6 @@ import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
 import DeleteStudyProtectorModal from '../Modals/DeleteStudyProtectorModal/DeleteStudyProtectorModal';
-import classes from './Query.module.scss';
 
 const Query: React.FC = () => {
     const history = useHistory();

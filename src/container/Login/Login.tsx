@@ -13,12 +13,12 @@ import { observer } from 'mobx-react';
 import { useHistory, useLocation } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
+import classes from './Login.module.scss';
 import { LoginBackground } from '../../assets';
 import { ModalContext } from '../../context/modal-context';
 import { useAuthStore } from '../../models/useStore';
 import { isEmptyOrNil } from '../../utils/general';
 import MessageModal from '../Modals/MessageModal/MessageModal';
-import classes from './Login.module.scss';
 
 function Login() {
     const history = useHistory();

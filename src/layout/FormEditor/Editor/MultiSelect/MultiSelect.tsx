@@ -11,9 +11,9 @@ import {
     SelectChangeEvent,
 } from '@mui/material';
 
+import classes from './MultiSelect.module.scss';
 import { useSelectOptions } from '../../../../hooks/useSelectOptions';
 import { FormSelectionField } from '../../../../interface/form-editor-define';
-import classes from './MultiSelect.module.scss';
 
 interface Props {
     field: FormSelectionField;

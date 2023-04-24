@@ -5,11 +5,11 @@ import { ColDef, GetRowIdParams, RowNode } from 'ag-grid-community';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { Observable } from 'rxjs';
 
+import classes from './GridTableEditor.module.scss';
 import GridTable from '../../components/GridTable/GridTable';
 import { useGridTable } from '../../hooks/useGridTable';
 import { FormEditorDef } from '../../interface/form-editor-define';
 import { camelize } from '../../utils/general';
-import classes from './GridTableEditor.module.scss';
 
 interface Props {
     domLayout?: 'normal' | 'autoHeight' | 'print';

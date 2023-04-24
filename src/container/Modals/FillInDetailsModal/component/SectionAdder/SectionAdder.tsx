@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 
 import Button from '@mui/material/Button';
 
+import classes from './SectionAdder.module.scss';
 import BaseTextInput from '../../../../../components/UI/BaseTextInput/BaseTextInput';
 import { FormControl } from '../../../../../interface/form-state';
 import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';
 import { isEmptyOrNil } from '../../../../../utils/general';
 import FormSectionFieldLabel from '../../../../Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
-import classes from './SectionAdder.module.scss';
 
 interface Props {
     itemNameList: string[];

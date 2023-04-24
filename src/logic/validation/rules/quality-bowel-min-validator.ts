@@ -1,6 +1,6 @@
+import { MinValidator } from './min-validator';
 import { DocumentData } from '../../../interface/document-data';
 import { ValidateResult } from '../../../interface/validator';
-import { MinValidator } from './min-validator';
 
 export class QualityBowelMinValidator extends MinValidator {
     errorMessage = 'Value should bigger than ';

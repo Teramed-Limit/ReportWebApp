@@ -1,9 +1,9 @@
 import axios, { AxiosError } from 'axios';
 
+import { RequestCollector } from './request-collector';
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { createObservable } from '../utils/axios-observable';
 import { delay } from '../utils/general';
-import { RequestCollector } from './request-collector';
 
 const axiosIns = axios.create({
     baseURL: import.meta.env.VITE_BASE_URL,

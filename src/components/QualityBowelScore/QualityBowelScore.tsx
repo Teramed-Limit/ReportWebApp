@@ -2,13 +2,13 @@ import React, { useCallback, useEffect } from 'react';
 
 import { observer } from 'mobx-react';
 
+import Item from './Item/Item';
+import classes from './QualityBowelScore.module.scss';
+import RadioGroup from './RadioGroup/RadioGroup';
 import { ColonQualityA, ColonQualityB, ColonQualityC, ColonQualityD } from '../../assets';
 import { Field } from '../../interface/field';
 import { useReportDataStore } from '../../models/useStore';
 import Button from '../UI/Button/Button';
-import Item from './Item/Item';
-import classes from './QualityBowelScore.module.scss';
-import RadioGroup from './RadioGroup/RadioGroup';
 
 const optionList = [
     { value: '3', label: '3' },

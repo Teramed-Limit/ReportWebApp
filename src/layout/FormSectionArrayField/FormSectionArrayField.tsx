@@ -5,6 +5,7 @@ import { Box, Button, IconButton } from '@mui/material';
 import { observer } from 'mobx-react';
 import * as R from 'ramda';
 
+import classes from './FormSectionArrayField.module.scss';
 import { FormFieldType } from '../../container/Report/field/field-type';
 import FormSectionFieldContainer from '../../container/Report/layout-container/FormSectionFieldContainer/FormSectionFieldContainer';
 import { ArrayField } from '../../interface/array-field';
@@ -12,7 +13,6 @@ import { CompositeField } from '../../interface/composite-field';
 import { useReportDataStore } from '../../models/useStore';
 import { fieldArrayContainer, fieldGutter, valueWidth } from '../../styles/report/style';
 import FormSectionCompositeField from '../FormSectionCompositeField/FormSectionCompositeField';
-import classes from './FormSectionArrayField.module.scss';
 
 interface Props {
     field: ArrayField;

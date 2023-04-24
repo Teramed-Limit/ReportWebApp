@@ -2,8 +2,8 @@ import React from 'react';
 
 import { Divider, List, ListItem, ListItemText } from '@mui/material';
 
-import { CategoryContents } from '../../../../../interface/form-field-lexicon-category';
 import classes from './SectionContentListView.module.scss';
+import { CategoryContents } from '../../../../../interface/form-field-lexicon-category';
 
 interface Props {
     activeIndex: number;

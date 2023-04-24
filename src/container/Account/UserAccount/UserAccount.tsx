@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 
 import { Paper, Typography } from '@mui/material';
 
+import classes from './UserAccount.module.scss';
 import { define } from '../../../constant/setting-define';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
-import classes from './UserAccount.module.scss';
 
 const UserAccount = () => {
     const [initFormData] = useState({

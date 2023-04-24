@@ -13,10 +13,10 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { observer } from 'mobx-react';
 import { concatMap } from 'rxjs/operators';
 
+import classes from './ReportDiagramTab.module.scss';
 import { deleteDiagram, fetchDiagram, saveDiagram } from '../../../axios/api';
 import { Diagram } from '../../../interface/diagram';
 import { useOptionStore } from '../../../models/useStore';
-import classes from './ReportDiagramTab.module.scss';
 
 const ReportDiagramTab = () => {
     const { codeListMap } = useOptionStore();

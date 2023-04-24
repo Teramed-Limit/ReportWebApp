@@ -1,10 +1,10 @@
+import { BowelPrep } from './fields/bowel-prep';
+import { ReportTemplate } from './fields/report-template';
 import { FormDefine } from '../../interface/define';
 import { DocumentData } from '../../interface/document-data';
 import { FormControl } from '../../interface/form-state';
 import { ReportField } from '../../interface/report-data';
 import { ReportInjector } from '../../interface/report-injector';
-import { BowelPrep } from './fields/bowel-prep';
-import { ReportTemplate } from './fields/report-template';
 
 export class ReportDataService implements ReportInjector {
     report: ReportField | undefined;

@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 
+import classes from './MessageModal.module.scss';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
-import classes from './MessageModal.module.scss';
 
 interface Props {
     headerTitle: string;

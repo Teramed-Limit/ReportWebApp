@@ -1,7 +1,7 @@
+import { RequireValidator } from './require-validator';
 import { DocumentData } from '../../../interface/document-data';
 import { ValidateParams } from '../../../interface/validate';
 import { ValidateResult } from '../../../interface/validator';
-import { RequireValidator } from './require-validator';
 
 export class QualityBowelRequiredValidator extends RequireValidator {
     errorMessage = 'This field is required';

@@ -8,6 +8,7 @@ import Switch from '@mui/material/Switch';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { map } from 'rxjs/operators';
 
+import classes from './UserRoles.module.scss';
 import {
     addFunction,
     deleteFunction,
@@ -17,7 +18,6 @@ import {
 import { define } from '../../../constant/setting-define';
 import { RoleFunction, UserRole } from '../../../interface/user-role';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
-import classes from './UserRoles.module.scss';
 
 const initFormData = {
     RoleName: '',

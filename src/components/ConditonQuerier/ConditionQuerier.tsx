@@ -3,13 +3,13 @@ import React, { useContext, useState } from 'react';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Box, Button, IconButton } from '@mui/material';
 
+import classes from './ConditionQuerier.module.scss';
 import { ModalContext } from '../../context/modal-context';
 import { Field } from '../../interface/field';
 import { TransferItem } from '../../interface/transfer-item';
 import { EditorDefaultValue, EditorMapper } from '../../layout/FormEditor/Editor/editorMapper';
 import Modal from '../Modal/Modal';
 import TransferList from '../TransferList/TransferList';
-import classes from './ConditionQuerier.module.scss';
 
 interface Props {
     fields: Field[];

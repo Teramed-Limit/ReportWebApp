@@ -10,6 +10,8 @@ import { observer } from 'mobx-react';
 import { useHistory, useParams } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
+import classes from './ReportHistory.module.scss';
+import ReportTimeline from './ReportTimeline/ReportTimeline';
 import { fetchReportTimeline } from '../../axios/api';
 import { NotificationContext } from '../../context/notification-context';
 import { Section } from '../../interface/define';
@@ -25,8 +27,6 @@ import {
     ReportActionContext,
     ReportActionProvider,
 } from '../Report/report-context/reportActionProvider';
-import classes from './ReportHistory.module.scss';
-import ReportTimeline from './ReportTimeline/ReportTimeline';
 
 const ReportHistory = () => {
     const history = useHistory();

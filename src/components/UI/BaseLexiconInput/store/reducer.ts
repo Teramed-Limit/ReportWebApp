@@ -1,5 +1,5 @@
-import { filterOptions } from '../utils';
 import { ACTION_TYPES } from './action-types';
+import { filterOptions } from '../utils';
 
 type State = {
     currentInputText: string;

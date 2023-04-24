@@ -10,13 +10,13 @@ import { observer } from 'mobx-react';
 import { useRecoilState } from 'recoil';
 import { concatMap } from 'rxjs/operators';
 
+import classes from './LoginStatus.module.scss';
 import { queryRowDataState } from '../../atom/query-row-data-state';
 import { fetchLoginStatus, logoutSpecifyUser } from '../../axios/api';
 import GridTable from '../../components/GridTable/GridTable';
 import { define } from '../../constant/setting-define';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { LoginStatusData } from '../../interface/login-status';
-import classes from './LoginStatus.module.scss';
 
 function LoginStatus() {
     const [rowData, setRowData] = useRecoilState(queryRowDataState);

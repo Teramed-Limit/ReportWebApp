@@ -7,6 +7,11 @@ import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
 import { map } from 'rxjs/operators';
 
+import PDFFooter from './PDFFooter/PDFFooter';
+import PDFHeader from './PDFHeader/PDFHeader';
+import PDFPage from './PDFPage/PDFPage';
+import PDFPhoto from './PDFPhoto/PDFPhoto';
+import PDFReportContent from './PDFReportContent/PDFReportContent';
 import { httpReq } from '../../axios/axios';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { Section } from '../../interface/define';
@@ -20,11 +25,6 @@ import {
 import ConfigService from '../../service/config-service';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
-import PDFFooter from './PDFFooter/PDFFooter';
-import PDFHeader from './PDFHeader/PDFHeader';
-import PDFPage from './PDFPage/PDFPage';
-import PDFPhoto from './PDFPhoto/PDFPhoto';
-import PDFReportContent from './PDFReportContent/PDFReportContent';
 
 interface Props {
     showToolbar?: boolean;

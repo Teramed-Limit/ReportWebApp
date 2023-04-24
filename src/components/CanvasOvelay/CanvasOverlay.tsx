@@ -8,10 +8,10 @@ import { BiSelection } from 'react-icons/bi';
 import { BsFillTrashFill } from 'react-icons/bs';
 import { FiCopy } from 'react-icons/fi';
 
+import classes from './CanvasOverlay.module.scss';
 import { CanvasMarker } from '../../interface/canvas-maker-attribute';
 import { reorder } from '../../utils/general';
 import { NodeEnableMapper } from '../Canvas/Tools/marker-mapper';
-import classes from './CanvasOverlay.module.scss';
 
 interface Props {
     canvasMarkers: CanvasMarker<Konva.ShapeConfig>[];

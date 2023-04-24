@@ -1,6 +1,7 @@
 import { AxiosResponse } from 'axios';
 import { Observable } from 'rxjs';
 
+import { httpReq } from './axios';
 import { AnyObject } from '../interface/anyObject';
 import { LoginResult } from '../interface/auth';
 import { CodeListMap } from '../interface/code-list';
@@ -18,7 +19,6 @@ import { ReportTimelineData } from '../interface/report-timeline';
 import { StudyData } from '../interface/study-data';
 import { SystemConfig } from '../interface/system-config';
 import { RoleFunction } from '../interface/user-role';
-import { httpReq } from './axios';
 
 export const checkIsRepeatLogin = (userId): Observable<AxiosResponse<boolean>> => {
     return httpReq<boolean>()({

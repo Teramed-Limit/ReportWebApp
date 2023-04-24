@@ -5,13 +5,13 @@ import { IconButton, Slider, Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 import { RiZoomInLine, RiZoomOutLine } from 'react-icons/ri';
 
+import classes from './GallerySelector.module.scss';
 import Gallery from '../../../components/Gallery/Gallery';
 import ImageSelector from '../../../components/ImageSelector/ImageSelector';
 import Button from '../../../components/UI/Button/Button';
 import { useObjectState } from '../../../hooks/useObjectState';
 import { useStore } from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
-import classes from './GallerySelector.module.scss';
 
 const GallerySelector = () => {
     const [slider, setSlider] = useState(3);

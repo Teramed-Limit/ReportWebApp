@@ -1,7 +1,7 @@
 import React from 'react';
 
-import Icon from '../Icon/Icon';
 import classes from './Button.module.scss';
+import Icon from '../Icon/Icon';
 
 interface ButtonProps {
     id?: string;

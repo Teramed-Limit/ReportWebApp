@@ -3,9 +3,9 @@ import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
 
+import classes from './ReportDiagram.module.scss';
 import { Field } from '../../../../interface/field';
 import { useReportImageStore } from '../../../../models/useStore';
-import classes from './ReportDiagram.module.scss';
 
 interface Props {
     field: Field;

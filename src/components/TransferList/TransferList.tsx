@@ -11,8 +11,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Paper from '@mui/material/Paper';
 import * as R from 'ramda';
 
-import { TransferItem } from '../../interface/transfer-item';
 import classes from './TransferList.module.scss';
+import { TransferItem } from '../../interface/transfer-item';
 
 function not(a: readonly TransferItem[], b: readonly TransferItem[]) {
     return a.filter((value) => b.indexOf(value) === -1);

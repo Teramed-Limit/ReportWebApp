@@ -6,6 +6,10 @@ import { observer } from 'mobx-react';
 import { Prompt, useHistory, useParams } from 'react-router-dom';
 import { filter, tap } from 'rxjs/operators';
 
+import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
+import ReportViewActionBar from './report-action-bar/ReportViewActionBar/ReportViewActionBar';
+import { ReportActionContext, ReportActionProvider } from './report-context/reportActionProvider';
+import classes from './Report.module.scss';
 import Icon from '../../components/UI/Icon/Icon';
 import { NotificationContext } from '../../context/notification-context';
 import { useModal } from '../../hooks/useModal';
@@ -21,10 +25,6 @@ import {
 import { reportPage } from '../../styles/report/style';
 import { isEmptyOrNil } from '../../utils/general';
 import Photo from '../Photo/Photo';
-import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
-import ReportViewActionBar from './report-action-bar/ReportViewActionBar/ReportViewActionBar';
-import { ReportActionContext, ReportActionProvider } from './report-context/reportActionProvider';
-import classes from './Report.module.scss';
 
 const Report = () => {
     const history = useHistory();

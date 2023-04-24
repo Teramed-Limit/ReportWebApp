@@ -11,9 +11,9 @@ import {
 } from '@mui/material';
 import { RiDeleteBin6Fill } from 'react-icons/ri';
 
+import classes from './SectionContentListEdit.module.scss';
 import { CategoryContents } from '../../../../../interface/form-field-lexicon-category';
 import SectionAdder from '../SectionAdder/SectionAdder';
-import classes from './SectionContentListEdit.module.scss';
 
 interface Props {
     activeIndex: number;

@@ -7,6 +7,7 @@ import { BiError } from 'react-icons/bi';
 import { Subject } from 'rxjs';
 import { debounceTime, first, map } from 'rxjs/operators';
 
+import classes from './RetrieveTemplateModal.module.scss';
 import { deleteFieldLexicon, getFieldLexicon } from '../../../axios/api';
 import GridTable from '../../../components/GridTable/GridTable';
 import Modal from '../../../components/Modal/Modal';
@@ -15,7 +16,6 @@ import { ModalContext } from '../../../context/modal-context';
 import { FormFieldLexicon } from '../../../interface/form-field-lexicon-category';
 import { useReportDataStore } from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
-import classes from './RetrieveTemplateModal.module.scss';
 
 const colDef: ColDef[] = [
     { field: 'Number', headerName: 'No.', width: 100 },

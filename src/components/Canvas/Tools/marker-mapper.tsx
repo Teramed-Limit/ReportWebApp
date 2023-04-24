@@ -1,9 +1,9 @@
-import { MarkerType } from '../../../interface/canvas-maker-attribute';
 import ArrowMarker from './ArrowMarker/ArrowMarker';
 import CircleMarker from './CircleMarker/CircleMarker';
 import FreeDrawLineMarker from './FreeDrawLineMarker/FreeDrawLineMarker';
 import SquareMarker from './SquareMarker/SquareMarker';
 import TextMarker from './TextMarker/TextMarker';
+import { MarkerType } from '../../../interface/canvas-maker-attribute';
 
 export const MarkerMapper = {
     [MarkerType.Text]: TextMarker,

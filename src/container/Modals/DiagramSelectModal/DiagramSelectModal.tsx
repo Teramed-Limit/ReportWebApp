@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react';
 
 import cx from 'classnames';
 
+import classes from './DiagramSelectModal.module.scss';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
 import { Diagram } from '../../../interface/diagram';
 import { useReportDataStore } from '../../../models/useStore';
 import { convertUrlToBase64, isEmptyOrNil } from '../../../utils/general';
-import classes from './DiagramSelectModal.module.scss';
 
 interface Props {
     diagramList: Diagram[];
