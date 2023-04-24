@@ -24,6 +24,7 @@ interface ImageSelectorProps {
     sitesOptions: CodeList[];
     markerMappingNumber: number;
     disabled: boolean;
+    lockReorder: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
     onImageMark: (sopInsUid: string, base64: string) => void;
     onClearImageMark: (sopInsUid: string) => void;
@@ -49,6 +50,7 @@ const ImageSelector = ({
     findingsOptions,
     sitesOptions,
     disabled,
+    lockReorder,
     onImageReorder,
 }: ImageSelectorProps) => {
     const setModal = useContext(ModalContext);
@@ -79,11 +81,12 @@ const ImageSelector = ({
         <div
             style={{ width: `calc(${size}% - 4px)`, height: `calc(${size}% - 4px)` }}
             className={classes.container}
-            draggable={!disabled}
+            draggable={false}
             onDragOver={(event) => event.preventDefault()}
             onDrop={(event) => {
                 event.preventDefault();
                 if (disabled) return;
+                if (lockReorder) return;
                 onImageReorder(+event.dataTransfer.getData('index'), index);
             }}
         >
