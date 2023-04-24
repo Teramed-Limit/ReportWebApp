@@ -2,7 +2,7 @@ import { Style } from '@react-pdf/types/style';
 
 import { Validate } from './validate';
 
-export interface Field {
+export interface Field<T = any> {
     id: string;
     label?: string;
     defaultValue?: string;
@@ -23,6 +23,12 @@ export interface Field {
     placeholder?: string;
     labelStyle?: Style;
     valueStyle?: Style;
+    valueChangedEvent?: ValueChangedEvent<T>;
+}
+
+interface ValueChangedEvent<T> {
+    event: string;
+    eventParams: T;
 }
 
 export interface ButtonMeta {

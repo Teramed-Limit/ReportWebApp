@@ -7,7 +7,6 @@ import { FormFieldType } from '../../../container/Report/field/field-type';
 import { CheckboxField } from '../../../interface/checkbox-field';
 import { CodeList } from '../../../interface/code-list';
 import { Field } from '../../../interface/field';
-import { Option } from '../../../interface/option';
 import { RadioField } from '../../../interface/radio-field';
 import { FilterCondition, SelectionField } from '../../../interface/selection-field';
 import { isEmptyOrNil } from '../../../utils/general';
@@ -66,11 +65,11 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
     };
 
     const radio = (rendererField, rendererValue) => {
-        const foundOption: Option = getOptions(
+        const foundOption: CodeList = getOptions(
             (rendererField as RadioField<any>).optionSource.source,
-        ).find((option: Option) => option.Name === rendererValue);
+        ).find((option: CodeList) => option.Label === rendererValue);
 
-        return text(rendererField, foundOption?.Code);
+        return text(rendererField, foundOption?.Label);
     };
 
     const checkBox = (rendererField, rendererValue) => {

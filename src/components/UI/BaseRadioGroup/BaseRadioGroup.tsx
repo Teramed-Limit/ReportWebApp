@@ -9,17 +9,20 @@ interface Props {
     id: string;
     value: string;
     options: CodeList[];
+    row: boolean;
     onChecked: (value: string) => void;
     disabled: boolean;
 }
 
-const BaseRadioGroup = ({ id, options, value, onChecked, disabled }: Props) => {
+const BaseRadioGroup = ({ id, options, row, value, onChecked, disabled }: Props) => {
     const onSelectChange = (event: React.ChangeEvent<HTMLInputElement>, selection: string) => {
         onChecked(selection);
     };
 
+    if (!value) return <></>;
+
     return (
-        <RadioGroup row defaultValue="1" id={id} value={value} onChange={onSelectChange}>
+        <RadioGroup row={row} id={id} value={value} onChange={onSelectChange}>
             {options.map((option) => {
                 return (
                     <BaseRadio

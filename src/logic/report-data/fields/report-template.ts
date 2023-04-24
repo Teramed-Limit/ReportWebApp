@@ -5,7 +5,7 @@ import { ReportField } from '../../../interface/report-data';
 import { emptyBaseImage } from '../../../utils/general';
 
 export class ReportTemplate extends ReportField {
-    postValueChanged = (
+    execute = (
         data: DocumentData,
         define: FormDefine,
         changeValue: (id, value, state?: Partial<FormControl>) => void,

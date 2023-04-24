@@ -4,7 +4,7 @@ import { FormControl } from '../../../interface/form-state';
 import { ReportField } from '../../../interface/report-data';
 
 export class BowelPrep extends ReportField {
-    postValueChanged = (
+    execute = (
         data: DocumentData,
         define: FormDefine,
         changeValue: (id, value, state?: Partial<FormControl>) => void,

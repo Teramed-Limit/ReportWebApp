@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import BaseRadioGroup from '../../../../components/UI/BaseRadioGroup/BaseRadioGroup';
 import { RadioField } from '../../../../interface/radio-field';
@@ -20,10 +20,20 @@ const Radio = React.forwardRef(({ field, value, onValueChange, disabled }: Props
 
     const onChecked = (isCheck: string) => onValueChange(isCheck);
 
+    // Assign default value
+    useEffect(() => {
+        if (value === undefined && options && options.length > 0) {
+            onValueChange(options[0].Value);
+        }
+    }, [onValueChange, options, value]);
+
+    if (!value) return <></>;
+
     return (
         <BaseRadioGroup
             id={field.id}
             disabled={disabled}
+            row={field.direction === 'column' || true}
             value={value}
             options={options || []}
             onChecked={onChecked}
