@@ -16,7 +16,7 @@ import { useStore } from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
 
 const GallerySelector = () => {
-    const [lockReorder, setLockReorder] = useState(false);
+    const [lockReorder, setLockReorder] = useState(true);
     const [slider, setSlider] = useState(3);
     const store = useStore();
     const { dataStore, optionStore, imageStore } = store;
