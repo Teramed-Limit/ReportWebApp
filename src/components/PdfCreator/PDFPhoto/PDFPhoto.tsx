@@ -26,48 +26,47 @@ const PDFPhoto = ({ row, pageBreak, imageList }: Props) => {
         setEmptyImageList(result);
     }, [imageList.length, row]);
 
+    const customSort = (a, b) => {
+        if (a.MappingNumber === 0) return 1;
+        if (b.MappingNumber === 0) return -1;
+        return a.MappingNumber - b.MappingNumber;
+    };
+
     return (
         <ReactPDF.View style={styles.gallery} break={pageBreak}>
-            {imageList
-                .sort((a, b) => {
-                    if (a.ReportMark && b.ReportMark) {
-                        return a.ReportMark.MappingNumber - b.ReportMark.MappingNumber;
-                    }
-                    return 0;
-                })
-                .map((image: ReportImageData) => {
-                    // 上標記的影像，或是原影像
-                    const imageSrc = isEmptyOrNil(image?.EditedImageSrc)
-                        ? image.thumbnailImageSrc
-                        : image.EditedImageSrc;
+            {imageList.sort(customSort).map((image: ReportImageData) => {
+                // 上標記的影像，或是原影像
+                const imageSrc = isEmptyOrNil(image?.EditedImageSrc)
+                    ? image.thumbnailImageSrc
+                    : image.EditedImageSrc;
 
-                    return (
-                        <ReactPDF.View
-                            key={image.SOPInstanceUID}
-                            style={{
-                                ...styles.imageContainer,
-                                width: `${100 / row - padding * 2}%`,
-                                minWidth: `${100 / row - padding * 2}%`,
-                                maxWidth: `${100 / row - padding * 2}%`,
-                                padding: `${padding}%`,
-                            }}
-                            wrap={false}
-                        >
-                            <ReactPDF.Image style={styles.image} src={imageSrc} />
-                            <ReactPDF.Text style={styles.imageNum}>
-                                {image.MappingNumber > 0 && `${image.MappingNumber}`}
+                return (
+                    <ReactPDF.View
+                        key={image.SOPInstanceUID}
+                        style={{
+                            ...styles.imageContainer,
+                            width: `${100 / row - padding * 2}%`,
+                            minWidth: `${100 / row - padding * 2}%`,
+                            maxWidth: `${100 / row - padding * 2}%`,
+                            padding: `${padding}%`,
+                        }}
+                        wrap={false}
+                    >
+                        <ReactPDF.Image style={styles.image} src={imageSrc} />
+                        <ReactPDF.Text style={styles.imageNum}>
+                            {image.MappingNumber > 0 && `${image.MappingNumber}`}
+                        </ReactPDF.Text>
+                        <ReactPDF.View style={styles.imageDescContainer}>
+                            <ReactPDF.Text style={styles.imageDesc}>
+                                {image.DescriptionOfSites}
                             </ReactPDF.Text>
-                            <ReactPDF.View style={styles.imageDescContainer}>
-                                <ReactPDF.Text style={styles.imageDesc}>
-                                    {image.DescriptionOfSites}
-                                </ReactPDF.Text>
-                                <ReactPDF.Text style={styles.imageDesc}>
-                                    {image.DescriptionOfFindings}
-                                </ReactPDF.Text>
-                            </ReactPDF.View>
+                            <ReactPDF.Text style={styles.imageDesc}>
+                                {image.DescriptionOfFindings}
+                            </ReactPDF.Text>
                         </ReactPDF.View>
-                    );
-                })}
+                    </ReactPDF.View>
+                );
+            })}
             {emptyImageList.map((uuid: string) => {
                 return (
                     <ReactPDF.View
