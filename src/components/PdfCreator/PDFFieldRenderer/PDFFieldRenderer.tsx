@@ -1,11 +1,13 @@
 import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
+import { Style } from '@react-pdf/types';
 
 import { CheckboxCheckedIcon, CheckboxUnCheckedIcon } from '../../../assets';
 import { FormFieldType } from '../../../container/Report/field/field-type';
 import { CheckboxField } from '../../../interface/checkbox-field';
 import { CodeList } from '../../../interface/code-list';
+import { DiagramField } from '../../../interface/diagram-field';
 import { Field } from '../../../interface/field';
 import { RadioField } from '../../../interface/radio-field';
 import { FilterCondition, SelectionField } from '../../../interface/selection-field';
@@ -26,6 +28,8 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
         switch (rendererField.type) {
             case FormFieldType.Text:
                 return text(rendererField, rendererValue);
+            case FormFieldType.TextArea:
+                return textArea(rendererField, rendererValue);
             case FormFieldType.Checkbox:
                 return checkBox(rendererField, rendererValue);
             case FormFieldType.Radio:
@@ -33,7 +37,7 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
             case FormFieldType.CodeListSelection:
                 return selection(rendererField, rendererValue);
             case FormFieldType.ReportDiagram:
-                return reportDiagram();
+                return reportDiagram(rendererField);
             default:
                 return text(rendererField, rendererValue);
         }
@@ -87,12 +91,17 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
         );
     };
 
-    const text = (renderedField: Field, rendererValue: string) => {
+    const textArea = (rendererField, rendererValue) => {
+        return <>{text(rendererField, rendererValue, { textAlign: 'justify' })}</>;
+    };
+
+    const text = (renderedField: Field, rendererValue: string, style?: Style | Style[]) => {
         return (
             <>
                 <ReactPDF.Text
                     style={{
                         ...(renderedField.valueStyle || {}),
+                        ...style,
                     }}
                 >
                     {!isEmptyOrNil(rendererValue) && !isEmptyOrNil(renderedField?.prefix) && (
@@ -107,8 +116,18 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
         );
     };
 
-    const reportDiagram = () => {
-        return <ReactPDF.Image src={diagramUrl} />;
+    const reportDiagram = (renderedField: DiagramField) => {
+        return (
+            <ReactPDF.Image
+                style={{
+                    objectFit: 'contain',
+                    objectPosition: 'center',
+                    width: renderedField?.width ? renderedField.width : 'auto',
+                    height: renderedField?.height ? renderedField.height : 'auto',
+                }}
+                src={diagramUrl}
+            />
+        );
     };
 
     return fieldRenderer(field, value);

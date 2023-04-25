@@ -14,6 +14,7 @@ interface Props {
 const PDFFieldContainer = ({ orientation, children }: Props) => {
     return (
         <ReactPDF.View
+            wrap={false}
             style={{
                 ...(fieldSectionContainer as Style),
                 ...{ flexDirection: orientation },
