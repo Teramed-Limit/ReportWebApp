@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import Konva from 'konva';
 
 import classes from './MarkerAttribute.module.scss';
+import useLocalStorage from '../../hooks/useLocalStorage';
 import ColorPickerButton from '../ColorPickerButton/ColorPickerButton';
 import BaseCheckbox from '../UI/BaseCheckbox/BaseCheckbox';
 import BaseNumber from '../UI/BaseNumber/BaseNumber';
@@ -33,6 +34,7 @@ interface Props {
 }
 
 const MarkerAttribute = ({ id, attribute, setAttribute }: Props) => {
+    const [, setKonvaAttribute] = useLocalStorage<any>('konvaAttribute', {});
     const [sortAttribute, setSortAttribute] = useState<Konva.ShapeConfig>(attribute);
     useEffect(() => {
         const newAttribute = {};
@@ -68,6 +70,7 @@ const MarkerAttribute = ({ id, attribute, setAttribute }: Props) => {
                                 value={sortAttribute[key]}
                                 onValueChange={(value: number | string | boolean) => {
                                     setAttribute(key, value);
+                                    setKonvaAttribute((prev) => ({ ...prev, [key]: value }));
                                 }}
                             />
                         </div>

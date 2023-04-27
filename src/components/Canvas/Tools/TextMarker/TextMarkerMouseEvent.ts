@@ -1,6 +1,7 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
+import LocalStorageService from '../../../../service/local-storage-service';
 import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent } from '../../canvas-utils';
 
@@ -37,6 +38,14 @@ const TextMarkerMouseEvent = (): {
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
 } => {
+    const konvaAttribute = LocalStorageService.getFromLocalStorage<{
+        fill: string;
+        stroke: string;
+        radius: number;
+        strokeWidth: number;
+        fontSize: number;
+    }>('konvaAttribute');
+
     const onClick = (
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
@@ -52,12 +61,12 @@ const TextMarkerMouseEvent = (): {
             name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
-                fill: subColor,
-                stroke: mainColor,
+                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
+                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
                 x: point.x,
                 y: point.y,
                 text: 'Label',
-                fontSize: 48,
+                fontSize: konvaAttribute?.fontSize ? konvaAttribute.fontSize : 48,
                 rotation: 0,
                 scaleX: 1,
                 scaleY: 1,
