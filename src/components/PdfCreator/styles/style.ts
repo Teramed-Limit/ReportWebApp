@@ -1,7 +1,6 @@
 import ReactPDF from '@react-pdf/renderer';
 
 // Common
-export const fontSize = 10;
 export const footerHeight = '92px';
 
 // Style
@@ -9,7 +8,6 @@ export const styles = ReactPDF.StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: 'white',
-        padding: '14px',
         paddingBottom: footerHeight,
         fontFamily: 'NotoSansTC',
     },
@@ -129,7 +127,6 @@ export const styles = ReactPDF.StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         textAlign: 'center',
-        fontSize,
     },
     imageNum: {
         fontWeight: 'bold',

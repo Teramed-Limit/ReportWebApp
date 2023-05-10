@@ -18,13 +18,19 @@ import PDFReportSection from '../PDFReportSection/PDFReportSection';
 import PDFReportSubSection from '../PDFReportSubSection/PDFReportSubSection';
 
 interface Props {
+    pdfStyle: {
+        imagePerRow: number;
+        imagePageBreak: boolean;
+        fontSize: number;
+        pagePadding: number;
+    };
     formSections: Section[];
     formData: DocumentData;
     diagramUrl: string;
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Props) => {
+const PDFReportContent = ({ pdfStyle, formSections, formData, diagramUrl, getOptions }: Props) => {
     return (
         <ReactPDF.View>
             <ReactPDF.View style={reportPage as Style}>
@@ -43,6 +49,7 @@ const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Pr
                                                         field={field as ArrayField}
                                                         formData={formData}
                                                         diagramUrl={diagramUrl}
+                                                        pdfStyle={pdfStyle}
                                                         getOptions={getOptions}
                                                     />
                                                 );
@@ -53,6 +60,7 @@ const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Pr
                                                         field={field as CompositeField}
                                                         formData={formData}
                                                         diagramUrl={diagramUrl}
+                                                        pdfStyle={pdfStyle}
                                                         getOptions={getOptions}
                                                     />
                                                 );
@@ -63,6 +71,7 @@ const PDFReportContent = ({ formSections, formData, diagramUrl, getOptions }: Pr
                                                         field={field}
                                                         value={formData[field.id]}
                                                         diagramUrl={diagramUrl}
+                                                        pdfStyle={pdfStyle}
                                                         getOptions={getOptions}
                                                     />
                                                 );

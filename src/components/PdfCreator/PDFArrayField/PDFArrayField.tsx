@@ -17,10 +17,16 @@ interface Props {
     field: ArrayField;
     formData: DocumentData;
     diagramUrl: string;
+    pdfStyle: {
+        imagePerRow: number;
+        imagePageBreak: boolean;
+        fontSize: number;
+        pagePadding: number;
+    };
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
+const PDFArrayField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Props) => {
     const compositeRenderer = (): JSX.Element => {
         const { templateField } = field;
         const valueList = formData[field.id];
@@ -43,6 +49,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
                             }
                             formData={valueList[idx]}
                             diagramUrl={diagramUrl}
+                            pdfStyle={pdfStyle}
                             getOptions={getOptions}
                         />
                     );
@@ -66,6 +73,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
                             }}
                             value={value?.[templateField.id] || ''}
                             diagramUrl={diagramUrl}
+                            pdfStyle={pdfStyle}
                             getOptions={getOptions}
                         />
                     );

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Check } from '@mui/icons-material';
-import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
@@ -38,8 +38,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
     const { selectedImage, exportDiagramUrl } = useReportImageStore();
     const { pdfDefine } = useReportDefineStore();
     const { getCodeList } = useOptionStore();
-    const [row, setRow] = useLocalStorage('imagePerRow', 4);
-    const [pageBreak, setPageBreak] = useLocalStorage('imagePageBreak', false);
+
     const [loading, setLoading] = useState(true);
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
     const [signatureData, setSignatureData] = useState<DoctorSignature | undefined>(undefined);
@@ -47,6 +46,24 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
         getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
             '',
     );
+
+    // pdf style config
+    const [row, setRow] = useLocalStorage('imagePerRow', 4);
+    const [pageBreak, setPageBreak] = useLocalStorage('imagePageBreak', false);
+    const [fontSize, setFontSize] = useLocalStorage('fontSize', 10);
+    const [pagePadding, setPagePadding] = useLocalStorage('pagePadding', 8);
+
+    const pdfStyle: {
+        imagePerRow: number;
+        imagePageBreak: boolean;
+        fontSize: number;
+        pagePadding: number;
+    } = {
+        imagePerRow: row,
+        imagePageBreak: pageBreak,
+        fontSize,
+        pagePadding,
+    };
 
     const diagramUrl = exportDiagramUrl();
 
@@ -148,6 +165,40 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                         <Check />
                     </ToggleButton>
                 </Stack>
+
+                <Stack direction="column" sx={{ width: '80px' }}>
+                    <Typography variant="caption" component="div">
+                        Font Size
+                    </Typography>
+                    <TextField
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        inputProps={{
+                            min: 2,
+                            max: 36,
+                        }}
+                        value={fontSize}
+                        onChange={(event) => {
+                            setFontSize(parseInt(event.target.value, 10));
+                        }}
+                    />
+                </Stack>
+
+                <Stack direction="column" sx={{ width: '100px' }}>
+                    <Typography variant="caption" component="div">
+                        Page Padding
+                    </Typography>
+                    <TextField
+                        type="number"
+                        inputProps={{ min: 0 }}
+                        value={pagePadding}
+                        onChange={(event) => {
+                            setPagePadding(parseInt(event.target.value, 10));
+                        }}
+                    />
+                </Stack>
             </Stack>
             {loading && (
                 <Block enableScroll>
@@ -162,10 +213,11 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                         subject={studyInsUID}
                         onRender={onPdfRender}
                     >
-                        <PDFPage>
+                        <PDFPage pagePadding={pagePadding}>
                             {/* Header */}
                             <PDFHeader logoUrl={logoUrl} reportName={reportName}>
                                 <PDFReportContent
+                                    pdfStyle={pdfStyle}
                                     formSections={pdfDefine.sections.filter(
                                         (section: Section) => section.isHeader,
                                     )}
@@ -176,6 +228,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                             </PDFHeader>
                             {/* Body */}
                             <PDFReportContent
+                                pdfStyle={pdfStyle}
                                 formSections={pdfDefine.sections.filter(
                                     (section: Section) => !section?.isHeader,
                                 )}
@@ -184,11 +237,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                 getOptions={getCodeList}
                             />
                             {selectedImage.length && (
-                                <PDFPhoto
-                                    row={row}
-                                    pageBreak={pageBreak}
-                                    imageList={selectedImage}
-                                />
+                                <PDFPhoto pdfStyle={pdfStyle} imageList={selectedImage} />
                             )}
                             {/* Footer */}
                             <PDFFooter signatureData={signatureData} />
