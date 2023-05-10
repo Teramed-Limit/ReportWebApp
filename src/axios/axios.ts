@@ -1,14 +1,31 @@
-import axios, { AxiosError } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 
 import { RequestCollector } from './request-collector';
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
+import { Environment } from '../interface/environment';
 import { createObservable } from '../utils/axios-observable';
 import { delay } from '../utils/general';
 
-const axiosIns = axios.create({
-    baseURL: import.meta.env.VITE_BASE_URL,
-    withCredentials: true,
-});
+let axiosIns: AxiosInstance;
+
+export const fetchAppConfig = async (): Promise<void> => {
+    try {
+        const response = await axios.get('/config.json');
+        const config: Environment = response.data;
+
+        if (!config) {
+            axiosIns = axios;
+        } else {
+            axiosIns = axios.create({
+                baseURL: config.ip_address,
+                withCredentials: true,
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching config:', error);
+        axiosIns = axios;
+    }
+};
 
 export function httpReq<T, D = any>() {
     return (config: D) => createObservable<T, D>(axiosIns, config);
