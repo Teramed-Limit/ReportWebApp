@@ -217,7 +217,7 @@ const Query: React.FC = () => {
             </Stack>
             <Stack direction="row" sx={{ alignItems: 'center' }}>
                 {radioComp('All', 'primary')}
-                {radioComp('Incomplete', 'error')}
+                {radioComp('New', 'error')}
                 {radioComp('Saved', 'warning')}
                 {radioComp('Signed', 'success')}
             </Stack>

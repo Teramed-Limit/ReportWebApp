@@ -31,7 +31,7 @@ const ReportTimeline = ({ reportTimeline }: Props) => {
         >;
 
         switch (value) {
-            case ReportStatus.InComplete:
+            case ReportStatus.New:
                 color = 'primary';
                 break;
             case ReportStatus.Saved:

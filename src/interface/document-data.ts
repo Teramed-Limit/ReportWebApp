@@ -20,7 +20,7 @@ export interface DocumentData {
 }
 
 export enum ReportStatus {
-    InComplete = 'InComplete',
+    New = 'New',
     Saved = 'Saved',
     Signed = 'Signed',
 }

@@ -363,7 +363,7 @@ export const DataModel = types
             imageStore.initImages(response.data?.ReportImageData || []);
 
             // report not existed, auto set value
-            if (response.data.ReportStatus === ReportStatus.InComplete) {
+            if (response.data.ReportStatus === ReportStatus.New) {
                 // autofill studyDescription in ReportTemplate
                 if (
                     response.data.StudyDescription &&
