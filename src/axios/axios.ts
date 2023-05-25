@@ -69,11 +69,19 @@ export const setupInterceptors = (
                         await delay(300);
                         return await requestCollector.request(originalConfig, requestIndex);
                     } catch (_error) {
+                        // requestCollector.request 再拿到401表示有錯誤，直接reject
+                        if ((_error as AxiosError).response?.status === 401) {
+                            removeAuth();
+                        }
+
+                        requestCollector.clearRequest();
+
+                        // requestCollector.request 拿到取消請求，直接reject
                         if (axios.isCancel(_error)) {
                             return Promise.reject(_error);
                         }
-                        removeAuth();
-                        requestCollector.clearRequest();
+
+                        // requestCollector.request 拿到其他錯誤，清空requestCollector
                         return Promise.reject(_error);
                     }
                 }
