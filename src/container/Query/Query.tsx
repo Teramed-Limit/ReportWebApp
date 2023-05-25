@@ -43,7 +43,7 @@ const Query: React.FC = () => {
     const [filterBurnStatus, setFilterBurnStatus] = useRecoilState(queryReportStatus);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
     const [pdfUrl, setPdfUrl] = useState<string>('');
-    const [highlighted, setHighlighted] = useState<string>('All');
+    const [highlighted, setHighlighted] = useState<string>('Today');
     // function available
     const { checkAvailable } = useRoleFunctionAvailable();
     // dispatch event for cell event
@@ -180,8 +180,8 @@ const Query: React.FC = () => {
 
     // Call api when row data is empty
     useEffect(() => {
-        onQuery();
-    }, [onQuery]);
+        onRapidQuery(0, 'Today');
+    }, [onRapidQuery]);
 
     return (
         <Stack direction="column" spacing={1} className={classes.container}>
