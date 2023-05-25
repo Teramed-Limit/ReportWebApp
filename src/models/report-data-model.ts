@@ -1,4 +1,5 @@
 import { AxiosError, AxiosResponse } from 'axios';
+import { format } from 'date-fns';
 import {
     action,
     dollEffect,
@@ -26,7 +27,7 @@ import { MessageType, ReportResponseNotification } from '../interface/notificati
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
 import { RegisterReportDefineMap } from '../logic/report-define/report-define-service';
-import { isEmptyOrNil } from '../utils/general';
+import { isEmptyOrNil, stringFormatDate } from '../utils/general';
 
 const dateModel = types.union(types.frozen<DocumentData>());
 const formState = types.union(types.frozen<FormState>());
@@ -355,7 +356,7 @@ export const DataModel = types
         const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const { defineStore, imageStore, authStore } = getRoot<IAnyModelType>(self);
+            const { defineStore, imageStore } = getRoot<IAnyModelType>(self);
 
             // set initialize data
             self.formData.replace(response.data);
@@ -370,6 +371,14 @@ export const DataModel = types
                     RegisterReportDefineMap[response.data.StudyDescription]
                 ) {
                     self.formData.set('ReportTemplate', response.data.StudyDescription);
+                }
+
+                // autofill DateOfProcedure
+                if (response.data.StudyDate) {
+                    self.formData.set(
+                        'DateOfProcedure',
+                        format(stringFormatDate(response.data.StudyDate, 'yyyyMMdd'), 'yyyy-MM-dd'),
+                    );
                 }
 
                 // apply local storage data, when newly report
