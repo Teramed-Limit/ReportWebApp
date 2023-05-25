@@ -11,7 +11,9 @@ import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
 const SignatureTab = () => {
     const [initFormData] = useState({
         userId: '',
+        jobTitle: '',
         title: '',
+        summary: '',
         name: '',
         signatureUrl: '',
         createDateTime: '',
