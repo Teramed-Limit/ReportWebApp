@@ -93,7 +93,7 @@ const Query: React.FC = () => {
             const today = format(new Date(), 'yyyyMMdd');
             const pastDay = format(sub(new Date(), { days }), 'yyyyMMdd');
             gridApiRef.current?.showLoadingOverlay();
-            fetchStudy({ params: { StudyDate: `${pastDay}-${today}` } }).subscribe({
+            fetchStudy({ StudyDate: `${pastDay}-${today}` }).subscribe({
                 next: (res) => {
                     setHighlighted(type);
                     setRowData(res.data);
