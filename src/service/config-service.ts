@@ -2,6 +2,7 @@ let dateFormat = 'yyyy/MM/dd';
 let dateTimeFormat = 'yyyy/MM/dd HH:mm';
 let signatureCorrespondingField = '';
 let enableDeleteProtection = false;
+let ipAddress = '127.0.0.1';
 
 const getDateFormat = () => {
     return dateFormat;
@@ -35,7 +36,17 @@ const setEnableDeleteProtection = (value: boolean) => {
     enableDeleteProtection = value;
 };
 
+const getIpAddress = () => {
+    return ipAddress;
+};
+
+const setIpAddress = (value: string) => {
+    ipAddress = value;
+};
+
 const ConfigService = {
+    getIpAddress,
+    setIpAddress,
     getDateFormat,
     setDateFormat,
     getDateTimeFormat,

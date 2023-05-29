@@ -11,6 +11,7 @@ import Button from '../../../../components/UI/Button/Button';
 import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
 import { useReportDataStore } from '../../../../models/useStore';
+import ConfigService from '../../../../service/config-service';
 import { isEmptyOrNil } from '../../../../utils/general';
 import MessageModal from '../../../Modals/MessageModal/MessageModal';
 
@@ -85,9 +86,7 @@ const ReportViewActionBar: React.FC = () => {
                                         variant="contained"
                                         component={Link}
                                         download
-                                        href={`${
-                                            import.meta.env.VITE_BASE_URL
-                                        }/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
+                                        href={`${ConfigService.getIpAddress()}/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
                                     >
                                         Download
                                     </MaterialButton>

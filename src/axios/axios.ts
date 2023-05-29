@@ -3,6 +3,7 @@ import axios, { AxiosError, AxiosInstance } from 'axios';
 import { RequestCollector } from './request-collector';
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { Environment } from '../interface/environment';
+import ConfigService from '../service/config-service';
 import { createObservable } from '../utils/axios-observable';
 import { delay } from '../utils/general';
 
@@ -12,6 +13,8 @@ export const fetchAppConfig = async (): Promise<void> => {
     try {
         const response = await axios.get('/config.json');
         const config: Environment = response.data;
+
+        ConfigService.setIpAddress(config.ip_address || '127.0.0.1');
 
         if (!config) {
             axiosIns = axios;

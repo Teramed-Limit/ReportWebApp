@@ -31,6 +31,7 @@ import { ModalContext } from '../../context/modal-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
+import ConfigService from '../../service/config-service';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
 import DeleteStudyProtectorModal from '../Modals/DeleteStudyProtectorModal/DeleteStudyProtectorModal';
 
@@ -240,9 +241,7 @@ const Query: React.FC = () => {
                             variant="contained"
                             component={Link}
                             download
-                            href={`${
-                                import.meta.env.VITE_BASE_URL
-                            }/api/report/studyInstanceUID/${studyInstanceUid}/downloadPDF`}
+                            href={`${ConfigService.getIpAddress()}/api/report/studyInstanceUID/${studyInstanceUid}/downloadPDF`}
                         >
                             Download
                         </MaterialButton>

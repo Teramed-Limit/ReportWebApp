@@ -8,12 +8,17 @@ import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
 import { fetchAppConfig } from './axios/axios';
+import { MobxStateProvider } from './context/mobx-custom-provider';
+import { createStore } from './models/store';
 import reportWebVitals from './reportWebVitals';
 
 fetchAppConfig().then(() => {
+    const rootStore = createStore();
     ReactDOM.render(
         <BrowserRouter>
-            <App />
+            <MobxStateProvider store={rootStore}>
+                <App />
+            </MobxStateProvider>
         </BrowserRouter>,
         document.getElementById('root'),
     );

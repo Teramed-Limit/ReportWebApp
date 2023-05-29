@@ -6,7 +6,6 @@ import { QueryModel } from './query-model';
 import { DataModel } from './report-data-model';
 import { DefineModel } from './report-define-model';
 import { ImageModel } from './report-image-model';
-import { fetchAppConfig } from '../axios/axios';
 
 export const RootStoreModel = types
     .model('root', {
@@ -33,10 +32,8 @@ export const RootStoreModel = types
         return {
             afterCreate() {
                 // self.optionStore.initialize().then();
-                fetchAppConfig().then(() => {
-                    self.optionStore.initializeCodeList().then();
-                    self.defineStore.fetchDefine().then();
-                });
+                self.optionStore.initializeCodeList().then();
+                self.defineStore.fetchDefine().then();
             },
         };
     });

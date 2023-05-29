@@ -12,6 +12,7 @@ import { NotificationContext } from '../../../../context/notification-context';
 import WithElementVisibility from '../../../../HOC/WithElementVisiblity/WithElementVisibility';
 import { MessageType } from '../../../../interface/notification';
 import { useReportDataStore } from '../../../../models/useStore';
+import ConfigService from '../../../../service/config-service';
 
 const ReportEditActionBar: React.FC = () => {
     const { showNotifyMsg } = useContext(NotificationContext);
@@ -50,9 +51,7 @@ const ReportEditActionBar: React.FC = () => {
                                     variant="contained"
                                     component={Link}
                                     download
-                                    href={`${
-                                        import.meta.env.VITE_BASE_URL
-                                    }/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
+                                    href={`${ConfigService.getIpAddress()}/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
                                 >
                                     Download
                                 </MaterialButton>

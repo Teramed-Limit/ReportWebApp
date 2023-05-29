@@ -1,6 +1,7 @@
 import axios, { AxiosRequestConfig } from 'axios';
 
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
+import ConfigService from '../service/config-service';
 import { delay, generateUUID, isEmptyOrNil } from '../utils/general';
 
 // 某些頁面會一次發多個Request，但是如果Token過期，會發過多的Refresh Token導致，Token一直更新
@@ -33,7 +34,7 @@ export class RequestCollector {
         requestIndex: number,
     ): Promise<AxiosRequestConfig> => {
         const retryAxios = axios.create({
-            baseURL: import.meta.env.VITE_BASE_URL,
+            baseURL: ConfigService.getIpAddress(),
             withCredentials: true,
         });
 

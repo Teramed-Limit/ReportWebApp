@@ -1,3 +1,3 @@
 export interface Environment {
-	ip_address?: string;
+    ip_address?: string;
 }
