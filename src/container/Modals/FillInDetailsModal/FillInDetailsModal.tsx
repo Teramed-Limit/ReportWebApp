@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { AxiosError } from 'axios';
 import * as R from 'ramda';
 import { DropResult } from 'react-beautiful-dnd';
-import { FaEdit } from 'react-icons/all';
+import { FaEdit } from 'react-icons/fa';
 import { filter, finalize, first } from 'rxjs/operators';
 
 import SectionContentListEdit from './component/SectionContentListEdit/SectionContentListEdit';

@@ -55,7 +55,14 @@ export class ReportDefineService {
 
     getFormDefine = (reportType: string): RegisterReportDefine => {
         if (!RegisterReportDefineMap[reportType]) {
-            console.error(`${reportType} not found`);
+            console.warn(`report type ${reportType} not found, use Blank instead`);
+            // check if Blank exists
+            if (RegisterReportDefineMap.Blank) {
+                return RegisterReportDefineMap.Blank;
+            }
+
+            console.error('Blank not found');
+            return { fields: {}, formDefine: { sections: [] }, pdfDefine: { sections: [] } };
         }
 
         this.currentFields = RegisterReportDefineMap[reportType].fields;

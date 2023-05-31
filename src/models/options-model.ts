@@ -1,12 +1,13 @@
 import { AxiosResponse } from 'axios';
-import { action, dollEffect, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
+import { action, dollEffect, getRoot, IAnyModelType, types } from 'mst-effect';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
+import { OptionsModal } from './model-type/options-type-modal';
 import { fetchCodeList } from '../axios/api';
 import { CodeList, CodeListMap } from '../interface/code-list';
 import { FilterCondition } from '../interface/selection-field';
 
-export const OptionStoreModel = types
+export const OptionStoreModel: OptionsModal = types
     .model('optionStore')
     .props({
         loading: types.optional(types.boolean, true),
@@ -102,5 +103,3 @@ export const OptionStoreModel = types
             setCodeListMap,
         };
     });
-
-export type OptionStore = Instance<typeof OptionStoreModel>;

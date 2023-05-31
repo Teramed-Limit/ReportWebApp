@@ -1,13 +1,15 @@
 import { AxiosResponse } from 'axios';
-import { action, dollEffect, getEnv, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
+import { action, dollEffect, getEnv, getRoot, IAnyModelType, types } from 'mst-effect';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
+import { ReportDataTypeOfModel } from './model-type/report-data-type-modal';
+import { ReportDefineModal } from './model-type/report-define-type-modal';
 import { fetchReportDefine, fetchReportHistoryDefine } from '../axios/api';
 import { FormDefine, FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { DocumentData } from '../interface/document-data';
 import { RootService } from '../interface/root-service';
 
-export const DefineModel = types
+export const DefineModel: ReportDefineModal = types
     .model('define', {
         loading: types.optional(types.boolean, true),
         formDefineMap: types.frozen<FormDefineMap>({}),
@@ -66,9 +68,7 @@ export const DefineModel = types
                 self.pdfDefine = pdfDefine;
 
                 const { dataStore } = getRoot<IAnyModelType>(self);
-                dataStore.initialFormControl();
+                (dataStore as ReportDataTypeOfModel).initialFormControl();
             },
         };
     });
-
-export type DefineStore = Instance<typeof DefineModel>;

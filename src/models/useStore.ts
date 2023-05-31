@@ -2,13 +2,13 @@ import React, { createContext } from 'react';
 
 import { MobXProviderContext } from 'mobx-react';
 
-import { AuthStore } from './auth-model';
-import { OptionStore } from './options-model';
-import { QueryStore } from './query-model';
-import { DataStore } from './report-data-model';
-import { DefineStore } from './report-define-model';
-import { ImageStore } from './report-image-model';
-import { RootStore } from './root-model';
+import { AuthStore } from './model-type/auth-type-modal';
+import { ImageStore } from './model-type/image-type-modal';
+import { OptionStore } from './model-type/options-type-modal';
+import { QueryStore } from './model-type/query-type-modal';
+import { DataStore } from './model-type/report-data-type-modal';
+import { DefineStore } from './model-type/report-define-type-modal';
+import { RootStore } from './model-type/root-type-modal';
 
 const RootStoreContext = createContext<null | RootStore>(null);
 export const { Provider } = RootStoreContext;

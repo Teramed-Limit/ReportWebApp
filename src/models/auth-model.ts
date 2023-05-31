@@ -1,12 +1,13 @@
 import { AxiosError } from 'axios';
-import { action, dollEffect, Instance, types } from 'mst-effect';
+import { action, dollEffect, types } from 'mst-effect';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
+import { AuthTypeModal } from './model-type/auth-type-modal';
 import { checkIsRepeatLogin, login, logout } from '../axios/api';
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { RoleFunction } from '../interface/user-role';
 
-export const AuthModel = types
+export const AuthModel: AuthTypeModal = types
     .model('auth', {
         userId: types.maybe(types.string),
         userName: types.maybe(types.string),
@@ -95,5 +96,3 @@ export const AuthModel = types
             removeAuth,
         };
     });
-
-export type AuthStore = Instance<typeof AuthModel>;

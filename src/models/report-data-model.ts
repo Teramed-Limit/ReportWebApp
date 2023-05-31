@@ -1,18 +1,11 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { format } from 'date-fns';
-import {
-    action,
-    dollEffect,
-    effect,
-    getEnv,
-    getRoot,
-    IAnyModelType,
-    Instance,
-    types,
-} from 'mst-effect';
+import { action, dollEffect, effect, getEnv, getRoot, IAnyModelType, types } from 'mst-effect';
 import { iif, interval, Observable, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
+import { ImageTypeOfModel } from './model-type/image-type-modal';
+import { ReportDataModal } from './model-type/report-data-type-modal';
+import { ReportDefineTypeOfModel } from './model-type/report-define-type-modal';
 import {
     fetchHistoryReport,
     fetchReport,
@@ -26,8 +19,7 @@ import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
-import { RegisterReportDefineMap } from '../logic/report-define/report-define-service';
-import { isEmptyOrNil, stringFormatDate } from '../utils/general';
+import { isEmptyOrNil } from '../utils/general';
 
 const dateModel = types.union(types.frozen<DocumentData>());
 const formState = types.union(types.frozen<FormState>());
@@ -36,7 +28,7 @@ const formInvalidError = {
     response: { data: { Message: 'Required fields are not filled.' } },
 };
 
-export const DataModel = types
+export const DataModel: ReportDataModal = types
     .model('report', {
         lockByUser: types.optional(types.string, ''),
         modifiable: types.optional(types.boolean, false),
@@ -86,7 +78,9 @@ export const DataModel = types
 
         const valueChanged = (id: string, value: any) => {
             const {
-                defineStore: { setFormDefine },
+                defineStore,
+            }: {
+                defineStore: ReportDefineTypeOfModel;
             } = getRoot<IAnyModelType>(self);
 
             const changeValue = (targetId, targetValue, staticState: Partial<FormControl> = {}) => {
@@ -98,7 +92,8 @@ export const DataModel = types
                     ...staticState,
                 });
 
-                if (targetId === 'ReportTemplate') setFormDefine(self.formData.toJSON());
+                if (targetId === 'ReportTemplate')
+                    defineStore.setFormDefine(self.formData.toJSON());
             };
             changeValue(id, value);
 
@@ -157,7 +152,7 @@ export const DataModel = types
             self.formData.clear();
             self.formState.replace({});
             self.formValidation = { isValid: true, openModalName: '' };
-            const { imageStore } = getRoot<IAnyModelType>(self);
+            const { imageStore }: { imageStore: ImageTypeOfModel } = getRoot<IAnyModelType>(self);
             imageStore.initImages([]);
         };
 
@@ -356,43 +351,21 @@ export const DataModel = types
         const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const { defineStore, imageStore } = getRoot<IAnyModelType>(self);
+            const {
+                defineStore,
+                imageStore,
+            }: {
+                defineStore: ReportDefineTypeOfModel;
+                imageStore: ImageTypeOfModel;
+            } = getRoot<IAnyModelType>(self);
 
             // set initialize data
             self.formData.replace(response.data);
-
             imageStore.initImages(response.data?.ReportImageData || []);
-
-            // report not existed, auto set value
-            if (response.data.ReportStatus === ReportStatus.New) {
-                // autofill studyDescription in ReportTemplate
-                if (
-                    response.data.StudyDescription &&
-                    RegisterReportDefineMap[response.data.StudyDescription]
-                ) {
-                    self.formData.set('ReportTemplate', response.data.StudyDescription);
-                }
-
-                // autofill DateOfProcedure
-                if (response.data.StudyDate) {
-                    self.formData.set(
-                        'DateOfProcedure',
-                        format(stringFormatDate(response.data.StudyDate, 'yyyyMMdd'), 'yyyy-MM-dd'),
-                    );
-                }
-
-                // apply local storage data, when newly report
-                if (window.localStorage.getItem(self.studyInsUID)) {
-                    const tempData: DocumentData = JSON.parse(
-                        <string>window.localStorage.getItem(self.studyInsUID),
-                    );
-                    self.formData.replace(tempData);
-                    imageStore.initImages(tempData.ReportImageData || []);
-                }
-            }
 
             // initialize form control
             defineStore.setFormDefine(self.formData.toJSON());
+
             self.reportHasChanged = false;
             self.modifiable = response.data.ReportStatus !== ReportStatus.Signed;
             self.loading = false;
@@ -438,7 +411,7 @@ export const DataModel = types
         const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const { imageStore } = getRoot<IAnyModelType>(self);
+            const { imageStore }: { imageStore: ImageTypeOfModel } = getRoot<IAnyModelType>(self);
 
             // set initialize data
             self.formData.replace(response.data);
@@ -482,5 +455,3 @@ export const DataModel = types
             }),
         };
     });
-
-export type DataStore = Instance<typeof DataModel>;
