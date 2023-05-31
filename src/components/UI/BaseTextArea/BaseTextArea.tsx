@@ -60,9 +60,6 @@ const BaseTextArea = forwardRef(
                 onClick={(event) => event.stopPropagation()}
                 onChange={handleChange}
                 onFocus={() => onFocusChange()}
-                nonce={undefined}
-                onResize={undefined}
-                onResizeCapture={undefined}
             />
         );
     },

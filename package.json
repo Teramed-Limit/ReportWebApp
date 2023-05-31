@@ -15,12 +15,12 @@
         "gc": "npx generate-react-cli component"
     },
     "dependencies": {
-        "@emotion/react": "^11.10.5",
-        "@emotion/styled": "^11.10.5",
+        "@emotion/react": "^11.11.0",
+        "@emotion/styled": "^11.11.0",
         "@mui/icons-material": "^5.5.1",
         "@mui/lab": "^5.0.0-alpha.110",
-        "@mui/material": "^5.10.16",
-        "@mui/styles": "^5.5.1",
+        "@mui/material": "^5.13.3",
+        "@mui/styles": "^5.13.2",
         "@mui/types": "^7.2.0",
         "@react-pdf/renderer": "^3.0.1",
         "@react-pdf/types": "^2.3.1",
