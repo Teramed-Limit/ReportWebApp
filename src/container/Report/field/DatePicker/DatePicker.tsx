@@ -14,10 +14,11 @@ interface Props {
 const DatePicker = React.forwardRef(
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     ({ field, value, onValueChange, disabled }: Props, ref: ForwardedRef<HTMLTextAreaElement>) => {
+        // Set default value
         useEffect(() => {
             if (field?.defaultToday && isEmptyOrNil(value))
-                onValueChange(convertToDate(new Date(), 'yyyy-MM-dd'));
-        }, [field.defaultToday, onValueChange, value]);
+                onValueChange(convertToDate(new Date(), field.toFormat || 'yyyy-MM-dd'));
+        }, [field.defaultToday, field.fromFormat, field.toFormat, onValueChange, value]);
 
         return (
             <BaseDatePicker
