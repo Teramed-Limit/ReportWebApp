@@ -39,6 +39,10 @@ const BaseDatePicker = ({
     }
 
     const handleValueChange = (targetValue: string) => {
+        if (isEmptyOrNil(targetValue)) {
+            onValueChange('');
+            return;
+        }
         const fromValue = parse(targetValue, 'yyyy-MM-dd', new Date());
         const result = format(fromValue, toFormat);
         onValueChange(result);
