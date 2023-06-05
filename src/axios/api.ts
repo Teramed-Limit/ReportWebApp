@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { httpReq } from './axios';
 import { AnyObject } from '../interface/anyObject';
 import { LoginResult } from '../interface/auth';
-import { CodeListMap } from '../interface/code-list';
+import { CodeList, CodeListMap } from '../interface/code-list';
 import { FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { Diagram } from '../interface/diagram';
 import { DocumentData } from '../interface/document-data';
@@ -127,6 +127,14 @@ export function fetchCodeList(): Observable<AxiosResponse<CodeListMap>> {
     return httpReq<CodeListMap>()({
         method: 'get',
         url: `api/codelist`,
+    });
+}
+
+// 獲取 Code list
+export function fetchCodeListByCode(codeName: string) {
+    return httpReq<CodeList[]>()({
+        method: 'get',
+        url: `api/codelist/codeName/${codeName}`,
     });
 }
 

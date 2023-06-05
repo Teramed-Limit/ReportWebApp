@@ -18,4 +18,5 @@ export interface SelectionField<T = any> extends Field {
     joinStr?: string;
     optionSource: OptionSource<T>;
     filterCondition: FilterCondition;
+    fetchLatest?: boolean;
 }

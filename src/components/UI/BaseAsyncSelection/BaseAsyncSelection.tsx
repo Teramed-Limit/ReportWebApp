@@ -1,14 +1,21 @@
 import React from 'react';
 
-import Select from 'react-select';
-import { GetOptionLabel, GetOptionValue } from 'react-select/dist/declarations/src/types';
+import AsyncSelect from 'react-select/async';
+import {
+    GetOptionLabel,
+    GetOptionValue,
+    OptionsOrGroups,
+} from 'react-select/dist/declarations/src/types';
 
-import classes from './BaseSelection.module.scss';
+import classes from './BaseAsyncSelection.module.scss';
 
 interface Props {
     id?: string;
     disabled?: boolean;
-    options: any[];
+    getOptions: (
+        inputValue: string,
+        callback: (options: OptionsOrGroups<any, any>) => void,
+    ) => Promise<OptionsOrGroups<any, any>> | void;
     selectedOption: any;
     onSelectionChanged: (options: any) => void;
     onInputChange?: (value: string) => void;
@@ -21,13 +28,12 @@ interface Props {
 
 // label is display text in dropdown
 // value is key in dropdown
-// TODO: Replace react-select to material select
-const BaseSelection = ({
+const BaseAsyncSelection = ({
     id,
     disabled = false,
     selectedOption = null,
     onSelectionChanged,
-    options,
+    getOptions,
     isMulti = false,
     isLoading = false,
     isSearchable = true,
@@ -36,14 +42,15 @@ const BaseSelection = ({
     getOptionLabel,
 }: Props) => {
     return (
-        <Select
+        <AsyncSelect
             id={id}
             isDisabled={disabled}
             className={classes.report__container}
             classNamePrefix="report"
             value={selectedOption}
             onChange={onSelectionChanged}
-            options={options}
+            defaultOptions
+            loadOptions={getOptions}
             isMulti={isMulti}
             isLoading={isLoading}
             isSearchable={isSearchable}
@@ -60,4 +67,4 @@ const BaseSelection = ({
     );
 };
 
-export default BaseSelection;
+export default BaseAsyncSelection;

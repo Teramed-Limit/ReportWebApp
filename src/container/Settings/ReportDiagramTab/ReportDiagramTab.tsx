@@ -50,10 +50,10 @@ const ReportDiagramTab = () => {
     };
 
     useEffect(() => {
-        if (codeListMap?.ReportTemplate?.[0]) {
-            onFetchReportDiagram(codeListMap.ReportTemplate[0].Label);
+        if (codeListMap?.get('ReportTemplate')?.[0]) {
+            onFetchReportDiagram(codeListMap?.get('ReportTemplate')[0].Label);
         }
-    }, [codeListMap.ReportTemplate]);
+    }, [codeListMap]);
 
     return (
         <Stack direction="row" className={classes.container}>
@@ -75,7 +75,7 @@ const ReportDiagramTab = () => {
                     </ListSubheader>
                 }
             >
-                {codeListMap?.ReportTemplate?.map((option) => {
+                {codeListMap?.get('ReportTemplate')?.map((option) => {
                     return (
                         <ListItemButton
                             key={option.Label}
