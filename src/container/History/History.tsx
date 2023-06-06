@@ -21,7 +21,6 @@ function History() {
     const history = useHistory();
     const [rowData, setRowData] = useState<StudyData[]>([]);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
-    const [pdfUrl, setPdfUrl] = useState<string>('');
     // function available
     const { checkAvailable } = useRoleFunctionAvailable();
     // dispatch event for cell event
@@ -53,7 +52,7 @@ function History() {
             const today = format(new Date(), 'yyyyMMdd');
             const pastDay = format(sub(new Date(), { days }), 'yyyyMMdd');
             gridApiRef.current?.showLoadingOverlay();
-            fetchHistoryStudy({ params: { StudyDate: `${pastDay}-${today}` } }).subscribe({
+            fetchHistoryStudy({ StudyDate: `${pastDay}-${today}` }).subscribe({
                 next: (res) => {
                     setRowData(res.data);
                     gridApiRef.current?.deselectAll();
@@ -75,15 +74,6 @@ function History() {
         },
         [history],
     );
-
-    const onRenderPDF = useCallback((gridApi: GridApi) => {
-        const selectedRow = gridApi.getSelectedRows()[0] as StudyData;
-        if (!selectedRow) {
-            setPdfUrl('');
-            return;
-        }
-        setPdfUrl(selectedRow.PDFFilePath);
-    }, []);
 
     useEffect(() => {
         let mutateColDef: ColDef[] = [...define.historyStudy.colDef];
@@ -121,7 +111,6 @@ function History() {
                         columnDefs={colDefs}
                         rowData={rowData}
                         gridReady={gridReady}
-                        onSelectionChanged={onRenderPDF}
                     />
                 </div>
             </div>

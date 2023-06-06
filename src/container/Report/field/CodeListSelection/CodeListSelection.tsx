@@ -87,7 +87,7 @@ const CodeListSelection = React.forwardRef(
                         sx={{ minHeight: '20px', minWidth: '20px', padding: 0 }}
                         onClick={() => optionStore.getLatestCodeList(source)}
                     >
-                        <SyncIcon sx={{ fontSize: '20px' }} />
+                        <SyncIcon color="warning" sx={{ fontSize: '20px' }} />
                     </IconButton>
                 )}
             </>

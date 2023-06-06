@@ -1,5 +1,6 @@
 import { Action } from './actions/action';
-import { RadioButtonChangeOtherValueEvent } from './actions/radio-button-change-other-value-event';
+import { ChangeOtherArrayValueEvent } from './actions/change-other-array-value-event';
+import { ChangeOtherValueEvent } from './actions/change-other-value-event';
 import { BowelPrep } from './fields/bowel-prep';
 import { ReportTemplate } from './fields/report-template';
 import { FormDefine } from '../../interface/define';
@@ -20,10 +21,8 @@ export class ReportDataService {
         this.factoryMapper.set('BBPS_Transverse', new BowelPrep());
         this.factoryMapper.set('BBPS_Left', new BowelPrep());
         // By action
-        this.actionContainer.set(
-            'RadioButtonChangeOtherValue',
-            new RadioButtonChangeOtherValueEvent(),
-        );
+        this.actionContainer.set('ChangeOtherValue', new ChangeOtherValueEvent());
+        this.actionContainer.set('ChangeOtherArrayValue', new ChangeOtherArrayValueEvent());
     }
 
     postValueChangedById(
@@ -39,17 +38,29 @@ export class ReportDataService {
     }
 
     postValueChangedByAction(
-        field: Field | undefined,
-        value: string,
+        params: {
+            // 變動的Field Id
+            id: string;
+            // 變動的Field
+            field: Field;
+            // 變動的Value
+            value: any;
+            // 若為Array Field，Array Field Id
+            arrayId?: string;
+            // 若為Array Field，變動的Field Id
+            arrayIdx?: number;
+            data: DocumentData;
+            define: Record<string, Field>;
+        },
         changeValue: (id, value, state?: Partial<FormControl>) => void,
     ): void {
-        if (!field || !field?.valueChangedEvent) return;
-        const actionFunction = this.actionContainer.get(field.valueChangedEvent.event);
+        if (!params.field?.valueChangedEvent) return;
+        const actionFunction = this.actionContainer.get(params.field.valueChangedEvent.event);
         if (actionFunction) {
-            actionFunction.execute(field.valueChangedEvent.eventParams, value, changeValue);
+            actionFunction.execute(params, params.field.valueChangedEvent, changeValue);
         } else {
             console.error(
-                `postValueChangedByAction error, 找不到對應的action, ${field.valueChangedEvent.event}`,
+                `postValueChangedByAction error, 找不到對應的action, ${params.field.valueChangedEvent.event}`,
             );
         }
     }

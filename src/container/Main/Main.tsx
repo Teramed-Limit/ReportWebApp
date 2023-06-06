@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { observer } from 'mobx-react';
 
@@ -7,10 +7,19 @@ import AppRoutes from '../../App-route';
 import Block from '../../components/Block/Block';
 import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
-import { useStore } from '../../models/useStore';
+import { useOptionStore, useReportDefineStore, useStore } from '../../models/useStore';
 
 const Main = () => {
     const { loading } = useStore();
+
+    // 初始化，reportDefine 和 codeList
+    const { fetchDefine } = useReportDefineStore();
+    const { initializeCodeList } = useOptionStore();
+
+    useEffect(() => {
+        initializeCodeList().then();
+        fetchDefine().then();
+    }, [fetchDefine, initializeCodeList]);
 
     return (
         <div className={classes.container}>

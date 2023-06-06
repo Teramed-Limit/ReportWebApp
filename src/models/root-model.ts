@@ -28,13 +28,4 @@ export const RootStoreModel: RootTypeModal = types
         get loading() {
             return self.dataStore.loading || self.optionStore.loading;
         },
-    }))
-    .actions((self) => {
-        return {
-            afterCreate() {
-                // self.optionStore.initialize().then();
-                self.optionStore.initializeCodeList().then();
-                self.defineStore.fetchDefine().then();
-            },
-        };
-    });
+    }));

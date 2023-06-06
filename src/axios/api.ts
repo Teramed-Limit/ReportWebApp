@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 
 import { httpReq } from './axios';
 import { AnyObject } from '../interface/anyObject';
-import { LoginResult } from '../interface/auth';
+import { LoginResult, UserAccountInfo } from '../interface/auth';
 import { CodeList, CodeListMap } from '../interface/code-list';
 import { FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { Diagram } from '../interface/diagram';
@@ -15,10 +15,12 @@ import {
     ReorderFormFieldLexiconCategoryBody,
 } from '../interface/form-field-lexicon-category';
 import { HkcctCode } from '../interface/hkcct';
+import { LoginStatusData } from '../interface/login-status';
 import { ReportTimelineData } from '../interface/report-timeline';
 import { StudyData } from '../interface/study-data';
 import { SystemConfig } from '../interface/system-config';
 import { RoleFunction } from '../interface/user-role';
+import LocalStorageService from '../service/local-storage-service';
 
 export const checkIsRepeatLogin = (userId): Observable<AxiosResponse<boolean>> => {
     return httpReq<boolean>()({
@@ -35,8 +37,22 @@ export function login(userId: string, password: string): Observable<AxiosRespons
     });
 }
 
-export function fetchLoginStatus(): Observable<AxiosResponse<StudyData[]>> {
-    return httpReq<StudyData[]>()({
+export function getUserInfo(userId: string): Observable<AxiosResponse<UserAccountInfo>> {
+    return httpReq<UserAccountInfo>()({
+        method: 'get',
+        url: `api/account/userId/${userId}`,
+    });
+}
+
+export function updateUserInfo(userId: string): Observable<AxiosResponse<any>> {
+    return httpReq<any>()({
+        method: 'post',
+        url: `api/account/userId/${userId}`,
+    });
+}
+
+export function fetchLoginStatus(): Observable<AxiosResponse<LoginStatusData[]>> {
+    return httpReq<LoginStatusData[]>()({
         method: 'get',
         url: `api/login/status`,
     });
@@ -123,10 +139,11 @@ export function downloadReportPdf(studyInsUid): Observable<AxiosResponse<AnyObje
 }
 
 // 獲取 Code list
-export function fetchCodeList(): Observable<AxiosResponse<CodeListMap>> {
+export function fetchCodeList(excludeList?: string[]): Observable<AxiosResponse<CodeListMap>> {
     return httpReq<CodeListMap>()({
         method: 'get',
         url: `api/codelist`,
+        params: { exclude: excludeList?.join('%') },
     });
 }
 
@@ -294,9 +311,13 @@ export function deleteStudy(studyInstanceUid: string, password = ''): Observable
 }
 
 export function fetchStudy(queryParams: any): Observable<AxiosResponse<StudyData[]>> {
+    const functionList = LocalStorageService.getFromLocalStorage<LoginResult>('user')?.FunctionList;
+    const accessAllStudies = functionList?.find(
+        (item) => item.FunctionName === 'Access All Studies',
+    );
     return httpReq<StudyData[]>()({
         method: 'get',
-        url: `api/queryStudy`,
+        url: `api/${accessAllStudies ? 'queryStudyWithNoLimit' : 'queryStudy'}`,
         params: queryParams,
     });
 }

@@ -10,6 +10,7 @@ export interface DocumentData {
     ReportTemplate?: string;
     ReportStatus?: ReportStatus;
     Author?: string;
+    UserId?: string;
     PDFFilePath?: string;
     AccessionNumber?: string;
     StudyDescription?: string;

@@ -137,7 +137,7 @@ const ImageSelector = ({
             <label className={classes.label}>
                 <span>Sites:</span>
                 <BaseLexiconInput
-                    id={id}
+                    id={`sites_${index}`}
                     cssClass={{
                         container: classes['lexicon-container'],
                         input: classes['lexicon-input'],
@@ -155,7 +155,7 @@ const ImageSelector = ({
             <label className={classes.label}>
                 <span>Findings:</span>
                 <BaseLexiconInput
-                    id={id}
+                    id={`findings_${index}`}
                     cssClass={{
                         container: classes['lexicon-container'],
                         input: classes['lexicon-input'],

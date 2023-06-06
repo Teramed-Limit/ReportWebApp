@@ -312,17 +312,33 @@ export const define = {
             {
                 field: 'UserID',
                 headerName: 'User Id',
-                width: 200,
-            },
-            {
-                field: 'UserPassword',
-                headerName: 'Password',
-                width: 200,
+                width: 150,
             },
             {
                 field: 'DoctorEName',
                 headerName: 'User Name',
+                width: 250,
+            },
+            {
+                field: 'Title',
+                headerName: 'Title',
+                width: 100,
+            },
+            {
+                field: 'JobTitle',
+                headerName: 'Job Title',
                 width: 200,
+            },
+            {
+                field: 'SignatureUrl',
+                headerName: 'Signature',
+                width: 120,
+                cellRenderer: 'imageRowRenderer',
+            },
+            {
+                field: 'Summary',
+                headerName: 'Summary',
+                width: 400,
             },
             {
                 field: 'RoleList',
@@ -357,6 +373,22 @@ export const define = {
                             validate: { type: 'Required' },
                         },
                         {
+                            id: 'Title',
+                            label: 'Title',
+                            type: 'Text',
+                        },
+                        {
+                            id: 'JobTitle',
+                            label: 'Job Title',
+                            type: 'Text',
+                        },
+                        {
+                            id: 'Summary',
+                            label: 'Summary',
+                            type: 'Text',
+                        },
+                        { id: 'SignatureUrl', label: 'Signature', type: 'ImageSelect' },
+                        {
                             id: 'RoleList',
                             label: 'Role Group',
                             type: 'MultiSelect',
@@ -377,12 +409,12 @@ export const define = {
             {
                 field: 'userId',
                 headerName: 'User Id',
-                width: 120,
+                width: 250,
             },
             {
                 field: 'jobTitle',
                 headerName: 'Job Title',
-                width: 150,
+                width: 200,
             },
             {
                 field: 'title',

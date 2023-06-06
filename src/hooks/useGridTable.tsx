@@ -138,6 +138,7 @@ export const useGridTable = ({
                 next: () => {
                     gridApi?.current?.applyTransaction({ remove: [cellRendererParams.data] });
                     gridApi?.current?.hideOverlay();
+                    setNotification(MessageType.Success, 'Delete row successfully');
                     deleteCallBack?.();
                 },
                 error: (err: AxiosError<{ Message: string }>) => {
@@ -164,6 +165,7 @@ export const useGridTable = ({
                     gridApi?.current?.hideOverlay();
                     setModal(null);
                     gridApi?.current?.applyTransaction({ add: [formData], addIndex: 0 });
+                    setNotification(MessageType.Success, 'Insert row successfully');
                     addCallBack?.();
                 },
                 error: (err: AxiosError<{ Message: string }>) => {
@@ -194,6 +196,7 @@ export const useGridTable = ({
                     updateCallBack?.();
                     gridApi?.current?.refreshCells({ force: true, rowNodes: [rowNode] });
                     gridApi?.current?.hideOverlay();
+                    setNotification(MessageType.Success, 'Update row successfully');
                 },
                 error: (err: AxiosError<{ Message: string }>) => {
                     gridApi?.current?.hideOverlay();

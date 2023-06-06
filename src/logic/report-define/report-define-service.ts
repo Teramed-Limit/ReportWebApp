@@ -1,4 +1,5 @@
 import { FormFieldType } from '../../container/Report/field/field-type';
+import { ArrayField } from '../../interface/array-field';
 import { CompositeField } from '../../interface/composite-field';
 import { FormDefine, FormDefineMap, Section } from '../../interface/define';
 import { Field } from '../../interface/field';
@@ -14,6 +15,13 @@ export const normalizeFields = (sections: any[] | undefined, modalName: string |
                         entities[fieldInComposite.id] = {
                             ...fieldInComposite,
                             fromModal: modalName,
+                        };
+                    });
+                }
+                if (field.type === FormFieldType.Array) {
+                    (field as ArrayField).templateField.fields.forEach((fieldInArray) => {
+                        entities[`${field.id}.${fieldInArray.id}`] = {
+                            ...fieldInArray,
                         };
                     });
                 } else {
@@ -34,7 +42,7 @@ export interface RegisterReportDefine {
 export const RegisterReportDefineMap: { [props: string]: RegisterReportDefine } = {};
 
 export class ReportDefineService {
-    currentFields;
+    currentFields: Record<string, Field> | undefined;
 
     registerFormDefine = (defineMap: FormDefineMap) => {
         Object.entries(defineMap).forEach(([k, v]) => {
@@ -66,12 +74,16 @@ export class ReportDefineService {
         }
 
         this.currentFields = RegisterReportDefineMap[reportType].fields;
-
         return RegisterReportDefineMap[reportType];
     };
 
     getField = (id: string): Field | undefined => {
         if (!this.currentFields) return undefined;
         return this.currentFields[id];
+    };
+
+    getArrayField = (id: string, targetId: string): Field | undefined => {
+        if (!this.currentFields) return undefined;
+        return this.currentFields[`${id}.${targetId}`];
     };
 }

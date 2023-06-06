@@ -10,6 +10,7 @@ import LoginStatus from './container/LoginStatus/LoginStatus';
 import Query from './container/Query/Query';
 import Report from './container/Report/Report';
 import ReportHistory from './container/ReportHistory/ReportHistory';
+import SelfInfo from './container/SelfInfo/SelfInfo';
 import Settings from './container/Settings/Settings';
 import PrivateRoute from './Private-route';
 
@@ -38,6 +39,7 @@ function AppRoutes() {
             />
             <AuthRoute id="navigation__account" exact path="/account" component={<Account />} />
             <AuthRoute id="navigation__setting" exact path="/settings" component={<Settings />} />
+            <PrivateRoute exact path="/selfInfo" component={<SelfInfo />} />
             <Route path="*" component={NotFoundPage} />
         </Switch>
     );

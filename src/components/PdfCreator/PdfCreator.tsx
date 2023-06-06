@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
 import { map } from 'rxjs/operators';
 
+import classes from './PdfCreator.module.scss';
 import PDFFooter from './PDFFooter/PDFFooter';
 import PDFHeader from './PDFHeader/PDFHeader';
 import PDFPage from './PDFPage/PDFPage';
@@ -14,8 +15,8 @@ import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
 import { httpReq } from '../../axios/axios';
 import useLocalStorage from '../../hooks/useLocalStorage';
+import { UserAccountInfo } from '../../interface/auth';
 import { Section } from '../../interface/define';
-import { DoctorSignature } from '../../interface/doctor-signature';
 import {
     useOptionStore,
     useReportDataStore,
@@ -40,8 +41,9 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
     const { getCodeList } = useOptionStore();
 
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
     const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
-    const [signatureData, setSignatureData] = useState<DoctorSignature | undefined>(undefined);
+    const [userData, setUserData] = useState<UserAccountInfo | undefined>(undefined);
     const [reportName] = useState<string>(
         getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
             '',
@@ -96,8 +98,14 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
             url: 'api/logo',
         })
             .pipe(map((res) => res.data))
-            .subscribe((value) => {
-                setLogoUrl(value);
+            .subscribe({
+                next: (value) => {
+                    setLogoUrl(value);
+                },
+                error: () => {
+                    setLoading(false);
+                    setError('Logo not found');
+                },
             });
 
         return () => subscription.unsubscribe();
@@ -105,14 +113,22 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
 
     // Get signature
     useEffect(() => {
-        const subscription = httpReq<DoctorSignature>()({
+        const subscription = httpReq<UserAccountInfo>()({
             method: 'get',
-            url: `api/doctor-signature/userId/${formData.get(
+            url: `api/account/userId/${formData.get(
                 ConfigService.getSignatureCorrespondingField(),
             )}`,
-        }).subscribe((res) => {
-            setSignatureData(res.data);
-        });
+        })
+            .pipe(map((res) => res.data))
+            .subscribe({
+                next: (value) => {
+                    setUserData(value);
+                },
+                error: () => {
+                    setLoading(false);
+                    setError('Signature not found');
+                },
+            });
 
         return () => subscription.unsubscribe();
     }, [formData]);
@@ -205,7 +221,14 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                     <Spinner />
                 </Block>
             )}
-            {logoUrl && signatureData && (
+            {error && (
+                <>
+                    <Typography className={classes.error} variant="h6" component="div">
+                        {error}
+                    </Typography>
+                </>
+            )}
+            {logoUrl && userData && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
                         title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}
@@ -240,7 +263,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                 <PDFPhoto pdfStyle={pdfStyle} imageList={selectedImage} />
                             )}
                             {/* Footer */}
-                            <PDFFooter signatureData={signatureData} />
+                            <PDFFooter signatureData={userData} />
                         </PDFPage>
                     </Document>
                 </PDFViewer>

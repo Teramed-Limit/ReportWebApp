@@ -38,7 +38,17 @@ interface ReportDataTypeOfActions {
     readonly reportTemplate: any | undefined;
     // Actions
     valueChanged: (id: string, value: any) => void;
+
+    // 更新 array field 的值
+    arrayValueChanged: (
+        idx: number, // idx
+        id: string, // field id
+        targetId: string, // template field id
+        value: any, // field value
+        targetValue: any, // template field value
+    ) => void;
     validate: (id: string, value: any) => FormControl;
+    initReportData: () => void;
     initialFormControl: () => void;
     cleanupAllReportState: () => void;
     resetFormData: (formData: DocumentData) => any;
@@ -57,7 +67,7 @@ interface ReportDataTypeOfActions {
         payload: string,
         handler?: (result$: Observable<string>) => Observable<T>,
     ) => Promise<T | undefined>;
-    autoSaveToLocalStorage: () => void;
+    saveTempReportData: () => void;
     fetchReport: <T = ReportResponseNotification>(
         payload: string,
         handler?: (result$: Observable<ReportResponseNotification>) => Observable<T>,

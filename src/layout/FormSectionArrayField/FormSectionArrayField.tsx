@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import { Box, Button, IconButton } from '@mui/material';
@@ -20,20 +20,24 @@ interface Props {
 }
 
 const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
-    const { formData, valueChanged, modifiable, loading } = useReportDataStore();
-    const [fieldValue, setFieldValue] = useState<any[]>(formData.get(arrayField.id) || []);
+    const { formData, valueChanged, arrayValueChanged, modifiable, loading } = useReportDataStore();
+    const fieldValue = formData.get(arrayField.id) || [];
 
-    const onValueChange = (idx: number, id: string, text: string) => {
-        setFieldValue((pre) => {
-            valueChanged(arrayField.id, R.assocPath([idx, id], text, pre));
-            return R.assocPath([idx, id], text, pre);
-        });
+    const onValueChange = (idx: number, targetId: string, value: string) => {
+        arrayValueChanged(
+            idx,
+            arrayField.id,
+            targetId,
+            R.assocPath([idx, targetId], value, fieldValue),
+            value,
+        );
     };
 
     const onValueGetter = (idx: number, id: string): string => {
         return R.path([idx, id], fieldValue) || '';
     };
 
+    // 新增一欄的初始值
     const newTemplateValue = useCallback(() => {
         const addedValue = {};
         if (arrayField.templateField.type === FormFieldType.Composite) {
@@ -47,47 +51,28 @@ const FormSectionArrayField = ({ field: arrayField, actionContext }: Props) => {
         return addedValue;
     }, [arrayField.templateField]);
 
+    // 新增一欄
     const addField = useCallback(() => {
-        setFieldValue((pre) => {
-            // 新增對應Template Id的欄位
-            const addedValue = newTemplateValue();
-            valueChanged(arrayField.id, R.append(addedValue, pre));
-            return R.append(addedValue, pre);
-        });
-    }, [arrayField.id, newTemplateValue, valueChanged]);
+        valueChanged(arrayField.id, R.append(newTemplateValue(), fieldValue));
+    }, [arrayField.id, fieldValue, newTemplateValue, valueChanged]);
 
-    const deleteField = (idx: number) => {
-        setFieldValue((pre) => {
-            if (!pre && !pre?.[idx]) return;
-            valueChanged(arrayField.id, R.remove(idx, 1, pre));
-            return R.remove(idx, 1, pre);
-        });
-    };
+    // 刪除一欄
+    const deleteField = useCallback(
+        (idx: number) => {
+            valueChanged(arrayField.id, R.remove(idx, 1, fieldValue));
+        },
+        [arrayField.id, fieldValue, valueChanged],
+    );
 
+    // 初始化，若沒有值，預設給一欄
     useEffect(() => {
         if (loading) return;
 
-        setFieldValue(() => {
-            let valueList = formData.get(arrayField.id) || [];
-            // 預設給一個Item
-            if (!valueList || valueList.length === 0) {
-                const addedValue = newTemplateValue();
-                valueChanged(arrayField.id, [addedValue]);
-                return [addedValue];
-            }
-
-            // 已經有值
-            if (!Array.isArray(valueList)) valueList = Array.from(valueList);
-            return valueList;
-        });
-    }, [
-        arrayField.id,
-        arrayField.templateField,
-        formData,
-        loading,
-        newTemplateValue,
-        valueChanged,
-    ]);
+        if (!fieldValue || fieldValue.length === 0) {
+            const addedValue = newTemplateValue();
+            valueChanged(arrayField.id, [addedValue]);
+        }
+    }, [arrayField.id, fieldValue, loading, newTemplateValue, valueChanged]);
 
     return (
         <Box

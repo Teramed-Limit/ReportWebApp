@@ -1,12 +1,12 @@
 import { AxiosResponse } from 'axios';
-import { action, dollEffect, getEnv, getRoot, IAnyModelType, types } from 'mst-effect';
+import { action, dollEffect, getEnv, types } from 'mst-effect';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
-import { ReportDataTypeOfModel } from './model-type/report-data-type-modal';
 import { ReportDefineModal } from './model-type/report-define-type-modal';
 import { fetchReportDefine, fetchReportHistoryDefine } from '../axios/api';
 import { FormDefine, FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { DocumentData } from '../interface/document-data';
+import { Field } from '../interface/field';
 import { RootService } from '../interface/root-service';
 
 export const DefineModel: ReportDefineModal = types
@@ -15,7 +15,7 @@ export const DefineModel: ReportDefineModal = types
         formDefineMap: types.frozen<FormDefineMap>({}),
         formDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
         pdfDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
-        normalizeFields: types.map(types.frozen<any>()),
+        normalizeFields: types.frozen<{ [props: string]: Field }>(),
     })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
@@ -60,15 +60,13 @@ export const DefineModel: ReportDefineModal = types
             ),
             setFormDefine: (formData: DocumentData) => {
                 const { reportDefineService } = getEnv<RootService>(self);
-                const { formDefine, pdfDefine } = reportDefineService.getFormDefine(
+                const { formDefine, pdfDefine, fields } = reportDefineService.getFormDefine(
                     formData?.ReportTemplate || 'Blank',
                 );
 
                 self.formDefine = formDefine;
                 self.pdfDefine = pdfDefine;
-
-                const { dataStore } = getRoot<IAnyModelType>(self);
-                (dataStore as ReportDataTypeOfModel).initialFormControl();
+                self.normalizeFields = fields;
             },
         };
     });

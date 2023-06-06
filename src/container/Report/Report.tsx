@@ -4,6 +4,7 @@ import { Box, Drawer, Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
 import { Prompt, useHistory, useParams } from 'react-router-dom';
+import { interval } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
 import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
@@ -39,12 +40,15 @@ const Report = () => {
         formValidation,
         unlockReport,
         cleanupAllReportState,
+        saveTempReportData,
     } = useReportDataStore();
     const { loading: fetchDefineLoading } = useReportDefineStore();
     const { loading: fetchOptionsLoading } = useOptionStore();
     const { exportDiagramUrl } = useReportImageStore();
-    const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
     const [setModalName] = useModal();
+
+    const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
+    const [fetchError, setFetchError] = useState(false);
 
     const toggleImageDrawer = () => {
         setPhotoDrawerOpen((pre) => {
@@ -59,6 +63,7 @@ const Report = () => {
         if (!formValidation.isValid) setModalName(formValidation.openModalName);
     }, [formValidation, setModalName]);
 
+    // 進來時先檢查是否有鎖定
     useEffect(() => {
         // wait ready
         if (fetchOptionsLoading || fetchDefineLoading) return;
@@ -79,6 +84,7 @@ const Report = () => {
                             tap(({ notification }) => {
                                 showNotifyMsg(notification);
                                 if (notification.messageType === MessageType.Error) {
+                                    setFetchError(true);
                                     history.push('/');
                                 }
                             }),
@@ -98,7 +104,15 @@ const Report = () => {
         studyInstanceUID,
     ]);
 
-    // clean up all report state and unlock report
+    // 每5秒儲存一次暫存資料
+    useEffect(() => {
+        const observable = interval(5000)
+            .pipe(filter(() => modifiable))
+            .subscribe(() => saveTempReportData());
+        return () => observable.unsubscribe();
+    }, [modifiable, saveTempReportData]);
+
+    // 離開時解鎖
     useEffect(() => {
         const unlockReportReq = () => unlockReport(studyInstanceUID);
         window.addEventListener('beforeunload', unlockReportReq);
@@ -112,7 +126,7 @@ const Report = () => {
     return (
         <>
             <Prompt
-                when={reportHasChanged && modifiable}
+                when={!fetchError && reportHasChanged && modifiable}
                 message="The report was not saved, are you sure to leave?"
             />
             <ReportActionProvider>

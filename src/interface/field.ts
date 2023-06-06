@@ -6,6 +6,7 @@ export interface Field<T = any> {
     id: string;
     label?: string;
     defaultValue?: string;
+    initMapping?: string;
     type: string;
     size?: string;
     readOnly?: boolean;
@@ -26,7 +27,7 @@ export interface Field<T = any> {
     valueChangedEvent?: ValueChangedEvent<T>;
 }
 
-interface ValueChangedEvent<T> {
+export interface ValueChangedEvent<T> {
     event: string;
     eventParams: T;
 }

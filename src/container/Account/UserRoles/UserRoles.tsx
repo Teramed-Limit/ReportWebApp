@@ -19,11 +19,6 @@ import { define } from '../../../constant/setting-define';
 import { RoleFunction, UserRole } from '../../../interface/user-role';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
 
-const initFormData = {
-    RoleName: '',
-    Description: '',
-};
-
 let functionList;
 
 const UserRoles = () => {
@@ -107,7 +102,7 @@ const UserRoles = () => {
                 <GridTableEditor
                     apiPath="role"
                     identityId="RoleName"
-                    initFormData={initFormData}
+                    initFormData={{}}
                     colDef={define.userRoleGroup.colDef}
                     formDef={define.userRoleGroup.formDef}
                     deleteCallBack={initFunctionList}

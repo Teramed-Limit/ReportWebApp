@@ -1,16 +1,17 @@
 import { ModelProperties } from 'mobx-state-tree/dist/types/complex-types/model';
-import { IMapType, IModelType, Instance, IOptionalIType, ISimpleType, IType } from 'mst-effect';
+import { IModelType, Instance, IOptionalIType, ISimpleType, IType } from 'mst-effect';
 import { Observable } from 'rxjs';
 
 import { FormDefine, FormDefineMap } from '../../interface/define';
 import { DocumentData } from '../../interface/document-data';
+import { Field } from '../../interface/field';
 
 interface ReportDefineTypeOfModal extends ModelProperties {
     loading: IOptionalIType<ISimpleType<boolean>, [undefined]>;
     formDefineMap: IType<FormDefineMap | null | undefined, FormDefineMap, FormDefineMap>;
     formDefine: IOptionalIType<ISimpleType<FormDefine>, [undefined]>;
     pdfDefine: IOptionalIType<ISimpleType<FormDefine>, [undefined]>;
-    normalizeFields: IMapType<IType<any, any, any>>;
+    normalizeFields: IOptionalIType<ISimpleType<{ [props: string]: Field }>, [undefined]>;
 }
 
 interface ReportDefineTypeOfActions {

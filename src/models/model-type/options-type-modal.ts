@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { CodeList, CodeListMap } from '../../interface/code-list';
 import { FilterCondition } from '../../interface/selection-field';
 
-interface OptionTypeOfModal extends ModelProperties {
+interface OptionTypeOfProps extends ModelProperties {
     // optionMap: IMapType<IType<any[] | undefined | null, any[], any[]>>;
     loading: IOptionalIType<ISimpleType<unknown>, [undefined]>;
     codeListMap: IMapType<IAnyType>;
@@ -22,6 +22,8 @@ interface OptionTypeOfActions {
     setCodeListMap: (data: CodeListMap) => void;
 }
 
-export type OptionsModal = IModelType<OptionTypeOfModal, OptionTypeOfActions, any, any>;
+export type OptionType = OptionTypeOfProps & OptionTypeOfActions;
+
+export type OptionsModal = IModelType<OptionTypeOfProps, OptionTypeOfActions, any, any>;
 
 export type OptionStore = Instance<OptionsModal>;

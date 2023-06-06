@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Cancel } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
@@ -15,10 +15,13 @@ import { concatMap } from 'rxjs/operators';
 
 import classes from './ReportDiagramTab.module.scss';
 import { deleteDiagram, fetchDiagram, saveDiagram } from '../../../axios/api';
+import { NotificationContext } from '../../../context/notification-context';
 import { Diagram } from '../../../interface/diagram';
+import { MessageType } from '../../../interface/notification';
 import { useOptionStore } from '../../../models/useStore';
 
 const ReportDiagramTab = () => {
+    const { openNotification: setNotification } = useContext(NotificationContext);
     const { codeListMap } = useOptionStore();
     const [selectReportTemplate, setSelectReportTemplate] = useState<string>('');
     const [diagramList, setDiagramList] = useState<Diagram[]>([]);
@@ -36,16 +39,26 @@ const ReportDiagramTab = () => {
         formData.append('File', file);
         saveDiagram(selectReportTemplate, formData)
             .pipe(concatMap(() => fetchDiagram(selectReportTemplate)))
-            .subscribe((res) => {
-                setDiagramList(res.data);
+            .subscribe({
+                next: (res) => {
+                    setDiagramList(res.data);
+                },
+                error: (err) => {
+                    setNotification(MessageType.Error, err.response?.data.Message || err.message);
+                },
             });
     };
 
     const onDeleteDiagram = (number: number) => {
         deleteDiagram(selectReportTemplate, number)
             .pipe(concatMap(() => fetchDiagram(selectReportTemplate)))
-            .subscribe((res) => {
-                setDiagramList(res.data);
+            .subscribe({
+                next: (res) => {
+                    setDiagramList(res.data);
+                },
+                error: (err) => {
+                    setNotification(MessageType.Error, err.response?.data.Message || err.message);
+                },
             });
     };
 

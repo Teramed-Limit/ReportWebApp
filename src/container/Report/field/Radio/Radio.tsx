@@ -22,12 +22,10 @@ const Radio = React.forwardRef(({ field, value, onValueChange, disabled }: Props
 
     // Assign default value
     useEffect(() => {
-        if (value === undefined && options && options.length > 0) {
+        if (!value && options && options.length > 0) {
             onValueChange(options[0].Value);
         }
     }, [onValueChange, options, value]);
-
-    if (!value) return <></>;
 
     return (
         <BaseRadioGroup

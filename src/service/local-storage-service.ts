@@ -19,9 +19,14 @@ function getFromLocalStorage<T>(key: string): T | null {
     return null;
 }
 
+function removeFromLocalStorage(key: string) {
+    localStorage.removeItem(key);
+}
+
 const LocalStorageService = {
     getFromLocalStorage,
     writeToLocalStorage,
+    removeFromLocalStorage,
 };
 
 export default LocalStorageService;
