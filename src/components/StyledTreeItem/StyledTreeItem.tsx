@@ -65,10 +65,10 @@ function StyledTreeItem(props: StyledTreeItemProps) {
                     </Typography>
                 </Box>
             }
-            style={{
-                '--tree-view-color': '#1a73e8',
-                '--tree-view-bg-color': '#e8f0fe',
-            }}
+            // style={{
+            //     '--tree-view-color': '#1a73e8',
+            //     '--tree-view-bg-color': '#e8f0fe',
+            // }}
             {...other}
         />
     );

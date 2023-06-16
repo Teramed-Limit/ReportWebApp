@@ -4,6 +4,7 @@ import InfoIcon from '@mui/icons-material/Info';
 import { observer } from 'mobx-react';
 import { first } from 'rxjs/operators';
 
+import classes from './ReportImage.module.scss';
 import { fetchDiagram } from '../../../axios/api';
 import ImagePositionMarkerCanvas from '../../../components/ImagePositionMarkerCanvas/ImagePositionMarkerCanvas';
 import Button from '../../../components/UI/Button/Button';
@@ -14,7 +15,6 @@ import { useReportDataStore, useReportImageStore } from '../../../models/useStor
 import { convertUrlToBase64, isEmptyOrNil } from '../../../utils/general';
 import DiagramSelectModal from '../../Modals/DiagramSelectModal/DiagramSelectModal';
 import ImageCanvasModal from '../../Modals/ImageCanvasModal/ImageCanvasModal';
-import classes from './ReportImage.module.scss';
 
 const ReportImage = () => {
     const [imageSrc, setImageSrc] = useState<string>('');

@@ -1,5 +1,5 @@
-import { DocumentData } from '../../../interface/document-data';
 import { RequireValidator } from './require-validator';
+import { DocumentData } from '../../../interface/document-data';
 
 export class MinValidator extends RequireValidator {
     errorMessage = 'Value should bigger than ';

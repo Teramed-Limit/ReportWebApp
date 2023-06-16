@@ -12,17 +12,22 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import { observer } from 'mobx-react';
+import { map } from 'rxjs/operators';
 
+import classes from './CodeListTab.module.scss';
 import { deleteCodeListByCodeName, fetchCodeList } from '../../../axios/api';
 import { define } from '../../../constant/setting-define';
 import { ModalContext } from '../../../context/modal-context';
+import { NotificationContext } from '../../../context/notification-context';
 import { CodeList, CodeListMap } from '../../../interface/code-list';
+import { MessageType } from '../../../interface/notification';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
 import { useOptionStore } from '../../../models/useStore';
 import AddCodeNameModal from '../../Modals/AddCodeNameModal/AddCodeNameModal';
-import classes from './CodeListTab.module.scss';
+import MessageModal from '../../Modals/MessageModal/MessageModal';
 
 const CodeListTab = () => {
+    const { openNotification: setNotification } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
     const { setCodeListMap: setReportCodeListMap } = useOptionStore();
     const [codeListMap, setCodeListMap] = React.useState({});
@@ -30,19 +35,43 @@ const CodeListTab = () => {
     const [selectCodeList, setSelectCodeList] = useState<CodeList[]>([]);
 
     const initCodeListMap = useCallback(() => {
-        fetchCodeList().subscribe((res) => {
-            const data = res.data as CodeListMap;
-            setCodeListMap(data);
-            setReportCodeListMap(data);
-        });
-    }, [setReportCodeListMap]);
+        fetchCodeList(['UserAccount'])
+            .pipe(map((x) => x.data))
+            .subscribe((data) => {
+                setCodeListMap(data);
+                if (data[selectCodeName]) {
+                    setSelectCodeList(data[selectCodeName]);
+                    setReportCodeListMap(data);
+                } else {
+                    const firstKey = Object.keys(data)[0];
+                    setSelectCodeName(firstKey);
+                    setSelectCodeList(data[firstKey]);
+                }
+            });
+    }, [selectCodeName, setReportCodeListMap]);
 
     const onDeleteCodeListByCodeName = () => {
-        deleteCodeListByCodeName(selectCodeName).subscribe(() => {
-            initCodeListMap();
-            setSelectCodeName('');
-            setSelectCodeList([]);
-        });
+        setModal(
+            <MessageModal
+                headerTitle="Message"
+                bodyContent="Are you sure to delete whole code list?"
+                onConfirmCallback={() =>
+                    deleteCodeListByCodeName(selectCodeName).subscribe({
+                        next: () => {
+                            initCodeListMap();
+                            setSelectCodeName('');
+                            setSelectCodeList([]);
+                        },
+                        error: (err) => {
+                            setNotification(
+                                MessageType.Error,
+                                err.response?.data.Message || err.message,
+                            );
+                        },
+                    })
+                }
+            />,
+        );
     };
 
     const openCategoryModel = useCallback(() => {
@@ -50,7 +79,7 @@ const CodeListTab = () => {
     }, [initCodeListMap, setModal]);
 
     useEffect(() => {
-        const subscription = fetchCodeList().subscribe((res) => {
+        const subscription = fetchCodeList(['UserAccount']).subscribe((res) => {
             const data = res.data as CodeListMap;
             setCodeListMap(data);
 
@@ -128,7 +157,8 @@ const CodeListTab = () => {
                         formDef={define.codeList.formDef}
                         deleteCallBack={initCodeListMap}
                         addCallBack={initCodeListMap}
-                        initFormData={{ Id: '999', CodeName: selectCodeName }}
+                        updateCallBack={initCodeListMap}
+                        initFormData={{ CodeName: selectCodeName }}
                     />
                 </CardContent>
             </Card>

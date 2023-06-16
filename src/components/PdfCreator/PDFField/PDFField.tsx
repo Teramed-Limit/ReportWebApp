@@ -14,12 +14,18 @@ interface Props {
     field: Field;
     value: string;
     diagramUrl: string;
+    pdfStyle: {
+        imagePerRow: number;
+        imagePageBreak: boolean;
+        fontSize: number;
+        pagePadding: number;
+    };
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFField = ({ field, value, diagramUrl, getOptions }: Props) => {
+const PDFField = ({ field, value, diagramUrl, pdfStyle, getOptions }: Props) => {
     return (
-        <PDFFieldContainer orientation={field.orientation}>
+        <PDFFieldContainer orientation={field.orientation} pdfStyle={pdfStyle}>
             {/* Label */}
             <PDFFieldLabel field={field} />
             {/* Value */}

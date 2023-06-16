@@ -1,19 +1,22 @@
 import React, { useState } from 'react';
 
 import InfoIcon from '@mui/icons-material/Info';
+import LockIcon from '@mui/icons-material/Lock';
+import NoEncryptionGmailerrorredIcon from '@mui/icons-material/NoEncryptionGmailerrorred';
 import { IconButton, Slider, Stack } from '@mui/material';
 import { observer } from 'mobx-react';
 import { RiZoomInLine, RiZoomOutLine } from 'react-icons/ri';
 
+import classes from './GallerySelector.module.scss';
 import Gallery from '../../../components/Gallery/Gallery';
 import ImageSelector from '../../../components/ImageSelector/ImageSelector';
 import Button from '../../../components/UI/Button/Button';
 import { useObjectState } from '../../../hooks/useObjectState';
 import { useStore } from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
-import classes from './GallerySelector.module.scss';
 
 const GallerySelector = () => {
+    const [lockReorder, setLockReorder] = useState(true);
     const [slider, setSlider] = useState(3);
     const store = useStore();
     const { dataStore, optionStore, imageStore } = store;
@@ -58,8 +61,17 @@ const GallerySelector = () => {
                     Attached: {imageSelectCount} images (max 50 images)
                 </span>
                 <span className={classes.hint}>
-                    <InfoIcon />
-                    Reorder images by dragging
+                    <IconButton
+                        color={lockReorder ? 'primary' : 'default'}
+                        onClick={() => setLockReorder((prev) => !prev)}
+                    >
+                        {lockReorder ? <LockIcon /> : <NoEncryptionGmailerrorredIcon />}
+                    </IconButton>
+                    <InfoIcon sx={{ color: 'rgb(255 196 30)' }} />
+                    <span style={{ textDecoration: lockReorder ? 'line-through' : 'none' }}>
+                        Reorder images by dragging
+                    </span>
+                    {lockReorder && <>(locked)</>}
                 </span>
             </Stack>
             <div className={classes['gallery-wrapper']}>
@@ -67,6 +79,7 @@ const GallerySelector = () => {
                     {images.map((image, index) => (
                         <ImageSelector
                             disabled={!modifiable}
+                            lockReorder={lockReorder}
                             key={image.SOPInstanceUID}
                             index={index}
                             size={100 / (7 - slider)}

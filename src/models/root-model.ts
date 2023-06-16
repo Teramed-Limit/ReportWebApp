@@ -1,13 +1,14 @@
-import { IAnyModelType, Instance, types } from 'mst-effect';
+import { IAnyModelType, types } from 'mst-effect';
 
 import { AuthModel } from './auth-model';
+import { RootTypeModal } from './model-type/root-type-modal';
 import { OptionStoreModel } from './options-model';
 import { QueryModel } from './query-model';
 import { DataModel } from './report-data-model';
 import { DefineModel } from './report-define-model';
 import { ImageModel } from './report-image-model';
 
-export const RootStoreModel = types
+export const RootStoreModel: RootTypeModal = types
     .model('root', {
         authStore: types.late((): IAnyModelType => AuthModel),
         optionStore: OptionStoreModel,
@@ -27,15 +28,4 @@ export const RootStoreModel = types
         get loading() {
             return self.dataStore.loading || self.optionStore.loading;
         },
-    }))
-    .actions((self) => {
-        return {
-            afterCreate() {
-                // self.optionStore.initialize().then();
-                self.optionStore.initializeCodeList().then();
-                self.defineStore.fetchDefine().then();
-            },
-        };
-    });
-
-export type RootStore = Instance<typeof RootStoreModel>;
+    }));

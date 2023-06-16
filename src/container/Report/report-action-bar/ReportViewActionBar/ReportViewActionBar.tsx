@@ -4,15 +4,16 @@ import { Button as MaterialButton, Link } from '@mui/material';
 import { observer } from 'mobx-react';
 import { filter, tap } from 'rxjs/operators';
 
+import classes from './ReportViewActionBar.module.scss';
 import Modal from '../../../../components/Modal/Modal';
 import PdfCreator from '../../../../components/PdfCreator/PdfCreator';
 import Button from '../../../../components/UI/Button/Button';
 import { ModalContext } from '../../../../context/modal-context';
 import { NotificationContext } from '../../../../context/notification-context';
 import { useReportDataStore, useReportDefineStore } from '../../../../models/useStore';
+import ConfigService from '../../../../service/config-service';
 import { isEmptyOrNil } from '../../../../utils/general';
 import MessageModal from '../../../Modals/MessageModal/MessageModal';
-import classes from './ReportViewActionBar.module.scss';
 
 const ReportViewActionBar: React.FC = () => {
     const { fetchReportLockStatus, lockReport, studyInsUID, lockByUser } = useReportDataStore();
@@ -93,9 +94,7 @@ const ReportViewActionBar: React.FC = () => {
                                         variant="contained"
                                         component={Link}
                                         download
-                                        href={`${
-                                            import.meta.env.VITE_BASE_URL
-                                        }/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
+                                        href={`${ConfigService.getIpAddress()}/api/report/studyInstanceUID/${studyInsUID}/downloadPDF`}
                                     >
                                         Download
                                     </MaterialButton>

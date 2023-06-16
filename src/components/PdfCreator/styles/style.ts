@@ -1,7 +1,6 @@
 import ReactPDF from '@react-pdf/renderer';
 
 // Common
-export const fontSize = 10;
 export const footerHeight = '92px';
 
 // Style
@@ -55,6 +54,7 @@ export const styles = ReactPDF.StyleSheet.create({
         position: 'absolute',
         bottom: 10,
         right: 10,
+        maxHeight: '84px',
         width: '45%',
     },
     signatureContainer: {
@@ -127,7 +127,6 @@ export const styles = ReactPDF.StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         textAlign: 'center',
-        fontSize,
     },
     imageNum: {
         fontWeight: 'bold',

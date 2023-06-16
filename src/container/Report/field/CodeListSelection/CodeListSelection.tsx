@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 
+import SyncIcon from '@mui/icons-material/Sync';
+import { IconButton } from '@mui/material';
 import { observer } from 'mobx-react';
 
 import BaseSelection from '../../../../components/UI/BaseSelection/BaseSelection';
@@ -9,7 +11,7 @@ import { useOptionStore } from '../../../../models/useStore';
 import { coerceArray, isEmptyOrNil } from '../../../../utils/general';
 
 interface SelectionProps {
-    field: SelectionField<any>;
+    field: SelectionField;
     value: string;
     onValueChange: (value: string) => void;
     disabled: boolean;
@@ -30,20 +32,8 @@ const CodeListSelection = React.forwardRef(
         const { source } = optionSource;
         const selectedIsNotInOptions = useRef(false);
 
-        const options = useOptionStore().getCodeList(source, filterCondition);
-
-        useEffect(() => {
-            if (selectedIsNotInOptions.current) {
-                onSelectionChanged('');
-                selectedIsNotInOptions.current = false;
-            }
-        }, [onSelectionChanged]);
-
-        useEffect(() => {
-            if (isEmptyOrNil(selectedOption) && options?.length === 1 && !isMulti) {
-                onSelectionChanged(options[0].Value);
-            }
-        }, [isMulti, onSelectionChanged, options, selectedOption]);
+        const optionStore = useOptionStore();
+        const options = optionStore.getCodeList(source, filterCondition);
 
         let formatValue = coerceArray(selectedOption);
         let formatSelectedOption;
@@ -65,17 +55,42 @@ const CodeListSelection = React.forwardRef(
             onSelectionChanged(option?.Value || '');
         };
 
+        // 如果值沒有在選項內，直接設位空值
+        useEffect(() => {
+            if (selectedIsNotInOptions.current) {
+                onSelectionChanged('');
+                selectedIsNotInOptions.current = false;
+            }
+        }, [onSelectionChanged, optionStore, source]);
+
+        // 如果選項只有一個，直接預設選擇第一個
+        useEffect(() => {
+            if (isEmptyOrNil(selectedOption) && options?.length === 1 && !isMulti) {
+                onSelectionChanged(options[0].Value);
+            }
+        }, [isMulti, onSelectionChanged, options, selectedOption]);
+
         return (
-            <BaseSelection
-                id={field.id}
-                disabled={disabled || field.readOnly}
-                options={options || []}
-                value={formatSelectedOption}
-                onValueChange={setSelectedOption}
-                isMulti={field.isMulti || false}
-                getOptionValue={(option) => `${option.Value}`}
-                getOptionLabel={(option) => `${option.Label}`}
-            />
+            <>
+                <BaseSelection
+                    id={field.id}
+                    disabled={disabled || field.readOnly}
+                    options={options || []}
+                    selectedOption={formatSelectedOption}
+                    onSelectionChanged={setSelectedOption}
+                    isMulti={field.isMulti || false}
+                    getOptionValue={(option) => `${option.Value}`}
+                    getOptionLabel={(option) => `${option.Label}`}
+                />
+                {field?.fetchLatest && (
+                    <IconButton
+                        sx={{ minHeight: '20px', minWidth: '20px', padding: 0 }}
+                        onClick={() => optionStore.getLatestCodeList(source)}
+                    >
+                        <SyncIcon sx={{ fontSize: '20px' }} />
+                    </IconButton>
+                )}
+            </>
         );
     },
 );

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { IconButton, Paper, Typography } from '@mui/material';
@@ -7,19 +7,20 @@ import { ColDef, ColumnApi } from 'ag-grid-community';
 import { GridReadyEvent } from 'ag-grid-community/dist/lib/events';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { observer } from 'mobx-react';
-import { useRecoilState } from 'recoil';
 import { concatMap } from 'rxjs/operators';
 
-import { queryRowDataState } from '../../atom/query-row-data-state';
+import classes from './LoginStatus.module.scss';
 import { fetchLoginStatus, logoutSpecifyUser } from '../../axios/api';
 import GridTable from '../../components/GridTable/GridTable';
 import { define } from '../../constant/setting-define';
+import { NotificationContext } from '../../context/notification-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { LoginStatusData } from '../../interface/login-status';
-import classes from './LoginStatus.module.scss';
+import { MessageType } from '../../interface/notification';
 
 function LoginStatus() {
-    const [rowData, setRowData] = useRecoilState(queryRowDataState);
+    const { openNotification: setNotification } = useContext(NotificationContext);
+    const [rowData, setRowData] = useState<LoginStatusData[]>([]);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
     // dispatch event for cell event
     const { dispatchCellEvent, assignCellVisibility } = useGridColDef();
@@ -35,9 +36,11 @@ function LoginStatus() {
     const onQuery = useCallback(() => {
         fetchLoginStatus().subscribe({
             next: (res) => setRowData(res.data),
-            error: () => {},
+            error: (err) => {
+                setNotification(MessageType.Error, err.response?.data.Message || err.message);
+            },
         });
-    }, [setRowData]);
+    }, [setNotification, setRowData]);
 
     const onLogoutUser = useCallback(
         (data: LoginStatusData) => {
@@ -68,7 +71,7 @@ function LoginStatus() {
                     checkboxSelect={false}
                     rowSelection="single"
                     columnDefs={colDefs}
-                    rowData={rowData}
+                    rowData={rowData || []}
                     gridReady={gridReady}
                 />
             </div>

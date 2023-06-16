@@ -14,3 +14,8 @@ export const queryFilterModel = atom<{ [key: string]: any }>({
     key: 'queryFilterModel',
     default: {},
 });
+
+export const queryFilterDate = atom<number>({
+    key: 'queryFilterDate',
+    default: 0,
+});

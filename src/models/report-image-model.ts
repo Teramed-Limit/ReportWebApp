@@ -1,14 +1,15 @@
-import { getRoot, Instance, types } from 'mst-effect';
+import { getRoot, types } from 'mst-effect';
 import * as R from 'ramda';
 
+import { ImagesModal } from './model-type/image-type-modal';
+import { DataStore } from './model-type/report-data-type-modal';
 import { ReportImageData, ReportMark } from '../interface/document-data';
 import { CanvasHandle } from '../interface/konva-stage-event';
 import { MarkerPoint } from '../interface/marker';
 import { isEmptyOrNil } from '../utils/general';
-import { DataStore } from './report-data-model';
 
 const maxSelection = 50;
-export const ImageModel = types
+export const ImageModel: ImagesModal = types
     .model('image', {
         images: types.array(types.frozen<ReportImageData>()),
         diagramChanged: types.boolean,
@@ -279,5 +280,3 @@ export const ImageModel = types
             exportDiagramUrl,
         };
     });
-
-export type ImageStore = Instance<typeof ImageModel>;

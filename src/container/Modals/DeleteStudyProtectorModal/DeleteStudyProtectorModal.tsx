@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react';
 
 import { TextField } from '@mui/material';
 
+import classes from './DeleteStudyProtectorModal.module.scss';
 import { deleteStudy } from '../../../axios/api';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
@@ -9,7 +10,6 @@ import { ModalContext } from '../../../context/modal-context';
 import { NotificationContext } from '../../../context/notification-context';
 import ConfigService from '../../../service/config-service';
 import { isEmptyOrNil } from '../../../utils/general';
-import classes from './DeleteStudyProtectorModal.module.scss';
 
 interface Props {
     studyInstanceUid: string;

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Select from 'react-select';
+import { GetOptionLabel, GetOptionValue } from 'react-select/dist/declarations/src/types';
 
 import classes from './BaseSelection.module.scss';
 
@@ -8,14 +9,14 @@ interface Props {
     id?: string;
     disabled?: boolean;
     options: any[];
-    value: any;
-    onValueChange: (options: any) => void;
+    selectedOption: any;
+    onSelectionChanged: (options: any) => void;
     onInputChange?: (value: string) => void;
     isMulti: boolean;
     isLoading?: false;
     isSearchable?: true;
-    getOptionValue?: (option) => void;
-    getOptionLabel?: (option) => void;
+    getOptionValue?: GetOptionValue<any>;
+    getOptionLabel?: GetOptionLabel<any>;
 }
 
 // label is display text in dropdown
@@ -24,8 +25,8 @@ interface Props {
 const BaseSelection = ({
     id,
     disabled = false,
-    value = null,
-    onValueChange,
+    selectedOption = null,
+    onSelectionChanged,
     options,
     isMulti = false,
     isLoading = false,
@@ -40,8 +41,8 @@ const BaseSelection = ({
             isDisabled={disabled}
             className={classes.report__container}
             classNamePrefix="report"
-            value={value}
-            onChange={onValueChange}
+            value={selectedOption}
+            onChange={onSelectionChanged}
             options={options}
             isMulti={isMulti}
             isLoading={isLoading}

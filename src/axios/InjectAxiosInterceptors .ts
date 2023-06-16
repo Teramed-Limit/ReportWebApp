@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
-import { useAuthStore } from '../models/useStore';
 import { setupInterceptors } from './axios';
+import { useAuthStore } from '../models/useStore';
 
 function InjectAxiosInterceptors() {
     const { removeAuth, refreshToken } = useAuthStore();

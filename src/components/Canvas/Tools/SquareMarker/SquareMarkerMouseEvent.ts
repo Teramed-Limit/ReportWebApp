@@ -1,6 +1,7 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
+import LocalStorageService from '../../../../service/local-storage-service';
 import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent, reverse } from '../../canvas-utils';
 
@@ -14,6 +15,13 @@ const SquareMarkerMouseEvent = () => {
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
+        const konvaAttribute = LocalStorageService.getFromLocalStorage<{
+            fill: string;
+            stroke: string;
+            radius: number;
+            strokeWidth: number;
+        }>('konvaAttribute');
+
         const point = getRelativePointerPosition(e.target.getStage());
         const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.RectConfig> = {
@@ -21,9 +29,9 @@ const SquareMarkerMouseEvent = () => {
             name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
-                fill: subColor,
-                stroke: mainColor,
-                strokeWidth: 10,
+                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
+                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
+                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
                 x: point.x,
                 y: point.y,
                 width: 0,
@@ -43,6 +51,13 @@ const SquareMarkerMouseEvent = () => {
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
+        const konvaAttribute = LocalStorageService.getFromLocalStorage<{
+            fill: string;
+            stroke: string;
+            radius: number;
+            strokeWidth: number;
+        }>('konvaAttribute');
+
         const lastMarker = { ...canvasMarkers[canvasMarkers.length - 1] };
         const beginPoint = { x: lastMarker.attribute.x, y: lastMarker.attribute.y };
         const movePoint = getRelativePointerPosition(e.target.getStage());
@@ -54,9 +69,9 @@ const SquareMarkerMouseEvent = () => {
             name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
-                fill: subColor,
-                stroke: mainColor,
-                strokeWidth: 10,
+                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
+                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
+                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
                 x: posRect.x1,
                 y: posRect.y1,
                 width: Math.floor(posRect.x2 - posRect.x1),
@@ -81,7 +96,6 @@ const SquareMarkerMouseEvent = () => {
         if (!lastMarker.attribute.width || lastMarker.attribute.width < 20) {
             canvasMarkers.splice(canvasMarkers.length - 1, 1);
             setCanvasMarkers(canvasMarkers.concat());
-            return;
         }
     };
 

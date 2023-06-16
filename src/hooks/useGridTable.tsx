@@ -5,9 +5,9 @@ import { GridReadyEvent } from 'ag-grid-community/dist/lib/events';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { ICellRendererParams } from 'ag-grid-community/dist/lib/rendering/cellRenderers/iCellRenderer';
 import { AxiosError, AxiosResponse } from 'axios';
-import { AxiosObservable } from 'axios-observable/dist/axios-observable.interface';
+import { Observable } from 'rxjs';
 
-import { axiosIns } from '../axios/axios';
+import { httpReq } from '../axios/axios';
 import FormEditorModal from '../container/Modals/FormEditorModal/FormEditorModal';
 import { ModalContext } from '../context/modal-context';
 import { NotificationContext } from '../context/notification-context';
@@ -49,11 +49,11 @@ interface Props {
     // base api scheme, corresponds to backend api controller
     apiPath: string;
     // if api has different format, user can define their own api path
-    externalGetRowData?: AxiosObservable<any>;
+    externalGetRowData?: Observable<any>;
     // if api has different format, user can define their own api path
-    externalUpdateRowApi?: (formData: any) => AxiosObservable<any>;
+    externalUpdateRowApi?: (formData: any) => Observable<any>;
     // if api has different format, user can define their own api path
-    externalDeleteRowApi?: () => AxiosObservable<any>;
+    externalDeleteRowApi?: () => Observable<any>;
     // following restapi
     // Create(Post) : {apiPath}/{identityId} e.g. api/role/name
     // Read(Get)   : {apiPath}/{identityId} e.g. api/role/name
@@ -103,17 +103,19 @@ export const useGridTable = ({
             return;
         }
 
-        const fetch$ = externalGetRowData || axiosIns.get(`api/${apiPath}`);
+        const fetch$ =
+            externalGetRowData ||
+            httpReq<any>()({
+                method: 'get',
+                url: `api/${apiPath}`,
+            });
         const subscription = fetch$.subscribe({
             next: (res: AxiosResponse) => {
                 setRowData(res.data);
             },
-            error: (err: AxiosError) => {
+            error: (err: AxiosError<{ Message: string }>) => {
                 setRowData([]);
-                setNotification(
-                    MessageType.Error,
-                    err.response?.data.Message || 'Http request failed!',
-                );
+                setNotification(MessageType.Error, err.response?.data.Message || err.message);
             },
         });
         return () => subscription.unsubscribe();
@@ -129,18 +131,19 @@ export const useGridTable = ({
         (cellRendererParams: ICellRendererParams) => {
             gridApi?.current?.showLoadingOverlay();
             const id = cellRendererParams.data[identityId];
-            const subscription = axiosIns.delete(`api/${apiPath}/${identityId}/${id}`).subscribe({
+            const subscription = httpReq<any>()({
+                method: 'delete',
+                url: `api/${apiPath}/${identityId}/${id}`,
+            }).subscribe({
                 next: () => {
                     gridApi?.current?.applyTransaction({ remove: [cellRendererParams.data] });
                     gridApi?.current?.hideOverlay();
+                    setNotification(MessageType.Success, 'Delete row successfully');
                     deleteCallBack?.();
                 },
-                error: (err) => {
+                error: (err: AxiosError<{ Message: string }>) => {
                     gridApi?.current?.hideOverlay();
-                    setNotification(
-                        MessageType.Error,
-                        err.response?.data.Message || 'Http request failed!',
-                    );
+                    setNotification(MessageType.Error, err.response?.data.Message || err.message);
                 },
             });
 
@@ -153,19 +156,21 @@ export const useGridTable = ({
     const addRow = useCallback(
         (formData) => {
             gridApi?.current?.showLoadingOverlay();
-            const subscription = axiosIns.post(`api/${apiPath}/${identityId}`, formData).subscribe({
+            const subscription = httpReq<any>()({
+                method: 'post',
+                url: `api/${apiPath}/${identityId}`,
+                data: formData,
+            }).subscribe({
                 next: () => {
                     gridApi?.current?.hideOverlay();
                     setModal(null);
                     gridApi?.current?.applyTransaction({ add: [formData], addIndex: 0 });
+                    setNotification(MessageType.Success, 'Insert row successfully');
                     addCallBack?.();
                 },
-                error: (err) => {
+                error: (err: AxiosError<{ Message: string }>) => {
                     gridApi?.current?.hideOverlay();
-                    setNotification(
-                        MessageType.Error,
-                        err.response?.data.Message || 'Http request failed!',
-                    );
+                    setNotification(MessageType.Error, err.response?.data.Message || err.message);
                 },
             });
 
@@ -178,26 +183,26 @@ export const useGridTable = ({
     const updateRow = useCallback(
         (formData) => {
             gridApi?.current?.showLoadingOverlay();
-            const subscription = axiosIns
-                .post(`api/${apiPath}/${identityId}/${formData[identityId]}`, formData)
-                .subscribe({
-                    next: () => {
-                        setModal(null);
-                        gridApi?.current?.applyTransaction({ update: [formData] });
-                        const rowNode = gridApi?.current?.getRowNode(formData[identityId]);
-                        if (!rowNode) return;
-                        updateCallBack?.();
-                        gridApi?.current?.refreshCells({ force: true, rowNodes: [rowNode] });
-                        gridApi?.current?.hideOverlay();
-                    },
-                    error: (err) => {
-                        gridApi?.current?.hideOverlay();
-                        setNotification(
-                            MessageType.Error,
-                            err.response?.data.Message || 'Http request failed!',
-                        );
-                    },
-                });
+            const subscription = httpReq<any>()({
+                method: 'post',
+                url: `api/${apiPath}/${identityId}/${formData[identityId]}`,
+                data: formData,
+            }).subscribe({
+                next: () => {
+                    setModal(null);
+                    gridApi?.current?.applyTransaction({ update: [formData] });
+                    const rowNode = gridApi?.current?.getRowNode(formData[identityId]);
+                    if (!rowNode) return;
+                    updateCallBack?.();
+                    gridApi?.current?.refreshCells({ force: true, rowNodes: [rowNode] });
+                    gridApi?.current?.hideOverlay();
+                    setNotification(MessageType.Success, 'Update row successfully');
+                },
+                error: (err: AxiosError<{ Message: string }>) => {
+                    gridApi?.current?.hideOverlay();
+                    setNotification(MessageType.Error, err.response?.data.Message || err.message);
+                },
+            });
 
             return () => subscription.unsubscribe();
         },

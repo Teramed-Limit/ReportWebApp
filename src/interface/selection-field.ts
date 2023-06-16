@@ -13,8 +13,10 @@ export interface FilterCondition {
     filterOptionKey: string;
 }
 
-export interface SelectionField<T> extends Field {
+export interface SelectionField<T = any> extends Field {
     isMulti?: boolean;
+    joinStr?: string;
     optionSource: OptionSource<T>;
     filterCondition: FilterCondition;
+    fetchLatest?: boolean;
 }

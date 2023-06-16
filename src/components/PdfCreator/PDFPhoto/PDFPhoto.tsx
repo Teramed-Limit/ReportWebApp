@@ -4,30 +4,41 @@ import ReactPDF from '@react-pdf/renderer';
 
 import { ReportImageData } from '../../../interface/document-data';
 import { generateUUID, isEmptyOrNil } from '../../../utils/general';
-import { padding } from '../PdfCreator';
 import { styles } from '../styles/style';
 
 interface Props {
-    row: number;
-    pageBreak: boolean;
+    pdfStyle: {
+        imagePerRow: number;
+        imagePageBreak: boolean;
+        fontSize: number;
+        pagePadding: number;
+    };
     imageList: ReportImageData[];
 }
 
-const PDFPhoto = ({ row, pageBreak, imageList }: Props) => {
+const padding = 0.2;
+
+const PDFPhoto = ({ pdfStyle, imageList }: Props) => {
     const [emptyImageList, setEmptyImageList] = useState<string[]>([]);
 
     // 計算要填入多少空的位置
     useEffect(() => {
-        if (imageList.length % row === 0) return;
-        const fillCount = row - (imageList.length % row);
+        if (imageList.length % pdfStyle.imagePerRow === 0) return;
+        const fillCount = pdfStyle.imagePerRow - (imageList.length % pdfStyle.imagePerRow);
         const result: string[] = [];
         for (let i = 0; i < fillCount; i++) result.push(generateUUID());
         setEmptyImageList(result);
-    }, [imageList.length, row]);
+    }, [imageList.length, pdfStyle.imagePerRow]);
+
+    const customSort = (a, b) => {
+        if (a.MappingNumber === 0) return 1;
+        if (b.MappingNumber === 0) return -1;
+        return a.MappingNumber - b.MappingNumber;
+    };
 
     return (
-        <ReactPDF.View style={styles.gallery} break={pageBreak}>
-            {imageList.map((image: ReportImageData) => {
+        <ReactPDF.View style={styles.gallery} break={pdfStyle.imagePageBreak}>
+            {imageList.sort(customSort).map((image: ReportImageData) => {
                 // 上標記的影像，或是原影像
                 const imageSrc = isEmptyOrNil(image?.EditedImageSrc)
                     ? image.thumbnailImageSrc
@@ -38,9 +49,9 @@ const PDFPhoto = ({ row, pageBreak, imageList }: Props) => {
                         key={image.SOPInstanceUID}
                         style={{
                             ...styles.imageContainer,
-                            width: `${100 / row - padding * 2}%`,
-                            minWidth: `${100 / row - padding * 2}%`,
-                            maxWidth: `${100 / row - padding * 2}%`,
+                            width: `${100 / pdfStyle.imagePerRow - padding * 2}%`,
+                            minWidth: `${100 / pdfStyle.imagePerRow - padding * 2}%`,
+                            maxWidth: `${100 / pdfStyle.imagePerRow - padding * 2}%`,
                             padding: `${padding}%`,
                         }}
                         wrap={false}
@@ -50,10 +61,14 @@ const PDFPhoto = ({ row, pageBreak, imageList }: Props) => {
                             {image.MappingNumber > 0 && `${image.MappingNumber}`}
                         </ReactPDF.Text>
                         <ReactPDF.View style={styles.imageDescContainer}>
-                            <ReactPDF.Text style={styles.imageDesc}>
+                            <ReactPDF.Text
+                                style={{ ...styles.imageDesc, fontSize: pdfStyle.fontSize }}
+                            >
                                 {image.DescriptionOfSites}
                             </ReactPDF.Text>
-                            <ReactPDF.Text style={styles.imageDesc}>
+                            <ReactPDF.Text
+                                style={{ ...styles.imageDesc, fontSize: pdfStyle.fontSize }}
+                            >
                                 {image.DescriptionOfFindings}
                             </ReactPDF.Text>
                         </ReactPDF.View>
@@ -66,13 +81,13 @@ const PDFPhoto = ({ row, pageBreak, imageList }: Props) => {
                         key={uuid}
                         style={{
                             ...styles.imageContainer,
-                            width: `${100 / row - padding * 2}%`,
-                            minWidth: `${100 / row - padding * 2}%`,
-                            maxWidth: `${100 / row - padding * 2}%`,
+                            width: `${100 / pdfStyle.imagePerRow - padding * 2}%`,
+                            minWidth: `${100 / pdfStyle.imagePerRow - padding * 2}%`,
+                            maxWidth: `${100 / pdfStyle.imagePerRow - padding * 2}%`,
                             padding: `${padding}%`,
                         }}
                         wrap={false}
-                    ></ReactPDF.View>
+                    />
                 );
             })}
         </ReactPDF.View>

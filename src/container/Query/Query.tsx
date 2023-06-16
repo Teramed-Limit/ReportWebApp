@@ -18,7 +18,9 @@ import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 
+import classes from './Query.module.scss';
 import {
+    queryFilterDate,
     queryFilterModel,
     queryReportStatus,
     queryRowDataState,
@@ -30,26 +32,27 @@ import { ModalContext } from '../../context/modal-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
+import ConfigService from '../../service/config-service';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
 import DeleteStudyProtectorModal from '../Modals/DeleteStudyProtectorModal/DeleteStudyProtectorModal';
-import classes from './Query.module.scss';
 
 const Query: React.FC = () => {
     const history = useHistory();
     const setModal = useContext(ModalContext);
     const [studyInstanceUid, setStudyInstanceUid] = useState('');
     const [rowData, setRowData] = useRecoilState(queryRowDataState);
-    const [filterModel, setFilterModel] = useRecoilState(queryFilterModel);
-    const [filterBurnStatus, setFilterBurnStatus] = useRecoilState(queryReportStatus);
     const [colDefs, setColDefs] = useState<ColDef[]>([]);
+    const [filterModel, setFilterModel] = useRecoilState(queryFilterModel);
+    const [filterReportStatus, setFilterReportStatus] = useRecoilState(queryReportStatus);
+    const [filterDate, setFilterDate] = useRecoilState(queryFilterDate);
     const [pdfUrl, setPdfUrl] = useState<string>('');
-    const [highlighted, setHighlighted] = useState<string>('All');
     // function available
     const { checkAvailable } = useRoleFunctionAvailable();
     // dispatch event for cell event
     const { dispatchCellEvent, assignCellVisibility } = useGridColDef();
     const gridApiRef = useRef<GridApi | null>(null);
     const columnApiRef = useRef<ColumnApi | null>(null);
+    const isFirstRender = useRef(false);
 
     const gridReady = (params: GridReadyEvent) => {
         gridApiRef.current = params.api;
@@ -59,7 +62,7 @@ const Query: React.FC = () => {
 
     const filterByReportStatus = useCallback(
         (reportStatus: string) => {
-            setFilterBurnStatus(reportStatus);
+            setFilterReportStatus(reportStatus);
             if (gridApiRef.current == null || columnApiRef.current == null) return;
 
             const filterComponent = gridApiRef.current.getFilterInstance('ReportStatus') as IFilter;
@@ -70,32 +73,17 @@ const Query: React.FC = () => {
             else filterComponent.setModel({ type: 'equals', filter: reportStatus });
             gridApiRef.current.onFilterChanged();
         },
-        [setFilterBurnStatus],
+        [setFilterReportStatus],
     );
 
-    const onQuery = useCallback(() => {
-        gridApiRef.current?.showLoadingOverlay();
-        fetchStudy({ params: {} }).subscribe({
-            next: (res) => {
-                setHighlighted('All');
-                setRowData(res.data);
-                gridApiRef.current?.deselectAll();
-                gridApiRef.current?.hideOverlay();
-            },
-            error: () => {
-                gridApiRef.current?.hideOverlay();
-            },
-        });
-    }, [setRowData]);
-
     const onRapidQuery = useCallback(
-        (days: number, type: string) => {
+        (days: number) => {
+            setFilterDate(days);
             const today = format(new Date(), 'yyyyMMdd');
             const pastDay = format(sub(new Date(), { days }), 'yyyyMMdd');
             gridApiRef.current?.showLoadingOverlay();
-            fetchStudy({ params: { StudyDate: `${pastDay}-${today}` } }).subscribe({
+            fetchStudy({ StudyDate: `${pastDay}-${today}` }).subscribe({
                 next: (res) => {
-                    setHighlighted(type);
                     setRowData(res.data);
                     gridApiRef.current?.deselectAll();
                     gridApiRef.current?.hideOverlay();
@@ -105,7 +93,7 @@ const Query: React.FC = () => {
                 },
             });
         },
-        [setRowData],
+        [setFilterDate, setRowData],
     );
 
     const onNavigateReport = useCallback(
@@ -151,7 +139,7 @@ const Query: React.FC = () => {
         return (
             <Stack direction="row" sx={{ alignItems: 'center' }}>
                 <Radio
-                    checked={filterBurnStatus === value}
+                    checked={filterReportStatus === value}
                     onChange={() => filterByReportStatus(value)}
                     value={value}
                 />
@@ -180,44 +168,48 @@ const Query: React.FC = () => {
 
     // Call api when row data is empty
     useEffect(() => {
-        onQuery();
-    }, [onQuery]);
+        if (!isFirstRender.current) {
+            // 第一次渲染時的邏輯
+            isFirstRender.current = true;
+            onRapidQuery(filterDate);
+        }
+    }, [filterDate, onRapidQuery]);
 
     return (
         <Stack direction="column" spacing={1} className={classes.container}>
             <Stack direction="row" spacing={1} className={classes.rapidQuery}>
                 <Button
                     variant="contained"
-                    color={highlighted === 'All' ? 'secondary' : 'primary'}
-                    onClick={() => onQuery()}
+                    color={filterDate === 3650 ? 'secondary' : 'primary'}
+                    onClick={() => onRapidQuery(3650)}
                 >
                     All
                 </Button>
                 <Button
                     variant="contained"
-                    color={highlighted === 'Today' ? 'secondary' : 'primary'}
-                    onClick={() => onRapidQuery(0, 'Today')}
+                    color={filterDate === 0 ? 'secondary' : 'primary'}
+                    onClick={() => onRapidQuery(0)}
                 >
                     Today
                 </Button>
                 <Button
                     variant="contained"
-                    color={highlighted === 'Week' ? 'secondary' : 'primary'}
-                    onClick={() => onRapidQuery(7, 'Week')}
+                    color={filterDate === 7 ? 'secondary' : 'primary'}
+                    onClick={() => onRapidQuery(7)}
                 >
                     Week
                 </Button>
                 <Button
                     variant="contained"
-                    color={highlighted === 'Month' ? 'secondary' : 'primary'}
-                    onClick={() => onRapidQuery(30, 'Month')}
+                    color={filterDate === 30 ? 'secondary' : 'primary'}
+                    onClick={() => onRapidQuery(30)}
                 >
                     Month
                 </Button>
             </Stack>
             <Stack direction="row" sx={{ alignItems: 'center' }}>
                 {radioComp('All', 'primary')}
-                {radioComp('Incomplete', 'error')}
+                {radioComp('New', 'error')}
                 {radioComp('Saved', 'warning')}
                 {radioComp('Signed', 'success')}
             </Stack>
@@ -240,9 +232,7 @@ const Query: React.FC = () => {
                             variant="contained"
                             component={Link}
                             download
-                            href={`${
-                                import.meta.env.VITE_BASE_URL
-                            }/api/report/studyInstanceUID/${studyInstanceUid}/downloadPDF`}
+                            href={`${ConfigService.getIpAddress()}/api/report/studyInstanceUID/${studyInstanceUid}/downloadPDF`}
                         >
                             Download
                         </MaterialButton>

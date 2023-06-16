@@ -15,12 +15,18 @@ interface Props {
     field: CompositeField;
     formData: DocumentData;
     diagramUrl: string;
+    pdfStyle: {
+        imagePerRow: number;
+        imagePageBreak: boolean;
+        fontSize: number;
+        pagePadding: number;
+    };
     getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFCompositeField = ({ field, formData, diagramUrl, getOptions }: Props) => {
+const PDFCompositeField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Props) => {
     return (
-        <PDFFieldContainer orientation={field.orientation}>
+        <PDFFieldContainer orientation={field.orientation} pdfStyle={pdfStyle}>
             {/* Label */}
             <PDFFieldLabel field={field} />
             {/* Value */}

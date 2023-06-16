@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Stack } from '@mui/material';
 
+import classes from './SectionListView.module.scss';
 import BaseTextArea from '../../../../../components/UI/BaseTextArea/BaseTextArea';
 import { FormFieldLexiconCategory } from '../../../../../interface/form-field-lexicon-category';
 import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';
 import FormSectionFieldLabel from '../../../../Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
-import classes from './SectionListView.module.scss';
 
 interface Props {
     lexiconCategoryList: FormFieldLexiconCategory[];

@@ -1,12 +1,15 @@
 import { Style } from '@react-pdf/types/style';
 
-import { FormFieldType } from '../container/Report/field/field-type';
 import { Validate } from './validate';
+import { FormFieldType } from '../container/Report/field/field-type';
 
-export interface Field {
+export interface Field<T = any> {
     id: string;
     label?: string;
+    defaultValue?: string;
+    initMapping?: string;
     type: FormFieldType;
+    size?: string;
     readOnly?: boolean;
     orientation: 'column' | 'row';
     buttonBar?: ButtonMeta[];
@@ -19,6 +22,12 @@ export interface Field {
     fromModal?: string;
     labelStyle?: Style;
     valueStyle?: Style;
+    valueChangedEvent?: ValueChangedEvent<T>;
+}
+
+export interface ValueChangedEvent<T> {
+    event: string;
+    eventParams: T;
 }
 
 export interface ButtonMeta {

@@ -1,21 +1,27 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Check } from '@mui/icons-material';
-import { Stack, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
+import { map } from 'rxjs/operators';
 
-import useLocalStorage from '../../hooks/useLocalStorage';
-import { FormDefine, Section } from '../../interface/define';
-import { RepPage } from '../../interface/rep-report';
-import { useOptionStore, useReportDataStore, useReportImageStore } from '../../models/useStore';
-import Block from '../Block/Block';
-import Spinner from '../Spinner/Spinner';
+import classes from './PdfCreator.module.scss';
 import PDFCustomHeader from './PDFCustomHeader/PDFCustomHeader';
+import PDFFooter from './PDFFooter/PDFFooter';
 import PDFPage from './PDFPage/PDFPage';
 import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
+import { httpReq } from '../../axios/axios';
+import useLocalStorage from '../../hooks/useLocalStorage';
+import { UserAccountInfo } from '../../interface/auth';
+import { FormDefine, Section } from '../../interface/define';
+import { RepPage } from '../../interface/rep-report';
+import { useOptionStore, useReportDataStore, useReportImageStore } from '../../models/useStore';
+import ConfigService from '../../service/config-service';
+import Block from '../Block/Block';
+import Spinner from '../Spinner/Spinner';
 
 interface Props {
     showToolbar?: boolean;
@@ -38,9 +44,33 @@ const PdfCreator = ({
     const { selectedImage, exportDiagramUrl } = useReportImageStore();
 
     const { getCodeList } = useOptionStore();
+
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+    const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
+    const [userData, setUserData] = useState<UserAccountInfo | undefined>(undefined);
+    // const [reportName] = useState<string>(
+    //     getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
+    //         '',
+    // );
+
+    // pdf style config
     const [row, setRow] = useLocalStorage('imagePerRow', 4);
     const [pageBreak, setPageBreak] = useLocalStorage('imagePageBreak', false);
-    const [loading, setLoading] = useState(true);
+    const [fontSize, setFontSize] = useLocalStorage('fontSize', 10);
+    const [pagePadding, setPagePadding] = useLocalStorage('pagePadding', 8);
+
+    const pdfStyle: {
+        imagePerRow: number;
+        imagePageBreak: boolean;
+        fontSize: number;
+        pagePadding: number;
+    } = {
+        imagePerRow: row,
+        imagePageBreak: pageBreak,
+        fontSize,
+        pagePadding,
+    };
 
     const diagramUrl = exportDiagramUrl();
 
@@ -65,6 +95,48 @@ const PdfCreator = ({
         },
         [onPdfRenderCallback],
     );
+
+    // Get hospital logo
+    useEffect(() => {
+        const subscription = httpReq<string>()({
+            method: 'get',
+            url: 'api/logo',
+        })
+            .pipe(map((res) => res.data))
+            .subscribe({
+                next: (value) => {
+                    setLogoUrl(value);
+                },
+                error: () => {
+                    setLoading(false);
+                    setError('Logo not found');
+                },
+            });
+
+        return () => subscription.unsubscribe();
+    }, []);
+
+    // Get signature
+    useEffect(() => {
+        const subscription = httpReq<UserAccountInfo>()({
+            method: 'get',
+            url: `api/account/userId/${formData.get(
+                ConfigService.getSignatureCorrespondingField(),
+            )}`,
+        })
+            .pipe(map((res) => res.data))
+            .subscribe({
+                next: (value) => {
+                    setUserData(value);
+                },
+                error: () => {
+                    setLoading(false);
+                    setError('Signature not found');
+                },
+            });
+
+        return () => subscription.unsubscribe();
+    }, [formData]);
 
     return (
         <Box
@@ -114,13 +186,54 @@ const PdfCreator = ({
                         <Check />
                     </ToggleButton>
                 </Stack>
+
+                <Stack direction="column" sx={{ width: '80px' }}>
+                    <Typography variant="caption" component="div">
+                        Font Size
+                    </Typography>
+                    <TextField
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        inputProps={{
+                            min: 2,
+                            max: 36,
+                        }}
+                        value={fontSize}
+                        onChange={(event) => {
+                            setFontSize(parseInt(event.target.value, 10));
+                        }}
+                    />
+                </Stack>
+
+                <Stack direction="column" sx={{ width: '100px' }}>
+                    <Typography variant="caption" component="div">
+                        Page Padding
+                    </Typography>
+                    <TextField
+                        type="number"
+                        inputProps={{ min: 0 }}
+                        value={pagePadding}
+                        onChange={(event) => {
+                            setPagePadding(parseInt(event.target.value, 10));
+                        }}
+                    />
+                </Stack>
             </Stack>
             {loading && (
                 <Block enableScroll>
                     <Spinner />
                 </Block>
             )}
-            {
+            {error && (
+                <>
+                    <Typography className={classes.error} variant="h6" component="div">
+                        {error}
+                    </Typography>
+                </>
+            )}
+            {logoUrl && userData && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
                         title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}
@@ -128,10 +241,11 @@ const PdfCreator = ({
                         subject={studyInsUID}
                         onRender={onPdfRender}
                     >
-                        <PDFPage>
+                        <PDFPage pagePadding={pagePadding}>
                             {/* Header */}
                             <PDFCustomHeader components={headerDefine.components}>
                                 <PDFReportContent
+                                    pdfStyle={pdfStyle}
                                     formSections={pdfDefine.sections.filter(
                                         (section: Section) => section.isHeader,
                                     )}
@@ -142,25 +256,23 @@ const PdfCreator = ({
                             </PDFCustomHeader>
                             {/* Body */}
                             <PDFReportContent
+                                pdfStyle={pdfStyle}
                                 formSections={pdfDefine.sections.filter(
                                     (section: Section) => !section?.isHeader,
                                 )}
                                 formData={formData.toJSON()}
                                 diagramUrl={diagramUrl}
                                 getOptions={getCodeList}
-                            >
-                                {selectedImage.length && (
-                                    <PDFPhoto
-                                        row={row}
-                                        pageBreak={pageBreak}
-                                        imageList={selectedImage}
-                                    />
-                                )}
-                            </PDFReportContent>
+                            />
+                            {selectedImage.length && (
+                                <PDFPhoto pdfStyle={pdfStyle} imageList={selectedImage} />
+                            )}
+                            {/* Footer */}
+                            <PDFFooter signatureData={userData} />
                         </PDFPage>
                     </Document>
                 </PDFViewer>
-            }
+            )}
         </Box>
     );
 };

@@ -3,21 +3,21 @@ import React, { useEffect } from 'react';
 import { Button } from '@mui/material';
 import { ColDef, GetRowIdParams, RowNode } from 'ag-grid-community';
 import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
-import { AxiosObservable } from 'axios-observable/dist/axios-observable.interface';
+import { Observable } from 'rxjs';
 
+import classes from './GridTableEditor.module.scss';
 import GridTable from '../../components/GridTable/GridTable';
 import { useGridTable } from '../../hooks/useGridTable';
 import { FormEditorDef } from '../../interface/form-editor-define';
 import { camelize } from '../../utils/general';
-import classes from './GridTableEditor.module.scss';
 
 interface Props {
     domLayout?: 'normal' | 'autoHeight' | 'print';
     apiPath: string;
     initFormData: any;
     initRowData?: any[];
-    externalGetRowData?: AxiosObservable<any>;
-    externalUpdateRowApi?: (formData: any) => AxiosObservable<any>;
+    externalGetRowData?: Observable<any>;
+    externalUpdateRowApi?: (formData: any) => Observable<any>;
     filterRow?: boolean;
     identityId: string;
     subIdentityId?: string;

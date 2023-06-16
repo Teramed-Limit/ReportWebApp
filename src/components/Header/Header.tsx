@@ -1,28 +1,47 @@
 import React from 'react';
 
 import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
+import CloudSyncIcon from '@mui/icons-material/CloudSync';
+import ContactsIcon from '@mui/icons-material/Contacts';
 import FaceIcon from '@mui/icons-material/Face';
 import HistoryIcon from '@mui/icons-material/History';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
 import SummarizeIcon from '@mui/icons-material/Summarize';
-import { Avatar, Stack } from '@mui/material';
+import { Avatar, ListItemText, Menu, MenuItem, Stack } from '@mui/material';
 import { deepOrange } from '@mui/material/colors';
+import ListItemIcon from '@mui/material/ListItemIcon';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { tap } from 'rxjs/operators';
 
+import classes from './Header.module.scss';
 import WithElementVisibility from '../../HOC/WithElementVisiblity/WithElementVisibility';
 import { useAuthStore } from '../../models/useStore';
 import NavigationItem from '../Navigation/NavigationItem/NavigationItem';
-import ButtonGroup from '../UI/Button-Group/Button-Group';
 import Button from '../UI/Button/Button';
-import classes from './Header.module.scss';
+import ButtonGroup from '../UI/Button-Group/Button-Group';
 
 const Header = () => {
     const history = useHistory();
-    const { onLogout, userName, isAdmin } = useAuthStore();
+    const { onLogout, renewUserInfo, userId, userName } = useAuthStore();
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const open = Boolean(anchorEl);
+    const openMenu = (event: React.MouseEvent<HTMLButtonElement>) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const reloadUserInfo = () => {
+        if (!userId) return;
+        renewUserInfo({ userId });
+        setAnchorEl(null);
+    };
+
+    const navigateSelfProfile = () => {
+        history.push('/selfInfo');
+        setAnchorEl(null);
+    };
 
     const logout = () => {
         onLogout(null, (signal$) => signal$.pipe(tap(() => history.push({ pathname: `/login` }))));
@@ -78,26 +97,39 @@ const Header = () => {
                             </NavigationItem>
                         }
                     />
-                    {isAdmin && (
-                        <NavigationItem link="/report-generator">
-                            <Button id="btn__report-generator" color="black">
-                                <SummarizeIcon className={classes.iconButton} />
-                                Report Generator
-                            </Button>
-                        </NavigationItem>
-                    )}
+                    <NavigationItem link="/report-generator">
+                        <Button id="btn__report-generator" color="black">
+                            <SummarizeIcon className={classes.iconButton} />
+                            Report Generator
+                        </Button>
+                    </NavigationItem>
                     <Button id="btn__logout" color="black" onClick={logout}>
                         <LogoutRoundedIcon className={classes.iconButton} />
                         Logout
                     </Button>
-                    <div className={classes.avatar}>
+
+                    <Button id="btn__selfInfo" color="black" onClick={openMenu}>
                         <Avatar
                             className={classes.avatarImg}
                             sx={{ bgcolor: deepOrange[500] }}
                             src="/broken-image.jpg"
                         />
                         {userName}
-                    </div>
+                    </Button>
+                    <Menu anchorEl={anchorEl} open={open} onClose={() => setAnchorEl(null)}>
+                        <MenuItem onClick={navigateSelfProfile}>
+                            <ListItemIcon>
+                                <ContactsIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>My Profile</ListItemText>
+                        </MenuItem>
+                        <MenuItem onClick={reloadUserInfo}>
+                            <ListItemIcon>
+                                <CloudSyncIcon fontSize="small" />
+                            </ListItemIcon>
+                            <ListItemText>Sync Signature</ListItemText>
+                        </MenuItem>
+                    </Menu>
                 </ButtonGroup>
             </div>
         </div>

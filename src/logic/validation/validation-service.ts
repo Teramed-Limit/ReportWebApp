@@ -1,11 +1,11 @@
-import { DocumentData } from '../../interface/document-data';
-import { Validate, ValidateType } from '../../interface/validate';
-import { ValidateResult, Validator } from '../../interface/validator';
 import { MinValidator } from './rules/min-validator';
 import { QualityBowelMinValidator } from './rules/quality-bowel-min-validator';
 import { QualityBowelRequiredValidator } from './rules/quality-bowel-required-validator';
 import { QualityBowelValidator } from './rules/quality-bowel-validator';
 import { RequireValidator } from './rules/require-validator';
+import { DocumentData } from '../../interface/document-data';
+import { Validate, ValidateType } from '../../interface/validate';
+import { ValidateResult, Validator } from '../../interface/validator';
 
 export class ValidationService {
     validator: Validator | undefined;

@@ -1,14 +1,16 @@
 import { AxiosResponse } from 'axios';
-import { action, dollEffect, getEnv, getRoot, IAnyModelType, Instance, types } from 'mst-effect';
+import { action, dollEffect, getEnv, types } from 'mst-effect';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
+import { ReportDefineModal } from './model-type/report-define-type-modal';
 import { fetchReportDefine, fetchReportHistoryDefine } from '../axios/api';
 import { FormDefine, FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { DocumentData } from '../interface/document-data';
+import { Field } from '../interface/field';
 import { RepPage } from '../interface/rep-report';
 import { RootService } from '../interface/root-service';
 
-export const DefineModel = types
+export const DefineModel: ReportDefineModal = types
     .model('define', {
         loading: types.optional(types.boolean, true),
         formDefineMap: types.frozen<FormDefineMap>({}),
@@ -24,7 +26,7 @@ export const DefineModel = types
             components: {},
         }),
         pdfDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
-        normalizeFields: types.map(types.frozen<any>()),
+        normalizeFields: types.frozen<{ [props: string]: Field }>(),
     })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
@@ -69,18 +71,14 @@ export const DefineModel = types
             ),
             setFormDefine: (formData: DocumentData) => {
                 const { reportDefineService } = getEnv<RootService>(self);
-                const { formDefine, pdfDefine, headerDefine, footerDefine } =
+                const { formDefine, pdfDefine, fields, headerDefine, footerDefine } =
                     reportDefineService.getFormDefine(formData?.ReportTemplate || 'Blank');
 
                 self.formDefine = formDefine;
                 self.pdfDefine = pdfDefine;
                 self.headerDefine = headerDefine;
                 self.footerDefine = footerDefine;
-
-                const { dataStore } = getRoot<IAnyModelType>(self);
-                dataStore.initialFormControl();
+                self.normalizeFields = fields;
             },
         };
     });
-
-export type DefineStore = Instance<typeof DefineModel>;

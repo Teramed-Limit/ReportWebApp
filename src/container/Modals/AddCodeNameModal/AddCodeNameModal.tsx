@@ -6,22 +6,30 @@ import { insertCodeListByCodeName } from '../../../axios/api';
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
+import { NotificationContext } from '../../../context/notification-context';
+import { MessageType } from '../../../interface/notification';
 
 interface Props {
     initCodeListMap: () => void;
 }
 
 const AddCodeNameModal = ({ initCodeListMap }: Props) => {
+    const { openNotification: setNotification } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
 
     const [codeName, setCodeName] = useState('');
 
     const onAddCategory = useCallback(() => {
-        insertCodeListByCodeName(codeName).subscribe(() => {
-            initCodeListMap();
-            setModal(null);
+        insertCodeListByCodeName(codeName).subscribe({
+            next: () => {
+                initCodeListMap();
+                setModal(null);
+            },
+            error: (err) => {
+                setNotification(MessageType.Error, err.response?.data.Message || err.message);
+            },
         });
-    }, [codeName, initCodeListMap, setModal]);
+    }, [codeName, initCodeListMap, setModal, setNotification]);
 
     return (
         <Modal

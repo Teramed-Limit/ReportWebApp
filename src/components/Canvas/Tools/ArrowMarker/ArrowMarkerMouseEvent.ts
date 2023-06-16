@@ -1,6 +1,7 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
+import LocalStorageService from '../../../../service/local-storage-service';
 import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent } from '../../canvas-utils';
 
@@ -36,6 +37,13 @@ const ArrowMarkerMouseEvent = (): {
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => void;
 } => {
+    const konvaAttribute = LocalStorageService.getFromLocalStorage<{
+        fill: string;
+        stroke: string;
+        radius: number;
+        strokeWidth: number;
+    }>('konvaAttribute');
+
     const onMouseDown = (
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
@@ -50,9 +58,9 @@ const ArrowMarkerMouseEvent = (): {
             name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
-                fill: subColor,
-                stroke: mainColor,
-                strokeWidth: 4,
+                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
+                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
+                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
                 x: point.x,
                 y: point.y,
                 points: [0, 0, 0, 0],
@@ -88,11 +96,11 @@ const ArrowMarkerMouseEvent = (): {
             name: `${markerType}_${uuid}`,
             type: markerType,
             attribute: {
-                fill: subColor,
-                stroke: mainColor,
+                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
+                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
+                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
                 x: beginPoint.x,
                 y: beginPoint.y,
-                strokeWidth: 4,
                 points: [0, 0, movePoint.x - beginPoint.x, movePoint.y - beginPoint.y],
                 pointerLength: 20,
                 pointerWidth: 20,
@@ -124,7 +132,6 @@ const ArrowMarkerMouseEvent = (): {
         if (Math.abs(beginPoint.x - lastPoint.x) < 5 || Math.abs(beginPoint.y - lastPoint.y) < 5) {
             canvasMarkers.splice(canvasMarkers.length - 1, 1);
             setCanvasMarkers(canvasMarkers.concat());
-            return;
         }
     };
 

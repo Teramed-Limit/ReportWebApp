@@ -2,10 +2,10 @@ import React from 'react';
 
 import { Box } from '@mui/material';
 
+import classes from './ReportSection.module.scss';
 import { Section, SubSection } from '../../interface/define';
 import { reportSection } from '../../styles/report/style';
 import ReportSubSection from '../ReportSubSection/ReportSubSection';
-import classes from './ReportSection.module.scss';
 
 interface Props {
     section: Section;

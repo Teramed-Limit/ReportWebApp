@@ -5,12 +5,12 @@ import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 import { Badge, Checkbox, IconButton } from '@mui/material';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
+import classes from './ImageSelector.module.scss';
 import ImageCanvasModal from '../../container/Modals/ImageCanvasModal/ImageCanvasModal';
 import MessageModal from '../../container/Modals/MessageModal/MessageModal';
 import { ModalContext } from '../../context/modal-context';
 import { CodeList } from '../../interface/code-list';
 import BaseLexiconInput from '../UI/BaseLexiconInput/BaseLexiconInput';
-import classes from './ImageSelector.module.scss';
 
 interface ImageSelectorProps {
     id: string;
@@ -24,6 +24,7 @@ interface ImageSelectorProps {
     sitesOptions: CodeList[];
     markerMappingNumber: number;
     disabled: boolean;
+    lockReorder: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
     onImageMark: (sopInsUid: string, base64: string) => void;
     onClearImageMark: (sopInsUid: string) => void;
@@ -49,6 +50,7 @@ const ImageSelector = ({
     findingsOptions,
     sitesOptions,
     disabled,
+    lockReorder,
     onImageReorder,
 }: ImageSelectorProps) => {
     const setModal = useContext(ModalContext);
@@ -77,13 +79,14 @@ const ImageSelector = ({
 
     return (
         <div
-            style={{ width: `${size}%`, height: `${size}%` }}
+            style={{ width: `calc(${size}% - 4px)`, height: `calc(${size}% - 4px)` }}
             className={classes.container}
-            draggable={!disabled}
+            draggable={false}
             onDragOver={(event) => event.preventDefault()}
             onDrop={(event) => {
                 event.preventDefault();
                 if (disabled) return;
+                if (lockReorder) return;
                 onImageReorder(+event.dataTransfer.getData('index'), index);
             }}
         >
@@ -124,6 +127,7 @@ const ImageSelector = ({
                 src={src}
                 alt=""
                 draggable={!disabled}
+                onClick={onEditDiagram}
                 onDragStart={(event) => {
                     event.dataTransfer.setData('sopInsUid', id);
                     event.dataTransfer.setData('index', index.toString());
@@ -133,7 +137,7 @@ const ImageSelector = ({
             <label className={classes.label}>
                 <span>Sites:</span>
                 <BaseLexiconInput
-                    id={id}
+                    id={`sites_${index}`}
                     cssClass={{
                         container: classes['lexicon-container'],
                         input: classes['lexicon-input'],
@@ -151,7 +155,7 @@ const ImageSelector = ({
             <label className={classes.label}>
                 <span>Findings:</span>
                 <BaseLexiconInput
-                    id={id}
+                    id={`findings_${index}`}
                     cssClass={{
                         container: classes['lexicon-container'],
                         input: classes['lexicon-input'],

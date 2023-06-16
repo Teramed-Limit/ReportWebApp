@@ -7,14 +7,22 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 
 import App from './App';
+import { fetchAppConfig } from './axios/axios';
+import { MobxStateProvider } from './context/mobx-custom-provider';
+import { createStore } from './models/store';
 import reportWebVitals from './reportWebVitals';
 
-ReactDOM.render(
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>,
-    document.getElementById('root'),
-);
+fetchAppConfig().then(() => {
+    const rootStore = createStore();
+    ReactDOM.render(
+        <BrowserRouter>
+            <MobxStateProvider store={rootStore}>
+                <App />
+            </MobxStateProvider>
+        </BrowserRouter>,
+        document.getElementById('root'),
+    );
+});
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

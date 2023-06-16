@@ -1,17 +1,11 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import {
-    action,
-    dollEffect,
-    effect,
-    getEnv,
-    getRoot,
-    IAnyModelType,
-    Instance,
-    types,
-} from 'mst-effect';
-import { iif, interval, Observable, of, throwError } from 'rxjs';
+import { action, dollEffect, effect, getEnv, getRoot, IAnyModelType, types } from 'mst-effect';
+import { iif, Observable, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
+import { ImageTypeOfModel } from './model-type/image-type-modal';
+import { ReportDataModal } from './model-type/report-data-type-modal';
+import { ReportDefineTypeOfModel } from './model-type/report-define-type-modal';
 import {
     fetchHistoryReport,
     fetchReport,
@@ -20,12 +14,13 @@ import {
     saveReport,
     unlockReport,
 } from '../axios/api';
+import { LoginResult } from '../interface/auth';
 import { DocumentData, ReportStatus } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
-import { RegisterReportDefineMap } from '../logic/report-define/report-define-service';
+import LocalStorageService from '../service/local-storage-service';
 import { isEmptyOrNil } from '../utils/general';
 
 const dateModel = types.union(types.frozen<DocumentData>());
@@ -35,7 +30,7 @@ const formInvalidError = {
     response: { data: { Message: 'Required fields are not filled.' } },
 };
 
-export const DataModel = types
+export const DataModel: ReportDataModal = types
     .model('report', {
         lockByUser: types.optional(types.string, ''),
         modifiable: types.optional(types.boolean, false),
@@ -83,27 +78,33 @@ export const DataModel = types
         const { reportDataService, reportDefineService, validationService } =
             getEnv<RootService>(self);
 
-        const valueChanged = (id: string, value: any) => {
+        const changeValue = (
+            targetId: string,
+            targetValue: any,
+            staticState: Partial<FormControl> = {},
+        ) => {
             const {
-                defineStore: { setFormDefine },
+                defineStore,
+            }: {
+                defineStore: ReportDefineTypeOfModel;
             } = getRoot<IAnyModelType>(self);
 
-            const changeValue = (targetId, targetValue, staticState: Partial<FormControl> = {}) => {
-                self.reportHasChanged = true;
-                self.formData.set(targetId, targetValue);
-                self.formState.set(targetId, {
-                    ...self.formState.get(targetId),
-                    ...validate(targetId, targetValue),
-                    ...staticState,
-                });
+            self.reportHasChanged = true;
+            self.formData.set(targetId, targetValue);
+            self.formState.set(targetId, {
+                ...self.formState.get(targetId),
+                ...validate(targetId, targetValue),
+                ...staticState,
+            });
 
-                if (targetId === 'ReportTemplate') setFormDefine(self.formData.toJSON());
-            };
-            changeValue(id, value);
-            reportDataService.inject(id);
-            reportDataService.postValueChanged(self.formData.toJSON(), changeValue);
+            if (targetId === 'ReportTemplate') {
+                defineStore.setFormDefine(self.formData.toJSON());
+                initReportData();
+                initialFormControl();
+            }
         };
 
+        // Validate field
         const validate = (id: string, value: any): FormControl => {
             const state = {
                 isDirty: true,
@@ -135,13 +136,89 @@ export const DataModel = types
             };
         };
 
+        // Normal field
+        const valueChanged = (id: string, value: any) => {
+            changeValue(id, value);
+
+            if (!self.reportTemplate) return;
+            const { formDefine } = reportDefineService.getFormDefine(self.reportTemplate);
+
+            // Change value by its id
+            reportDataService.postValueChangedById(
+                id,
+                self.formData.toJSON(),
+                formDefine,
+                changeValue,
+            );
+
+            // Change value by its action
+            if (!reportDefineService.currentFields) return;
+            const field = reportDefineService.getField(id);
+            if (!field) return;
+            reportDataService.postValueChangedByAction(
+                {
+                    id,
+                    field,
+                    value,
+                    data: self.formData.toJSON(),
+                    define: reportDefineService.currentFields,
+                },
+                changeValue,
+            );
+        };
+
+        // Array field
+        const arrayValueChanged = (
+            idx: number,
+            id: string,
+            targetId: string,
+            arrayValue: any[],
+            targetValue: any,
+        ) => {
+            changeValue(id, arrayValue);
+
+            // Change value by its action
+            if (!reportDefineService.currentFields) return;
+            const field = reportDefineService.getArrayField(id, targetId);
+            if (!field) return;
+            reportDataService.postValueChangedByAction(
+                {
+                    id,
+                    field,
+                    value: targetValue,
+                    arrayIdx: idx,
+                    arrayId: targetId,
+                    data: self.formData.toJSON(),
+                    define: reportDefineService.currentFields,
+                },
+                changeValue,
+            );
+        };
+
         const cleanupAllReportState = () => {
             self.loading = false;
             self.formData.clear();
             self.formState.replace({});
             self.formValidation = { isValid: true, openModalName: '' };
-            const { imageStore } = getRoot<IAnyModelType>(self);
+            const { imageStore }: { imageStore: ImageTypeOfModel } = getRoot<IAnyModelType>(self);
             imageStore.initImages([]);
+        };
+
+        const initReportData = () => {
+            const {
+                defineStore,
+            }: {
+                defineStore: ReportDefineTypeOfModel;
+            } = getRoot<IAnyModelType>(self);
+
+            // 如果是第一次進入Report，套用預設的資料
+            if (self.formData.get('ReportStatus') === ReportStatus.New) {
+                Object.entries(defineStore.normalizeFields).forEach(([key, field]) => {
+                    if (field.initMapping && self.formData.get(field.initMapping)) {
+                        self.formData.set(key, self.formData.get(field.initMapping));
+                    }
+                });
+            }
         };
 
         const initialFormControl = () => {
@@ -183,7 +260,9 @@ export const DataModel = types
 
         return {
             valueChanged,
+            arrayValueChanged,
             validate,
+            initReportData,
             initialFormControl,
             cleanupAllReportState,
             resetFormData: (formData: DocumentData) => self.formData.replace(formData),
@@ -247,11 +326,11 @@ export const DataModel = types
                     }),
                 ]),
                 startWith(action(() => (self.loading = true))),
-                catchError((error: AxiosError) => [
+                catchError((error: AxiosError<{ Message: string }>) => [
                     action(() => (self.loading = false)),
                     action(dollSignal, {
                         notification: {
-                            message: error.response?.data.Message,
+                            message: error.response?.data.Message || error.message,
                             messageType: MessageType.Error,
                         },
                     }),
@@ -266,6 +345,11 @@ export const DataModel = types
         };
 
         return {
+            saveTempReportData: () => {
+                // 未簽核報告的暫存資料
+                if (!self.studyInsUID) return;
+                LocalStorageService.writeToLocalStorage(self.studyInsUID, self.formData.toJSON());
+            },
             saveReport: dollEffect<null, ReportResponseNotification>(
                 self,
                 (payload$, dollSignal) => {
@@ -279,7 +363,7 @@ export const DataModel = types
                 (payload$, dollSignal) => {
                     const callback = () => {
                         self.modifiable = false;
-                        window.localStorage.removeItem(self.studyInsUID);
+                        LocalStorageService.removeFromLocalStorage(self.studyInsUID);
                     };
                     return payload$.pipe(
                         switchMap(() =>
@@ -288,18 +372,6 @@ export const DataModel = types
                     );
                 },
             ),
-            autoSaveToLocalStorage: effect(self, (payload$) => {
-                function update() {
-                    window.localStorage.setItem(
-                        self.studyInsUID,
-                        JSON.stringify(self.formData.toJSON()),
-                    );
-                }
-
-                return payload$.pipe(
-                    switchMap(() => interval(5000).pipe(map(() => action(update)))),
-                );
-            }),
             fetchReportLockStatus: dollEffect<string, string>(self, (payload$, dollSignal) => {
                 return payload$.pipe(
                     switchMap((studyInstanceUID) =>
@@ -339,36 +411,45 @@ export const DataModel = types
         const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const { defineStore, imageStore } = getRoot<IAnyModelType>(self);
+            const {
+                defineStore,
+                imageStore,
+            }: {
+                defineStore: ReportDefineTypeOfModel;
+                imageStore: ImageTypeOfModel;
+            } = getRoot<IAnyModelType>(self);
+
+            const userId = LocalStorageService.getFromLocalStorage<LoginResult>('user')?.UserId;
 
             // set initialize data
             self.formData.replace(response.data);
 
-            imageStore.initImages(response.data?.ReportImageData || []);
-
-            // report not existed, auto set value
-            if (response.data.ReportStatus === ReportStatus.InComplete) {
-                // autofill studyDescription in ReportTemplate
-                if (
-                    response.data.StudyDescription &&
-                    RegisterReportDefineMap[response.data.StudyDescription]
-                ) {
-                    self.formData.set('ReportTemplate', response.data.StudyDescription);
-                }
-
+            // 如果ReportStatus不是Signed，並要在每次進來報告時套用
+            let isApplyReportTempData = false;
+            if (self.formData.get('ReportStatus') === ReportStatus.New) {
+                if (!response?.data?.StudyInstanceUID) return;
                 // apply local storage data, when newly report
-                if (window.localStorage.getItem(self.studyInsUID)) {
+                if (LocalStorageService.getFromLocalStorage(response.data.StudyInstanceUID)) {
                     const tempData: DocumentData = JSON.parse(
-                        <string>window.localStorage.getItem(self.studyInsUID),
+                        <string>window.localStorage.getItem(response.data.StudyInstanceUID),
                     );
+                    delete tempData.ReportStatus;
+                    delete tempData.Author;
+                    delete tempData.UserId;
                     self.formData.replace(tempData);
                     imageStore.initImages(tempData.ReportImageData || []);
+                    isApplyReportTempData = true;
                 }
             }
 
             // initialize form control
+            self.formData.set('UserId', userId);
+            imageStore.initImages(response.data?.ReportImageData || []);
             defineStore.setFormDefine(self.formData.toJSON());
-            self.reportHasChanged = false;
+            self.initReportData();
+            self.initialFormControl();
+
+            self.reportHasChanged = isApplyReportTempData;
             self.modifiable = response.data.ReportStatus !== ReportStatus.Signed;
             self.loading = false;
         };
@@ -390,11 +471,11 @@ export const DataModel = types
                                     }),
                                 ]),
                                 startWith(action(beforeFetch)),
-                                catchError((error: AxiosError) => [
+                                catchError((error: AxiosError<{ Message: string }>) => [
                                     action(fetchError),
                                     action(dollSignal, {
                                         notification: {
-                                            message: error.response?.data.Message,
+                                            message: error.response?.data.Message || error.message,
                                             messageType: MessageType.Error,
                                         },
                                     }),
@@ -413,7 +494,7 @@ export const DataModel = types
         const fetchError = () => (self.loading = false);
 
         const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const { imageStore } = getRoot<IAnyModelType>(self);
+            const { imageStore }: { imageStore: ImageTypeOfModel } = getRoot<IAnyModelType>(self);
 
             // set initialize data
             self.formData.replace(response.data);
@@ -442,11 +523,11 @@ export const DataModel = types
                                 }),
                             ]),
                             startWith(action(beforeFetch)),
-                            catchError((error: AxiosError) => [
+                            catchError((error: AxiosError<{ Message: string }>) => [
                                 action(fetchError),
                                 action(dollSignal, {
                                     notification: {
-                                        message: error.response?.data.Message,
+                                        message: error.response?.data.Message || error.message,
                                         messageType: MessageType.Error,
                                     },
                                 }),
@@ -498,5 +579,3 @@ export const DataModel = types
 
         return { simulateReport };
     });
-
-export type DataStore = Instance<typeof DataModel>;

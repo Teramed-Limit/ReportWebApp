@@ -3,13 +3,13 @@ import React, { forwardRef, useState } from 'react';
 import Konva from 'konva';
 import { Image, Layer, Stage } from 'react-konva';
 
+import classes from './Canvas.module.scss';
+import RenderMaker from './Tools/RenderMaker/RenderMaker';
 import { useCanvasTool } from '../../hooks/useCanvasTool';
 import { useImageScaleToFit } from '../../hooks/useImageScaleToFit';
 import { useKonva } from '../../hooks/useKonva';
 import { CanvasMarker, MarkerType } from '../../interface/canvas-maker-attribute';
 import { isEmptyOrNil } from '../../utils/general';
-import classes from './Canvas.module.scss';
-import RenderMaker from './Tools/RenderMaker/RenderMaker';
 
 type CanvasHandle = {
     onExport(): string;

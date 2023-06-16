@@ -2,10 +2,10 @@ import React from 'react';
 
 import { DragDropContext, Droppable, DropResult } from 'react-beautiful-dnd';
 
-import { FormFieldLexiconCategory } from '../../../../../interface/form-field-lexicon-category';
-import SectionAdder from '../SectionAdder/SectionAdder';
 import Section from './Section/Section';
 import classes from './SectionListEdit.module.scss';
+import { FormFieldLexiconCategory } from '../../../../../interface/form-field-lexicon-category';
+import SectionAdder from '../SectionAdder/SectionAdder';
 
 interface Props {
     lexiconCategoryList: FormFieldLexiconCategory[];

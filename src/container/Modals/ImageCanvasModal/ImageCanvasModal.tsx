@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import Konva from 'konva';
 import * as R from 'ramda';
 
+import classes from './ImageCanvasModal.module.scss';
 import AttributeList from '../../../components/AttributeList/AttributeList';
 import Canvas from '../../../components/Canvas/Canvas';
 import CanvasOverlay from '../../../components/CanvasOvelay/CanvasOverlay';
@@ -13,7 +14,6 @@ import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
 import { CanvasMarker, MarkerType } from '../../../interface/canvas-maker-attribute';
 import { generateUUID, isEmptyOrNil } from '../../../utils/general';
-import classes from './ImageCanvasModal.module.scss';
 
 interface Props {
     imageSrc: string;
@@ -45,9 +45,10 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
 
     const onConfirm = () => {
         setSelectMarkerId('');
-        onExportCanvas?.(canvasMarkers, canvasRef.current?.onExport() || '');
-
-        setModal(null);
+        setTimeout(() => {
+            onExportCanvas?.(canvasMarkers, canvasRef.current?.onExport() || '');
+            setModal(null);
+        });
     };
 
     useEffect(() => {

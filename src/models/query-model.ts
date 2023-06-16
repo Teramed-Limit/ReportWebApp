@@ -1,4 +1,4 @@
-import { Instance, types } from 'mst-effect';
+import { types } from 'mst-effect';
 
 import { StudyData } from '../interface/study-data';
 
@@ -22,5 +22,3 @@ export const QueryModel = types
             onConditionChanged,
         };
     });
-
-export type QueryStore = Instance<typeof QueryModel>;

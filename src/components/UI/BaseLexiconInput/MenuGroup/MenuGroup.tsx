@@ -4,8 +4,8 @@ import { createPortal } from 'react-dom';
 import cx from 'classnames';
 import { useVirtual } from 'react-virtual';
 
-import { getBoundingClientObj } from '../utils';
 import classes from './MenuGroup.module.scss';
+import { getBoundingClientObj } from '../utils';
 
 interface Props {
     children: React.ReactNode;

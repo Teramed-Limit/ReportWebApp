@@ -2,10 +2,10 @@ import React, { useCallback, useEffect, useState } from 'react';
 
 import { Box } from '@mui/material';
 
-import { FormEditorDef, FormField } from '../../interface/form-editor-define';
 import { EditorMapper } from './Editor/editorMapper';
 import { ValidationMapper } from './Editor/validationMapper';
 import classes from './FormEditor.module.scss';
+import { FormEditorDef, FormField } from '../../interface/form-editor-define';
 
 interface Props {
     saveType: string;

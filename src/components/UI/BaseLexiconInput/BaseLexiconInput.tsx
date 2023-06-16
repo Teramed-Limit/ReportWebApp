@@ -5,8 +5,6 @@ import classNames from 'classnames/bind';
 import { MdClear } from 'react-icons/md';
 import { RiBook3Line as BookIcon } from 'react-icons/ri';
 
-import { useKeyPress } from '../../../hooks/useKeyPress';
-import { generateUUID } from '../../../utils/general';
 import classes from './BaseLexiconInput.module.scss';
 import MenuGroup from './MenuGroup/MenuGroup';
 import MenuOption from './MenuOption/MenuOption';
@@ -24,6 +22,8 @@ import {
     syncText,
 } from './store/action';
 import { LexiconReducer } from './store/reducer';
+import { useKeyPress } from '../../../hooks/useKeyPress';
+import { generateUUID } from '../../../utils/general';
 
 interface Props {
     id?: string;

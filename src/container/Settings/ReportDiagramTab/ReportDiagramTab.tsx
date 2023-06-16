@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 
 import { Cancel } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
@@ -13,12 +13,15 @@ import ListSubheader from '@mui/material/ListSubheader';
 import { observer } from 'mobx-react';
 import { concatMap } from 'rxjs/operators';
 
-import { deleteDiagram, fetchDiagram, saveDiagram } from '../../../axios/api';
-import { Diagram } from '../../../interface/diagram';
-import { useOptionStore } from '../../../models/useStore';
 import classes from './ReportDiagramTab.module.scss';
+import { deleteDiagram, fetchDiagram, saveDiagram } from '../../../axios/api';
+import { NotificationContext } from '../../../context/notification-context';
+import { Diagram } from '../../../interface/diagram';
+import { MessageType } from '../../../interface/notification';
+import { useOptionStore } from '../../../models/useStore';
 
 const ReportDiagramTab = () => {
+    const { openNotification: setNotification } = useContext(NotificationContext);
     const { codeListMap } = useOptionStore();
     const [selectReportTemplate, setSelectReportTemplate] = useState<string>('');
     const [diagramList, setDiagramList] = useState<Diagram[]>([]);
@@ -36,24 +39,34 @@ const ReportDiagramTab = () => {
         formData.append('File', file);
         saveDiagram(selectReportTemplate, formData)
             .pipe(concatMap(() => fetchDiagram(selectReportTemplate)))
-            .subscribe((res) => {
-                setDiagramList(res.data);
+            .subscribe({
+                next: (res) => {
+                    setDiagramList(res.data);
+                },
+                error: (err) => {
+                    setNotification(MessageType.Error, err.response?.data.Message || err.message);
+                },
             });
     };
 
     const onDeleteDiagram = (number: number) => {
         deleteDiagram(selectReportTemplate, number)
             .pipe(concatMap(() => fetchDiagram(selectReportTemplate)))
-            .subscribe((res) => {
-                setDiagramList(res.data);
+            .subscribe({
+                next: (res) => {
+                    setDiagramList(res.data);
+                },
+                error: (err) => {
+                    setNotification(MessageType.Error, err.response?.data.Message || err.message);
+                },
             });
     };
 
     useEffect(() => {
-        if (codeListMap?.ReportTemplate?.[0]) {
-            onFetchReportDiagram(codeListMap.ReportTemplate[0].Label);
+        if (codeListMap?.get('ReportTemplate')?.[0]) {
+            onFetchReportDiagram(codeListMap?.get('ReportTemplate')[0].Label);
         }
-    }, [codeListMap.ReportTemplate]);
+    }, [codeListMap]);
 
     return (
         <Stack direction="row" className={classes.container}>
@@ -75,7 +88,7 @@ const ReportDiagramTab = () => {
                     </ListSubheader>
                 }
             >
-                {codeListMap?.ReportTemplate?.map((option) => {
+                {codeListMap?.get('ReportTemplate')?.map((option) => {
                     return (
                         <ListItemButton
                             key={option.Label}

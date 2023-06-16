@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react';
 
-import { isSSR } from '../utils/general';
 import { useResize } from './useResize';
+import { isSSR } from '../utils/general';
 
 export const useWindowSize = (
     wait = 250,

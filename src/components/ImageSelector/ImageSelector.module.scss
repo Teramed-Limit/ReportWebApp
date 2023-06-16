@@ -6,8 +6,9 @@ $inputHeight: 30px;
     position: relative;
     display: flex;
     flex-direction: column;
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     padding: 2px;
+    margin: 2px;
 }
 
 .floatWrapperTopLeft {
@@ -26,6 +27,7 @@ $inputHeight: 30px;
 }
 
 .image {
+    cursor: pointer;
     max-height: calc(100% - #{$inputHeight * 2});
     margin: auto;
 }

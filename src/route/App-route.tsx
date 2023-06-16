@@ -2,6 +2,8 @@ import React from 'react';
 
 import { Redirect, Route, Switch } from 'react-router-dom';
 
+import AuthRoute from './Auth-route';
+import PrivateRoute from './Private-route';
 import NotFoundPage from '../components/NotFoundPage/NotFoundPage';
 import Account from '../container/Account/Account';
 import History from '../container/History/History';
@@ -10,10 +12,8 @@ import Query from '../container/Query/Query';
 import Report from '../container/Report/Report';
 import ReportGenerator from '../container/ReportGenerator/ReportGenerator';
 import ReportHistory from '../container/ReportHistory/ReportHistory';
+import SelfInfo from '../container/SelfInfo/SelfInfo';
 import Settings from '../container/Settings/Settings';
-import AdminRoute from './Admin-route';
-import AuthRoute from './Auth-route';
-import PrivateRoute from './Private-route';
 
 function AppRoutes() {
     return (
@@ -40,7 +40,8 @@ function AppRoutes() {
             />
             <AuthRoute id="navigation__account" exact path="/account" component={<Account />} />
             <AuthRoute id="navigation__setting" exact path="/settings" component={<Settings />} />
-            <AdminRoute exact path="/report-generator" component={<ReportGenerator />} />
+            <PrivateRoute exact path="/report-generator" component={<ReportGenerator />} />
+            <PrivateRoute exact path="/selfInfo" component={<SelfInfo />} />
             <Route path="*" component={NotFoundPage} />
         </Switch>
     );

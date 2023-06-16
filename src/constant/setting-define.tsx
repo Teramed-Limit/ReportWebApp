@@ -45,7 +45,7 @@ export const define = {
                 width: 130,
                 cellStyle: { padding: 0 },
                 cellRenderer: 'statusRenderer',
-                cellRendererParams: { Saved: 'warning', Signed: 'success', InComplete: 'error' },
+                cellRendererParams: { Saved: 'warning', Signed: 'success', New: 'error' },
                 pinned: 'left',
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
@@ -150,7 +150,7 @@ export const define = {
                 width: 130,
                 cellStyle: { padding: 0 },
                 cellRenderer: 'statusRenderer',
-                cellRendererParams: { Saved: 'warning', Signed: 'success', InComplete: 'error' },
+                cellRendererParams: { Saved: 'warning', Signed: 'success', New: 'error' },
                 pinned: 'left',
                 filter: 'agTextColumnFilter',
                 floatingFilter: true,
@@ -317,17 +317,33 @@ export const define = {
             {
                 field: 'UserID',
                 headerName: 'User Id',
-                width: 200,
-            },
-            {
-                field: 'UserPassword',
-                headerName: 'Password',
-                width: 200,
+                width: 150,
             },
             {
                 field: 'DoctorEName',
                 headerName: 'User Name',
+                width: 250,
+            },
+            {
+                field: 'Title',
+                headerName: 'Title',
+                width: 100,
+            },
+            {
+                field: 'JobTitle',
+                headerName: 'Job Title',
                 width: 200,
+            },
+            {
+                field: 'SignatureUrl',
+                headerName: 'Signature',
+                width: 120,
+                cellRenderer: 'imageRowRenderer',
+            },
+            {
+                field: 'Summary',
+                headerName: 'Summary',
+                width: 400,
             },
             {
                 field: 'RoleList',
@@ -362,6 +378,22 @@ export const define = {
                             validate: { type: ValidateType.Required },
                         },
                         {
+                            id: 'Title',
+                            label: 'Title',
+                            type: 'Text',
+                        },
+                        {
+                            id: 'JobTitle',
+                            label: 'Job Title',
+                            type: 'Text',
+                        },
+                        {
+                            id: 'Summary',
+                            label: 'Summary',
+                            type: 'Text',
+                        },
+                        { id: 'SignatureUrl', label: 'Signature', type: 'ImageSelect' },
+                        {
                             id: 'RoleList',
                             label: 'Role Group',
                             type: 'MultiSelect',
@@ -382,6 +414,11 @@ export const define = {
             {
                 field: 'userId',
                 headerName: 'User Id',
+                width: 250,
+            },
+            {
+                field: 'jobTitle',
+                headerName: 'Job Title',
                 width: 200,
             },
             {
@@ -392,6 +429,11 @@ export const define = {
             {
                 field: 'name',
                 headerName: 'Name',
+                width: 250,
+            },
+            {
+                field: 'summary',
+                headerName: 'Summary',
                 width: 250,
             },
             {
@@ -414,15 +456,20 @@ export const define = {
                             validate: { type: ValidateType.Required },
                         },
                         {
+                            id: 'jobTitle',
+                            label: 'Job Title',
+                            type: 'Text',
+                        },
+                        {
                             id: 'title',
                             label: 'Title',
                             type: 'Text',
                         },
+                        { id: 'name', label: 'Name', type: 'Text', validate: { type: 'Required' } },
                         {
-                            id: 'name',
-                            label: 'Name',
+                            id: 'summary',
+                            label: 'Summary',
                             type: 'Text',
-                            validate: { type: ValidateType.Required },
                         },
                         { id: 'signatureUrl', label: 'Signature', type: 'ImageSelect' },
                     ],
