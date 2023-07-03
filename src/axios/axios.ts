@@ -1,11 +1,9 @@
 import axios, { AxiosError, AxiosInstance } from 'axios';
 
-import { RequestCollector } from './request-collector';
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { Environment } from '../interface/environment';
 import ConfigService from '../service/config-service';
 import { createObservable } from '../utils/axios-observable';
-import { delay } from '../utils/general';
 
 let axiosIns: AxiosInstance;
 
@@ -34,13 +32,13 @@ export function httpReq<T, D = any>() {
     return (config: D) => createObservable<T, D>(axiosIns, config);
 }
 
-const requestCollector = new RequestCollector();
+// const requestCollector = new RequestCollector();
 
 export const setupInterceptors = (
     refreshToken: (result: RefreshTokenResult) => void,
     removeAuth: () => void,
 ) => {
-    requestCollector.registerRefreshToken(refreshToken);
+    // requestCollector.registerRefreshToken(refreshToken);
 
     axiosIns.interceptors.request.use((config) => {
         const newConfig = { ...config };
@@ -67,36 +65,38 @@ export const setupInterceptors = (
             if (originalConfig.url !== '/auth/login' && err.response) {
                 // Access Token was expired
                 if (err.response.status === 401) {
-                    try {
-                        const requestIndex = await requestCollector.queueRequest();
-                        await delay(300);
-                        return await requestCollector.request(originalConfig, requestIndex);
-                    } catch (_error) {
-                        // requestCollector.request 再拿到401表示有錯誤，直接reject
-                        if ((_error as AxiosError).response?.status === 401) {
-                            removeAuth();
-                        }
-
-                        requestCollector.clearRequest();
-
-                        // requestCollector.request 拿到取消請求，直接reject
-                        if (axios.isCancel(_error)) {
-                            return Promise.reject(_error);
-                        }
-
-                        // requestCollector.request 拿到其他錯誤，清空requestCollector
-                        return Promise.reject(_error);
-                    }
+                    removeAuth();
+                    return Promise.reject(err);
+                    // try {
+                    //     const requestIndex = await requestCollector.queueRequest();
+                    //     await delay(300);
+                    //     return await requestCollector.request(originalConfig, requestIndex);
+                    // } catch (_error) {
+                    //     // requestCollector.request 再拿到401表示有錯誤，直接reject
+                    //     if ((_error as AxiosError).response?.status === 401) {
+                    //         removeAuth();
+                    //     }
+                    //
+                    //     requestCollector.clearRequest();
+                    //
+                    //     // requestCollector.request 拿到取消請求，直接reject
+                    //     if (axios.isCancel(_error)) {
+                    //         return Promise.reject(_error);
+                    //     }
+                    //
+                    //     // requestCollector.request 拿到其他錯誤，清空requestCollector
+                    //     return Promise.reject(_error);
+                    // }
                 }
             }
 
             // Skip login request
-            if (originalConfig.url !== 'api/login' && err.response) {
-                // Access Token was expired
-                if (err.response.status === 401) {
-                    removeAuth();
-                }
-            }
+            // if (originalConfig.url !== 'api/login' && err.response) {
+            //     // Access Token was expired
+            //     if (err.response.status === 401) {
+            //         removeAuth();
+            //     }
+            // }
 
             return Promise.reject(err);
         },
