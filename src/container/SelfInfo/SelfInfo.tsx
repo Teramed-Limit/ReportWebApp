@@ -37,7 +37,7 @@ function SelfInfo() {
         const base64 = (await convertFileToBase64(e.target.files[0])) as string;
         httpReq<boolean>()({
             method: 'post',
-            url: `api/account/userId/${userID}`,
+            url: `api/account/${userID}`,
             data: { UserId: userID, SignatureUrl: base64.replace(/^data:image\/\w+;base64,/, '') },
         }).subscribe(() => {
             const data = LocalStorageService.getFromLocalStorage<LoginResult>('user');
@@ -50,7 +50,7 @@ function SelfInfo() {
     const handleSave = () => {
         httpReq<boolean>()({
             method: 'post',
-            url: `api/account/userId/${userID}`,
+            url: `api/account/${userID}`,
             data: {
                 UserId: userID,
                 UserName: userName,

@@ -423,6 +423,7 @@ export const DataModel: ReportDataModal = types
 
             // set initialize data
             self.formData.replace(response.data);
+            imageStore.initImages(response.data?.ReportImageData || []);
 
             // 如果ReportStatus不是Signed，並要在每次進來報告時套用
             let isApplyReportTempData = false;
@@ -437,14 +438,20 @@ export const DataModel: ReportDataModal = types
                     delete tempData.Author;
                     delete tempData.UserId;
                     self.formData.replace(tempData);
-                    imageStore.initImages(tempData.ReportImageData || []);
+                    // 從資料庫獲取的影像資料可能也別於暫存資料，所以要合併，並把暫存資料上存在在的資料用SopInstanceUID做比對，然後套用
+                    const combinedArray = (response.data?.ReportImageData || []).map((item1) => {
+                        const matchingItem = (tempData?.ReportImageData || []).find(
+                            (item2) => item2.SOPInstanceUID === item1.SOPInstanceUID,
+                        );
+                        return matchingItem || item1;
+                    });
+                    imageStore.initImages([...combinedArray]);
                     isApplyReportTempData = true;
                 }
             }
 
             // initialize form control
             self.formData.set('UserId', userId);
-            imageStore.initImages(response.data?.ReportImageData || []);
             defineStore.setFormDefine(self.formData.toJSON());
             self.initReportData();
             self.initialFormControl();

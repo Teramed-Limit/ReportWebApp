@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { Divider, Paper, Typography } from '@mui/material';
+import { Divider, Paper, Stack, Typography } from '@mui/material';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
@@ -22,7 +22,7 @@ import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
 let functionList;
 
 const UserRoles = () => {
-    const [selectedRole, setSelectedRole] = useState<string>('');
+    const [selectedRole, setSelectedRole] = useState<string | undefined>(undefined);
     const [selectedRoleFunctionList, setSelectedRoleFunctionList] = useState<RoleFunction[]>([]);
 
     useEffect(() => {
@@ -36,36 +36,26 @@ const UserRoles = () => {
     }, []);
 
     const initFunctionList = () => {
-        setSelectedRole('');
+        setSelectedRole(undefined);
         setSelectedRoleFunctionList(functionList);
     };
 
     const onSelectionChanged = (gridApi: GridApi) => {
         const selectedRow = gridApi.getSelectedRows()[0] as UserRole;
-        if (!selectedRow) return;
+        if (!selectedRow) {
+            setSelectedRole(undefined);
+            return;
+        }
 
         setSelectedRole(selectedRow.RoleName);
-        getRoleFunctionsWithRoleName(selectedRow.RoleName).subscribe({
-            next: (res) => {
-                setSelectedRoleFunctionList(() => {
-                    return functionList.map((roleFunction) => {
-                        const check = res.data.find(
-                            (checkFunction) =>
-                                roleFunction.FunctionName === checkFunction.FunctionName,
-                        );
-                        return { ...roleFunction, Checked: check !== undefined };
-                    });
-                });
-            },
-        });
     };
 
     const onFunctionChecked = (
         e: React.ChangeEvent<HTMLInputElement>,
         roleFunction: RoleFunction,
-        roleName: string,
+        roleName?: string,
     ) => {
-        if (roleName === '') return;
+        if (!roleName) return;
 
         const updateFunctionState = (checked: boolean) =>
             setSelectedRoleFunctionList((itemList) => {
@@ -88,19 +78,36 @@ const UserRoles = () => {
         }
     };
 
+    // 取得UserGroup的套用Field Filter
+    useEffect(() => {
+        if (!selectedRole) return;
+        const subscription = getRoleFunctionsWithRoleName(selectedRole).subscribe({
+            next: (res) => {
+                setSelectedRoleFunctionList(() => {
+                    return functionList.map((roleFunction) => {
+                        const check = res.data.find(
+                            (checkFunction) =>
+                                roleFunction.FunctionName === checkFunction.FunctionName,
+                        );
+                        return { ...roleFunction, Checked: check !== undefined };
+                    });
+                });
+            },
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [selectedRole]);
+
     return (
-        <div className={classes.container}>
-            <Paper elevation={3} className={classes.leftContent}>
-                <Typography
-                    variant="h5"
-                    gutterBottom
-                    component="div"
-                    className={classes.sectionHeader}
-                >
+        <Stack direction="row" spacing={1} sx={{ maxHeight: '50%', width: '100%' }}>
+            <Paper elevation={3} className="gridTableEditorContainer">
+                <Typography variant="h5" gutterBottom component="div" className="header">
                     Role
                 </Typography>
                 <GridTableEditor
-                    apiPath="role"
+                    apiPath="Role"
                     identityId="RoleName"
                     initFormData={{}}
                     colDef={define.userRoleGroup.colDef}
@@ -110,15 +117,10 @@ const UserRoles = () => {
                     onSelectionChanged={onSelectionChanged}
                 />
             </Paper>
-            <Paper elevation={3} className={classes.rightContent}>
+            <Paper elevation={3} className="gridTableEditorContainer">
                 {/* Function List */}
                 <div className={classes.functionContent}>
-                    <Typography
-                        variant="h5"
-                        gutterBottom
-                        component="div"
-                        className={classes.sectionHeader}
-                    >
+                    <Typography variant="h5" gutterBottom component="div" className="header">
                         Function
                     </Typography>
                     <List sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: '8px' }}>
@@ -153,7 +155,7 @@ const UserRoles = () => {
                     </List>
                 </div>
             </Paper>
-        </div>
+        </Stack>
     );
 };
 

@@ -14,7 +14,6 @@ export function createStore() {
             authStore: {
                 isAuth: !!user,
                 functionList: user?.FunctionList,
-                accessToken: user?.AccessToken,
                 userId: user?.UserId,
                 userName: user?.UserName || undefined,
             },

@@ -9,7 +9,6 @@ import { CompositeField } from '../../../interface/composite-field';
 import { DocumentData } from '../../../interface/document-data';
 import { FilterCondition } from '../../../interface/selection-field';
 import { fieldArrayContainer } from '../../../styles/report/style';
-import { generateUUID } from '../../../utils/general';
 import PDFCompositeField from '../PDFCompositeField/PDFCompositeField';
 import PDFField from '../PDFField/PDFField';
 
@@ -38,9 +37,10 @@ const PDFArrayField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Pr
                 }}
             >
                 {valueList.map((value, idx) => {
+                    const key = `${templateField.id}_${idx}`;
                     return (
                         <PDFCompositeField
-                            key={generateUUID()}
+                            key={key}
                             field={
                                 {
                                     ...templateField,
@@ -64,9 +64,10 @@ const PDFArrayField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Pr
         return (
             <>
                 {valueList.map((value, idx) => {
+                    const key = `${templateField.id}_${idx}`;
                     return (
                         <PDFField
-                            key={generateUUID()}
+                            key={key}
                             field={{
                                 ...templateField,
                                 label: `${templateField.label} ${idx + 1}`,

@@ -34,12 +34,13 @@ function LoginStatus() {
     };
 
     const onQuery = useCallback(() => {
-        fetchLoginStatus().subscribe({
+        const subscription = fetchLoginStatus().subscribe({
             next: (res) => setRowData(res.data),
             error: (err) => {
                 setNotification(MessageType.Error, err.response?.data.Message || err.message);
             },
         });
+        return () => subscription?.unsubscribe();
     }, [setNotification, setRowData]);
 
     const onLogoutUser = useCallback(

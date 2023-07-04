@@ -1,13 +1,36 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 
-import { RequestCollector } from './request-collector';
 import { LoginResult, RefreshTokenResult } from '../interface/auth';
 import { Environment } from '../interface/environment';
 import ConfigService from '../service/config-service';
+import LocalStorageService from '../service/local-storage-service';
 import { createObservable } from '../utils/axios-observable';
-import { delay } from '../utils/general';
 
 let axiosIns: AxiosInstance;
+let retryAxiosIns: AxiosInstance;
+
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+    retry?: boolean;
+}
+
+// 用於追蹤是否正在刷新令牌
+let isRefreshing = false;
+// 存放因等待令牌刷新而在隊列中的請求
+let failedQueue: any[] = [];
+
+// 處理等待隊列中的請求，如果有新的令牌則用新的令牌重新發送這些請求
+// 如果令牌刷新失敗則拒絕這些請求
+const processQueue = (error: AxiosError | null, token: string | null = null) => {
+    failedQueue.forEach((promise) => {
+        if (error) {
+            promise.reject(error);
+        } else {
+            promise.resolve(token);
+        }
+    });
+
+    failedQueue = [];
+};
 
 export const fetchAppConfig = async (): Promise<void> => {
     try {
@@ -23,6 +46,10 @@ export const fetchAppConfig = async (): Promise<void> => {
                 baseURL: config.ip_address,
                 withCredentials: true,
             });
+            retryAxiosIns = axios.create({
+                baseURL: config.ip_address,
+                withCredentials: true,
+            });
         }
     } catch (error) {
         console.error('Error fetching config:', error);
@@ -34,14 +61,7 @@ export function httpReq<T, D = any>() {
     return (config: D) => createObservable<T, D>(axiosIns, config);
 }
 
-const requestCollector = new RequestCollector();
-
-export const setupInterceptors = (
-    refreshToken: (result: RefreshTokenResult) => void,
-    removeAuth: () => void,
-) => {
-    requestCollector.registerRefreshToken(refreshToken);
-
+export const setupInterceptors = (removeAuth: () => void) => {
     axiosIns.interceptors.request.use((config) => {
         const newConfig = { ...config };
 
@@ -59,46 +79,60 @@ export const setupInterceptors = (
         async (res) => {
             return res;
         },
-        async (err: AxiosError) => {
-            const originalConfig = err?.config;
+        async (error: AxiosError) => {
+            const originalRequest = error?.config as CustomAxiosRequestConfig;
 
-            if (!originalConfig) return Promise.reject(err);
+            if (
+                originalRequest.url !== '/api/login' &&
+                error.response?.status === 401 &&
+                !originalRequest.retry
+            ) {
+                if (isRefreshing) {
+                    // 如果正在刷新令牌，則將請求放入等待隊列中
+                    return new Promise((resolve, reject) => {
+                        failedQueue.push({ resolve, reject });
+                    })
+                        .then((token) => {
+                            // 令牌刷新成功時用新的令牌重新發送請求
+                            originalRequest.headers.Authorization = `Bearer ${token}`;
+                            return axiosIns(originalRequest);
+                        })
+                        .catch((err) => {
+                            // 令牌刷新失敗時拒絕請求
+                            if (err.response?.status === 401) removeAuth();
+                            return Promise.reject(err);
+                        });
+                }
 
-            if (originalConfig.url !== '/auth/login' && err.response) {
-                // Access Token was expired
-                if (err.response.status === 401) {
-                    try {
-                        const requestIndex = await requestCollector.queueRequest();
-                        await delay(300);
-                        return await requestCollector.request(originalConfig, requestIndex);
-                    } catch (_error) {
-                        // requestCollector.request 再拿到401表示有錯誤，直接reject
-                        if ((_error as AxiosError).response?.status === 401) {
-                            removeAuth();
-                        }
+                originalRequest.retry = true;
+                isRefreshing = true;
+                const user = JSON.parse(<string>localStorage.getItem('user')) as LoginResult;
 
-                        requestCollector.clearRequest();
+                try {
+                    const res = await retryAxiosIns.post<RefreshTokenResult>(`api/refreshtoken`, {
+                        UserId: user?.UserId,
+                    });
 
-                        // requestCollector.request 拿到取消請求，直接reject
-                        if (axios.isCancel(_error)) {
-                            return Promise.reject(_error);
-                        }
-
-                        // requestCollector.request 拿到其他錯誤，清空requestCollector
-                        return Promise.reject(_error);
+                    if (res.data.AccessToken) {
+                        user.AccessToken = res.data.AccessToken;
+                        LocalStorageService.writeToLocalStorage<LoginResult>('user', user);
+                        axiosIns.defaults.headers.common.Authorization = `Bearer ${res.data.AccessToken}`;
+                        originalRequest.headers.Authorization = `Bearer ${res.data.AccessToken}`;
+                        processQueue(null, res.data.AccessToken);
+                        return await axiosIns(originalRequest);
                     }
-                }
-            }
 
-            // Skip login request
-            if (originalConfig.url !== 'api/login' && err.response) {
-                // Access Token was expired
-                if (err.response.status === 401) {
+                    processQueue(error, null);
                     removeAuth();
+                } catch (err: AxiosError | any) {
+                    processQueue(err, null);
+                    if (err.response?.status === 401) removeAuth();
+                } finally {
+                    isRefreshing = false;
                 }
             }
 
-            return Promise.reject(err);
+            return Promise.reject(error);
         },
     );
 };

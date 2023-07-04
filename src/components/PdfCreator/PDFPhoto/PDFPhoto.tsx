@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
 
 import { ReportImageData } from '../../../interface/document-data';
-import { generateUUID, isEmptyOrNil } from '../../../utils/general';
+import { isEmptyOrNil } from '../../../utils/general';
 import { styles } from '../styles/style';
 
 interface Props {
@@ -19,16 +19,11 @@ interface Props {
 const padding = 0.2;
 
 const PDFPhoto = ({ pdfStyle, imageList }: Props) => {
-    const [emptyImageList, setEmptyImageList] = useState<string[]>([]);
-
-    // 計算要填入多少空的位置
-    useEffect(() => {
-        if (imageList.length % pdfStyle.imagePerRow === 0) return;
+    const emptyImageList: string[] = [];
+    if (imageList.length % pdfStyle.imagePerRow !== 0) {
         const fillCount = pdfStyle.imagePerRow - (imageList.length % pdfStyle.imagePerRow);
-        const result: string[] = [];
-        for (let i = 0; i < fillCount; i++) result.push(generateUUID());
-        setEmptyImageList(result);
-    }, [imageList.length, pdfStyle.imagePerRow]);
+        for (let i = 0; i < fillCount; i++) emptyImageList.push(i.toString());
+    }
 
     const customSort = (a, b) => {
         if (a.MappingNumber === 0) return 1;
@@ -75,10 +70,10 @@ const PDFPhoto = ({ pdfStyle, imageList }: Props) => {
                     </ReactPDF.View>
                 );
             })}
-            {emptyImageList.map((uuid: string) => {
+            {emptyImageList.map((id: string) => {
                 return (
                     <ReactPDF.View
-                        key={uuid}
+                        key={id}
                         style={{
                             ...styles.imageContainer,
                             width: `${100 / pdfStyle.imagePerRow - padding * 2}%`,

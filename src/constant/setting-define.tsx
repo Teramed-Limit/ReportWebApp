@@ -1,5 +1,6 @@
 import React from 'react';
 
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -21,6 +22,20 @@ export const define = {
                 cellRendererParams: {
                     onClick: () => {},
                     icon: <EditIcon />,
+                },
+                pinned: 'left',
+            },
+            {
+                field: 'assignReport',
+                colId: 'assign__report',
+                headerName: '',
+                width: 45,
+                cellStyle: { padding: 0 },
+                cellRenderer: 'iconButtonRenderer',
+                cellRendererParams: {
+                    onClick: () => {},
+                    icon: <AssignmentIcon />,
+                    color: '#2e7d32',
                 },
                 pinned: 'left',
             },
@@ -338,12 +353,19 @@ export const define = {
             {
                 field: 'Summary',
                 headerName: 'Summary',
-                width: 400,
+                width: 300,
+            },
+            {
+                field: 'UserGroupList',
+                headerName: 'User Group',
+                minWidth: 300,
+                cellRenderer: 'chipRenderer',
+                flex: 1,
             },
             {
                 field: 'RoleList',
                 headerName: 'Role Group',
-                width: 200,
+                minWidth: 300,
                 cellRenderer: 'chipRenderer',
                 flex: 1,
             },
@@ -389,6 +411,17 @@ export const define = {
                         },
                         { id: 'SignatureUrl', label: 'Signature', type: 'ImageSelect' },
                         {
+                            id: 'UserGroupList',
+                            label: 'User Group',
+                            type: 'MultiSelect',
+                            optionSource: {
+                                type: 'http',
+                                source: 'usergroup',
+                                key: 'Name',
+                                labelKey: 'Name',
+                            },
+                        },
+                        {
                             id: 'RoleList',
                             label: 'Role Group',
                             type: 'MultiSelect',
@@ -404,39 +437,10 @@ export const define = {
             ],
         },
     },
-    doctorSignature: {
+    filterField: {
         colDef: [
-            {
-                field: 'userId',
-                headerName: 'User Id',
-                width: 250,
-            },
-            {
-                field: 'jobTitle',
-                headerName: 'Job Title',
-                width: 200,
-            },
-            {
-                field: 'title',
-                headerName: 'Title',
-                width: 80,
-            },
-            {
-                field: 'name',
-                headerName: 'Name',
-                width: 250,
-            },
-            {
-                field: 'summary',
-                headerName: 'Summary',
-                width: 250,
-            },
-            {
-                field: 'signatureUrl',
-                headerName: 'Signature',
-                width: 120,
-                cellRenderer: 'imageRowRenderer',
-            },
+            { field: 'Name', headerName: 'Name', width: 200 },
+            { field: 'Description', headerName: 'Description', width: 200, flex: 1 },
         ] as ColDef[],
         formDef: {
             sections: [
@@ -444,29 +448,162 @@ export const define = {
                     id: 'form',
                     fields: [
                         {
-                            id: 'userId',
-                            label: 'User Id',
+                            id: 'Name',
+                            label: 'Name',
                             type: 'Text',
                             isKey: true,
                             validate: { type: 'Required' },
                         },
                         {
-                            id: 'jobTitle',
-                            label: 'Job Title',
+                            id: 'Description',
+                            label: 'Description',
+                            type: 'Text',
+                        },
+                    ],
+                },
+            ],
+        },
+    },
+    filterFieldRule: {
+        colDef: [
+            { field: 'Field', headerName: 'Field', width: 200 },
+            { field: 'Operator', headerName: 'Operator', width: 200 },
+            { field: 'AndOr', headerName: 'AndOr', width: 200 },
+            {
+                field: 'BundleConditionStart',
+                headerName: 'Bundle Condition Start',
+                cellRenderer: 'checkboxRenderer',
+                width: 200,
+            },
+            {
+                field: 'BundleConditionEnd',
+                headerName: 'Bundle Condition End',
+                cellRenderer: 'checkboxRenderer',
+                width: 200,
+            },
+            { field: 'Value', headerName: 'Value', width: 200 },
+            { field: 'FieldFilterName', headerName: 'FieldFilterName', width: 200, hide: true },
+            { field: 'Id', headerName: 'Id', width: 200, hide: true },
+        ] as ColDef[],
+        formDef: {
+            sections: [
+                {
+                    id: 'form',
+                    fields: [
+                        {
+                            id: 'Field',
+                            label: 'Field',
+                            type: 'SingleSelect',
+                            validate: { type: 'Required' },
+                            optionSource: {
+                                type: 'static',
+                                source: 'FilterField',
+                                key: 'Value',
+                                labelKey: 'Label',
+                            },
+                        },
+                        {
+                            id: 'Operator',
+                            label: 'Operator',
+                            type: 'SingleSelect',
+                            validate: { type: 'Required' },
+                            optionSource: {
+                                type: 'static',
+                                source: 'FilterRuleOperator',
+                                key: 'Value',
+                                labelKey: 'Label',
+                            },
+                        },
+                        {
+                            id: 'AndOr',
+                            label: 'And/Or',
+                            type: 'SingleSelect',
+                            validate: { type: 'Required' },
+                            optionSource: {
+                                type: 'static',
+                                source: 'FilterRuleAndOr',
+                                key: 'Value',
+                                labelKey: 'Label',
+                            },
+                        },
+                        {
+                            id: 'BundleConditionStart',
+                            label: 'Bundle Condition Start',
+                            type: 'Checkbox',
+                        },
+                        {
+                            id: 'BundleConditionEnd',
+                            label: 'Bundle Condition End',
+                            type: 'Checkbox',
+                        },
+                        {
+                            id: 'Value',
+                            label: 'Value',
                             type: 'Text',
                         },
                         {
-                            id: 'title',
-                            label: 'Title',
+                            id: 'FieldFilterName',
+                            label: 'Field Filter',
                             type: 'Text',
+                            hide: true,
+                            validate: { type: 'Required' },
                         },
-                        { id: 'name', label: 'Name', type: 'Text', validate: { type: 'Required' } },
+                    ],
+                },
+            ],
+        },
+    },
+    userGroup: {
+        colDef: [
+            { field: 'Name', headerName: 'Name', width: 200 },
+            { field: 'Description', headerName: 'Description', width: 200 },
+            {
+                field: 'AccessAllStudies',
+                headerName: 'Access All Studies',
+                cellRenderer: 'checkboxRenderer',
+                width: 200,
+            },
+            {
+                field: 'Level',
+                headerName: 'Level',
+                width: 200,
+            },
+            { field: 'Department', headerName: 'Department', width: 200 },
+        ] as ColDef[],
+        formDef: {
+            sections: [
+                {
+                    id: 'form',
+                    fields: [
                         {
-                            id: 'summary',
-                            label: 'Summary',
+                            id: 'Name',
+                            label: 'Name',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                            isKey: true,
+                        },
+                        {
+                            id: 'Description',
+                            label: 'Description',
                             type: 'Text',
                         },
-                        { id: 'signatureUrl', label: 'Signature', type: 'ImageSelect' },
+                        {
+                            id: 'AccessAllStudies',
+                            label: 'AccessAllStudies',
+                            type: 'Checkbox',
+                        },
+                        {
+                            id: 'Level',
+                            label: 'Level',
+                            type: 'Number',
+                            validate: { type: 'Required' },
+                        },
+                        {
+                            id: 'Department',
+                            label: 'Department',
+                            type: 'Text',
+                            validate: { type: 'Required' },
+                        },
                     ],
                 },
             ],

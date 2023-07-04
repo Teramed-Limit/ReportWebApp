@@ -8,6 +8,7 @@ import { GridApi } from 'ag-grid-community/dist/lib/gridApi';
 import { format, sub } from 'date-fns';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
+import { Subscription } from 'rxjs';
 
 import { fetchHistoryStudy } from '../../axios/api';
 import GridTable from '../../components/GridTable/GridTable';
@@ -27,6 +28,7 @@ function History() {
     const { dispatchCellEvent, assignCellVisibility } = useGridColDef();
     const gridApiRef = useRef<GridApi | null>(null);
     const columnApiRef = useRef<ColumnApi | null>(null);
+    const subscription = useRef<Subscription | null>(null);
 
     const gridReady = (params: GridReadyEvent) => {
         gridApiRef.current = params.api;
@@ -34,8 +36,11 @@ function History() {
     };
 
     const onQuery = useCallback(() => {
+        // 取消上一次的訂閱
+        if (subscription.current) subscription.current?.unsubscribe();
+
         gridApiRef.current?.showLoadingOverlay();
-        fetchHistoryStudy({ params: {} }).subscribe({
+        subscription.current = fetchHistoryStudy({ params: {} }).subscribe({
             next: (res) => {
                 setRowData(res.data);
                 gridApiRef.current?.deselectAll();
@@ -45,14 +50,24 @@ function History() {
                 gridApiRef.current?.hideOverlay();
             },
         });
+
+        return () => {
+            subscription.current?.unsubscribe();
+            subscription.current = null;
+        };
     }, [setRowData]);
 
     const onRapidQuery = useCallback(
         (days: number) => {
+            // 取消上一次的訂閱
+            if (subscription.current) subscription.current?.unsubscribe();
+
             const today = format(new Date(), 'yyyyMMdd');
             const pastDay = format(sub(new Date(), { days }), 'yyyyMMdd');
             gridApiRef.current?.showLoadingOverlay();
-            fetchHistoryStudy({ StudyDate: `${pastDay}-${today}` }).subscribe({
+            subscription.current = fetchHistoryStudy({
+                StudyDate: `${pastDay}-${today}`,
+            }).subscribe({
                 next: (res) => {
                     setRowData(res.data);
                     gridApiRef.current?.deselectAll();
@@ -62,6 +77,11 @@ function History() {
                     gridApiRef.current?.hideOverlay();
                 },
             });
+
+            return () => {
+                subscription.current?.unsubscribe();
+                subscription.current = null;
+            };
         },
         [setRowData],
     );

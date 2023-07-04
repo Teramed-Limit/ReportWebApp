@@ -2,7 +2,7 @@ import { ModelProperties } from 'mobx-state-tree/dist/types/complex-types/model'
 import { IMaybe, IModelType, Instance, IOptionalIType, ISimpleType, IType } from 'mst-effect';
 import { Observable } from 'rxjs';
 
-import { LoginResult, RefreshTokenResult, UserAccountInfo } from '../../interface/auth';
+import { LoginResult, UserAccountInfo } from '../../interface/auth';
 import { RoleFunction } from '../../interface/user-role';
 
 interface AuthTypeOfModal extends ModelProperties {
@@ -14,7 +14,6 @@ interface AuthTypeOfModal extends ModelProperties {
     summary: IMaybe<ISimpleType<string>>;
     signatureUrl: IMaybe<ISimpleType<string>>;
     functionList: IType<RoleFunction[] | undefined | null, RoleFunction[], RoleFunction[]>;
-    accessToken: IMaybe<ISimpleType<string>>;
 }
 
 interface AuthTypeOfActions {
@@ -43,7 +42,6 @@ interface AuthTypeOfActions {
     ) => Promise<T | undefined>;
     registerAuth: (data: LoginResult) => void;
     removeAuth: () => void;
-    refreshToken: (data: RefreshTokenResult) => void;
 }
 
 export type AuthModal = AuthTypeOfModal & AuthTypeOfActions;

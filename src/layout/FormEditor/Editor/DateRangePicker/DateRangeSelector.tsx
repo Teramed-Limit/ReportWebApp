@@ -36,6 +36,7 @@ const DateRangeSelector = ({ field, value, onValueChanged }: Props) => {
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns}>
             <DateRangePicker
+                id={field.id}
                 startText="Start Date"
                 endText="End Date"
                 value={date}

@@ -79,7 +79,7 @@ const GridTableEditor = ({
 
     useEffect(() => {
         gridApi?.current?.onFilterChanged();
-    }, [filterRow, gridApi]);
+    }, [gridApi]);
 
     return (
         <>

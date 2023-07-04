@@ -1,100 +1,43 @@
-const generateTimeOptions = (length: number): any[] => {
-    const options = [] as { Name: string; Code: string }[];
-    for (let i = 0; i < length; i++) {
-        let value = i.toString();
-        while (value.length < 2) {
-            value = `0${value}`;
-        }
-        options.push({ Name: value, Code: i.toString() });
-    }
-    return options;
-};
-
-const minOptions = generateTimeOptions(60);
-const hourOptions = generateTimeOptions(24);
-const colonDetail = [
-    { Name: 'N/A', Code: '1' },
-    { Name: 'Normal', Code: '2' },
-];
-const yesNo = [
-    { Name: '1', Code: 'Yes' },
-    { Name: '0', Code: 'No' },
-];
-const adequateInadequate = [
-    { Name: '1', Code: 'Adequate' },
-    { Name: '0', Code: 'Inadequate' },
+const FilterRuleOperator = [
+    { Value: 'foEqual', Label: 'Equal' },
+    { Value: 'foNotEqual', Label: 'Not Equal' },
+    { Value: 'foLessThan', Label: 'Less Than' },
+    { Value: 'foLessThanOrEqual', Label: 'Less Than or Equal' },
+    { Value: 'foGreaterThan', Label: 'Greater Than' },
+    { Value: 'foGreaterThanOrEqual', Label: 'Greater Than or Equal' },
+    { Value: 'foContains', Label: 'Contains' },
+    { Value: 'foNotContains', Label: 'Not Contains' },
+    { Value: 'foStartsWith', Label: 'Starts With' },
+    { Value: 'fonNotStartsWith', Label: 'Not Starts With' },
+    { Value: 'foEndsWith', Label: 'Ends With' },
+    { Value: 'fonNotEndsWith', Label: 'Not Ends With' },
+    { Value: 'foIsNull', Label: 'Is Null' },
+    { Value: 'foIsNotNull', Label: 'Is Not Null' },
+    { Value: 'foIsEmpty', Label: 'Is Empty' },
 ];
 
-const modalityOptions = [
-    'AR',
-    'BI',
-    'BMD',
-    'EPS',
-    'CR',
-    'CT',
-    'DMS',
-    'DG',
-    'DX',
-    'ECG',
-    'EEG',
-    'EMG',
-    'EOG',
-    'ES',
-    'XC',
-    'GM',
-    'HD',
-    'IO',
-    'IVOCT',
-    'IVUS',
-    'KER',
-    'LS',
-    'LEN',
-    'MR',
-    'MG',
-    'NM',
-    'OAM',
-    'OPM',
-    'OP',
-    'OPT',
-    'OPTBSV',
-    'OPTENF',
-    'OPV',
-    'OCT',
-    'OSS',
-    'PX',
-    'POS',
-    'PT',
-    'RF',
-    'RG',
-    'RESP',
-    'RTIMAGE',
-    'SC',
-    'SM',
-    'SRF',
-    'TG',
-    'US',
-    'BDUS',
-    'VA',
-    'XA',
+const FilterRuleAndOr = [
+    { Value: 'coAnd', Label: 'And' },
+    { Value: 'coOr', Label: 'Or' },
 ];
 
-const generateDosageOptions = (length: number): any[] => {
-    const options = [] as { Name: string; Code: string }[];
-    for (let i = 0; i < length; i++) {
-        let value = i.toString();
-        value = `${value} mg`;
-        options.push({ Name: value, Code: i.toString() });
-    }
-    return options;
-};
-const dosage = generateDosageOptions(501);
+const FilterField = [
+    { Value: 'PatientId', Label: 'Patient Id' },
+    { Value: 'PatientsName', Label: 'Patients Name' },
+    { Value: 'PatientsAge', Label: 'Patients Age' },
+    { Value: 'AccessionNumber', Label: 'Accession Number' },
+    { Value: 'StudyDescription', Label: 'Study Description' },
+    { Value: 'Modality', Label: 'Modality' },
+    { Value: 'ReferringPhysiciansName', Label: 'Referring Physicians Name' },
+    { Value: 'NameofPhysiciansReading', Label: 'Name of Physicians Reading' },
+    { Value: 'PerformingPhysiciansName', Label: 'Performing Physicians Name' },
+    { Value: 'Author', Label: 'Author' },
+    { Value: 'ReportTemplate', Label: 'Report Template' },
+    { Value: 'ReportStatus', Label: 'Report Status' },
+];
 
 export const staticOptionType = {
-    Modality: modalityOptions,
-    Min: minOptions,
-    Hour: hourOptions,
-    ColonDetail: colonDetail,
-    AdequateInadequate: adequateInadequate,
-    YesNo: yesNo,
-    Dosage: dosage,
+    FilterRuleOperator,
+    FilterRuleAndOr,
+    FilterField,
 };

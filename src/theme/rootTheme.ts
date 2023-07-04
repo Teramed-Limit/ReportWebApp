@@ -135,6 +135,11 @@ export const rootTheme = createTheme({
             defaultProps: {
                 disableTouchRipple: true,
             },
+            styleOverrides: {
+                root: {
+                    textTransform: 'none',
+                },
+            },
         },
         MuiPaper: {
             styleOverrides: {

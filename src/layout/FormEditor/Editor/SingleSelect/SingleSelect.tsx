@@ -50,6 +50,7 @@ const SingleSelect = ({
         <>
             {options.length > 0 && (
                 <TextField
+                    id={field.id}
                     disabled={readOnly}
                     autoFocus={autoFocus}
                     fullWidth

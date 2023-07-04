@@ -1,0 +1,21 @@
+.gridTableEditorContainer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow: auto;
+    padding: 8px;
+
+    .header {
+        display: flex;
+        align-items: center;
+
+        &:before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            margin-right: 8px;
+            background-color: #71d2de;
+        }
+    }
+}

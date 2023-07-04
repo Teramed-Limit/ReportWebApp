@@ -57,8 +57,8 @@ interface Props {
     // following restapi
     // Create(Post) : {apiPath}/{identityId} e.g. api/role/name
     // Read(Get)   : {apiPath}/{identityId} e.g. api/role/name
-    // Update(Post) : {apiPath}/{identityId}/{row identityId of value} e.g. api/role/name/admin
-    // Delete(Delete) : {apiPath}/{identityId}/{row identityId of value} e.g. api/role/name/admin
+    // Update(Put) : {apiPath}/{row identityId of value} e.g. api/role/admin
+    // Delete(Delete) : {apiPath}/{row identityId of value} e.g. api/role/admin
     // each row of unique id and apiPath CRUD
     identityId: string;
     // use `subIdentityId` if `identityId` is not
@@ -95,8 +95,8 @@ export const useGridTable = ({
     const [rowData, setRowData] = useState(initRowData || []);
     const { openNotification: setNotification } = useContext(NotificationContext);
 
-    // get initial rowdata from api
-    const getRowData = useCallback(() => {
+    // use prop `enable` to control whether to get row data when the component renders
+    useEffect(() => {
         // data from parent
         if (initRowData) {
             setRowData(initRowData);
@@ -118,13 +118,8 @@ export const useGridTable = ({
                 setNotification(MessageType.Error, err.response?.data.Message || err.message);
             },
         });
-        return () => subscription.unsubscribe();
+        return () => subscription?.unsubscribe();
     }, [apiPath, externalGetRowData, initRowData, setNotification]);
-
-    // use prop `enable` to control whether to get row data when the component renders
-    useEffect(() => {
-        getRowData();
-    }, [getRowData]);
 
     // delete row api
     const deleteRow = useCallback(
@@ -133,7 +128,7 @@ export const useGridTable = ({
             const id = cellRendererParams.data[identityId];
             const subscription = httpReq<any>()({
                 method: 'delete',
-                url: `api/${apiPath}/${identityId}/${id}`,
+                url: `api/${apiPath}/${id}`,
             }).subscribe({
                 next: () => {
                     gridApi?.current?.applyTransaction({ remove: [cellRendererParams.data] });
@@ -158,7 +153,7 @@ export const useGridTable = ({
             gridApi?.current?.showLoadingOverlay();
             const subscription = httpReq<any>()({
                 method: 'post',
-                url: `api/${apiPath}/${identityId}`,
+                url: `api/${apiPath}`,
                 data: formData,
             }).subscribe({
                 next: () => {
@@ -176,7 +171,7 @@ export const useGridTable = ({
 
             return () => subscription.unsubscribe();
         },
-        [addCallBack, apiPath, identityId, setModal, setNotification],
+        [addCallBack, apiPath, setModal, setNotification],
     );
 
     // update row api
@@ -184,8 +179,8 @@ export const useGridTable = ({
         (formData) => {
             gridApi?.current?.showLoadingOverlay();
             const subscription = httpReq<any>()({
-                method: 'post',
-                url: `api/${apiPath}/${identityId}/${formData[identityId]}`,
+                method: 'put',
+                url: `api/${apiPath}/${formData[identityId]}`,
                 data: formData,
             }).subscribe({
                 next: () => {

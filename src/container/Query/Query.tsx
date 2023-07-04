@@ -17,6 +17,7 @@ import { format, sub } from 'date-fns';
 import { observer } from 'mobx-react';
 import { useHistory } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
+import { Subscription } from 'rxjs';
 
 import classes from './Query.module.scss';
 import {
@@ -29,15 +30,18 @@ import { fetchStudy } from '../../axios/api';
 import GridTable from '../../components/GridTable/GridTable';
 import { define } from '../../constant/setting-define';
 import { ModalContext } from '../../context/modal-context';
+import { NotificationContext } from '../../context/notification-context';
 import { useGridColDef } from '../../hooks/useGridColDef';
 import { useRoleFunctionAvailable } from '../../hooks/useRoleFunctionAvailable';
 import { StudyData } from '../../interface/study-data';
 import ConfigService from '../../service/config-service';
 import { generateUUID, isEmptyOrNil } from '../../utils/general';
+import AssignStudyReportModal from '../Modals/AssignStudyReportModal/AssignStudyReportModal';
 import DeleteStudyProtectorModal from '../Modals/DeleteStudyProtectorModal/DeleteStudyProtectorModal';
 
 const Query: React.FC = () => {
     const history = useHistory();
+    const { setErrorNotification } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
     const [studyInstanceUid, setStudyInstanceUid] = useState('');
     const [rowData, setRowData] = useRecoilState(queryRowDataState);
@@ -53,6 +57,7 @@ const Query: React.FC = () => {
     const gridApiRef = useRef<GridApi | null>(null);
     const columnApiRef = useRef<ColumnApi | null>(null);
     const isFirstRender = useRef(false);
+    const subscription = useRef<Subscription | null>(null);
 
     const gridReady = (params: GridReadyEvent) => {
         gridApiRef.current = params.api;
@@ -78,22 +83,32 @@ const Query: React.FC = () => {
 
     const onRapidQuery = useCallback(
         (days: number) => {
+            // 取消上一次的訂閱
+            if (subscription.current) subscription.current?.unsubscribe();
+
             setFilterDate(days);
             const today = format(new Date(), 'yyyyMMdd');
             const pastDay = format(sub(new Date(), { days }), 'yyyyMMdd');
             gridApiRef.current?.showLoadingOverlay();
-            fetchStudy({ StudyDate: `${pastDay}-${today}` }).subscribe({
+            subscription.current = fetchStudy({ StudyDate: `${pastDay}-${today}` }).subscribe({
                 next: (res) => {
                     setRowData(res.data);
                     gridApiRef.current?.deselectAll();
                     gridApiRef.current?.hideOverlay();
                 },
-                error: () => {
+                error: (err) => {
+                    setRowData([]);
                     gridApiRef.current?.hideOverlay();
+                    setErrorNotification(err.response?.data.Message || err.message);
                 },
             });
+
+            return () => {
+                subscription.current?.unsubscribe();
+                subscription.current = null;
+            };
         },
-        [setFilterDate, setRowData],
+        [setErrorNotification, setFilterDate, setRowData],
     );
 
     const onNavigateReport = useCallback(
@@ -103,6 +118,13 @@ const Query: React.FC = () => {
             });
         },
         [history],
+    );
+
+    const onAssignReport = useCallback(
+        (data: StudyData) => {
+            setModal(<AssignStudyReportModal studyInstanceUid={data.StudyInstanceUID} />);
+        },
+        [setModal],
     );
 
     const onDeleteReport = useCallback(
@@ -163,8 +185,17 @@ const Query: React.FC = () => {
         mutateColDef = assignCellVisibility(mutateColDef, 'navigateReport', checkAvailable);
         mutateColDef = dispatchCellEvent(mutateColDef, 'deleteReport', onDeleteReport);
         mutateColDef = assignCellVisibility(mutateColDef, 'deleteReport', checkAvailable);
+        mutateColDef = dispatchCellEvent(mutateColDef, 'assignReport', onAssignReport);
+        mutateColDef = assignCellVisibility(mutateColDef, 'assignReport', checkAvailable);
         setColDefs(mutateColDef);
-    }, [assignCellVisibility, checkAvailable, dispatchCellEvent, onDeleteReport, onNavigateReport]);
+    }, [
+        assignCellVisibility,
+        checkAvailable,
+        dispatchCellEvent,
+        onAssignReport,
+        onDeleteReport,
+        onNavigateReport,
+    ]);
 
     // Call api when row data is empty
     useEffect(() => {

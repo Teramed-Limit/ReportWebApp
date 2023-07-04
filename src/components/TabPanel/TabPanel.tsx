@@ -1,18 +1,30 @@
 import React from 'react';
 
-import classes from './TabPanel.module.scss';
+import { Stack } from '@mui/material';
 
 interface Props {
     children?: React.ReactNode;
     index: number;
     value: number;
+    direction?: 'row' | 'row-reverse' | 'column' | 'column-reverse';
 }
 
-function TabPanel({ children, value, index }: Props) {
+function TabPanel({ children, value, direction = 'column', index }: Props) {
     return (
-        <div className={classes.container} hidden={value !== index}>
+        <Stack
+            spacing={1}
+            p={1}
+            direction={direction}
+            sx={{
+                flex: '1 1 auto',
+                overflow: 'auto',
+                width: '100%',
+                height: '100%',
+                display: value !== index ? 'none' : 'flex',
+            }}
+        >
             {value === index ? children : null}
-        </div>
+        </Stack>
     );
 }
 

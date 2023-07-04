@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 
 import { httpReq } from './axios';
 import { AnyObject } from '../interface/anyObject';
+import { AssignedStudy } from '../interface/assigned-study';
 import { LoginResult, UserAccountInfo } from '../interface/auth';
 import { CodeList, CodeListMap } from '../interface/code-list';
 import { FormDefineMap, FormHistoryDefine } from '../interface/define';
@@ -20,7 +21,6 @@ import { ReportTimelineData } from '../interface/report-timeline';
 import { StudyData } from '../interface/study-data';
 import { SystemConfig } from '../interface/system-config';
 import { RoleFunction } from '../interface/user-role';
-import LocalStorageService from '../service/local-storage-service';
 
 export const checkIsRepeatLogin = (userId): Observable<AxiosResponse<boolean>> => {
     return httpReq<boolean>()({
@@ -40,14 +40,14 @@ export function login(userId: string, password: string): Observable<AxiosRespons
 export function getUserInfo(userId: string): Observable<AxiosResponse<UserAccountInfo>> {
     return httpReq<UserAccountInfo>()({
         method: 'get',
-        url: `api/account/userId/${userId}`,
+        url: `api/account/${userId}`,
     });
 }
 
 export function updateUserInfo(userId: string): Observable<AxiosResponse<any>> {
     return httpReq<any>()({
         method: 'post',
-        url: `api/account/userId/${userId}`,
+        url: `api/account/${userId}`,
     });
 }
 
@@ -72,13 +72,13 @@ export function logoutSpecifyUser(userId: string) {
     });
 }
 
-export function refreshToken(userId: string) {
-    return httpReq<LoginResult>()({
-        method: 'post',
-        url: `api/refreshtoken`,
-        data: { userId },
-    });
-}
+// export function refreshToken(userId: string) {
+//     return httpReq<LoginResult>()({
+//         method: 'post',
+//         url: `api/refreshtoken`,
+//         data: { userId },
+//     });
+// }
 
 export function fetchReport(studyInsUid: string): Observable<AxiosResponse<DocumentData>> {
     return httpReq<DocumentData>()({
@@ -311,13 +311,9 @@ export function deleteStudy(studyInstanceUid: string, password = ''): Observable
 }
 
 export function fetchStudy(queryParams: any): Observable<AxiosResponse<StudyData[]>> {
-    const functionList = LocalStorageService.getFromLocalStorage<LoginResult>('user')?.FunctionList;
-    const accessAllStudies = functionList?.find(
-        (item) => item.FunctionName === 'Access All Studies',
-    );
     return httpReq<StudyData[]>()({
         method: 'get',
-        url: `api/${accessAllStudies ? 'queryStudyWithNoLimit' : 'queryStudy'}`,
+        url: `api/queryStudy`,
         params: queryParams,
     });
 }
@@ -393,5 +389,27 @@ export function deleteFunction(
     return httpReq<RoleFunction[]>()({
         method: 'delete',
         url: `api/role/roleName/${roleName}/function/${functionName}`,
+    });
+}
+
+//
+export function fetchAssignedStudies(studyInstanceUID: string) {
+    return httpReq<AssignedStudy[]>()({
+        method: 'get',
+        url: `api/StudyAssignment/${studyInstanceUID}`,
+    });
+}
+
+export function assignedStudies(studyInstanceUID: string, userId: string) {
+    return httpReq<AssignedStudy[]>()({
+        method: 'post',
+        url: `api/StudyAssignment/${studyInstanceUID}/userId/${userId}`,
+    });
+}
+
+export function unAssignedStudies(studyInstanceUID: string, userId: string) {
+    return httpReq<AssignedStudy[]>()({
+        method: 'delete',
+        url: `api/StudyAssignment/${studyInstanceUID}/userId/${userId}`,
     });
 }

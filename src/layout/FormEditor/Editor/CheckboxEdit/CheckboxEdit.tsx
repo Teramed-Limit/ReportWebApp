@@ -7,9 +7,9 @@ import { FormField } from '../../../../interface/form-editor-define';
 
 interface Props {
     field: FormField;
-    value: number;
+    value: boolean;
     readOnly?: boolean;
-    onValueChanged: (value: number, fieldId: string) => void;
+    onValueChanged: (value: boolean, fieldId: string) => void;
 }
 
 const CheckboxEdit = ({ field, value, onValueChanged, readOnly = false }: Props) => {
@@ -18,11 +18,12 @@ const CheckboxEdit = ({ field, value, onValueChanged, readOnly = false }: Props)
             sx={{ margin: '0px' }}
             control={
                 <Checkbox
+                    id={field.id}
                     size="small"
                     disabled={readOnly}
-                    checked={value === 1}
+                    checked={value || false}
                     onChange={(e) => {
-                        onValueChanged(e.target.checked ? 1 : 0, field.id);
+                        onValueChanged(e.target.checked, field.id);
                     }}
                 />
             }

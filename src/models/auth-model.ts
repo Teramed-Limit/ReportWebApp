@@ -4,7 +4,7 @@ import { catchError, map, switchMap } from 'rxjs/operators';
 
 import { AuthTypeModal } from './model-type/auth-type-modal';
 import { checkIsRepeatLogin, getUserInfo, login, logout } from '../axios/api';
-import { LoginResult, RefreshTokenResult, UserAccountInfo } from '../interface/auth';
+import { LoginResult, UserAccountInfo } from '../interface/auth';
 import { RoleFunction } from '../interface/user-role';
 import LocalStorageService from '../service/local-storage-service';
 
@@ -17,7 +17,6 @@ export const AuthModel: AuthTypeModal = types
         summary: types.maybe(types.string),
         signatureUrl: types.maybe(types.string),
         functionList: types.frozen<RoleFunction[]>([]),
-        accessToken: types.maybe(types.string),
         isAuth: types.optional(types.boolean, false),
     })
     /* eslint-disable no-param-reassign */
@@ -25,7 +24,6 @@ export const AuthModel: AuthTypeModal = types
         const registerAuth = (data: LoginResult) => {
             self.isAuth = true;
             self.functionList = data.FunctionList;
-            self.accessToken = data.AccessToken;
             self.userId = data.UserId;
             self.userName = data?.UserName || undefined;
             self.title = data?.Title || undefined;
@@ -35,19 +33,9 @@ export const AuthModel: AuthTypeModal = types
             LocalStorageService.writeToLocalStorage('user', data);
         };
 
-        const refreshToken = (data: RefreshTokenResult) => {
-            self.accessToken = data.AccessToken;
-            const loginResult = LocalStorageService.getFromLocalStorage<LoginResult>('user');
-            if (loginResult) {
-                loginResult.AccessToken = data.AccessToken;
-                LocalStorageService.writeToLocalStorage('user', loginResult);
-            }
-        };
-
         const removeAuth = () => {
             self.isAuth = false;
             self.functionList = [];
-            self.accessToken = undefined;
             self.userId = undefined;
             self.userName = undefined;
             self.title = undefined;
@@ -127,7 +115,6 @@ export const AuthModel: AuthTypeModal = types
                 ),
             ),
             registerAuth,
-            refreshToken,
             removeAuth,
         };
     });
