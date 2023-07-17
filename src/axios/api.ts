@@ -6,7 +6,7 @@ import { AnyObject } from '../interface/anyObject';
 import { AssignedStudy } from '../interface/assigned-study';
 import { LoginResult, UserAccountInfo } from '../interface/auth';
 import { CodeList, CodeListMap } from '../interface/code-list';
-import { FormDefineMap, FormHistoryDefine } from '../interface/define';
+import { FormDefineDto, FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { Diagram } from '../interface/diagram';
 import { DocumentData } from '../interface/document-data';
 import {
@@ -113,6 +113,14 @@ export function fetchReportDefine(): Observable<AxiosResponse<FormDefineMap>> {
     });
 }
 
+export function saveReportDefine(formDefine: FormDefineDto): Observable<AxiosResponse<any>> {
+    return httpReq<any>()({
+        method: 'post',
+        url: `api/report/define`,
+        data: formDefine,
+    });
+}
+
 export function fetchReportHistoryDefine(
     studyInsUid: string,
     version: string,
@@ -120,6 +128,26 @@ export function fetchReportHistoryDefine(
     return httpReq<FormHistoryDefine>()({
         method: 'get',
         url: `api/report/define/studyInstanceUID/${studyInsUid}/version/${version}`,
+    });
+}
+
+export function addReportDefine(
+    reportType: string,
+    defineType: string,
+): Observable<AxiosResponse<AnyObject>> {
+    return httpReq<AnyObject>()({
+        method: 'post',
+        url: `api/report/define/reportType/${reportType}/defineType/${defineType}/newly`,
+    });
+}
+
+export function modifyReportDefine(
+    reportType: string,
+    defineType: string,
+): Observable<AxiosResponse<AnyObject>> {
+    return httpReq<AnyObject>()({
+        method: 'post',
+        url: `api/report/define/reportType/${reportType}/defineType/${defineType}`,
     });
 }
 

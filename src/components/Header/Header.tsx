@@ -8,6 +8,7 @@ import HistoryIcon from '@mui/icons-material/History';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
+import SummarizeIcon from '@mui/icons-material/Summarize';
 import { Avatar, ListItemText, Menu, MenuItem, Stack } from '@mui/material';
 import { deepOrange } from '@mui/material/colors';
 import ListItemIcon from '@mui/material/ListItemIcon';
@@ -96,6 +97,12 @@ const Header = () => {
                             </NavigationItem>
                         }
                     />
+                    <NavigationItem link="/report-generator">
+                        <Button id="btn__report-generator" color="black">
+                            <SummarizeIcon className={classes.iconButton} />
+                            Report Generator
+                        </Button>
+                    </NavigationItem>
                     <Button id="btn__logout" color="black" onClick={logout}>
                         <LogoutRoundedIcon className={classes.iconButton} />
                         Logout

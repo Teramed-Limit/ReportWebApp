@@ -28,7 +28,7 @@ interface Props {
 const PDFArrayField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Props) => {
     const compositeRenderer = (): JSX.Element => {
         const { templateField } = field;
-        const valueList = formData[field.id];
+        const valueList = formData[field.id] || [];
         return (
             <ReactPDF.View
                 style={{
@@ -36,7 +36,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Pr
                     ...{ flexDirection: field.orientation },
                 }}
             >
-                {valueList.map((value, idx) => {
+                {valueList?.map((value, idx) => {
                     const key = `${templateField.id}_${idx}`;
                     return (
                         <PDFCompositeField
@@ -63,7 +63,7 @@ const PDFArrayField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Pr
         const valueList = formData[field.id];
         return (
             <>
-                {valueList.map((value, idx) => {
+                {valueList?.map((value, idx) => {
                     const key = `${templateField.id}_${idx}`;
                     return (
                         <PDFField

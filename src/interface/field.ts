@@ -1,17 +1,17 @@
 import { Style } from '@react-pdf/types/style';
 
 import { Validate } from './validate';
+import { FormFieldType } from '../container/Report/field/field-type';
 
 export interface Field<T = any> {
     id: string;
     label?: string;
     defaultValue?: string;
     initMapping?: string;
-    type: string;
+    type: FormFieldType;
     size?: string;
     readOnly?: boolean;
     orientation: 'column' | 'row';
-    multiple?: boolean;
     buttonBar?: ButtonMeta[];
     suffix?: string;
     prefix?: string;
@@ -20,8 +20,6 @@ export interface Field<T = any> {
     hide?: boolean;
     hideLabel?: boolean;
     fromModal?: string;
-    maxLength?: number;
-    placeholder?: string;
     labelStyle?: Style;
     valueStyle?: Style;
     valueChangedEvent?: ValueChangedEvent<T>;

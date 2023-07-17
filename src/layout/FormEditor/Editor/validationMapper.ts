@@ -1,3 +1,4 @@
+import { ValidateType } from '../../../interface/validate';
 import { isEmptyOrNil } from '../../../utils/general';
 
 export type ValidateMethod = (value: any) => boolean;
@@ -7,7 +8,7 @@ interface IValidationMapper {
 }
 
 export const ValidationMapper: IValidationMapper = {
-    Required: (value: any) => !isEmptyOrNil(value),
+    [ValidateType.Required]: (value: any) => !isEmptyOrNil(value),
 };
 
 export const ValidationMessage = {

@@ -7,13 +7,24 @@ import { fetchReportDefine, fetchReportHistoryDefine } from '../axios/api';
 import { FormDefine, FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { DocumentData } from '../interface/document-data';
 import { Field } from '../interface/field';
+import { RepPage } from '../interface/report-generator/rep-page';
 import { RootService } from '../interface/root-service';
+import { isEmptyOrNil } from '../utils/general';
+
+const emptyHeaderFooter = (name) => ({
+    name,
+    width: 0,
+    height: 0,
+    components: {},
+});
 
 export const DefineModel: ReportDefineModal = types
     .model('define', {
         loading: types.optional(types.boolean, true),
         formDefineMap: types.frozen<FormDefineMap>({}),
         formDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
+        headerDefine: types.optional(types.frozen<RepPage>(), emptyHeaderFooter('header')),
+        footerDefine: types.optional(types.frozen<RepPage>(), emptyHeaderFooter('footer')),
         pdfDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
         normalizeFields: types.frozen<{ [props: string]: Field }>(),
     })
@@ -60,12 +71,17 @@ export const DefineModel: ReportDefineModal = types
             ),
             setFormDefine: (formData: DocumentData) => {
                 const { reportDefineService } = getEnv<RootService>(self);
-                const { formDefine, pdfDefine, fields } = reportDefineService.getFormDefine(
-                    formData?.ReportTemplate || 'Blank',
-                );
+                const { formDefine, pdfDefine, fields, headerDefine, footerDefine } =
+                    reportDefineService.getFormDefine(formData?.ReportTemplate || 'Blank');
 
                 self.formDefine = formDefine;
                 self.pdfDefine = pdfDefine;
+                self.headerDefine = isEmptyOrNil(headerDefine)
+                    ? emptyHeaderFooter('header')
+                    : headerDefine;
+                self.footerDefine = isEmptyOrNil(footerDefine)
+                    ? emptyHeaderFooter('footer')
+                    : footerDefine;
                 self.normalizeFields = fields;
             },
         };

@@ -3,11 +3,11 @@ import React, { useEffect } from 'react';
 import { observer } from 'mobx-react';
 
 import classes from './Main.module.scss';
-import AppRoutes from '../../App-route';
 import Block from '../../components/Block/Block';
 import Header from '../../components/Header/Header';
 import Spinner from '../../components/Spinner/Spinner';
 import { useOptionStore, useReportDefineStore, useStore } from '../../models/useStore';
+import AppRoutes from '../../route/App-route';
 
 const Main = () => {
     const { loading } = useStore();

@@ -5,14 +5,14 @@ import { Box, Button, IconButton } from '@mui/material';
 
 import classes from './ConditionQuerier.module.scss';
 import { ModalContext } from '../../context/modal-context';
-import { Field } from '../../interface/field';
+import { FormField, FormFieldEditorType } from '../../interface/form-editor-define';
 import { TransferItem } from '../../interface/transfer-item';
 import { EditorDefaultValue, EditorMapper } from '../../layout/FormEditor/Editor/editorMapper';
 import Modal from '../Modal/Modal';
 import TransferList from '../TransferList/TransferList';
 
 interface Props {
-    fields: Field[];
+    fields: FormField[];
     defaultQueryFields: string[];
     queryPairData: any;
     onQuery: () => void;
@@ -87,7 +87,10 @@ const ConditionQuerier = ({
                 const value = queryPairData[field.id] || EditorDefaultValue[field.type];
 
                 return (
-                    <Box key={field.id} sx={{ flex: field.type === 'DataRange' ? 2 : 1 }}>
+                    <Box
+                        key={field.id}
+                        sx={{ flex: field.type === FormFieldEditorType.DataRange ? 2 : 1 }}
+                    >
                         <RenderComponent
                             field={field}
                             value={value}

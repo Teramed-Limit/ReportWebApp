@@ -6,6 +6,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { ColDef, ValueFormatterParams } from 'ag-grid-community/dist/lib/entities/colDef';
 
+import { FormEditorDef } from '../interface/form-editor-define';
+import { ValidateType } from '../interface/validate';
 import { dateFilterParams } from '../utils/ag-grid-utils';
 import { convertToDate, convertToDateTime, stringFormatDate } from '../utils/general';
 // eslint-disable react/react-in-jsx-scope
@@ -314,9 +316,13 @@ export const define = {
                             label: 'Role Name',
                             type: 'Text',
                             isKey: true,
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
-                        { id: 'Description', label: 'Description', type: 'Text' },
+                        {
+                            id: 'Description',
+                            label: 'Description',
+                            type: 'Text',
+                        },
                     ],
                 },
             ],
@@ -380,19 +386,19 @@ export const define = {
                             label: 'User Id',
                             type: 'Text',
                             isKey: true,
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
                         {
                             id: 'UserPassword',
                             label: 'Password',
                             type: 'Text',
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
                         {
                             id: 'DoctorEName',
                             label: 'User Name',
                             type: 'Text',
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
                         {
                             id: 'Title',
@@ -462,7 +468,7 @@ export const define = {
                     ],
                 },
             ],
-        },
+        } as FormEditorDef,
     },
     filterFieldRule: {
         colDef: [
@@ -551,7 +557,7 @@ export const define = {
                     ],
                 },
             ],
-        },
+        } as FormEditorDef,
     },
     userGroup: {
         colDef: [
@@ -607,7 +613,7 @@ export const define = {
                     ],
                 },
             ],
-        },
+        } as FormEditorDef,
     },
     codeList: {
         colDef: [
@@ -654,27 +660,27 @@ export const define = {
                             id: 'Label',
                             label: 'Label',
                             type: 'Text',
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
                         {
                             id: 'Value',
                             label: 'Value',
                             type: 'Text',
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
                         {
                             id: 'CodeName',
                             label: 'Code Name',
                             type: 'Text',
                             readOnly: true,
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
                         { id: 'ParentCodeValue', label: 'Parent Code Value', type: 'Text' },
                         {
                             id: 'OrderingIndex',
                             label: 'Ordering',
                             type: 'Number',
-                            validate: { type: 'Required' },
+                            validate: { type: ValidateType.Required },
                         },
                     ],
                 },

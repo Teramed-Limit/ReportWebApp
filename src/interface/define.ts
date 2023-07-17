@@ -8,6 +8,8 @@ export interface FormDefineDto {
     ReportType: string;
     FormDefine: string;
     PDFDefine: string;
+    Header: string;
+    Footer: string;
 }
 
 export interface FormHistoryDefine {
@@ -25,7 +27,6 @@ export interface Section {
     hide?: boolean;
     label?: string;
     type: string;
-    divider?: boolean;
     maxWidth?: string;
     isHeader?: boolean;
     subSections: SubSection[];

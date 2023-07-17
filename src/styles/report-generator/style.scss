@@ -1,0 +1,13 @@
+.focus {
+    border: 2px solid red;
+}
+
+.fieldset {
+    margin: 0;
+    background-color: transparent;
+
+    &:hover {
+        background-color: #f0fff9;
+        box-shadow: inset 0 0 0 1px rgb(48 56 69 / 20%);
+    }
+}

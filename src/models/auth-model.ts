@@ -19,6 +19,13 @@ export const AuthModel: AuthTypeModal = types
         functionList: types.frozen<RoleFunction[]>([]),
         isAuth: types.optional(types.boolean, false),
     })
+    .views((self) => {
+        return {
+            get isAdmin() {
+                return self.userId?.toLowerCase() === 'admin';
+            },
+        };
+    })
     /* eslint-disable no-param-reassign */
     .actions((self) => {
         const registerAuth = (data: LoginResult) => {

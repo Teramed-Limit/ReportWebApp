@@ -1,0 +1,32 @@
+.reportContainer {
+    display: flex;
+    flex-direction: row;
+    margin: 10px;
+    justify-content: center;
+    position: relative;
+}
+
+.reportLayout {
+    font-size: 14px;
+    max-width: 1200px;
+    min-width: 1200px;
+    margin: 0;
+    padding: 10px;
+    user-select: none;
+    border: 1px solid darkgrey;
+    box-shadow: 5px 5px 5px 1px #ccc;
+    border-radius: 5px;
+}
+
+.header {
+    position: sticky;
+    top: 0;
+    height: 60px;
+    background-color: #4082dd;
+    box-shadow: 6px 0 10px #48596233;
+    overflow: hidden;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+}

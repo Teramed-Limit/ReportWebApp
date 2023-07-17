@@ -14,17 +14,16 @@ export const registerFont = () => {
         family: 'Arial',
         fonts: [{ src: Arial }, { src: ArialBold, fontWeight: 'bold' }],
     });
-
-    // MicrosoftBlack
+    // Microsoft JhengHei
     Font.register({
-        family: 'MicrosoftBlack',
+        family: 'Microsoft JhengHei',
         fontStyle: 'normal',
         fontWeight: 'normal',
         fonts: [{ src: MicrosoftBlack }, { src: MicrosoftBlackBold, fontWeight: 'bold' }],
     });
     // NotoSansTC
     Font.register({
-        family: 'NotoSansTC',
+        family: 'Arial',
         fontStyle: 'normal',
         fontWeight: 'normal',
         fonts: [{ src: NotoSansTCRegular }, { src: NotoSansTCBold, fontWeight: 'bold' }],

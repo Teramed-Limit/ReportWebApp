@@ -125,3 +125,16 @@ export function camelize(str) {
 }
 
 export const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+export function deepCopy(obj) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
+export const readBase64 = (file): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(file);
+    });
+};

@@ -1,15 +1,11 @@
 import ReactPDF from '@react-pdf/renderer';
 
-// Common
-export const footerHeight = '92px';
-
 // Style
 export const styles = ReactPDF.StyleSheet.create({
     page: {
         flexDirection: 'column',
         backgroundColor: 'white',
-        paddingBottom: footerHeight,
-        fontFamily: 'NotoSansTC',
+        fontFamily: 'Arial',
     },
     pageNumber: {
         position: 'absolute',

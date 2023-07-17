@@ -5,3 +5,4 @@ export * from './material-ui/tooltip.scss';
 export * from './image.scss';
 export * from './ag-grid/ag-tooltip.scss';
 export * from './common.scss';
+export * from './report-generator/style.scss';

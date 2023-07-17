@@ -6,12 +6,16 @@ import { styles } from '../styles/style';
 
 interface Props {
     children: React.ReactNode;
-    pagePadding: number;
 }
 
-const PDFPage = ({ pagePadding, children }: Props) => {
+const PDFPage = ({ children }: Props) => {
     return (
-        <ReactPDF.Page size="A4" style={{ padding: `${pagePadding}px`, ...styles.page }}>
+        <ReactPDF.Page
+            size="A4"
+            style={{
+                ...styles.page,
+            }}
+        >
             {children}
         </ReactPDF.Page>
     );

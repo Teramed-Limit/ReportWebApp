@@ -32,7 +32,14 @@ const PDFPhoto = ({ pdfStyle, imageList }: Props) => {
     };
 
     return (
-        <ReactPDF.View style={styles.gallery} break={pdfStyle.imagePageBreak}>
+        <ReactPDF.View
+            style={{
+                ...styles.gallery,
+                paddingRight: pdfStyle.pagePadding,
+                paddingLeft: pdfStyle.pagePadding,
+            }}
+            break={pdfStyle.imagePageBreak}
+        >
             {imageList.sort(customSort).map((image: ReportImageData) => {
                 // 上標記的影像，或是原影像
                 const imageSrc = isEmptyOrNil(image?.EditedImageSrc)

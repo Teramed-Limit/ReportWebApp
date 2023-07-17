@@ -5,58 +5,63 @@ import { Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
+import { useRecoilValue } from 'recoil';
 import { Observable, Subject } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 
 import classes from './PdfCreator.module.scss';
-import PDFFooter from './PDFFooter/PDFFooter';
-import PDFHeader from './PDFHeader/PDFHeader';
 import PDFPage from './PDFPage/PDFPage';
 import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
+import PDFReportFooter from './PDFReportFooter/PDFReportFooter';
+import PDFReportHeader from './PDFReportHeader/PDFReportHeader';
+import { reportZoomState } from '../../atom/report-generator';
 import { httpReq } from '../../axios/axios';
 import useLocalStorage from '../../hooks/useLocalStorage';
-import { UserAccountInfo } from '../../interface/auth';
-import { Section } from '../../interface/define';
-import {
-    useOptionStore,
-    useReportDataStore,
-    useReportDefineStore,
-    useReportImageStore,
-} from '../../models/useStore';
+import { LoginResult, UserAccountInfo } from '../../interface/auth';
+import { FormDefine, Section } from '../../interface/define';
+import { RepPage } from '../../interface/report-generator/rep-page';
+import { useOptionStore, useReportDataStore, useReportImageStore } from '../../models/useStore';
 import ConfigService from '../../service/config-service';
+import LocalStorageService from '../../service/local-storage-service';
 import Block from '../Block/Block';
 import Spinner from '../Spinner/Spinner';
 
 interface Props {
     showToolbar?: boolean;
+    pdfDefine: FormDefine;
+    headerDefine: RepPage;
+    footerDefine: RepPage;
     onPdfRenderCallback?: (base64: string) => void;
 }
 
 export const padding = 0.2;
 
-const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
+const PdfCreator = ({
+    showToolbar = false,
+    pdfDefine,
+    headerDefine,
+    footerDefine,
+    onPdfRenderCallback,
+}: Props) => {
     // 創建一個 Subject，監控 PDF 渲染狀態
     const onPdfRenderSubject = useRef(new Subject<Blob>());
     const { formData, studyInsUID } = useReportDataStore();
     const { selectedImage, exportDiagramUrl } = useReportImageStore();
-    const { pdfDefine } = useReportDefineStore();
+
     const { getCodeList } = useOptionStore();
 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-    const [logoUrl, setLogoUrl] = useState<string | undefined>(undefined);
     const [userData, setUserData] = useState<UserAccountInfo | undefined>(undefined);
-    const [reportName] = useState<string>(
-        getCodeList('ReportTitle').find((x) => x.Label === formData.get('ReportTemplate'))?.Value ||
-            '',
-    );
 
     // pdf style config
     const [row, setRow] = useLocalStorage('imagePerRow', 4);
     const [pageBreak, setPageBreak] = useLocalStorage('imagePageBreak', false);
     const [fontSize, setFontSize] = useLocalStorage('fontSize', 10);
     const [pagePadding, setPagePadding] = useLocalStorage('pagePadding', 8);
+
+    const zoom = useRecoilValue(reportZoomState);
 
     const pdfStyle: {
         imagePerRow: number;
@@ -77,6 +82,30 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
         if (!renderProps?.blob) return;
         onPdfRenderSubject.current.next(renderProps.blob);
     }, []);
+
+    // Get signature and user data
+    useEffect(() => {
+        let userId = LocalStorageService.getFromLocalStorage<LoginResult>('user')?.UserId;
+        if (ConfigService.getSignatureCorrespondingField() !== '')
+            userId = formData.get(ConfigService.getSignatureCorrespondingField());
+
+        const subscription = httpReq<UserAccountInfo>()({
+            method: 'get',
+            url: `api/account/${userId}`,
+        })
+            .pipe(map((res) => res.data))
+            .subscribe({
+                next: (value) => {
+                    setUserData(value);
+                },
+                error: () => {
+                    setLoading(false);
+                    setError('Signature not found');
+                },
+            });
+
+        return () => subscription.unsubscribe();
+    }, [formData]);
 
     // 配合上方的onPdfRender，利用switchMap確保只會執行一次callback
     useEffect(() => {
@@ -108,46 +137,6 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
             subscription.unsubscribe();
         };
     }, [onPdfRenderCallback]);
-
-    // Get hospital logo
-    useEffect(() => {
-        const subscription = httpReq<string>()({
-            method: 'get',
-            url: 'api/logo',
-        })
-            .pipe(map((res) => res.data))
-            .subscribe({
-                next: (value) => {
-                    setLogoUrl(value);
-                },
-                error: () => {
-                    setLoading(false);
-                    setError('Logo not found');
-                },
-            });
-
-        return () => subscription.unsubscribe();
-    }, []);
-
-    // Get signature
-    useEffect(() => {
-        const subscription = httpReq<UserAccountInfo>()({
-            method: 'get',
-            url: `api/account/${formData.get(ConfigService.getSignatureCorrespondingField())}`,
-        })
-            .pipe(map((res) => res.data))
-            .subscribe({
-                next: (value) => {
-                    setUserData(value);
-                },
-                error: () => {
-                    setLoading(false);
-                    setError('Signature not found');
-                },
-            });
-
-        return () => subscription.unsubscribe();
-    }, [formData]);
 
     return (
         <Box
@@ -244,7 +233,7 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                     </Typography>
                 </>
             )}
-            {logoUrl && userData && (
+            {userData && (
                 <PDFViewer width="100%" height="100%" showToolbar={showToolbar}>
                     <Document
                         title={`${formData.get('PatientId')}_${formData.get('PatientsName')}`}
@@ -252,9 +241,14 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                         subject={studyInsUID}
                         onRender={onPdfRender}
                     >
-                        <PDFPage pagePadding={pagePadding}>
+                        <PDFPage>
                             {/* Header */}
-                            <PDFHeader logoUrl={logoUrl} reportName={reportName}>
+                            <PDFReportHeader
+                                formData={formData.toJSON()}
+                                userData={userData}
+                                page={headerDefine}
+                                zoom={zoom}
+                            >
                                 <PDFReportContent
                                     pdfStyle={pdfStyle}
                                     formSections={pdfDefine.sections.filter(
@@ -264,7 +258,8 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                     diagramUrl={diagramUrl}
                                     getOptions={getCodeList}
                                 />
-                            </PDFHeader>
+                            </PDFReportHeader>
+                            <ReactPDF.View />
                             {/* Body */}
                             <PDFReportContent
                                 pdfStyle={pdfStyle}
@@ -279,7 +274,12 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
                                 <PDFPhoto pdfStyle={pdfStyle} imageList={selectedImage} />
                             )}
                             {/* Footer */}
-                            <PDFFooter signatureData={userData} />
+                            <PDFReportFooter
+                                formData={formData.toJSON()}
+                                userData={userData}
+                                page={footerDefine}
+                                zoom={zoom}
+                            />
                         </PDFPage>
                     </Document>
                 </PDFViewer>

@@ -32,7 +32,9 @@ interface Props {
 
 const PDFReportContent = ({ pdfStyle, formSections, formData, diagramUrl, getOptions }: Props) => {
     return (
-        <ReactPDF.View>
+        <ReactPDF.View
+            style={{ paddingRight: pdfStyle.pagePadding, paddingLeft: pdfStyle.pagePadding }}
+        >
             <ReactPDF.View style={reportPage as Style}>
                 {formSections
                     .filter((section: Section) => !section.hide)
