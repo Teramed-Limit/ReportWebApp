@@ -38,7 +38,7 @@ export const styles = ReactPDF.StyleSheet.create({
         color: '#0070C0',
     },
     divider: {
-        margin: '2px 0',
+        marginTop: '4px',
         height: '1px',
         width: '100%',
         backgroundColor: 'black',
@@ -69,6 +69,7 @@ export const styles = ReactPDF.StyleSheet.create({
         margin: 'auto',
         objectFit: 'contain',
         objectPosition: 'left top',
+        bottom: -11,
     },
     signatureTextContainer: {
         display: 'flex',
@@ -76,12 +77,11 @@ export const styles = ReactPDF.StyleSheet.create({
     },
     signatureTitle: {
         display: 'flex',
-        flex: '1 1 40%',
         color: '#00B050',
         fontWeight: 'bold',
     },
     signatureContent: {
-        flex: '1 1 60%',
+        flex: '1 1 100%',
         display: 'flex',
     },
     signatureDoctor: {
