@@ -6,6 +6,7 @@ interface Props {
     id?: string;
     value: string;
     disabled?: boolean;
+    placeholder?: string;
     onValueChange: (str: string) => void;
     onKeyPress?: (event) => void;
     suffix?: string;
@@ -17,18 +18,20 @@ const BaseTextInput = ({
     id,
     value = '',
     disabled = false,
+    placeholder = '',
     onValueChange,
     onKeyPress = () => {},
-    suffix,
-    prefix,
+    suffix = '',
+    prefix = '',
     customClass,
 }: Props) => {
     return (
         <div className={classes.container}>
-            <span>{prefix}</span>
+            <span className={classes.span}>{prefix}&nbsp;</span>
             <input
                 autoComplete="off"
                 id={id}
+                placeholder={placeholder}
                 disabled={disabled}
                 className={customClass || classes[`text-input`]}
                 type="text"
@@ -38,7 +41,7 @@ const BaseTextInput = ({
                 onChange={(event) => onValueChange(event.target.value)}
                 onKeyPressCapture={(event) => onKeyPress(event)}
             />
-            <span>{suffix}</span>
+            <span className={classes.span}>&nbsp;{suffix}</span>
         </div>
     );
 };

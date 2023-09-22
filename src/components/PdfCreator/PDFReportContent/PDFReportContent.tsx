@@ -3,13 +3,13 @@ import React from 'react';
 import ReactPDF from '@react-pdf/renderer';
 import { Style } from '@react-pdf/types/style';
 
-import { FormFieldType } from '../../../container/Report/field/field-type';
-import { ArrayField } from '../../../interface/array-field';
-import { CompositeField } from '../../../interface/composite-field';
+import { FormFieldType } from '../../../container/Report/FieldComponent/field-type';
 import { Section, SubSection } from '../../../interface/define';
 import { DocumentData } from '../../../interface/document-data';
-import { Field } from '../../../interface/field';
-import { FilterCondition } from '../../../interface/selection-field';
+import { ArrayField } from '../../../interface/report-field/array-field';
+import { CompositeField } from '../../../interface/report-field/composite-field';
+import { Field } from '../../../interface/report-field/field';
+import { FilterCondition, OptionSource } from '../../../interface/report-field/selection-field';
 import { reportPage } from '../../../styles/report/style';
 import PDFArrayField from '../PDFArrayField/PDFArrayField';
 import PDFCompositeField from '../PDFCompositeField/PDFCompositeField';
@@ -18,26 +18,26 @@ import PDFReportSection from '../PDFReportSection/PDFReportSection';
 import PDFReportSubSection from '../PDFReportSubSection/PDFReportSubSection';
 
 interface Props {
-    pdfStyle: {
-        imagePerRow: number;
-        imagePageBreak: boolean;
-        fontSize: number;
-        pagePadding: number;
-    };
+    pagePadding: number;
     formSections: Section[];
     formData: DocumentData;
     diagramUrl: string;
-    getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
+    getOptions: (source: OptionSource<any>, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFReportContent = ({ pdfStyle, formSections, formData, diagramUrl, getOptions }: Props) => {
+const PDFReportContent = ({
+    pagePadding,
+    formSections,
+    formData,
+    diagramUrl,
+    getOptions,
+}: Props) => {
     return (
-        <ReactPDF.View
-            style={{ paddingRight: pdfStyle.pagePadding, paddingLeft: pdfStyle.pagePadding }}
-        >
+        <ReactPDF.View style={{ paddingHorizontal: pagePadding }}>
             <ReactPDF.View style={reportPage as Style}>
                 {formSections
                     .filter((section: Section) => !section.hide)
+                    .filter((section: Section) => !section.hideInPDF)
                     .map((section: Section) => (
                         <PDFReportSection key={section.id} section={section}>
                             {section.subSections.map((subSection: SubSection) => (
@@ -51,7 +51,6 @@ const PDFReportContent = ({ pdfStyle, formSections, formData, diagramUrl, getOpt
                                                         field={field as ArrayField}
                                                         formData={formData}
                                                         diagramUrl={diagramUrl}
-                                                        pdfStyle={pdfStyle}
                                                         getOptions={getOptions}
                                                     />
                                                 );
@@ -62,7 +61,6 @@ const PDFReportContent = ({ pdfStyle, formSections, formData, diagramUrl, getOpt
                                                         field={field as CompositeField}
                                                         formData={formData}
                                                         diagramUrl={diagramUrl}
-                                                        pdfStyle={pdfStyle}
                                                         getOptions={getOptions}
                                                     />
                                                 );
@@ -73,7 +71,6 @@ const PDFReportContent = ({ pdfStyle, formSections, formData, diagramUrl, getOpt
                                                         field={field}
                                                         value={formData[field.id]}
                                                         diagramUrl={diagramUrl}
-                                                        pdfStyle={pdfStyle}
                                                         getOptions={getOptions}
                                                     />
                                                 );

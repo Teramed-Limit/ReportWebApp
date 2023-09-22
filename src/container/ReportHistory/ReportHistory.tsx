@@ -17,16 +17,13 @@ import { NotificationContext } from '../../context/notification-context';
 import { Section } from '../../interface/define';
 import { MessageType } from '../../interface/notification';
 import { ReportStatusTimeline } from '../../interface/report-timeline';
-import ReportSection from '../../layout/ReportSection/ReportSection';
 import { useOptionStore, useReportDataStore, useReportDefineStore } from '../../models/useStore';
 import { reportPage } from '../../styles/report/style';
 import { convertToDateTime } from '../../utils/general';
 import Photo from '../Photo/Photo';
-import ReportHistoryActionBar from '../Report/report-action-bar/ReportHistoryActionBar/ReportHistoryActionBar';
-import {
-    ReportActionContext,
-    ReportActionProvider,
-} from '../Report/report-context/reportActionProvider';
+import ReportHistoryActionBar from '../Report/ActionBar/ReportHistoryActionBar/ReportHistoryActionBar';
+import { ReportActionContext, ReportActionProvider } from '../Report/Context/reportActionProvider';
+import ReportSection from '../Report/Layout/ReportSection/ReportSection';
 
 const ReportHistory = () => {
     const history = useHistory();

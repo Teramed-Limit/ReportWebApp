@@ -1,4 +1,5 @@
 import { MinValidator } from './rules/min-validator';
+import { NoneValidator } from './rules/none-validator';
 import { QualityBowelMinValidator } from './rules/quality-bowel-min-validator';
 import { QualityBowelRequiredValidator } from './rules/quality-bowel-required-validator';
 import { QualityBowelValidator } from './rules/quality-bowel-validator';
@@ -13,6 +14,7 @@ export class ValidationService {
     factoryMapper = new Map<string, Validator>();
 
     constructor() {
+        this.factoryMapper.set(ValidateType.None, new NoneValidator());
         this.factoryMapper.set(ValidateType.Required, new RequireValidator());
         this.factoryMapper.set(ValidateType.Min, new MinValidator());
         this.factoryMapper.set(ValidateType.QualityBowelScore, new QualityBowelValidator());

@@ -17,10 +17,9 @@ const ReportImageComponentEvent = (): {
             x: pos.x,
             y: pos.y,
             componentType: ReportComponentType.Image,
-            width: 100,
-            height: 100,
-            valueType: 'base64',
-            value: 'https://picsum.photos/200',
+            width: 50,
+            height: 50,
+            src: 'https://picsum.photos/200',
         };
     };
 

@@ -1,5 +1,6 @@
 import React, { CSSProperties, useState } from 'react';
 
+import { RepComponent } from '../../../../../interface/report-generator/component/rep-component';
 import { RepImageComponent } from '../../../../../interface/report-generator/component/rep-image-component';
 import { readBase64 } from '../../../../../utils/general';
 
@@ -13,7 +14,8 @@ interface Props {
     onMouseUp: (e: React.MouseEvent) => void;
     onMouseEnter: (e: React.MouseEvent) => void;
     onMouseLeave: (e: React.MouseEvent) => void;
-    onValueChanged: (uuid: string, value: string) => void;
+    onValueChanged: (uuid: string, attrPath: (string | number)[], value: string) => void;
+    onActive: (comp: RepComponent, deactivateOthers: boolean) => void;
 }
 
 const ReportImageComponent = React.forwardRef<HTMLImageElement, Props>(
@@ -29,14 +31,16 @@ const ReportImageComponent = React.forwardRef<HTMLImageElement, Props>(
             onMouseEnter,
             onMouseLeave,
             onValueChanged,
+            onActive,
         }: Props,
         ref,
     ) => {
         const hiddenFileInput = React.useRef<HTMLInputElement>(null);
-        const [imageSrc, setImageSrc] = useState<string>(component.value);
+        const [imageSrc, setImageSrc] = useState<string>(component.src);
 
         const uploadFile = (e) => {
             stopPropagation(e);
+            onActive(component, true);
             hiddenFileInput?.current?.click();
         };
 
@@ -45,7 +49,7 @@ const ReportImageComponent = React.forwardRef<HTMLImageElement, Props>(
             if (!fileSelected) return;
             readBase64(fileSelected).then((base64Str) => {
                 setImageSrc(base64Str);
-                onValueChanged(component.uuid, base64Str);
+                onValueChanged(component.uuid, ['src'], base64Str);
             });
         };
 
@@ -87,7 +91,12 @@ const ReportImageComponent = React.forwardRef<HTMLImageElement, Props>(
                     onClick={uploadFile}
                     onMouseDown={stopPropagation}
                     onMouseUp={stopPropagation}
-                    style={{ left: style.left, top: style.top, position: style.position }}
+                    style={{
+                        left: style.left,
+                        top: style.top,
+                        position: style.position,
+                        zIndex: 1000,
+                    }}
                 >
                     ...
                 </button>

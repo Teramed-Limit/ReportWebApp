@@ -11,19 +11,40 @@ interface Props {
     children?: React.ReactNode;
 }
 
-export const margin = 0.25;
-
 const PDFReportSection = ({ section, children }: Props) => {
     return (
-        <ReactPDF.View
-            style={{
-                ...(reportSection as Style),
-                maxWidth: section.maxWidth,
-                width: section.maxWidth,
-            }}
-        >
-            {children}
-        </ReactPDF.View>
+        <>
+            {section.label && (
+                <ReactPDF.View
+                    style={{
+                        flexDirection: 'row',
+                        marginHorizontal: '1pt',
+                        marginTop: '4pt',
+                        alignItems: 'center',
+                    }}
+                >
+                    <ReactPDF.View
+                        style={{
+                            width: '4pt',
+                            height: '12pt',
+                            marginRight: '2pt',
+                            backgroundColor: 'rgb(113, 210, 222)',
+                        }}
+                    ></ReactPDF.View>
+                    <ReactPDF.Text style={{ fontSize: '12pt' }}>{section.label}</ReactPDF.Text>
+                </ReactPDF.View>
+            )}
+            <ReactPDF.View
+                wrap={false}
+                style={{
+                    ...(reportSection as Style),
+                    maxWidth: section.maxWidth,
+                    width: section.maxWidth,
+                }}
+            >
+                {children}
+            </ReactPDF.View>
+        </>
     );
 };
 

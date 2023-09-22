@@ -5,9 +5,9 @@ import Button from '@mui/material/Button';
 import classes from './SectionAdder.module.scss';
 import BaseTextInput from '../../../../../components/UI/BaseTextInput/BaseTextInput';
 import { FormControl } from '../../../../../interface/form-state';
-import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';
 import { isEmptyOrNil } from '../../../../../utils/general';
-import FormSectionFieldLabel from '../../../../Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
+import InputField from '../../../../Report/Layout/InputField/InputField';
+import InputFieldLabel from '../../../../Report/Layout/InputFieldLabel/InputFieldLabel';
 
 interface Props {
     itemNameList: string[];
@@ -62,12 +62,22 @@ const SectionAdder = ({ itemNameList, isDragging = false, onAddSection }: Props)
     return (
         <div style={{ display: isDragging ? 'none' : '' }} className={classes.item}>
             {/* Label */}
-            <FormSectionFieldLabel id="sectionAdder" label="Name" hasValidation orientation="row" />
-            {/* Value */}
-            <FormSectionField
+            <InputFieldLabel
                 id="sectionAdder"
+                labelStyle={{
+                    width: '35%',
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    alignItems: 'flex-start',
+                }}
+                label="Name"
+                hasValidation
+            />
+            {/* Value */}
+            <InputField
+                id="sectionAdder"
+                valueStyle={{ width: '65%', fontSize: '24px' }}
                 readOnly={false}
-                orientation="row"
                 isDirty={inputState.isDirty}
                 isValid={inputState.isValid}
                 errorMessage={inputState.errorMessage}

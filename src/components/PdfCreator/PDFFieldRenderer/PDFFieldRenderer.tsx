@@ -1,26 +1,49 @@
 import React from 'react';
 
-import ReactPDF from '@react-pdf/renderer';
-import { Style } from '@react-pdf/types';
+import ReactPDF, { Font } from '@react-pdf/renderer';
 
 import { CheckboxCheckedIcon, CheckboxUnCheckedIcon } from '../../../assets';
-import { FormFieldType } from '../../../container/Report/field/field-type';
-import { CheckboxField } from '../../../interface/checkbox-field';
+import { FormFieldType } from '../../../container/Report/FieldComponent/field-type';
 import { CodeList } from '../../../interface/code-list';
-import { DiagramField } from '../../../interface/diagram-field';
-import { Field } from '../../../interface/field';
-import { RadioField } from '../../../interface/radio-field';
-import { FilterCondition, SelectionField } from '../../../interface/selection-field';
-import { isEmptyOrNil } from '../../../utils/general';
+import { CheckboxField } from '../../../interface/report-field/checkbox-field';
+import { DiagramField } from '../../../interface/report-field/diagram-field';
+import { Field } from '../../../interface/report-field/field';
+import { RadioField } from '../../../interface/report-field/radio-field';
+import {
+    FilterCondition,
+    OptionSource,
+    SelectionField,
+} from '../../../interface/report-field/selection-field';
+import { emptyBaseImage, isEmptyOrNil } from '../../../utils/general';
 import { styles } from '../styles/style';
 
-ReactPDF.Font.registerHyphenationCallback((word) => [word]);
+Font.registerHyphenationCallback((word: string) => {
+    // 判斷是否為中文字符
+    const isChinese = (char: string) => /[\u4e00-\u9fa5]/.test(char);
+
+    if (word.length === 1) {
+        return [word];
+    }
+
+    // 若字串中含有中文
+    if (Array.from(word).some(isChinese)) {
+        return Array.from(word)
+            .map((char) => [char, ''])
+            .reduce((arr, current) => {
+                arr.push(...current);
+                return arr;
+            }, []);
+    }
+
+    // 若字串全為英文，則不做斷字處理
+    return [word];
+});
 
 interface Props {
     field: Field;
     value: string;
     diagramUrl: string;
-    getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
+    getOptions: (source: OptionSource<any>, filterCondition?: FilterCondition | undefined) => any[];
 }
 
 const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
@@ -43,12 +66,12 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
         }
     };
 
-    const selection = (rendererField: SelectionField<any>, rendererValue) => {
+    const selection = (rendererField: SelectionField, rendererValue) => {
         if (rendererField.isMulti) {
             // 一律用Label顯示
             const labelList = (rendererValue as string[])?.map((optValue) => {
                 const foundOption: CodeList = getOptions(
-                    (rendererField as SelectionField<any>).optionSource.source,
+                    (rendererField as SelectionField).optionSource,
                 ).find((option: CodeList) => option.Value === optValue);
                 return foundOption?.Label || '';
             });
@@ -62,48 +85,44 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
 
         // 一律用Label顯示
         const foundOption: CodeList = getOptions(
-            (rendererField as SelectionField<any>).optionSource.source,
+            (rendererField as SelectionField).optionSource,
         ).find((option: CodeList) => option.Value === rendererValue);
         if (!foundOption) return text(rendererField, rendererValue);
         return text(rendererField, foundOption.Label);
     };
 
-    const radio = (rendererField, rendererValue) => {
-        const foundOption: CodeList = getOptions(
-            (rendererField as RadioField<any>).optionSource.source,
-        ).find((option: CodeList) => option.Label === rendererValue);
+    const radio = (rendererField: Field, rendererValue: string) => {
+        const foundOption: CodeList = getOptions((rendererField as RadioField).optionSource).find(
+            (option: CodeList) => option.Label === rendererValue,
+        );
 
         return text(rendererField, foundOption?.Label);
     };
 
-    const checkBox = (rendererField, rendererValue) => {
+    const checkBox = (rendererField: Field, rendererValue: string) => {
         return (
             <>
-                <ReactPDF.View style={{ marginLeft: '8px', alignItems: 'center' }}>
+                <ReactPDF.View style={{ ...styles.checkbox }}>
                     {rendererValue === '1' ? (
                         <ReactPDF.Image style={{ ...styles.icon }} src={CheckboxCheckedIcon} />
                     ) : (
                         <ReactPDF.Image style={{ ...styles.icon }} src={CheckboxUnCheckedIcon} />
                     )}
+                    {text(rendererField, (rendererField as CheckboxField).checkboxLabel)}
                 </ReactPDF.View>
-                {text(rendererField, (rendererField as CheckboxField).checkboxLabel)}
             </>
         );
     };
 
-    const textArea = (rendererField, rendererValue) => {
-        return <>{text(rendererField, rendererValue, { textAlign: 'justify' })}</>;
+    const textArea = (rendererField: Field, rendererValue: string) => {
+        return <>{text(rendererField, rendererValue)}</>;
     };
 
-    const text = (renderedField: Field, rendererValue: string, style?: Style | Style[]) => {
+    const text = (renderedField: Field, rendererValue: string) => {
+        if (isEmptyOrNil(rendererValue)) return <></>;
         return (
             <>
-                <ReactPDF.Text
-                    style={{
-                        ...(renderedField.valueStyle || {}),
-                        ...style,
-                    }}
-                >
+                <ReactPDF.Text style={{ ...(renderedField.valueStyle || {}) }}>
                     {!isEmptyOrNil(rendererValue) && !isEmptyOrNil(renderedField?.prefix) && (
                         <ReactPDF.Text>{renderedField?.prefix}&nbsp;</ReactPDF.Text>
                     )}
@@ -125,7 +144,7 @@ const PDFFieldRenderer = ({ field, value, diagramUrl, getOptions }: Props) => {
                     width: renderedField?.width ? renderedField.width : 'auto',
                     height: renderedField?.height ? renderedField.height : 'auto',
                 }}
-                src={diagramUrl}
+                src={diagramUrl || emptyBaseImage()}
             />
         );
     };

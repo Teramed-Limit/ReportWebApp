@@ -1,10 +1,10 @@
 import React from 'react';
 
-import TreeItem, { treeItemClasses, TreeItemProps } from '@mui/lab/TreeItem';
 import { Box } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { SvgIconProps } from '@mui/material/SvgIcon';
 import Typography from '@mui/material/Typography';
+import { TreeItem, treeItemClasses, TreeItemProps } from '@mui/x-tree-view/TreeItem';
 
 declare module 'react' {
     interface CSSProperties {

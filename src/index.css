@@ -19,3 +19,7 @@ html {
 iframe {
     border: none;
 }
+
+fieldset {
+    padding: 2px;
+}

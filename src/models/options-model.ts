@@ -4,32 +4,52 @@ import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
 import { OptionsModal } from './model-type/options-type-modal';
 import { fetchCodeList, fetchCodeListByCode } from '../axios/api';
+import { staticOptionType } from '../constant/static-options';
 import { CodeList, CodeListMap } from '../interface/code-list';
-import { FilterCondition } from '../interface/selection-field';
+import { FilterCondition, OptionSource } from '../interface/report-field/selection-field';
 
 export const OptionStoreModel: OptionsModal = types
     .model('optionStore')
     .props({
         loading: types.optional(types.boolean, true),
-        // optionMap: types.map(types.frozen<any[]>([])),
         codeListMap: types.map(types.union(types.frozen<CodeList>())),
     })
     /* eslint-disable no-param-reassign */
     .views((self) => {
+        const getCodeListByHttp = (
+            optionSource: OptionSource<any>,
+            filterCondition?: FilterCondition,
+        ) => {
+            const options = self.codeListMap.get(optionSource.source);
+            if (!options) return [];
+            if (filterCondition && filterCondition?.filterById) {
+                const { filterById } = filterCondition;
+                const { dataStore } = getRoot<IAnyModelType>(self);
+                const filterStr = (dataStore.formData.get(filterById) as string) || '';
+
+                return options.filter((option) => option.ParentCodeValue === filterStr);
+            }
+
+            return options;
+        };
+
+        const getCodeListByStatic = (optionSource: OptionSource<any>) => {
+            return staticOptionType[optionSource.source];
+        };
+
         return {
-            getCodeList(source: string, filterCondition?: FilterCondition): CodeList[] {
-                const options = self.codeListMap.get(source);
-                if (!options) return [];
-
-                if (filterCondition?.filterById) {
-                    const { filterById } = filterCondition;
-                    const { dataStore } = getRoot<IAnyModelType>(self);
-                    const filterStr = (dataStore.formData.get(filterById) as string) || '';
-
-                    return options.filter((option) => option.ParentCodeValue === filterStr);
+            getCodeList(
+                optionSource: OptionSource<any>,
+                filterCondition?: FilterCondition,
+            ): CodeList[] {
+                switch (optionSource.type) {
+                    case 'http':
+                        return getCodeListByHttp(optionSource, filterCondition);
+                    case 'static':
+                        return getCodeListByStatic(optionSource);
+                    default:
+                        return [];
                 }
-
-                return options;
             },
         };
     })
@@ -41,11 +61,11 @@ export const OptionStoreModel: OptionsModal = types
         };
 
         // eslint-disable-next-line require-yield,func-names
-        const getLatestCodeList = flow(function* (source: string) {
+        const getLatestCodeList = flow(function* (optionSource: OptionSource<any>) {
             try {
-                const res = yield fetchCodeListByCode(source).toPromise();
+                const res = yield fetchCodeListByCode(optionSource.source).toPromise();
                 const options = res?.data || [];
-                self.codeListMap.set(source, options);
+                self.codeListMap.set(optionSource.source, options);
             } catch (error) {
                 console.error(error);
             }

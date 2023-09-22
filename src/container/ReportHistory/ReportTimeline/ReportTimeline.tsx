@@ -96,7 +96,6 @@ const ReportTimeline = ({ reportTimeline }: Props) => {
                                         >
                                             {operationRecord.Author}
                                         </Typography>
-                                        {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                                         <Link
                                             underline="always"
                                             component="button"

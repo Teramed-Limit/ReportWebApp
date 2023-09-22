@@ -1,4 +1,4 @@
-import { FilterCondition, OptionSource } from './selection-field';
+import { FilterCondition, OptionSource } from './report-field/selection-field';
 import { Validate } from './validate';
 
 export interface FormEditorDef {

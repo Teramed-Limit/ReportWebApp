@@ -18,6 +18,13 @@ const OptionRetrieverMapper: { [props: string]: OptionRetriever } = {
                 url: `api/${source}`,
             }).pipe(map((res) => res.data)),
     },
+    customUrl: {
+        retrieve: (source) =>
+            httpReq<any>()({
+                method: 'get',
+                url: source,
+            }).pipe(map((res) => res.data)),
+    },
     static: {
         retrieve: (source) => of(staticOptionType[source]),
     },

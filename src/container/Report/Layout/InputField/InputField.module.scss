@@ -1,0 +1,52 @@
+.input-field-container {
+    border: 1px solid #babfc7;
+    background-color: white;
+
+    &.disabled {
+        background-color: rgb(242, 242, 242);
+    }
+
+    &.readonly {
+        border: 1px solid transparent !important;
+        background-color: transparent !important;
+    }
+
+    &:hover {
+        background-color: rgba(169, 202, 235, 0.15);
+    }
+
+    &.noBorder {
+        border-color: transparent !important;
+    }
+
+    &.invalid {
+        background-color: #f7e9e9 !important;
+        border-color: red !important;
+    }
+
+    &:focus-within {
+        border-color: #4c8ff8;
+        outline: none;
+        z-index: 1;
+    }
+}
+
+.field-base {
+    min-height: 28px;
+    padding: 2px;
+    cursor: text;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.requiredStar:after {
+    content: '*';
+    color: red;
+}
+
+.inline {
+    display: inline;
+    cursor: help;
+}

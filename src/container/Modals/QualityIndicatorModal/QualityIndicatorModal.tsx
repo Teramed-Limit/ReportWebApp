@@ -6,8 +6,8 @@ import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
 import { Section } from '../../../interface/define';
-import ReportSection from '../../../layout/ReportSection/ReportSection';
 import { useReportDataStore, useReportDefineStore } from '../../../models/useStore';
+import ReportSection from '../../Report/Layout/ReportSection/ReportSection';
 import classes from '../../Report/Report.module.scss';
 
 const DialogContext = React.createContext<{ [propName: string]: (actionParams) => void }>({});

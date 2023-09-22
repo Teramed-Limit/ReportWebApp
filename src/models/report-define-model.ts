@@ -6,26 +6,20 @@ import { ReportDefineModal } from './model-type/report-define-type-modal';
 import { fetchReportDefine, fetchReportHistoryDefine } from '../axios/api';
 import { FormDefine, FormDefineMap, FormHistoryDefine } from '../interface/define';
 import { DocumentData } from '../interface/document-data';
-import { Field } from '../interface/field';
+import { Field } from '../interface/report-field/field';
 import { RepPage } from '../interface/report-generator/rep-page';
 import { RootService } from '../interface/root-service';
+import { initRepPage } from '../logic/report-define/report-define-service';
 import { isEmptyOrNil } from '../utils/general';
-
-const emptyHeaderFooter = (name) => ({
-    name,
-    width: 0,
-    height: 0,
-    components: {},
-});
 
 export const DefineModel: ReportDefineModal = types
     .model('define', {
         loading: types.optional(types.boolean, true),
         formDefineMap: types.frozen<FormDefineMap>({}),
         formDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
-        headerDefine: types.optional(types.frozen<RepPage>(), emptyHeaderFooter('header')),
-        footerDefine: types.optional(types.frozen<RepPage>(), emptyHeaderFooter('footer')),
-        pdfDefine: types.optional(types.frozen<FormDefine>(), { sections: [] }),
+        imageDefine: types.optional(types.frozen<Field[]>(), []),
+        headerDefine: types.optional(types.frozen<RepPage>(), initRepPage('header')),
+        footerDefine: types.optional(types.frozen<RepPage>(), initRepPage('footer')),
         normalizeFields: types.frozen<{ [props: string]: Field }>(),
     })
     /* eslint-disable no-param-reassign */
@@ -41,7 +35,6 @@ export const DefineModel: ReportDefineModal = types
         const fetchHistoryDefineSuccess = (res: AxiosResponse<FormHistoryDefine>) => {
             self.loading = false;
             self.formDefine = JSON.parse(res.data.ReportDefine) as FormDefine;
-            self.pdfDefine = JSON.parse(res.data.PDFDefine) as FormDefine;
         };
 
         return {
@@ -71,16 +64,16 @@ export const DefineModel: ReportDefineModal = types
             ),
             setFormDefine: (formData: DocumentData) => {
                 const { reportDefineService } = getEnv<RootService>(self);
-                const { formDefine, pdfDefine, fields, headerDefine, footerDefine } =
+                const { formDefine, imageDefine, fields, headerDefine, footerDefine } =
                     reportDefineService.getFormDefine(formData?.ReportTemplate || 'Blank');
 
                 self.formDefine = formDefine;
-                self.pdfDefine = pdfDefine;
+                self.imageDefine = imageDefine;
                 self.headerDefine = isEmptyOrNil(headerDefine)
-                    ? emptyHeaderFooter('header')
+                    ? initRepPage('header')
                     : headerDefine;
                 self.footerDefine = isEmptyOrNil(footerDefine)
-                    ? emptyHeaderFooter('footer')
+                    ? initRepPage('footer')
                     : footerDefine;
                 self.normalizeFields = fields;
             },

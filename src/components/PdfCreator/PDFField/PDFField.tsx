@@ -1,11 +1,9 @@
 import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
-import { Style } from '@react-pdf/types/style';
 
-import { Field } from '../../../interface/field';
-import { FilterCondition } from '../../../interface/selection-field';
-import { fieldFlex, fieldSectionValue } from '../../../styles/report/style';
+import { Field } from '../../../interface/report-field/field';
+import { FilterCondition, OptionSource } from '../../../interface/report-field/selection-field';
 import PDFFieldContainer from '../PDFFieldContainer/PDFFieldContainer';
 import PDFFieldLabel from '../PDFFieldLabel/PDFFieldLabel';
 import PDFFieldRenderer from '../PDFFieldRenderer/PDFFieldRenderer';
@@ -14,25 +12,21 @@ interface Props {
     field: Field;
     value: string;
     diagramUrl: string;
-    pdfStyle: {
-        imagePerRow: number;
-        imagePageBreak: boolean;
-        fontSize: number;
-        pagePadding: number;
-    };
-    getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
+    getOptions: (source: OptionSource<any>, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFField = ({ field, value, diagramUrl, pdfStyle, getOptions }: Props) => {
+const PDFField = ({ field, value, diagramUrl, getOptions }: Props) => {
     return (
-        <PDFFieldContainer orientation={field.orientation} pdfStyle={pdfStyle}>
+        <PDFFieldContainer orientation={field.orientation}>
             {/* Label */}
             <PDFFieldLabel field={field} />
             {/* Value */}
             <ReactPDF.View
                 style={{
-                    ...(fieldSectionValue as Style),
-                    ...(fieldFlex.value[field.orientation] as Style),
+                    width:
+                        field.orientation === 'column'
+                            ? '100%'
+                            : `calc(100% - ${field.labelWidth || '35%'})`,
                 }}
             >
                 <PDFFieldRenderer

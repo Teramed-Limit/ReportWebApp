@@ -6,7 +6,7 @@ import Item from './Item/Item';
 import classes from './QualityBowelScore.module.scss';
 import RadioGroup from './RadioGroup/RadioGroup';
 import { ColonQualityA, ColonQualityB, ColonQualityC, ColonQualityD } from '../../assets';
-import { Field } from '../../interface/field';
+import { Field } from '../../interface/report-field/field';
 import { useReportDataStore } from '../../models/useStore';
 import Button from '../UI/Button/Button';
 

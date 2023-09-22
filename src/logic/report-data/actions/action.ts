@@ -1,5 +1,5 @@
 import { DocumentData } from '../../../interface/document-data';
-import { Field, ValueChangedEvent } from '../../../interface/field';
+import { Field, ValueChangedEvent } from '../../../interface/report-field/field';
 
 export interface Condition {
     type: string;
@@ -15,8 +15,6 @@ export abstract class Action<T = any> {
             field: Field;
             // 變動的Value
             value: any;
-            // 若為Array Field，Array Field Id
-            arrayId?: string;
             // 若為Array Field，變動的Field Id
             arrayIdx?: number;
             data: DocumentData;

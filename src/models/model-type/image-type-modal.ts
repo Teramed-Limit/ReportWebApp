@@ -20,8 +20,8 @@ interface ImageTypeOfActions {
     onImageReorder: (fromIdx: number, toIdx: number) => void;
     exportDiagramUrl: () => string;
     onImageMark: (sopInsUid: string, base64: string) => void;
-    onFindingsChanged: (sopInsUid: string, findings: string) => void;
-    onSitesChanged: (sopInsUid: string, sites: string) => void;
+    onValueChanged: (sopInsUid: string, id: string, value: any) => void;
+    onValueGetter: (sopInsUid: string, id: string) => any;
     selectAllImage: () => void;
     registerDiagramCanvas: (canvasHandle: CanvasHandle) => void;
     deselectAllImage: () => void;

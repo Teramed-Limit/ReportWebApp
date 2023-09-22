@@ -8,6 +8,7 @@ export interface ValidateParams {
 }
 
 export enum ValidateType {
+    None = 'none',
     Required = 'required',
     Min = 'min',
     QualityBowelScore = 'qualityBowelScore',

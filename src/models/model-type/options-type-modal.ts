@@ -3,7 +3,7 @@ import { IAnyType, IMapType, IModelType, Instance, IOptionalIType, ISimpleType }
 import { Observable } from 'rxjs';
 
 import { CodeList, CodeListMap } from '../../interface/code-list';
-import { FilterCondition } from '../../interface/selection-field';
+import { FilterCondition, OptionSource } from '../../interface/report-field/selection-field';
 
 interface OptionTypeOfProps extends ModelProperties {
     // optionMap: IMapType<IType<any[] | undefined | null, any[], any[]>>;
@@ -12,8 +12,9 @@ interface OptionTypeOfProps extends ModelProperties {
 }
 
 interface OptionTypeOfActions {
-    getCodeList(source: string, filterCondition?: FilterCondition): CodeList[];
-    getLatestCodeList(source: string, filterCondition?: FilterCondition);
+    getCodeList(optionSource: OptionSource<any>, filterCondition?: FilterCondition): CodeList[];
+
+    getLatestCodeList(source: OptionSource<any>, filterCondition?: FilterCondition);
 
     initializeCodeList: <T = unknown>(
         payload?: undefined,

@@ -8,50 +8,44 @@ import { FaMapMarkerAlt } from 'react-icons/fa';
 import classes from './ImageSelector.module.scss';
 import ImageCanvasModal from '../../container/Modals/ImageCanvasModal/ImageCanvasModal';
 import MessageModal from '../../container/Modals/MessageModal/MessageModal';
+import { ReportActionContext } from '../../container/Report/Context/reportActionProvider';
+import InputFieldContainer from '../../container/Report/Layout/InputFieldContainer/InputFieldContainer';
 import { ModalContext } from '../../context/modal-context';
-import { CodeList } from '../../interface/code-list';
-import BaseLexiconInput from '../UI/BaseLexiconInput/BaseLexiconInput';
+import { Field } from '../../interface/report-field/field';
 
 interface ImageSelectorProps {
     id: string;
+    fields: Field[];
     index: number;
     size: number;
     src: string;
     checked?: boolean;
-    sites: string;
-    findings: string;
-    findingsOptions: CodeList[];
-    sitesOptions: CodeList[];
     markerMappingNumber: number;
     disabled: boolean;
     lockReorder: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
     onImageMark: (sopInsUid: string, base64: string) => void;
     onClearImageMark: (sopInsUid: string) => void;
-    onFindingsChange: (sopInsUid: string, findings: string) => void;
-    onSitesChange: (sopInsUid: string, sites: string) => void;
+    onValueChanged: (sopInsUid: string, id: string, value: any) => void;
+    onValueGetter: (sopInsUid: string, id: string) => string;
     onImageReorder: (fromIdx: number, toIdx: number) => void;
 }
-
 const ImageSelector = ({
     id,
     index,
+    fields,
     size,
     src,
     checked,
-    sites,
-    findings,
     markerMappingNumber,
     onImageCheck,
     onImageMark,
     onClearImageMark,
-    onFindingsChange,
-    onSitesChange,
-    findingsOptions,
-    sitesOptions,
     disabled,
     lockReorder,
     onImageReorder,
+    onValueChanged,
+    onValueGetter,
 }: ImageSelectorProps) => {
     const setModal = useContext(ModalContext);
 
@@ -79,7 +73,7 @@ const ImageSelector = ({
 
     return (
         <div
-            style={{ width: `calc(${size}% - 4px)`, height: `calc(${size}% - 4px)` }}
+            style={{ width: `calc(${size}%)`, height: `calc(${size}%)` }}
             className={classes.container}
             draggable={false}
             onDragOver={(event) => event.preventDefault()}
@@ -121,6 +115,7 @@ const ImageSelector = ({
                 </IconButton>
             </div>
             <img
+                style={{ maxHeight: `calc(100% - 36px * ${fields.length})` }}
                 className={classes.image}
                 id={id}
                 loading="lazy"
@@ -133,43 +128,18 @@ const ImageSelector = ({
                     event.dataTransfer.setData('index', index.toString());
                 }}
             />
-
-            <label className={classes.label}>
-                <span>Sites:</span>
-                <BaseLexiconInput
-                    id={`sites_${index}`}
-                    cssClass={{
-                        container: classes['lexicon-container'],
-                        input: classes['lexicon-input'],
-                    }}
-                    disabled={disabled}
-                    value={sites}
-                    valueKey="Value"
-                    optionKey="Id"
-                    onValueChange={(str) => onSitesChange(id, str)}
-                    initialLexiconList={sitesOptions}
-                    getOptionLabel={(option: CodeList) => option.Value}
-                    showTooltip={false}
-                />
-            </label>
-            <label className={classes.label}>
-                <span>Findings:</span>
-                <BaseLexiconInput
-                    id={`findings_${index}`}
-                    cssClass={{
-                        container: classes['lexicon-container'],
-                        input: classes['lexicon-input'],
-                    }}
-                    disabled={disabled}
-                    value={findings}
-                    valueKey="Value"
-                    optionKey="Id"
-                    onValueChange={(str) => onFindingsChange(id, str)}
-                    initialLexiconList={findingsOptions}
-                    getOptionLabel={(option: CodeList) => option.Value}
-                    showTooltip={false}
-                />
-            </label>
+            {fields.map((field) => {
+                return (
+                    <InputFieldContainer
+                        key={field.id}
+                        field={field}
+                        orientation={field.orientation}
+                        customValueChange={(_, text: string) => onValueChanged(id, field.id, text)}
+                        customValueGetter={(_) => onValueGetter(id, field.id)}
+                        actionContext={ReportActionContext}
+                    />
+                );
+            })}
         </div>
     );
 };

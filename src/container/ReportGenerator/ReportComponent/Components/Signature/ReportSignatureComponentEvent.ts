@@ -17,10 +17,9 @@ const ReportSignatureComponentEvent = (): {
             x: pos.x,
             y: pos.y,
             componentType: ReportComponentType.Signature,
-            width: 100,
-            height: 100,
-            valueType: 'base64',
-            value: '',
+            width: 50,
+            height: 50,
+            src: '',
         };
     };
 

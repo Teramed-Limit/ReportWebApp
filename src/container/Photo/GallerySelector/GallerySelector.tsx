@@ -11,15 +11,19 @@ import classes from './GallerySelector.module.scss';
 import Gallery from '../../../components/Gallery/Gallery';
 import ImageSelector from '../../../components/ImageSelector/ImageSelector';
 import Button from '../../../components/UI/Button/Button';
-import { useObjectState } from '../../../hooks/useObjectState';
-import { useStore } from '../../../models/useStore';
+import {
+    useReportDataStore,
+    useReportDefineStore,
+    useReportImageStore,
+} from '../../../models/useStore';
 import { isEmptyOrNil } from '../../../utils/general';
 
 const GallerySelector = () => {
     const [lockReorder, setLockReorder] = useState(true);
     const [slider, setSlider] = useState(3);
-    const store = useStore();
-    const { dataStore, optionStore, imageStore } = store;
+    const imageStore = useReportImageStore();
+    const defineStore = useReportDefineStore();
+    const dataStore = useReportDataStore();
     const { modifiable } = dataStore;
     const {
         images,
@@ -27,25 +31,12 @@ const GallerySelector = () => {
         onImageCheck,
         onClearImageMark,
         onImageMark,
-        onFindingsChanged,
-        onSitesChanged,
+        onValueChanged,
+        onValueGetter,
         selectAllImage,
         deselectAllImage,
         onImageReorder,
     } = imageStore;
-
-    const [findingsOptions] = useObjectState(
-        optionStore.getCodeList('ImageFindings', {
-            filterById: 'ReportTemplate',
-            filterOptionKey: 'ReportTemplate',
-        }) || [],
-    );
-    const [sitesOptions] = useObjectState(
-        optionStore.getCodeList('ImageSites', {
-            filterById: 'ReportTemplate',
-            filterOptionKey: 'ReportTemplate',
-        }) || [],
-    );
 
     return (
         <>
@@ -81,6 +72,7 @@ const GallerySelector = () => {
                             disabled={!modifiable}
                             lockReorder={lockReorder}
                             key={image.SOPInstanceUID}
+                            fields={defineStore.imageDefine}
                             index={index}
                             size={100 / (7 - slider)}
                             id={image.SOPInstanceUID}
@@ -90,16 +82,12 @@ const GallerySelector = () => {
                                     : image.EditedImageSrc
                             }
                             checked={image.IsAttachInReport}
-                            findings={image.DescriptionOfFindings}
-                            sites={image.DescriptionOfSites}
-                            findingsOptions={findingsOptions}
-                            sitesOptions={sitesOptions}
                             markerMappingNumber={image.MappingNumber}
                             onImageCheck={onImageCheck}
                             onClearImageMark={onClearImageMark}
                             onImageMark={onImageMark}
-                            onFindingsChange={onFindingsChanged}
-                            onSitesChange={onSitesChanged}
+                            onValueChanged={onValueChanged}
+                            onValueGetter={onValueGetter}
                             onImageReorder={onImageReorder}
                         />
                     ))}

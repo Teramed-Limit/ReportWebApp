@@ -33,9 +33,10 @@ export interface ReportImageData {
     EditedImageSrc: string;
     IsAttachInReport: boolean;
     MappingNumber: number;
+    ReportMark?: ReportMark;
+    [prop: string]: any;
     DescriptionOfSites: string;
     DescriptionOfFindings: string;
-    ReportMark?: ReportMark;
 }
 
 export interface ReportMark {

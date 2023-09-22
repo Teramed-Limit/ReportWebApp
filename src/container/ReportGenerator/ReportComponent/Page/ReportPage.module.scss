@@ -1,0 +1,19 @@
+.page {
+    position: relative;
+    user-select: none;
+    border: 1px solid #c6c6c6;
+    margin: auto;
+    box-sizing: content-box;
+    background-color: white;
+    background-image: linear-gradient(rgba(#e7e7e7, 0.5) 1px, transparent 0),
+    linear-gradient(90deg, rgba(#e7e7e7, 0.5) 1px, transparent 0), linear-gradient(#e7e7e7 1px, transparent 0),
+    linear-gradient(90deg, #e7e7e7 1px, transparent 0);
+
+    background-size: 15px 15px, 15px 15px, 75px 75px, 75px 75px;
+
+
+    &:focus {
+        outline: none;
+    }
+
+}

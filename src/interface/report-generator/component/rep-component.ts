@@ -3,8 +3,6 @@ export interface RepComponent {
     x: number;
     y: number;
     componentType: ReportComponentType;
-    valueType: string;
-    value: string;
 }
 
 export enum ReportComponentType {
@@ -13,4 +11,6 @@ export enum ReportComponentType {
     DynamicLabel = 'DynamicLabel',
     Image = 'Image',
     Signature = 'Signature',
+    Line = 'Line',
+    PageNumber = 'PageNumber',
 }

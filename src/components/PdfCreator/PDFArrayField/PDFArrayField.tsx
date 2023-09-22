@@ -1,14 +1,13 @@
 import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
-import { Style } from '@react-pdf/types/style';
 
-import { FormFieldType } from '../../../container/Report/field/field-type';
-import { ArrayField } from '../../../interface/array-field';
-import { CompositeField } from '../../../interface/composite-field';
+import { FormFieldType } from '../../../container/Report/FieldComponent/field-type';
+import { GenerateArrayFieldId } from '../../../container/Report/Layout/InputArrayField/InputArrayField';
 import { DocumentData } from '../../../interface/document-data';
-import { FilterCondition } from '../../../interface/selection-field';
-import { fieldArrayContainer } from '../../../styles/report/style';
+import { ArrayField } from '../../../interface/report-field/array-field';
+import { CompositeField } from '../../../interface/report-field/composite-field';
+import { FilterCondition, OptionSource } from '../../../interface/report-field/selection-field';
 import PDFCompositeField from '../PDFCompositeField/PDFCompositeField';
 import PDFField from '../PDFField/PDFField';
 
@@ -16,83 +15,69 @@ interface Props {
     field: ArrayField;
     formData: DocumentData;
     diagramUrl: string;
-    pdfStyle: {
-        imagePerRow: number;
-        imagePageBreak: boolean;
-        fontSize: number;
-        pagePadding: number;
-    };
-    getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
+    getOptions: (source: OptionSource<any>, filterCondition?: FilterCondition | undefined) => any[];
 }
 
-const PDFArrayField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Props) => {
-    const compositeRenderer = (): JSX.Element => {
+const PDFArrayField = ({ field, formData, diagramUrl, getOptions }: Props) => {
+    const fieldRenderer = (): JSX.Element => {
         const { templateField } = field;
         const valueList = formData[field.id] || [];
-        return (
-            <ReactPDF.View
-                style={{
-                    ...(fieldArrayContainer as Style),
-                    ...{ flexDirection: field.orientation },
-                }}
-            >
-                {valueList?.map((value, idx) => {
-                    const key = `${templateField.id}_${idx}`;
-                    return (
-                        <PDFCompositeField
-                            key={key}
-                            field={
-                                {
-                                    ...templateField,
-                                    label: `${templateField.label} ${idx + 1}`,
-                                } as CompositeField
-                            }
-                            formData={valueList[idx]}
-                            diagramUrl={diagramUrl}
-                            pdfStyle={pdfStyle}
-                            getOptions={getOptions}
-                        />
-                    );
-                })}
-            </ReactPDF.View>
-        );
-    };
-
-    const standardRenderer = (): JSX.Element => {
-        const { templateField } = field;
-        const valueList = formData[field.id];
-        return (
-            <>
-                {valueList?.map((value, idx) => {
-                    const key = `${templateField.id}_${idx}`;
-                    return (
-                        <PDFField
-                            key={key}
-                            field={{
-                                ...templateField,
-                                label: `${templateField.label} ${idx + 1}`,
-                            }}
-                            value={value?.[templateField.id] || ''}
-                            diagramUrl={diagramUrl}
-                            pdfStyle={pdfStyle}
-                            getOptions={getOptions}
-                        />
-                    );
-                })}
-            </>
-        );
-    };
-
-    const fieldRenderer = (): JSX.Element => {
         switch (field.templateField.type) {
             case FormFieldType.Composite:
-                return compositeRenderer();
+                return (
+                    <>
+                        {valueList?.map((_, idx) => {
+                            const key = GenerateArrayFieldId(templateField.id, idx);
+                            return (
+                                <PDFCompositeField
+                                    key={key}
+                                    field={
+                                        {
+                                            ...templateField,
+                                            label: `${templateField.label} ${idx + 1}`,
+                                            orientation: field.orientation,
+                                        } as CompositeField
+                                    }
+                                    formData={valueList[idx]}
+                                    diagramUrl={diagramUrl}
+                                    getOptions={getOptions}
+                                />
+                            );
+                        })}
+                    </>
+                );
             default:
-                return standardRenderer();
+                return (
+                    <>
+                        {valueList?.map((value, idx) => {
+                            const key = GenerateArrayFieldId(templateField.id, idx);
+                            const val = value?.[key] || '';
+                            return (
+                                <PDFField
+                                    key={key}
+                                    field={{
+                                        ...templateField,
+                                        label: `${templateField.label} ${idx + 1}`,
+                                        orientation: field.orientation,
+                                    }}
+                                    value={val}
+                                    diagramUrl={diagramUrl}
+                                    getOptions={getOptions}
+                                />
+                            );
+                        })}
+                    </>
+                );
         }
     };
 
-    return fieldRenderer();
+    return (
+        <>
+            <ReactPDF.View style={{ flexDirection: field.arrayOrientation || 'column' }}>
+                {fieldRenderer()}
+            </ReactPDF.View>
+        </>
+    );
 };
 
 export default React.memo(PDFArrayField);

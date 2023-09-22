@@ -5,8 +5,8 @@ import { Stack } from '@mui/material';
 import classes from './SectionListView.module.scss';
 import BaseTextArea from '../../../../../components/UI/BaseTextArea/BaseTextArea';
 import { FormFieldLexiconCategory } from '../../../../../interface/form-field-lexicon-category';
-import FormSectionField from '../../../../../layout/FormSectionField/FormSectionField';
-import FormSectionFieldLabel from '../../../../Report/layout-container/FormSectionFieldLabel/FormSectionFieldLabel';
+import InputField from '../../../../Report/Layout/InputField/InputField';
+import InputFieldLabel from '../../../../Report/Layout/InputFieldLabel/InputFieldLabel';
 
 interface Props {
     lexiconCategoryList: FormFieldLexiconCategory[];
@@ -25,19 +25,24 @@ const SectionListView = ({
                 return (
                     <div key={field.Id} className={classes.container}>
                         {/* Label */}
-                        <FormSectionFieldLabel
+                        <InputFieldLabel
                             id={field.ItemName}
+                            labelStyle={{
+                                width: '35%',
+                                fontSize: '24px',
+                                fontWeight: 'bold',
+                                alignItems: 'flex-start',
+                            }}
                             label={field.ItemName}
-                            orientation="row"
                             hint={field.AutoFillDefaultWhenEmpty ? 'Auto fill default content' : ''}
                             hideLabelSection={false}
                             hasValidation={false}
                         />
                         {/* Value */}
-                        <FormSectionField
+                        <InputField
                             id={field.ItemName}
-                            orientation="row"
                             readOnly={false}
+                            valueStyle={{ width: '65%', fontSize: '24px' }}
                             isDirty={false}
                             isValid
                             errorMessage=""

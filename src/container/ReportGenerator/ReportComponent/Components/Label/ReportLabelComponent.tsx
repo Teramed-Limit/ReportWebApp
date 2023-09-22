@@ -34,7 +34,7 @@ const ReportLabelComponent = React.forwardRef<HTMLDivElement, Props>(
                 ref={ref}
                 style={{
                     ...style,
-                    fontSize: `${component.fontSize}px`,
+                    fontSize: `${component.fontSize * scale}px`,
                     fontFamily: component.fontName || 'Arial',
                     fontWeight: component.fontWeight,
                     fontStyle: component.fontStyle,

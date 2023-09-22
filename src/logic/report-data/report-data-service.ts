@@ -5,9 +5,9 @@ import { BowelPrep } from './fields/bowel-prep';
 import { ReportTemplate } from './fields/report-template';
 import { FormDefine } from '../../interface/define';
 import { DocumentData } from '../../interface/document-data';
-import { Field } from '../../interface/field';
 import { FormControl } from '../../interface/form-state';
 import { ReportField } from '../../interface/report-data';
+import { Field } from '../../interface/report-field/field';
 
 export class ReportDataService {
     factoryMapper = new Map<string, ReportField>();

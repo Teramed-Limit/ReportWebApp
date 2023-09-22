@@ -4,6 +4,7 @@ import { RepLabelComponent } from '../../../../../interface/report-generator/com
 
 interface Props {
     style: CSSProperties;
+    scale: number;
     component: RepLabelComponent;
     onClick: (e: React.MouseEvent) => void;
     onMouseDown: (e: React.MouseEvent) => void;
@@ -11,7 +12,7 @@ interface Props {
     onMouseUp: (e: React.MouseEvent) => void;
     onMouseEnter: (e: React.MouseEvent) => void;
     onMouseLeave: (e: React.MouseEvent) => void;
-    onValueChanged: (uuid: string, value: string) => void;
+    onValueChanged: (uuid: string, attrPath: (string | number)[], value: string) => void;
 }
 
 const options = [
@@ -40,6 +41,7 @@ const ReportDynamicLabelComponent = React.forwardRef<HTMLSelectElement, Props>(
     (
         {
             style,
+            scale,
             component,
             onClick,
             onMouseDown,
@@ -72,7 +74,7 @@ const ReportDynamicLabelComponent = React.forwardRef<HTMLSelectElement, Props>(
                         ...style,
                         border: '0',
                         width: autoWidth,
-                        fontSize: `${component.fontSize}px`,
+                        fontSize: `${component.fontSize * scale}px`,
                         fontFamily: component.fontName || 'Arial',
                         fontWeight: component.fontWeight,
                         fontStyle: component.fontStyle,
@@ -89,7 +91,7 @@ const ReportDynamicLabelComponent = React.forwardRef<HTMLSelectElement, Props>(
                     onChange={(e) => {
                         e.stopPropagation();
                         setSelectedOpt(e.target.value);
-                        onValueChanged(component.uuid, e.target.value);
+                        onValueChanged(component.uuid, ['value'], e.target.value);
                         setTimeout(() => {
                             if (!autoWidthSelect.current) return;
                             setAutoWidth(autoWidthSelect.current?.offsetWidth);
@@ -110,7 +112,7 @@ const ReportDynamicLabelComponent = React.forwardRef<HTMLSelectElement, Props>(
                         width: 'fit-content',
                         visibility: 'hidden',
                         lineHeight: component.fontSize,
-                        fontSize: component.fontSize,
+                        fontSize: component.fontSize * scale,
                         fontFamily: component.fontName,
                         fontStyle: component.fontStyle,
                         color: component.fontColor,

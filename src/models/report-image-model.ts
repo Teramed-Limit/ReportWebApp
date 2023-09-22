@@ -181,13 +181,13 @@ export const ImageModel: ImagesModal = types
             );
         };
 
-        const onFindingsChanged = (sopInsUid: string, findings: string) => {
+        const onValueChanged = (sopInsUid: string, id: string, value: any) => {
             setReportImage(
                 self.images.map((image) => {
                     if (image.SOPInstanceUID === sopInsUid) {
                         return {
                             ...image,
-                            DescriptionOfFindings: findings,
+                            [id]: value,
                         };
                     }
                     return image;
@@ -195,18 +195,8 @@ export const ImageModel: ImagesModal = types
             );
         };
 
-        const onSitesChanged = (sopInsUid: string, sites: string) => {
-            setReportImage(
-                self.images.map((image) => {
-                    if (image.SOPInstanceUID === sopInsUid) {
-                        return {
-                            ...image,
-                            DescriptionOfSites: sites,
-                        };
-                    }
-                    return image;
-                }),
-            );
+        const onValueGetter = (sopInsUid: string, id: string) => {
+            return self.images.find((image) => image.SOPInstanceUID === sopInsUid)?.[id];
         };
 
         const onImageReorder = (fromIdx: number, toIdx: number) => {
@@ -269,8 +259,8 @@ export const ImageModel: ImagesModal = types
             onImageCheck,
             onImageMark,
             onClearImageMark,
-            onFindingsChanged,
-            onSitesChanged,
+            onValueChanged,
+            onValueGetter,
             onImageStateInitialize,
             selectAllImage,
             deselectAllImage,

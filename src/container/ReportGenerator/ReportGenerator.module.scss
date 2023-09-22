@@ -7,16 +7,22 @@
 }
 
 .reportLayout {
-    font-size: 14px;
-    max-width: 1200px;
-    min-width: 1200px;
-    margin: 0;
+    width: fit-content;
+    margin: 10px auto;
     padding: 10px;
     user-select: none;
     border: 1px solid darkgrey;
     box-shadow: 5px 5px 5px 1px #ccc;
     border-radius: 5px;
 }
+
+.page {
+    width: 210mm;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
 
 .header {
     position: sticky;
@@ -30,3 +36,13 @@
     align-items: center;
     padding: 0 12px;
 }
+
+.sticky {
+    position: sticky;
+    top: 67px;
+    z-index: 1000;
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 6px;
+}
+

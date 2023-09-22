@@ -4,6 +4,8 @@ import ReportDynamicLabelComponentEvent from '../container/ReportGenerator/Repor
 import ReportGeneralEvent from '../container/ReportGenerator/ReportComponent/Components/General/ReportGeneralEvent';
 import ReportImageComponentEvent from '../container/ReportGenerator/ReportComponent/Components/Image/ReportImageComponentEvent';
 import ReportLabelComponentEvent from '../container/ReportGenerator/ReportComponent/Components/Label/ReportLabelComponentEvent';
+import ReportLineComponentEvent from '../container/ReportGenerator/ReportComponent/Components/Line/ReportLineComponentEvent';
+import ReportPageNumberComponentEvent from '../container/ReportGenerator/ReportComponent/Components/PageNumber/ReportPageNumberComponentEvent';
 import ReportSignatureComponentEvent from '../container/ReportGenerator/ReportComponent/Components/Signature/ReportSignatureComponentEvent';
 import {
     RepComponent,
@@ -17,6 +19,8 @@ const ToolMouseEventMapper = {
     [ReportComponentType.Image]: ReportImageComponentEvent,
     [ReportComponentType.Signature]: ReportSignatureComponentEvent,
     [ReportComponentType.DynamicLabel]: ReportDynamicLabelComponentEvent,
+    [ReportComponentType.Line]: ReportLineComponentEvent,
+    [ReportComponentType.PageNumber]: ReportPageNumberComponentEvent,
 };
 
 export function useRepComponentTool(compType: ReportComponentType = ReportComponentType.General): {

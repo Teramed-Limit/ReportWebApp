@@ -1,9 +1,5 @@
 // Report Page
 export const fieldGutter = '2px';
-export const compositeFieldSpacing = '4px';
-export const labelWidth = '35%';
-export const valueWidth = '65%';
-
 // Report Page
 export const reportPage = {
     display: 'flex',
@@ -29,30 +25,13 @@ export const reportSubsection = {
 // Field Array
 export const fieldArrayContainer = {
     display: 'flex',
-};
-
-// Field Section
-export const fieldFlex = {
-    label: { row: { flex: `0 0 ${labelWidth}` }, column: {} },
-    value: { row: { flex: `1 1 ${valueWidth}` }, column: {} },
+    width: '100%',
 };
 
 export const fieldSectionContainer = {
     display: 'flex',
     width: '100%',
     flexWrap: 'no-wrap',
-};
-
-export const fieldSectionLabel = {
-    wordBreak: 'break-word',
-    fontWeight: 'bold',
-    color: '#3a464d',
-    alignSelf: 'flex-start',
-};
-
-export const fieldSectionValue = {
-    width: '100%',
-    display: 'flex',
 };
 
 export const fieldButtonBar = {

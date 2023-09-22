@@ -179,7 +179,7 @@ export const DataModel: ReportDataModal = types
 
             // Change value by its action
             if (!reportDefineService.currentFields) return;
-            const field = reportDefineService.getArrayField(id, targetId);
+            const field = reportDefineService.getField(targetId);
             if (!field) return;
             reportDataService.postValueChangedByAction(
                 {
@@ -187,7 +187,6 @@ export const DataModel: ReportDataModal = types
                     field,
                     value: targetValue,
                     arrayIdx: idx,
-                    arrayId: targetId,
                     data: self.formData.toJSON(),
                     define: reportDefineService.currentFields,
                 },
@@ -574,7 +573,7 @@ export const DataModel: ReportDataModal = types
                 ReportImageData: [
                     {
                         SOPInstanceUID: '1.3.6.1.4.1.29974.12.20221024.100121.102062.2.1',
-                        ImageSrc: 'https://picsum.photos/1920/1080',
+                        ImageSrc: 'https://picsum.photos/320/180',
                         thumbnailImageSrc: 'https://picsum.photos/320/180',
                         EditedImageSrc: '',
                         IsAttachInReport: false,

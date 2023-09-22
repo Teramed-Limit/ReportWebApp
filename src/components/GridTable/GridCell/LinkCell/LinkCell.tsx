@@ -9,7 +9,6 @@ interface Props extends ICellRendererParams {
 
 const LinkCell = (props: Props) => {
     return (
-        // eslint-disable-next-line jsx-a11y/anchor-is-valid
         <Link
             sx={{ color: '#256fc7', textDecorationColor: '#256fc7', textDecoration: 'underline' }}
             component="button"

@@ -7,16 +7,16 @@ import { Prompt, useHistory, useParams } from 'react-router-dom';
 import { interval } from 'rxjs';
 import { filter, tap } from 'rxjs/operators';
 
-import ReportEditActionBar from './report-action-bar/ReportEditActionBar/ReportEditActionBar';
-import ReportViewActionBar from './report-action-bar/ReportViewActionBar/ReportViewActionBar';
-import { ReportActionContext, ReportActionProvider } from './report-context/reportActionProvider';
+import ReportEditActionBar from './ActionBar/ReportEditActionBar/ReportEditActionBar';
+import ReportViewActionBar from './ActionBar/ReportViewActionBar/ReportViewActionBar';
+import { ReportActionContext, ReportActionProvider } from './Context/reportActionProvider';
+import ReportSection from './Layout/ReportSection/ReportSection';
 import classes from './Report.module.scss';
 import Icon from '../../components/UI/Icon/Icon';
 import { NotificationContext } from '../../context/notification-context';
 import { useModal } from '../../hooks/useModal';
 import { Section } from '../../interface/define';
 import { MessageType } from '../../interface/notification';
-import ReportSection from '../../layout/ReportSection/ReportSection';
 import {
     useOptionStore,
     useReportDataStore,
@@ -135,8 +135,8 @@ const Report = () => {
                         {modifiable ? <ReportEditActionBar /> : <ReportViewActionBar />}
                     </Stack>
                 </div>
-                <div className={classes.reportLayout}>
-                    <Box sx={reportPage}>
+                <Box className={classes.reportLayout} sx={reportPage}>
+                    <Box className={classes.page}>
                         {formDefine.sections
                             .filter((section: Section) => !section.hide)
                             .map((section: Section) => (
@@ -147,7 +147,7 @@ const Report = () => {
                                 />
                             ))}
                     </Box>
-                </div>
+                </Box>
             </ReportActionProvider>
             {/* Photo Drawer */}
             <button

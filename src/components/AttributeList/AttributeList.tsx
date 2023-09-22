@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
-import UndoIcon from '@mui/icons-material/Undo';
-import { IconButton, Stack } from '@mui/material';
+import { Stack } from '@mui/material';
 import * as R from 'ramda';
 
 import classes from './AttributeList.module.scss';
+import { camelize } from '../../utils/general';
+import AttributeColumn from '../AttributeColumn/AttributeColumn';
+import ExpandToggler from '../ExpandToggler/ExpandToggler';
 import BaseCheckbox from '../UI/BaseCheckbox/BaseCheckbox';
 import BaseNumber from '../UI/BaseNumber/BaseNumber';
 import BaseTextInput from '../UI/BaseTextInput/BaseTextInput';
 
+// 建立一個對應表，把型別對應到對應的組件
 const AttributeMapper = {
     number: BaseNumber,
     string: BaseTextInput,
     boolean: BaseCheckbox,
 };
 
-export interface AttributeProps {
-    showTitle?: boolean;
+// 屬性定義
+export interface Props {
     title?: string;
+    defaultExpanded?: boolean;
+    attrPath?: (string | number)[];
     attribute: any;
-    attributeComponentMapper?: {
-        [prop: string]: { name: string; component: (...props) => JSX.Element; props?: any }[];
-    };
-    attributeConstructorMapper?: {
-        [prop: string]: any;
-    };
+    attributeComponentMapper?: { [key: string]: React.FC<any> | React.ReactNode };
     filterType?: 'include' | 'exclude' | 'none';
     includeAttribute?: string[];
     excludeAttribute?: string[];
@@ -32,174 +32,124 @@ export interface AttributeProps {
 }
 
 const AttributeList = ({
-    showTitle = true,
-    title = 'Attribute',
+    title,
+    attrPath = [],
     attribute,
+    defaultExpanded = true,
     attributeComponentMapper,
-    attributeConstructorMapper,
     filterType = 'none',
     includeAttribute,
     excludeAttribute,
     setAttribute,
-}: AttributeProps) => {
-    const [currentLayer, setLayer] = useState<number>(0);
-    const [rootAttribute, setRootAttribute] = useState<any>(attribute);
-    const [currentAttribute, setCurrentAttribute] = useState<any>(attribute);
-    const [currentPath, setCurrentPath] = useState<(string | number)[]>([]);
+}: Props) => {
+    const isReactComponent = (element: any): element is React.FC<any> =>
+        typeof element === 'function' && !React.isValidElement(element);
 
-    useEffect(() => {
-        const newAttribute = {};
-        const attributeKeys = Object.keys(attribute);
-        const len = attributeKeys.length;
+    const isReactNode = (element: any): element is React.ReactNode => React.isValidElement(element);
 
-        // sorted
-        attributeKeys.sort();
-        for (let i = 0; i < len; i++) {
-            const k = attributeKeys[i];
-            newAttribute[k] = attribute[k];
+    // 渲染輸入欄位
+    const renderInput = (value: any, key: string, pathList: (string | number)[]) => {
+        // 根據值的型別找出對應的組件
+        const RenderComponent = attributeComponentMapper?.[key] ?? AttributeMapper[typeof value];
+        if (isReactComponent(RenderComponent)) {
+            return (
+                <AttributeColumn columnKey={key}>
+                    {RenderComponent && (
+                        <RenderComponent
+                            value={value}
+                            onValueChange={(val: any) => {
+                                // 輸入值改變時，呼叫setAttribute
+                                setAttribute(pathList, val);
+                            }}
+                        />
+                    )}
+                </AttributeColumn>
+            );
+        } else if (isReactNode(RenderComponent)) {
+            return (
+                <AttributeColumn columnKey={key}>
+                    {RenderComponent && RenderComponent}
+                </AttributeColumn>
+            );
         }
-
-        if (currentLayer !== 0) {
-            // 是空的就回到第一層
-            if (!R.path(currentPath, newAttribute)) {
-                setRootAttribute(newAttribute);
-                setCurrentAttribute(newAttribute);
-                setCurrentPath([]);
-                setLayer(0);
-                return;
-            }
-            setRootAttribute(newAttribute);
-            setCurrentAttribute(R.path(currentPath, newAttribute) || {});
-        } else {
-            setRootAttribute(newAttribute);
-            setCurrentAttribute(newAttribute);
-            setLayer(0);
-        }
-    }, [attribute, currentLayer, currentPath]);
-
-    const nextLayer = (key: string | number) => {
-        const parsed: string | number = Number.isNaN(key) ? key : Number(key);
-        const path = R.append(parsed, currentPath);
-        if (!R.path(path, rootAttribute)) return;
-        setLayer((prev) => prev + 1);
-        setCurrentPath(path);
-        setCurrentAttribute(R.path(path, rootAttribute));
     };
 
-    const previousLayer = () => {
-        const path = R.dropLast(1, currentPath);
-        setLayer((prev) => prev - 1);
-        setCurrentPath(path);
-        setCurrentAttribute(R.path(path, rootAttribute));
+    // 渲染物件
+    const renderObject = (obj: any, parentPath: (string | number)[] = []) => {
+        return Object.keys(obj).map((key) => {
+            const currentPath: (string | number)[] = Number.isNaN(+key)
+                ? [...parentPath, key]
+                : [...parentPath, +key];
+
+            // 如果值是物件或陣列，則遞迴渲染
+            if (typeof obj[key] === 'object' || Array.isArray(obj[key])) {
+                let RenderAttributeComponent: any = AttributeList;
+                if (attributeComponentMapper && attributeComponentMapper[key]) {
+                    if (isReactComponent(attributeComponentMapper[key])) {
+                        RenderAttributeComponent = attributeComponentMapper[key];
+                    } else if (isReactNode(attributeComponentMapper[key])) {
+                        return (
+                            <ExpandToggler
+                                key={currentPath.join('.')}
+                                defaultExpanded={defaultExpanded}
+                                title={camelize(key) || key}
+                            >
+                                {attributeComponentMapper[key]}
+                            </ExpandToggler>
+                        );
+                    }
+                }
+
+                return (
+                    <ExpandToggler
+                        key={currentPath.join('.')}
+                        defaultExpanded={defaultExpanded}
+                        title={camelize(key) || key}
+                    >
+                        <RenderAttributeComponent
+                            attrPath={currentPath}
+                            attribute={obj[key]}
+                            setAttribute={setAttribute}
+                        />
+                    </ExpandToggler>
+                );
+            }
+
+            return (
+                <div id={currentPath.join('.')} key={currentPath.join('.')}>
+                    {renderInput(obj[key], key, currentPath)}
+                </div>
+            );
+        });
+    };
+
+    // 渲染標題
+    const renderTitle = () => {
+        return (
+            <>
+                {title && (
+                    <Stack flexDirection="row" className={classes.title}>
+                        <div>{title}</div>
+                    </Stack>
+                )}
+            </>
+        );
+    };
+
+    // 根據篩選類型決定如何渲染
+    const renderFilteredAttributes = () => {
+        if (filterType === 'include' && includeAttribute) {
+            return renderObject(R.pick(includeAttribute, attribute), attrPath);
+        } else if (filterType === 'exclude' && excludeAttribute) {
+            return renderObject(R.omit(excludeAttribute, attribute), attrPath);
+        }
+        return renderObject(attribute, attrPath);
     };
 
     return (
         <>
-            {showTitle && (
-                <Stack flexDirection="row" className={classes.title}>
-                    <div>{title}</div>
-                    {currentLayer > 0 && (
-                        <IconButton
-                            className={classes.absolute_l_t}
-                            size="small"
-                            color="primary"
-                            onClick={() => previousLayer()}
-                        >
-                            <UndoIcon />
-                        </IconButton>
-                    )}
-                </Stack>
-            )}
-            {Object.keys(currentAttribute).map((key) => {
-                let renderProps: any;
-                let RenderComponent;
-
-                // 多層的名字判斷
-                const compKey = R.append(key, currentPath).join('.');
-
-                // 客製化欄位
-                if (attributeComponentMapper?.[key]) {
-                    const listOfRenderComp = attributeComponentMapper?.[key];
-                    const defaultComp = listOfRenderComp?.find((x) => x.name === '');
-
-                    // 預設
-                    if (defaultComp) {
-                        RenderComponent = defaultComp.component;
-                        renderProps = { ...defaultComp?.props, currentPath } || {};
-                    }
-
-                    // 上層的名字對應
-                    const lastElement = currentPath[currentPath.length - 1];
-                    const targetComp = listOfRenderComp?.find((x) => x.name === lastElement);
-                    if (targetComp) {
-                        RenderComponent = targetComp.component;
-                        renderProps = { ...targetComp?.props, currentPath } || {};
-                    }
-                }
-                // 客製化欄位建構
-                else if (attributeConstructorMapper?.[compKey] && !currentAttribute[key]) {
-                    RenderComponent = () => (
-                        <button
-                            type="button"
-                            onClick={() => {
-                                const constructAttribute = attributeConstructorMapper[compKey];
-                                setLayer((prev) => prev + 1);
-                                setCurrentPath([key]);
-                                setCurrentAttribute(constructAttribute);
-                                setAttribute([...currentPath, key], constructAttribute);
-                            }}
-                        >
-                            Construct
-                        </button>
-                    );
-                }
-                // 沒有宣告客製化的欄位且形態為Object
-                else if (typeof currentAttribute[key] === 'object') {
-                    RenderComponent = () => (
-                        <button type="button" onClick={() => nextLayer(key)}>
-                            Details
-                        </button>
-                    );
-                }
-                // 一般欄位
-                else {
-                    RenderComponent = AttributeMapper[typeof currentAttribute[key]];
-                }
-
-                const comp = (
-                    <div className={classes.attributeColumn} key={key}>
-                        <div className={classes.attributeName}>{key}</div>
-                        {RenderComponent && (
-                            <div className={classes.attributeValue}>
-                                <RenderComponent
-                                    {...renderProps}
-                                    value={currentAttribute[key]}
-                                    onValueChange={(value: any) => {
-                                        setCurrentAttribute((prev) => {
-                                            return R.assocPath([key], value, prev);
-                                        });
-                                        setAttribute([...currentPath, key], value);
-                                    }}
-                                />
-                            </div>
-                        )}
-                    </div>
-                );
-
-                if (includeAttribute && excludeAttribute) {
-                    console.warn('include 和 exclude 不能同時擁有');
-                    return null;
-                }
-
-                if (filterType === 'none') return comp;
-                if (filterType === 'include') {
-                    if (includeAttribute?.includes(key)) return comp;
-                } else if (filterType === 'exclude') {
-                    if (!excludeAttribute?.includes(key)) return comp;
-                }
-
-                return null;
-            })}
+            {renderTitle()}
+            {renderFilteredAttributes()}
         </>
     );
 };

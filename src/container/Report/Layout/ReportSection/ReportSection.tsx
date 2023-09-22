@@ -1,0 +1,48 @@
+import React, { CSSProperties } from 'react';
+
+import { Box } from '@mui/material';
+
+import classes from './ReportSection.module.scss';
+import { Section, SubSection } from '../../../../interface/define';
+import { reportSection } from '../../../../styles/report/style';
+import ReportSubSection from '../ReportSubSection/ReportSubSection';
+
+interface Props {
+    section: Section;
+    actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
+}
+
+const ReportSection = ({ section, actionContext }: Props) => {
+    return (
+        <>
+            {section?.label && (
+                <div className={classes[`section-header`]}>
+                    <h4 className={classes[`header-label`]}>{section?.label}</h4>
+                </div>
+            )}
+            <Box
+                id={section.id}
+                sx={reportSection}
+                style={
+                    {
+                        ...reportSection,
+                        maxWidth: section.maxWidth,
+                        width: section.maxWidth,
+                        opacity: section.hide ? 0.4 : 1,
+                        ...(section?.style || {}),
+                    } as CSSProperties
+                }
+            >
+                {section.subSections.map((subSection: SubSection) => (
+                    <ReportSubSection
+                        key={subSection.id}
+                        subSection={subSection}
+                        actionContext={actionContext}
+                    />
+                ))}
+            </Box>
+        </>
+    );
+};
+
+export default ReportSection;

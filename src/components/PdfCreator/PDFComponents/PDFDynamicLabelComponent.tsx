@@ -7,26 +7,23 @@ import { DocumentData } from '../../../interface/document-data';
 import { RepLabelComponent } from '../../../interface/report-generator/component/rep-label-component';
 
 interface Props {
-    uuid: string;
-    zoom: number;
     comp: RepLabelComponent;
     formData: DocumentData;
     userData: UserAccountInfo;
 }
 
-const PDFDynamicLabelComponent = ({ uuid, zoom, comp, formData, userData }: Props) => {
+const PDFDynamicLabelComponent = ({ comp, formData, userData }: Props) => {
     return (
         <ReactPDF.Text
-            key={uuid}
             style={{
                 position: 'absolute',
-                fontSize: `${comp.fontSize / zoom}`,
+                fontSize: `${comp.fontSize}`,
                 fontFamily: comp.fontName,
                 fontStyle: comp.fontStyle,
                 fontWeight: comp.fontWeight,
                 color: comp.fontColor,
-                left: comp.x / zoom,
-                top: comp.y / zoom,
+                left: comp.x,
+                top: comp.y,
             }}
         >
             {comp.prefix}

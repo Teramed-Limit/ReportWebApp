@@ -8,14 +8,13 @@ import { RepPage } from '../../../interface/report-generator/rep-page';
 import { PDFReportComponentMapper } from '../PDFComponents/PDFCompMapper';
 
 interface Props {
-    zoom: number;
     page: RepPage;
     formData: DocumentData;
     userData: UserAccountInfo;
     children?: React.ReactNode;
 }
 
-const PDFReportFooter = ({ zoom, page, formData, userData, children }: Props) => {
+const PDFReportFooter = ({ page, formData, userData }: Props) => {
     return (
         <>
             <ReactPDF.View
@@ -36,7 +35,6 @@ const PDFReportFooter = ({ zoom, page, formData, userData, children }: Props) =>
                             <RenderComponent
                                 key={uuid}
                                 uuid={uuid}
-                                zoom={zoom}
                                 comp={comp}
                                 page={page}
                                 formData={formData}
@@ -45,7 +43,6 @@ const PDFReportFooter = ({ zoom, page, formData, userData, children }: Props) =>
                         );
                     })}
             </ReactPDF.View>
-            <ReactPDF.View fixed>{children}</ReactPDF.View>
         </>
     );
 };

@@ -1,10 +1,12 @@
 import { Action, Condition } from './action';
 import { DocumentData } from '../../../interface/document-data';
-import { Field, ValueChangedEvent } from '../../../interface/field';
+import { Field, ValueChangedEvent } from '../../../interface/report-field/field';
 import { checkCondition } from '../../condition-matcher';
 
 interface ChangeOtherValueActionParam {
+    // 若此下列條件成立
     condition: Condition[];
+    // 更改此Id的值
     targetId: string;
     targetValue: string;
 }

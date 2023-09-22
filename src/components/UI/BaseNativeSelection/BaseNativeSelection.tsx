@@ -5,7 +5,7 @@ import classes from './BaseNativeSelection.module.scss';
 interface Props {
     id?: string;
     disabled?: boolean;
-    options: { label: string; value: string }[];
+    options: { label: string; value: string | number }[];
     value: string;
     prefix?: string;
     suffix?: string;

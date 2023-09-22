@@ -12,7 +12,6 @@ interface Props {
     onMouseUp: (e: React.MouseEvent) => void;
     onMouseEnter: (e: React.MouseEvent) => void;
     onMouseLeave: (e: React.MouseEvent) => void;
-    onValueChanged: (uuid: string, value: string) => void;
 }
 
 const ReportSignatureComponent = React.forwardRef<HTMLImageElement, Props>(
@@ -27,7 +26,6 @@ const ReportSignatureComponent = React.forwardRef<HTMLImageElement, Props>(
             onMouseUp,
             onMouseEnter,
             onMouseLeave,
-            onValueChanged,
         }: Props,
         ref,
     ) => {

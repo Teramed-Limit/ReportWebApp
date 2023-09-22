@@ -92,7 +92,7 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
         setCanvasMarkers((markers) => {
             return markers.map((marker) => {
                 if (marker.id === selectMarkerId) {
-                    return R.assocPath(['attribute', attrPath], attrValue, marker);
+                    return R.assocPath(['attribute', ...attrPath], attrValue, marker);
                 }
                 return marker;
             });
@@ -120,18 +120,8 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
                     <AttributeList
                         attribute={selectMarkerAttrs}
                         attributeComponentMapper={{
-                            fill: [
-                                {
-                                    name: '',
-                                    component: ColorPickerButton,
-                                },
-                            ],
-                            stroke: [
-                                {
-                                    name: '',
-                                    component: ColorPickerButton,
-                                },
-                            ],
+                            fill: ColorPickerButton,
+                            stroke: ColorPickerButton,
                         }}
                         filterType="include"
                         includeAttribute={[

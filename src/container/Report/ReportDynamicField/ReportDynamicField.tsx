@@ -2,9 +2,9 @@ import React from 'react';
 
 import { observer } from 'mobx-react';
 
-import { Field } from '../../../interface/field';
+import { Field } from '../../../interface/report-field/field';
 import { useReportDataStore } from '../../../models/useStore';
-import { FieldMapper } from '../field/field-mapper';
+import { FieldMapper } from '../FieldComponent/field-mapper';
 
 interface DynamicFieldProps {
     field: Field;
@@ -31,6 +31,7 @@ const ReportDynamicField = React.forwardRef(
         // component does exist
         if (!RenderComponent) {
             console.error(`${JSON.stringify(field)} settings error`);
+            return <></>;
         }
 
         return (

@@ -1,12 +1,18 @@
 .reportLayout {
-    font-size: 14px;
-    max-width: 1200px;
+    width: fit-content;
     margin: 10px auto;
     padding: 10px;
     user-select: none;
     border: 1px solid darkgrey;
     box-shadow: 5px 5px 5px 1px #ccc;
     border-radius: 5px;
+}
+
+.page {
+    width: 210mm;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
 }
 
 .header {

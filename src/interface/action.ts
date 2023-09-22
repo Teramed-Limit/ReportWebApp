@@ -1,6 +1,6 @@
 import { DocumentData } from './document-data';
-import { Field } from './field';
 import { MessageType } from './notification';
+import { Field } from './report-field/field';
 
 export interface BaseActionParams {
     formData: DocumentData;

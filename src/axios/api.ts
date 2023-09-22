@@ -113,6 +113,30 @@ export function fetchReportDefine(): Observable<AxiosResponse<FormDefineMap>> {
     });
 }
 
+export function addReportDefine(reportType: string): Observable<AxiosResponse<FormDefineMap>> {
+    return httpReq<FormDefineMap>()({
+        method: 'post',
+        url: `api/report/define/reportType/${reportType}`,
+    });
+}
+
+export function copyFromOtherReportDefine(
+    fromReportType: string,
+    toReportType: string,
+): Observable<AxiosResponse<FormDefineMap>> {
+    return httpReq<FormDefineMap>()({
+        method: 'post',
+        url: `api/report/copyDefine/from/${fromReportType}/to/${toReportType}`,
+    });
+}
+
+export function deleteReportDefine(reportType: string): Observable<AxiosResponse<FormDefineMap>> {
+    return httpReq<FormDefineMap>()({
+        method: 'delete',
+        url: `api/report/define/reportType/${reportType}`,
+    });
+}
+
 export function saveReportDefine(formDefine: FormDefineDto): Observable<AxiosResponse<any>> {
     return httpReq<any>()({
         method: 'post',
@@ -128,16 +152,6 @@ export function fetchReportHistoryDefine(
     return httpReq<FormHistoryDefine>()({
         method: 'get',
         url: `api/report/define/studyInstanceUID/${studyInsUid}/version/${version}`,
-    });
-}
-
-export function addReportDefine(
-    reportType: string,
-    defineType: string,
-): Observable<AxiosResponse<AnyObject>> {
-    return httpReq<AnyObject>()({
-        method: 'post',
-        url: `api/report/define/reportType/${reportType}/defineType/${defineType}/newly`,
     });
 }
 

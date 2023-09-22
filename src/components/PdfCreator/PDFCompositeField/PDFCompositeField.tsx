@@ -1,12 +1,10 @@
 import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
-import { Style } from '@react-pdf/types/style';
 
-import { CompositeField } from '../../../interface/composite-field';
 import { DocumentData } from '../../../interface/document-data';
-import { FilterCondition } from '../../../interface/selection-field';
-import { fieldFlex, fieldSectionValue } from '../../../styles/report/style';
+import { CompositeField } from '../../../interface/report-field/composite-field';
+import { FilterCondition, OptionSource } from '../../../interface/report-field/selection-field';
 import PDFFieldContainer from '../PDFFieldContainer/PDFFieldContainer';
 import PDFFieldLabel from '../PDFFieldLabel/PDFFieldLabel';
 import PDFFieldRenderer from '../PDFFieldRenderer/PDFFieldRenderer';
@@ -15,34 +13,45 @@ interface Props {
     field: CompositeField;
     formData: DocumentData;
     diagramUrl: string;
-    pdfStyle: {
-        imagePerRow: number;
-        imagePageBreak: boolean;
-        fontSize: number;
-        pagePadding: number;
-    };
-    getOptions: (source: string, filterCondition?: FilterCondition | undefined) => any[];
+    getOptions: (
+        optionSource: OptionSource<any>,
+        filterCondition?: FilterCondition | undefined,
+    ) => any[];
 }
 
-const PDFCompositeField = ({ field, formData, diagramUrl, pdfStyle, getOptions }: Props) => {
+const PDFCompositeField = ({ field, formData, diagramUrl, getOptions }: Props) => {
     return (
-        <PDFFieldContainer orientation={field.orientation} pdfStyle={pdfStyle}>
+        <PDFFieldContainer orientation={field.orientation}>
             {/* Label */}
             <PDFFieldLabel field={field} />
             {/* Value */}
             <ReactPDF.View
                 style={{
-                    ...(fieldFlex.value[field.orientation] as Style),
-                    ...{ flexDirection: field.compositeOrientation },
+                    flex: '0 0 auto',
+                    flexDirection: field.compositeOrientation,
+                    width:
+                        field.orientation === 'column'
+                            ? '100%'
+                            : `calc(100% - ${field.labelWidth || '35%'})`,
                 }}
             >
-                {field.fields.map((compositeChildField) => {
+                {field.fields.map((compositeChildField, idx) => {
                     const compositeChildValue = formData[compositeChildField.id];
 
                     return (
                         <ReactPDF.View
                             key={compositeChildField.id}
-                            style={{ ...(fieldSectionValue as Style) }}
+                            style={{
+                                flexGrow: 0,
+                                flexShrink: 0,
+                                flexBasis: 'auto',
+                                padding:
+                                    field.orientation === 'row' &&
+                                    field.compositeOrientation === 'row' &&
+                                    idx > 0
+                                        ? '0 3px'
+                                        : '0',
+                            }}
                         >
                             <PDFFieldRenderer
                                 field={compositeChildField}

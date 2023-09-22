@@ -1,10 +1,9 @@
 import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
-import { Style } from '@react-pdf/types/style';
 
-import { Field } from '../../../interface/field';
-import { fieldFlex, fieldSectionLabel } from '../../../styles/report/style';
+import { noLabelField } from '../../../container/Report/FieldComponent/field-type';
+import { Field } from '../../../interface/report-field/field';
 
 interface Props {
     field: Field;
@@ -13,15 +12,11 @@ interface Props {
 const PDFFieldLabel = ({ field }: Props) => {
     return (
         <>
-            {!field.hideLabel && (
-                <ReactPDF.View
-                    style={{
-                        ...(fieldSectionLabel as Style),
-                        ...(fieldFlex.label[field.orientation] as Style),
-                        ...(field.labelStyle || {}),
-                    }}
-                >
-                    {field.label && <ReactPDF.Text>{field.label}</ReactPDF.Text>}
+            {!field.hideLabel && !noLabelField[field.type] && (
+                <ReactPDF.View style={{ minWidth: field?.labelWidth || '35%' }}>
+                    {field.label && (
+                        <ReactPDF.Text style={field.labelStyle || {}}>{field.label}</ReactPDF.Text>
+                    )}
                 </ReactPDF.View>
             )}
         </>

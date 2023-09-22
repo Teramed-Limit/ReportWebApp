@@ -5,21 +5,20 @@ import { Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
-import { useRecoilValue } from 'recoil';
 import { Observable, Subject } from 'rxjs';
 import { finalize, map, switchMap } from 'rxjs/operators';
 
 import classes from './PdfCreator.module.scss';
-import PDFPage from './PDFPage/PDFPage';
 import PDFPhoto from './PDFPhoto/PDFPhoto';
 import PDFReportContent from './PDFReportContent/PDFReportContent';
 import PDFReportFooter from './PDFReportFooter/PDFReportFooter';
 import PDFReportHeader from './PDFReportHeader/PDFReportHeader';
-import { reportZoomState } from '../../atom/report-generator';
+import { styles } from './styles/style';
 import { httpReq } from '../../axios/axios';
 import useLocalStorage from '../../hooks/useLocalStorage';
 import { LoginResult, UserAccountInfo } from '../../interface/auth';
 import { FormDefine, Section } from '../../interface/define';
+import { Field } from '../../interface/report-field/field';
 import { RepPage } from '../../interface/report-generator/rep-page';
 import { useOptionStore, useReportDataStore, useReportImageStore } from '../../models/useStore';
 import ConfigService from '../../service/config-service';
@@ -29,7 +28,8 @@ import Spinner from '../Spinner/Spinner';
 
 interface Props {
     showToolbar?: boolean;
-    pdfDefine: FormDefine;
+    formDefine: FormDefine;
+    imageDefine: Field[];
     headerDefine: RepPage;
     footerDefine: RepPage;
     onPdfRenderCallback?: (base64: string) => void;
@@ -39,7 +39,8 @@ export const padding = 0.2;
 
 const PdfCreator = ({
     showToolbar = false,
-    pdfDefine,
+    formDefine,
+    imageDefine,
     headerDefine,
     footerDefine,
     onPdfRenderCallback,
@@ -58,21 +59,16 @@ const PdfCreator = ({
     // pdf style config
     const [row, setRow] = useLocalStorage('imagePerRow', 4);
     const [pageBreak, setPageBreak] = useLocalStorage('imagePageBreak', false);
-    const [fontSize, setFontSize] = useLocalStorage('fontSize', 10);
     const [pagePadding, setPagePadding] = useLocalStorage('pagePadding', 8);
-
-    const zoom = useRecoilValue(reportZoomState);
 
     const pdfStyle: {
         imagePerRow: number;
         imagePageBreak: boolean;
-        fontSize: number;
         pagePadding: number;
     } = {
-        imagePerRow: row,
-        imagePageBreak: pageBreak,
-        fontSize,
-        pagePadding,
+        imagePerRow: row || 4,
+        imagePageBreak: pageBreak || false,
+        pagePadding: pagePadding || 8,
     };
 
     const diagramUrl = exportDiagramUrl();
@@ -187,26 +183,6 @@ const PdfCreator = ({
                     </ToggleButton>
                 </Stack>
 
-                <Stack direction="column" sx={{ width: '80px' }}>
-                    <Typography variant="caption" component="div">
-                        Font Size
-                    </Typography>
-                    <TextField
-                        type="number"
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        inputProps={{
-                            min: 2,
-                            max: 36,
-                        }}
-                        value={fontSize}
-                        onChange={(event) => {
-                            setFontSize(parseInt(event.target.value, 10));
-                        }}
-                    />
-                </Stack>
-
                 <Stack direction="column" sx={{ width: '100px' }}>
                     <Typography variant="caption" component="div">
                         Page Padding
@@ -241,17 +217,22 @@ const PdfCreator = ({
                         subject={studyInsUID}
                         onRender={onPdfRender}
                     >
-                        <PDFPage>
+                        <ReactPDF.Page
+                            size="A4"
+                            style={{
+                                ...styles.page,
+                                paddingBottom: footerDefine.height,
+                            }}
+                        >
                             {/* Header */}
                             <PDFReportHeader
                                 formData={formData.toJSON()}
                                 userData={userData}
                                 page={headerDefine}
-                                zoom={zoom}
                             >
                                 <PDFReportContent
-                                    pdfStyle={pdfStyle}
-                                    formSections={pdfDefine.sections.filter(
+                                    pagePadding={pagePadding}
+                                    formSections={formDefine.sections.filter(
                                         (section: Section) => section.isHeader,
                                     )}
                                     formData={formData.toJSON()}
@@ -259,11 +240,10 @@ const PdfCreator = ({
                                     getOptions={getCodeList}
                                 />
                             </PDFReportHeader>
-                            <ReactPDF.View />
                             {/* Body */}
                             <PDFReportContent
-                                pdfStyle={pdfStyle}
-                                formSections={pdfDefine.sections.filter(
+                                pagePadding={pagePadding}
+                                formSections={formDefine.sections.filter(
                                     (section: Section) => !section?.isHeader,
                                 )}
                                 formData={formData.toJSON()}
@@ -271,16 +251,19 @@ const PdfCreator = ({
                                 getOptions={getCodeList}
                             />
                             {selectedImage.length > 0 && (
-                                <PDFPhoto pdfStyle={pdfStyle} imageList={selectedImage} />
+                                <PDFPhoto
+                                    pdfStyle={pdfStyle}
+                                    imageDefine={imageDefine}
+                                    imageList={selectedImage}
+                                />
                             )}
                             {/* Footer */}
                             <PDFReportFooter
                                 formData={formData.toJSON()}
                                 userData={userData}
                                 page={footerDefine}
-                                zoom={zoom}
                             />
-                        </PDFPage>
+                        </ReactPDF.Page>
                     </Document>
                 </PDFViewer>
             )}
