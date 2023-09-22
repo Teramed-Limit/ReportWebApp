@@ -5,7 +5,6 @@ import { Redirect, Route, Switch } from 'react-router-dom';
 import AuthRoute from './Auth-route';
 import NotFoundPage from './components/NotFoundPage/NotFoundPage';
 import Account from './container/Account/Account';
-import History from './container/History/History';
 import LoginStatus from './container/LoginStatus/LoginStatus';
 import Query from './container/Query/Query';
 import Report from './container/Report/Report';
@@ -19,7 +18,7 @@ function AppRoutes() {
         <Switch>
             <Redirect exact from="/" to="/home" />
             <PrivateRoute exact path="/home" component={<Query />} />
-            <PrivateRoute exact path="/history" component={<History />} />
+            {/* <PrivateRoute exact path="/history" component={<History />} /> */}
             <PrivateRoute
                 exact
                 path="/reporting/history/studyInstanceUID/:studyInstanceUID/version/:version"
