@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import ReactPDF from '@react-pdf/renderer';
 
@@ -19,16 +19,13 @@ interface Props {
 const padding = 0.2;
 
 const PDFPhoto = ({ pdfStyle, imageList }: Props) => {
-    const [emptyImageList, setEmptyImageList] = useState<string[]>([]);
-
-    // 計算要填入多少空的位置
-    useEffect(() => {
-        if (imageList.length % pdfStyle.imagePerRow === 0) return;
+    let emptyImageList: string[] = [];
+    if (imageList.length % pdfStyle.imagePerRow !== 0) {
         const fillCount = pdfStyle.imagePerRow - (imageList.length % pdfStyle.imagePerRow);
         const result: string[] = [];
         for (let i = 0; i < fillCount; i++) result.push(generateUUID());
-        setEmptyImageList(result);
-    }, [imageList.length, pdfStyle.imagePerRow]);
+        emptyImageList = result;
+    }
 
     const customSort = (a, b) => {
         if (a.MappingNumber === 0) return 1;
