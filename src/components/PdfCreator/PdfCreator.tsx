@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { Check } from '@mui/icons-material';
 import { Stack, TextField, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ReactPDF, { Document, PDFViewer } from '@react-pdf/renderer';
-import { map } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import { finalize, map, switchMap } from 'rxjs/operators';
 
 import classes from './PdfCreator.module.scss';
 import PDFFooter from './PDFFooter/PDFFooter';
@@ -35,6 +36,7 @@ interface Props {
 export const padding = 0.2;
 
 const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
+    const onPdfRenderSubject = useRef(new Subject<Blob>());
     const { formData, studyInsUID } = useReportDataStore();
     const { selectedImage, exportDiagramUrl } = useReportImageStore();
     const { pdfDefine } = useReportDefineStore();
@@ -69,27 +71,38 @@ const PdfCreator = ({ showToolbar = false, onPdfRenderCallback }: Props) => {
 
     const diagramUrl = exportDiagramUrl();
 
-    const onPdfRender = useCallback(
-        (renderProps: ReactPDF.OnRenderProps) => {
-            setLoading(false);
-            if (!renderProps?.blob) return;
-            const reader = new FileReader();
-            reader.readAsDataURL(renderProps.blob);
+    // 確保就算onPdfRender，render好幾次，也只會執行一次callback
+    const onPdfRender = useCallback((renderProps: ReactPDF.OnRenderProps) => {
+        if (!renderProps?.blob) return;
+        onPdfRenderSubject.current.next(renderProps.blob);
+    }, []);
 
-            reader.onloadend = () => {
-                setTimeout(() => {
-                    if (!renderProps?.blob || !reader?.result) return;
-                    const pdfBase64 = (reader.result as string).replace(
-                        'data:application/pdf;base64,',
-                        '',
-                    );
-                    onPdfRenderCallback?.(pdfBase64);
-                });
-                setLoading(false);
-            };
-        },
-        [onPdfRenderCallback],
-    );
+    // 配合上方的onPdfRender，利用switchMap確保只會執行一次callback
+    useEffect(() => {
+        const subscription = onPdfRenderSubject.current
+            .pipe(
+                switchMap(
+                    (blob: Blob) =>
+                        new Observable<Blob>((observer) => {
+                            observer.next(blob);
+                            observer.complete();
+                        }),
+                ),
+                finalize(() => setLoading(false)),
+            )
+            .subscribe((blob: Blob) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(blob);
+                reader.onloadend = () => {
+                    onPdfRenderCallback?.(reader.result as string);
+                    onPdfRenderSubject.current.complete();
+                };
+            });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, [onPdfRenderCallback]);
 
     // Get hospital logo
     useEffect(() => {
