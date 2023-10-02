@@ -12,7 +12,7 @@ import { ModalContext } from '../../../context/modal-context';
 import { useResize } from '../../../hooks/useResize';
 import { CanvasHandle } from '../../../interface/konva-stage-event';
 import { useReportDataStore, useReportImageStore } from '../../../models/useStore';
-import { convertUrlToBase64, isEmptyOrNil } from '../../../utils/general';
+import { isEmptyOrNil } from '../../../utils/general';
 import DiagramSelectModal from '../../Modals/DiagramSelectModal/DiagramSelectModal';
 import ImageCanvasModal from '../../Modals/ImageCanvasModal/ImageCanvasModal';
 
@@ -48,7 +48,8 @@ const ReportImage = () => {
                 .subscribe(async (res) => {
                     onImageStateInitialize();
                     if (res.data.length === 1) {
-                        const diagramBase64 = await convertUrlToBase64(res.data[0].DiagramUrl);
+                        // const diagramBase64 = await convertUrlToBase64(res.data[0].DiagramUrl);
+                        const diagramBase64 = res.data[0].DiagramUrl;
                         valueChanged('DiagramData', diagramBase64);
                         valueChanged('DiagramMarkers', []);
                         return;

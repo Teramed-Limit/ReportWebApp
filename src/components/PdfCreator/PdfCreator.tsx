@@ -120,10 +120,7 @@ const PdfCreator = ({
                 const reader = new FileReader();
                 reader.readAsDataURL(blob);
                 reader.onloadend = () => {
-                    const pdfBase64 = (reader.result as string).replace(
-                        'data:application/pdf;base64,',
-                        '',
-                    );
+                    const pdfBase64 = reader.result as string;
                     onPdfRenderCallback?.(pdfBase64);
                     onPdfRenderSubject.current.complete();
                 };

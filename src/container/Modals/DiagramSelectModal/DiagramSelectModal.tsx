@@ -8,7 +8,7 @@ import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
 import { Diagram } from '../../../interface/diagram';
 import { useReportDataStore } from '../../../models/useStore';
-import { convertUrlToBase64, isEmptyOrNil } from '../../../utils/general';
+import { isEmptyOrNil } from '../../../utils/general';
 
 interface Props {
     diagramList: Diagram[];
@@ -33,7 +33,8 @@ const DiagramSelectModal = ({ diagramList }: Props) => {
     const onSelect = async (id: number) => {
         const diagram = diagramList.find((image) => image.Number === id);
         setSelectedNumber(diagram?.Number || -1);
-        const diagramBase64 = await convertUrlToBase64(diagram?.DiagramUrl);
+        // const diagramBase64 = await convertUrlToBase64(diagram?.DiagramUrl);
+        const diagramBase64 = diagram?.DiagramUrl;
         setSelectedDiagram(diagramBase64 || '');
     };
 
