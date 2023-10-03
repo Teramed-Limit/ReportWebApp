@@ -63,7 +63,7 @@ const ReportDefineAttributeEditor = () => {
         if (!ComponentToRender) return null;
 
         let renderAttribute: FieldAttribute | CompositeFieldAttribute | ArrayFieldAttribute =
-            new FieldAttribute(attribute);
+            new FieldAttribute(attribute || {});
         if (ComponentToRender) {
             switch (type) {
                 case LayoutType.Page:

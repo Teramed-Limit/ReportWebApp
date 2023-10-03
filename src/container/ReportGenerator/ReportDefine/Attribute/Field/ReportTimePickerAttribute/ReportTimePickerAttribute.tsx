@@ -1,25 +1,25 @@
 import React from 'react';
 
-import { ReportDiagramFieldAttribute } from './ReportDiagramFieldAttribute';
+import { TimePickerFieldAttribute } from './TimePickerFieldAttribute';
 import AttributeList from '../../../../../../components/AttributeList/AttributeList';
 import { RenderComponentAttributeProps } from '../../ReportDefineAttributeEditor/ReportDefineAttributeEditor';
 
-const ReportDiagramAttribute = ({
+const ReportTimePickerAttribute = ({
     attrPath,
     attribute,
     onSetAttribute,
-}: RenderComponentAttributeProps<ReportDiagramFieldAttribute>) => {
+}: RenderComponentAttributeProps<TimePickerFieldAttribute>) => {
     return (
         <>
             <AttributeList
                 defaultExpanded={false}
-                attribute={new ReportDiagramFieldAttribute(attribute)}
+                attribute={new TimePickerFieldAttribute(attribute)}
                 setAttribute={onSetAttribute}
                 filterType={'include'}
-                includeAttribute={['width', 'height']}
+                includeAttribute={['defaultNow']}
             />
         </>
     );
 };
 
-export default ReportDiagramAttribute;
+export default ReportTimePickerAttribute;

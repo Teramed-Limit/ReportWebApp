@@ -9,6 +9,7 @@ import Radio from './Radio/Radio';
 import ReportDiagram from './ReportDiagram/ReportDiagram';
 import TextArea from './TextArea/TextArea';
 import TextInput from './TextInput/TextInput';
+import TimePicker from './TimePicker/TimePicker';
 import QualityBowelScore from '../../../components/QualityBowelScore/QualityBowelScore';
 
 export const FieldMapper = {
@@ -23,4 +24,5 @@ export const FieldMapper = {
     [FormFieldType.QualityBowelScore]: QualityBowelScore,
     [FormFieldType.ReportDiagram]: ReportDiagram,
     [FormFieldType.DatePicker]: DatePicker,
+    [FormFieldType.TimePicker]: TimePicker,
 };

@@ -22,6 +22,8 @@ import ReportTextAreaAttribute from './Field/ReportTextAreaAttribute/ReportTextA
 import { TextAreaFieldAttribute } from './Field/ReportTextAreaAttribute/TextAreaFieldAttribute';
 import ReportTextAttribute from './Field/ReportTextAttribute/ReportTextAttribute';
 import { TextFieldAttribute } from './Field/ReportTextAttribute/TextFieldAttribute';
+import ReportTimePickerAttribute from './Field/ReportTimePickerAttribute/ReportTimePickerAttribute';
+import { TimePickerFieldAttribute } from './Field/ReportTimePickerAttribute/TimePickerFieldAttribute';
 import ReportPageAttribute from './Layout/ReportPageAttribute/ReportPageAttribute';
 import ReportSectionAttribute from './Layout/ReportSectionAttribute/ReportSectionAttribute';
 import ReportSubSectionAttribute from './Layout/ReportSubSectionAttribute/ReportSubSectionAttribute';
@@ -38,6 +40,7 @@ export const FieldAttributeMapper = {
     [FormFieldType.Checkbox]: (field) => new CheckBoxFieldAttribute(field),
     [FormFieldType.ReportDiagram]: (field) => new ReportDiagramFieldAttribute(field),
     [FormFieldType.DatePicker]: (field) => new DatePickerFieldAttribute(field),
+    [FormFieldType.TimePicker]: (field) => new TimePickerFieldAttribute(field),
     [FormFieldType.Array]: (field) => new ArrayFieldAttribute(field),
     [FormFieldType.Composite]: (field) => new CompositeFieldAttribute(field),
 };
@@ -59,5 +62,6 @@ export const ReportDefineAttributesMapper: ComponentTypeMap = {
     [FormFieldType.Radio]: ReportRadioAttribute,
     [FormFieldType.Checkbox]: ReportCheckboxAttribute,
     [FormFieldType.DatePicker]: ReportDatePickerAttribute,
+    [FormFieldType.TimePicker]: ReportTimePickerAttribute,
     [FormFieldType.ReportDiagram]: ReportDiagramAttribute,
 };

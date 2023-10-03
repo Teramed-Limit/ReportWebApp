@@ -11,6 +11,7 @@ export enum FormFieldType {
     QualityBowelScore = 'QualityBowelScore',
     ReportDiagram = 'ReportDiagram',
     DatePicker = 'DatePicker',
+    TimePicker = 'TimePicker',
     Array = 'Array',
 }
 
