@@ -35,8 +35,6 @@ export interface ReportImageData {
     MappingNumber: number;
     ReportMark?: ReportMark;
     [prop: string]: any;
-    DescriptionOfSites: string;
-    DescriptionOfFindings: string;
 }
 
 export interface ReportMark {

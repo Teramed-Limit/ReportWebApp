@@ -10,7 +10,7 @@ import {
 } from 'mst-effect';
 import { Observable } from 'rxjs';
 
-import { DocumentData, ReportStatus } from '../../interface/document-data';
+import { DocumentData, ReportImageData, ReportStatus } from '../../interface/document-data';
 import { FormControl, FormState } from '../../interface/form-state';
 import { ReportResponseNotification } from '../../interface/notification';
 import { ReportValidation } from '../../interface/report-validation';
@@ -36,6 +36,7 @@ interface ReportDataTypeOfActions {
     readonly reportStatus: ReportStatus;
     readonly studyInsUID: any | undefined;
     readonly reportTemplate: any | undefined;
+    readonly imageData: ReportImageData[];
     // Actions
     valueChanged: (id: string, value: any) => void;
 

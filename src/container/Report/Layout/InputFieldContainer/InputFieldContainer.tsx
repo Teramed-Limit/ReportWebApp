@@ -16,6 +16,7 @@ import InputFieldLabel from '../InputFieldLabel/InputFieldLabel';
 interface Props {
     field: Field;
     orientation: 'row' | 'column';
+    customValue?: any;
     customValueChange?: (id: string, text: string) => void;
     customValueGetter?: (id: string) => string;
     actionContext: React.Context<{ [p: string]: (actionParams: any) => void }>;
@@ -25,6 +26,7 @@ interface Props {
 
 const InputFieldContainer = ({
     field,
+    customValue,
     orientation,
     customValueChange,
     customValueGetter,
@@ -32,11 +34,28 @@ const InputFieldContainer = ({
     prefixComp,
     suffixComp,
 }: Props) => {
-    const { formState, formData, modifiable } = useReportDataStore();
+    const { formState, formData, modifiable, valueChanged } = useReportDataStore();
     const { isDirty, isValid, errorMessage } = formState.get(field.id) || {
         isDirty: false,
         isValid: false,
         errorMessage: '',
+    };
+
+    let value: any;
+    if (customValue) {
+        value = customValue;
+    } else if (customValueGetter) {
+        value = customValueGetter(field.id);
+    } else {
+        value = formData.get(field.id);
+    }
+
+    const onValueChange = (text: any) => {
+        if (customValueChange) {
+            customValueChange(field.id, text);
+            return;
+        }
+        valueChanged(field.id, text);
     };
 
     return (
@@ -90,8 +109,9 @@ const InputFieldContainer = ({
                 fieldComponent={
                     <ReportDynamicField
                         field={field}
-                        customValueChange={customValueChange}
-                        customValueGetter={customValueGetter}
+                        value={value}
+                        modifiable={modifiable}
+                        onValueChange={onValueChange}
                     />
                 }
             />

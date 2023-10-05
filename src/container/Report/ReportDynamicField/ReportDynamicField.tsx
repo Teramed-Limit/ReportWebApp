@@ -3,29 +3,31 @@ import React from 'react';
 import { observer } from 'mobx-react';
 
 import { Field } from '../../../interface/report-field/field';
-import { useReportDataStore } from '../../../models/useStore';
 import { FieldMapper } from '../FieldComponent/field-mapper';
 
 interface DynamicFieldProps {
     field: Field;
-    customValueGetter?: (id: string) => string;
-    customValueChange?: (id: string, text: string) => void;
+    value: any;
+    modifiable: boolean;
+    onValueChange?: (value: any) => void;
 }
 
 const ReportDynamicField = React.forwardRef(
-    ({ field, customValueGetter, customValueChange }: DynamicFieldProps, ref) => {
-        const store = useReportDataStore();
-        const { formData, valueChanged, modifiable } = store;
-
-        const value = customValueGetter ? customValueGetter(field.id) : formData.get(field.id);
-
-        const onValueChange = (text: string) => {
-            if (customValueChange) {
-                customValueChange(field.id, text);
-                return;
-            }
-            valueChanged(field.id, text);
-        };
+    ({ field, value, modifiable, onValueChange }: DynamicFieldProps, ref) => {
+        // const store = useReportDataStore();
+        // const { formData, valueChanged, modifiable } = store;
+        //
+        // const value = customValueGetter ? customValueGetter(field.id) : formData.get(field.id);
+        //
+        // console.log('ReportDynamicField', field.id, value);
+        //
+        // const onValueChange = (text: string) => {
+        //     if (customValueChange) {
+        //         customValueChange(field.id, text);
+        //         return;
+        //     }
+        //     valueChanged(field.id, text);
+        // };
 
         const RenderComponent = FieldMapper[field.type];
         // component does exist

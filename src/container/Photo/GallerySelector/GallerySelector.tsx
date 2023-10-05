@@ -69,20 +69,19 @@ const GallerySelector = () => {
                 <Gallery>
                     {images.map((image, index) => (
                         <ImageSelector
+                            key={image.SOPInstanceUID}
+                            id={image.SOPInstanceUID}
                             disabled={!modifiable}
                             lockReorder={lockReorder}
-                            key={image.SOPInstanceUID}
                             fields={defineStore.imageDefine}
+                            imageData={image}
                             index={index}
                             size={100 / (7 - slider)}
-                            id={image.SOPInstanceUID}
                             src={
                                 isEmptyOrNil(image?.EditedImageSrc)
                                     ? image.ImageSrc
                                     : image.EditedImageSrc
                             }
-                            checked={image.IsAttachInReport}
-                            markerMappingNumber={image.MappingNumber}
                             onImageCheck={onImageCheck}
                             onClearImageMark={onClearImageMark}
                             onImageMark={onImageMark}

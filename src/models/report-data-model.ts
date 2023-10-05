@@ -72,6 +72,9 @@ export const DataModel: ReportDataModal = types
             get diagramMarkers() {
                 return self.formData.get('DiagramMarkers') || [];
             },
+            get imageData() {
+                return self.formData.get('ReportImageData') || [];
+            },
         };
     })
     .actions((self) => {

@@ -38,6 +38,7 @@ const BaseSelection = ({
     return (
         <Select
             id={id}
+            styles={{ menuPortal: (base) => ({ ...base, zIndex: 9999 }) }}
             isDisabled={disabled}
             className={classes.report__container}
             classNamePrefix="report"

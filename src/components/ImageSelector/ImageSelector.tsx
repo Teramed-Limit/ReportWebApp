@@ -11,16 +11,16 @@ import MessageModal from '../../container/Modals/MessageModal/MessageModal';
 import { ReportActionContext } from '../../container/Report/Context/reportActionProvider';
 import InputFieldContainer from '../../container/Report/Layout/InputFieldContainer/InputFieldContainer';
 import { ModalContext } from '../../context/modal-context';
+import { ReportImageData } from '../../interface/document-data';
 import { Field } from '../../interface/report-field/field';
 
 interface ImageSelectorProps {
     id: string;
     fields: Field[];
+    imageData: ReportImageData;
     index: number;
     size: number;
     src: string;
-    checked?: boolean;
-    markerMappingNumber: number;
     disabled: boolean;
     lockReorder: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
@@ -34,10 +34,9 @@ const ImageSelector = ({
     id,
     index,
     fields,
+    imageData,
     size,
     src,
-    checked,
-    markerMappingNumber,
     onImageCheck,
     onImageMark,
     onClearImageMark,
@@ -45,10 +44,8 @@ const ImageSelector = ({
     lockReorder,
     onImageReorder,
     onValueChanged,
-    onValueGetter,
 }: ImageSelectorProps) => {
     const setModal = useContext(ModalContext);
-
     const onEditDiagram = () => {
         setModal(
             <ImageCanvasModal
@@ -86,16 +83,17 @@ const ImageSelector = ({
         >
             <div className={classes.floatWrapperTopLeft}>
                 <Checkbox
+                    id={`checkbox_${id}`}
                     disableRipple
                     className={classes.checkboxRoot}
                     disabled={disabled}
-                    checked={checked}
+                    checked={imageData.IsAttachInReport}
                     size="small"
                     onChange={(event) => onImageCheck(id, event.target.checked)}
                     inputProps={{ 'aria-label': 'primary checkbox' }}
                 />
-                {markerMappingNumber === 0 ? null : (
-                    <Badge color="secondary" badgeContent={markerMappingNumber}>
+                {imageData.MappingNumber === 0 ? null : (
+                    <Badge color="secondary" badgeContent={imageData.MappingNumber}>
                         <FaMapMarkerAlt className={classes.icon} />
                     </Badge>
                 )}
@@ -132,10 +130,10 @@ const ImageSelector = ({
                 return (
                     <InputFieldContainer
                         key={field.id}
-                        field={field}
+                        field={{ ...field, id: `${field.id}_${id}` }}
                         orientation={field.orientation}
                         customValueChange={(_, text: string) => onValueChanged(id, field.id, text)}
-                        customValueGetter={(_) => onValueGetter(id, field.id)}
+                        customValue={imageData[field.id]}
                         actionContext={ReportActionContext}
                     />
                 );
