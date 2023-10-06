@@ -79,7 +79,7 @@ const GallerySelector = () => {
                             size={100 / (7 - slider)}
                             src={
                                 isEmptyOrNil(image?.EditedImageSrc)
-                                    ? image.ImageSrc
+                                    ? image.thumbnailImageSrc
                                     : image.EditedImageSrc
                             }
                             onImageCheck={onImageCheck}
