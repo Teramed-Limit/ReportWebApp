@@ -2,8 +2,11 @@
     display: flex;
     flex-direction: row;
     margin: 10px;
-    justify-content: center;
     position: relative;
+    flex: 1 1 auto;
+    height: 100%;
+    justify-content: space-between;
+    overflow: hidden;
 }
 
 .reportLayout {
@@ -14,6 +17,7 @@
     border: 1px solid darkgrey;
     box-shadow: 5px 5px 5px 1px #ccc;
     border-radius: 5px;
+    overflow: auto;
 }
 
 .page {
@@ -27,7 +31,7 @@
 .header {
     position: sticky;
     top: 0;
-    height: 60px;
+    min-height: 60px;
     background-color: #4082dd;
     box-shadow: 6px 0 10px #48596233;
     overflow: hidden;
@@ -38,8 +42,6 @@
 }
 
 .sticky {
-    position: sticky;
-    top: 67px;
     z-index: 1000;
     background-color: white;
     border: 1px solid white;

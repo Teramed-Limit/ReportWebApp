@@ -56,7 +56,14 @@ const ReportGeneratorSubSection = ({ subSection, path, showGuideLine, actionCont
             }}
             showGuideLine={showGuideLine}
             isFocus={selectedFieldList.has(JSON.stringify(path))}
-            legendComp={<Chip size="small" color="secondary" label={subSection.id} />}
+            legendComp={
+                <Chip
+                    sx={{ cursor: 'pointer' }}
+                    size="small"
+                    color="secondary"
+                    label={subSection.id}
+                />
+            }
             onClick={onSetAttributePath}
         >
             <Box

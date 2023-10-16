@@ -95,7 +95,7 @@ const ReportSectionAttribute = ({
                 }}
                 excludeAttribute={['subSections', 'type']}
             />
-            <Stack spacing="2px">
+            <Stack sx={{ position: 'sticky', bottom: 0 }} spacing="2px">
                 <Button
                     variant="contained"
                     color="secondary"

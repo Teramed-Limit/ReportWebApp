@@ -50,7 +50,9 @@ const ReportGeneratorPage = ({ sections, showGuideLine }: Props) => {
             }}
             showGuideLine={showGuideLine}
             isFocus={selectedFieldList.has(JSON.stringify(['page']))}
-            legendComp={<Chip size="small" color="warning" label="page" />}
+            legendComp={
+                <Chip sx={{ cursor: 'pointer' }} size="small" color="warning" label="page" />
+            }
             onClick={(e) => {
                 onSetAttributePath(e);
             }}

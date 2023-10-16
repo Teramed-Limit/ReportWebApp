@@ -56,7 +56,9 @@ const ReportGeneratorSection = ({ section, path, showGuideLine, actionContext }:
             }
             showGuideLine={showGuideLine}
             isFocus={selectedFieldList.has(JSON.stringify(path))}
-            legendComp={<Chip size="small" color="primary" label={section.id} />}
+            legendComp={
+                <Chip sx={{ cursor: 'pointer' }} size="small" color="primary" label={section.id} />
+            }
             onClick={onSetAttributePath}
         >
             <Box

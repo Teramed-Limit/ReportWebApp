@@ -89,7 +89,7 @@ const ReportDefineAttributeEditor = () => {
                     onSetAttribute={onSetAttribute}
                 />
                 <ComponentToRender {...props} />
-                <Stack spacing="2px">
+                <Stack sx={{ position: 'sticky', bottom: 0 }} spacing="2px">
                     <Button
                         variant="contained"
                         color="secondary"
