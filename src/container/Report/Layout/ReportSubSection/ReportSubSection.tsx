@@ -7,9 +7,9 @@ import { ArrayField } from '../../../../interface/report-field/array-field';
 import { CompositeField } from '../../../../interface/report-field/composite-field';
 import { reportSubsection } from '../../../../styles/report/style';
 import { FormFieldType } from '../../FieldComponent/field-type';
-import FormSectionArrayField from '../InputArrayField/InputArrayField';
-import FormSectionCompositeField from '../InputCompositeField/InputCompositeField';
-import FormSectionFieldContainer from '../InputFieldContainer/InputFieldContainer';
+import InputArrayField from '../InputArrayField/InputArrayField';
+import InputCompositeField from '../InputCompositeField/InputCompositeField';
+import InputFieldContainer from '../InputFieldContainer/InputFieldContainer';
 
 interface Props {
     subSection: SubSection;
@@ -27,7 +27,7 @@ const ReportSubSection = ({ subSection, actionContext }: Props) => {
                 switch (field.type) {
                     case FormFieldType.Composite:
                         return (
-                            <FormSectionCompositeField
+                            <InputCompositeField
                                 key={field.id}
                                 orientation={field.orientation}
                                 field={field as CompositeField}
@@ -36,7 +36,7 @@ const ReportSubSection = ({ subSection, actionContext }: Props) => {
                         );
                     case FormFieldType.Array:
                         return (
-                            <FormSectionArrayField
+                            <InputArrayField
                                 key={field.id}
                                 field={field as ArrayField}
                                 actionContext={actionContext}
@@ -44,7 +44,7 @@ const ReportSubSection = ({ subSection, actionContext }: Props) => {
                         );
                     default:
                         return (
-                            <FormSectionFieldContainer
+                            <InputFieldContainer
                                 key={field.id}
                                 field={field}
                                 orientation={field.orientation}

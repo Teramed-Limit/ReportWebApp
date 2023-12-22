@@ -62,18 +62,18 @@ const ReportHistory = () => {
     }, [fetchHistoryReport, history, showNotifyMsg, studyInstanceUID, version]);
 
     // fetch history define
-    useEffect(() => {
-        fetchHistoryDefine({ studyInstanceUID, version }, (signal$) =>
-            signal$.pipe(
-                tap(({ notification }) => {
-                    showNotifyMsg(notification);
-                    if (notification.messageType === MessageType.Error) {
-                        history.push('/history');
-                    }
-                }),
-            ),
-        );
-    }, [fetchHistoryDefine, history, showNotifyMsg, studyInstanceUID, version]);
+    // useEffect(() => {
+    //     fetchHistoryDefine({ studyInstanceUID, version }, (signal$) =>
+    //         signal$.pipe(
+    //             tap(({ notification }) => {
+    //                 showNotifyMsg(notification);
+    //                 if (notification.messageType === MessageType.Error) {
+    //                     history.push('/history');
+    //                 }
+    //             }),
+    //         ),
+    //     );
+    // }, [fetchHistoryDefine, history, showNotifyMsg, studyInstanceUID, version]);
 
     // fetch report timeline
     useEffect(() => {

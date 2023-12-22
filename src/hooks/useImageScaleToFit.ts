@@ -11,54 +11,33 @@ export const useImageScaleToFit = (
     const [scale, setScale] = useState(1);
     const [canvasWidth, setCanvasWidth] = useState(containerWidth);
     const [canvasHeight, setCanvasHeight] = useState(containerHeight);
+    const [originalWidth, setOriginalWidth] = useState(0);
+    const [originalHeight, setOriginalHeight] = useState(0);
 
     // calculate scale of image and container
     useLayoutEffect(() => {
-        const originalWidth = image?.naturalWidth || 0;
-        const originalHeight = image?.naturalHeight || 0;
+        // 獲取原始圖片的尺寸
+        const oriWidth = image?.naturalWidth || 0;
+        const oriHeight = image?.naturalHeight || 0;
+
+        setOriginalWidth(oriWidth);
+        setOriginalHeight(oriHeight);
 
         if (originalWidth === 0 || originalHeight === 0) return;
+        if (containerWidth === 0 || containerHeight === 0) return;
 
-        let adjustWidth = originalWidth;
-        let adjustHeight = originalHeight;
-        let adjustScale = 1;
-        while (containerHeight < adjustHeight || containerWidth < adjustWidth) {
-            adjustWidth *= 0.95;
-            adjustHeight *= 0.95;
-            adjustScale *= 0.95;
-        }
-        setCanvasWidth(adjustWidth);
-        setCanvasHeight(adjustHeight);
-        setScale(adjustScale);
+        // 計算寬度和高度的縮放比例
+        const scaleWidth = containerWidth / originalWidth;
+        const scaleHeight = containerHeight / originalHeight;
 
-        // if (containerWidth < containerHeight) {
-        //     const adjustedHeight = (originalHeight * containerWidth) / originalWidth;
-        //     if (containerHeight < adjustedHeight) {
-        //         const adjustScale = containerHeight / adjustedHeight;
-        //         setCanvasWidth(containerWidth * adjustScale);
-        //         setCanvasHeight(adjustedHeight * adjustScale);
-        //         setScale((containerWidth / originalWidth) * adjustScale);
-        //     } else {
-        //         setCanvasWidth(containerWidth);
-        //         setCanvasHeight(adjustedHeight);
-        //         setScale(containerWidth / originalWidth);
-        //     }
-        // }
-        //
-        // if (containerWidth > containerHeight) {
-        //     const adjustedWidth = (originalWidth * containerHeight) / originalHeight;
-        //     if (adjustedWidth < containerWidth) {
-        //         const adjustScale = containerWidth / adjustedWidth;
-        //         setCanvasWidth(adjustedWidth * adjustScale);
-        //         setCanvasHeight(containerHeight * adjustScale);
-        //         setScale((containerHeight / originalHeight) * adjustScale);
-        //     } else {
-        //         setCanvasWidth(adjustedWidth);
-        //         setCanvasHeight(containerHeight);
-        //         setScale(containerHeight / originalHeight);
-        //     }
-        // }
-    }, [containerHeight, containerWidth, image]);
+        // 選擇較小的縮放比例作為最終縮放比例
+        const ratio = Math.min(scaleWidth, scaleHeight);
 
-    return { image, scale, canvasWidth, canvasHeight };
+        // 設置圖片的新寬度和高度
+        setCanvasWidth(originalWidth * ratio);
+        setCanvasHeight(originalHeight * ratio);
+        setScale(ratio);
+    }, [containerHeight, containerWidth, image, originalHeight, originalWidth, src]);
+
+    return { image, scale, canvasWidth, canvasHeight, originalWidth, originalHeight };
 };

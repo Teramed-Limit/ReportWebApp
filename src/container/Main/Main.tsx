@@ -14,12 +14,12 @@ const Main = () => {
 
     // 初始化，reportDefine 和 codeList
     const { fetchDefine } = useReportDefineStore();
-    const { initializeCodeList } = useOptionStore();
+    const { fetchCodeList } = useOptionStore();
 
     useEffect(() => {
-        initializeCodeList().then();
-        fetchDefine().then();
-    }, [fetchDefine, initializeCodeList]);
+        fetchCodeList();
+        fetchDefine();
+    }, [fetchDefine, fetchCodeList]);
 
     return (
         <div className={classes.container}>

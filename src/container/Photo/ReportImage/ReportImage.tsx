@@ -37,6 +37,12 @@ const ReportImage = () => {
         setContainerHeight(containerRef.current.offsetHeight);
     });
 
+    useEffect(() => {
+        if (containerRef === null || containerRef.current === null) return;
+        setContainerWidth(containerRef.current.offsetWidth);
+        setContainerHeight(containerRef.current.offsetHeight);
+    }, []);
+
     const containerRef = useRef<HTMLDivElement>(null);
 
     const setModal = useContext(ModalContext);
@@ -72,12 +78,6 @@ const ReportImage = () => {
         }
         fetchReportDiagram(false);
     }, [diagramData, reportTemplate, fetchReportDiagram]);
-
-    useEffect(() => {
-        if (containerRef === null || containerRef.current === null) return;
-        setContainerWidth(containerRef.current.offsetWidth);
-        setContainerHeight(containerRef.current.offsetHeight);
-    }, []);
 
     const onNewDiagram = () => {
         fetchReportDiagram(true);

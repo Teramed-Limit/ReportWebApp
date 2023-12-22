@@ -8,6 +8,7 @@ interface Props {
     disabled?: boolean;
     placeholder?: string;
     onValueChange: (str: string) => void;
+    onFocus?: (event) => void;
     onKeyPress?: (event) => void;
     suffix?: string;
     prefix?: string;
@@ -20,6 +21,7 @@ const BaseTextInput = ({
     disabled = false,
     placeholder = '',
     onValueChange,
+    onFocus = () => {},
     onKeyPress = () => {},
     suffix = '',
     prefix = '',
@@ -40,6 +42,7 @@ const BaseTextInput = ({
                 value={value}
                 onChange={(event) => onValueChange(event.target.value)}
                 onKeyPressCapture={(event) => onKeyPress(event)}
+                onFocus={(event) => onFocus(event)}
             />
             <span className={classes.span}>&nbsp;{suffix}</span>
         </div>

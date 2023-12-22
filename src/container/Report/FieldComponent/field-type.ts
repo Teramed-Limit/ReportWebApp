@@ -13,6 +13,7 @@ export enum FormFieldType {
     DatePicker = 'DatePicker',
     TimePicker = 'TimePicker',
     Array = 'Array',
+    SRText = 'SRText',
 }
 
 export enum LayoutType {

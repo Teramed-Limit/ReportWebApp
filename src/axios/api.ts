@@ -18,6 +18,7 @@ import {
 import { HkcctCode } from '../interface/hkcct';
 import { LoginStatusData } from '../interface/login-status';
 import { ReportTimelineData } from '../interface/report-timeline';
+import { SRTreeNode } from '../interface/sr-tree';
 import { StudyData } from '../interface/study-data';
 import { SystemConfig } from '../interface/system-config';
 import { RoleFunction } from '../interface/user-role';
@@ -84,6 +85,13 @@ export function fetchReport(studyInsUid: string): Observable<AxiosResponse<Docum
     return httpReq<DocumentData>()({
         method: 'get',
         url: `api/report/studyInstanceUID/${studyInsUid}`,
+    });
+}
+
+export function fetchSRReport(studyInsUid: string): Observable<AxiosResponse<SRTreeNode>> {
+    return httpReq<SRTreeNode>()({
+        method: 'get',
+        url: `api/structureReport/studyInstanceUID/${studyInsUid}`,
     });
 }
 
@@ -453,5 +461,13 @@ export function unAssignedStudies(studyInstanceUID: string, userId: string) {
     return httpReq<AssignedStudy[]>()({
         method: 'delete',
         url: `api/StudyAssignment/${studyInstanceUID}/userId/${userId}`,
+    });
+}
+
+export function loadSRFile(data: FormData): Observable<AxiosResponse<SRTreeNode>> {
+    return httpReq<SRTreeNode>()({
+        method: 'post',
+        url: `api/structureReport/load`,
+        data,
     });
 }

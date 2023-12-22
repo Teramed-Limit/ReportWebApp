@@ -4,7 +4,6 @@ import AccountCircleSharpIcon from '@mui/icons-material/AccountCircleSharp';
 import CloudSyncIcon from '@mui/icons-material/CloudSync';
 import ContactsIcon from '@mui/icons-material/Contacts';
 import FaceIcon from '@mui/icons-material/Face';
-import HistoryIcon from '@mui/icons-material/History';
 import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -56,12 +55,6 @@ const Header = () => {
                         <Button id="btn__home" color="black">
                             <HomeRoundedIcon className={classes.iconButton} />
                             Home
-                        </Button>
-                    </NavigationItem>
-                    <NavigationItem link="/history" id="navigation__history">
-                        <Button id="btn__history" color="black">
-                            <HistoryIcon className={classes.iconButton} />
-                            History
                         </Button>
                     </NavigationItem>
                     <WithElementVisibility

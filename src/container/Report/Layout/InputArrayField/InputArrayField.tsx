@@ -10,9 +10,10 @@ import { ArrayField } from '../../../../interface/report-field/array-field';
 import { CompositeField } from '../../../../interface/report-field/composite-field';
 import { useReportDataStore } from '../../../../models/useStore';
 import { fieldArrayContainer, fieldGutter } from '../../../../styles/report/style';
+import { ReportGeneratorFieldMapper } from '../../FieldComponent/field-mapper';
 import { FormFieldType } from '../../FieldComponent/field-type';
-import FormSectionCompositeField from '../InputCompositeField/InputCompositeField';
-import FormSectionFieldContainer from '../InputFieldContainer/InputFieldContainer';
+import InputCompositeField from '../InputCompositeField/InputCompositeField';
+import InputFieldContainer from '../InputFieldContainer/InputFieldContainer';
 
 interface Props {
     field: ArrayField;
@@ -85,7 +86,7 @@ const InputArrayField = ({ field: arrayField, actionContext }: Props) => {
                 switch (arrayField.templateField.type) {
                     case FormFieldType.Composite:
                         return (
-                            <FormSectionCompositeField
+                            <InputCompositeField
                                 key={`${arrayField.templateField.id}_${idx.toString()}`}
                                 field={
                                     {
@@ -94,6 +95,7 @@ const InputArrayField = ({ field: arrayField, actionContext }: Props) => {
                                         label: `${arrayField.templateField.label} ${idx + 1}`,
                                     } as CompositeField
                                 }
+                                fieldMapper={ReportGeneratorFieldMapper}
                                 orientation={arrayField.orientation}
                                 actionContext={actionContext}
                                 customValueChange={(id, text) => onValueChange(idx, id, text)}
@@ -114,13 +116,14 @@ const InputArrayField = ({ field: arrayField, actionContext }: Props) => {
                         );
                     default:
                         return (
-                            <FormSectionFieldContainer
+                            <InputFieldContainer
                                 key={`${arrayField.templateField.id}_${idx.toString()}`}
                                 field={{
                                     ...arrayField.templateField,
                                     id: GenerateArrayFieldId(arrayField.templateField.id, idx),
                                     label: `${arrayField.templateField.label} ${idx + 1}`,
                                 }}
+                                fieldMapper={ReportGeneratorFieldMapper}
                                 orientation={arrayField.orientation}
                                 actionContext={actionContext}
                                 customValueChange={(id, text) => onValueChange(idx, id, text)}

@@ -89,11 +89,15 @@ export function useReportField({ path, field }: Props) {
 
         setDefineType('FormDefine');
 
-        // 多選
+        // Ctrl多選
         if (e.ctrlKey) {
-            setSelectedFields((prev) => prev.add(JSON.stringify(path)));
+            setSelectedFields((prev) => {
+                const fieldPathList = new Set(prev);
+                fieldPathList.add(JSON.stringify(path));
+                return fieldPathList;
+            });
         }
-        // 多選
+        // Shift多選
         else if (e.shiftKey) {
             const fieldPathList = findFieldPathsBetween(formDefine, previousAttributePath, path);
             setSelectedFields(new Set(fieldPathList.map((p) => JSON.stringify(p))));

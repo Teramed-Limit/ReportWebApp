@@ -3,6 +3,7 @@ import { atom } from 'recoil';
 import { FormDefine } from '../interface/define';
 import { Field } from '../interface/report-field/field';
 import { ReportComponentType } from '../interface/report-generator/component/rep-component';
+import { SRTreeNode } from '../interface/sr-tree';
 
 export const selectedDefineType = atom<'FormDefine' | 'ImageDefine'>({
     key: 'report-generator-define-type',
@@ -49,4 +50,9 @@ export const selectedAttributeTypeAtom = atom<string | undefined>({
 export const reportSelectedToolAtom = atom<ReportComponentType>({
     key: 'reportSelectedToolAtom',
     default: ReportComponentType.General,
+});
+
+export const structureReportAtom = atom<SRTreeNode | undefined>({
+    key: 'structureReportAtom',
+    default: undefined,
 });

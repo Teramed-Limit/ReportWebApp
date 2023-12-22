@@ -14,7 +14,7 @@ import { usePopupState } from '../../../../../hooks/usePopupState';
 import { useReportField } from '../../../../../hooks/useReportField';
 import { ArrayField } from '../../../../../interface/report-field/array-field';
 import { fieldArrayContainer, fieldGutter } from '../../../../../styles/report/style';
-import FormSectionArrayField from '../../../../Report/Layout/InputArrayField/InputArrayField';
+import InputArrayField from '../../../../Report/Layout/InputArrayField/InputArrayField';
 import FieldsetTemplate from '../FieldsetTemplate/FieldsetTemplate';
 
 interface Props {
@@ -74,11 +74,7 @@ const ReportGeneratorInputArrayField = ({
             }
             onClick={onSetAttributePath}
         >
-            <FormSectionArrayField
-                key={arrayField.id}
-                field={arrayField}
-                actionContext={actionContext}
-            />
+            <InputArrayField key={arrayField.id} field={arrayField} actionContext={actionContext} />
         </FieldsetTemplate>
     );
 };

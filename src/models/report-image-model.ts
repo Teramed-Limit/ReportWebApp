@@ -1,4 +1,4 @@
-import { getRoot, types } from 'mst-effect';
+import { getRoot, types } from 'mobx-state-tree';
 import * as R from 'ramda';
 
 import { ImagesModal } from './model-type/image-type-modal';

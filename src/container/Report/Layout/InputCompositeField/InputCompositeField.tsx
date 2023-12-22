@@ -8,11 +8,13 @@ import {
     InnerCompositeField,
 } from '../../../../interface/report-field/composite-field';
 import { fieldSectionContainer } from '../../../../styles/report/style';
-import FormSectionFieldContainer from '../InputFieldContainer/InputFieldContainer';
+import { FieldMapper } from '../../FieldComponent/field-mapper';
+import InputFieldContainer from '../InputFieldContainer/InputFieldContainer';
 import InputFieldLabel from '../InputFieldLabel/InputFieldLabel';
 
 interface Props {
     field: CompositeField;
+    fieldMapper?: { [key: string]: React.ComponentType<any> };
     orientation: 'row' | 'column';
     customValueChange?: (id: string, text: string) => void;
     customValueGetter?: (id: string) => string;
@@ -23,6 +25,7 @@ interface Props {
 
 const InputCompositeField = ({
     field: compositeField,
+    fieldMapper = FieldMapper,
     orientation,
     customValueChange,
     customValueGetter,
@@ -66,9 +69,10 @@ const InputCompositeField = ({
             >
                 {compositeField.fields.map((innerField: InnerCompositeField) => {
                     return (
-                        <FormSectionFieldContainer
+                        <InputFieldContainer
                             key={`${innerField.id}`}
                             field={{ ...innerField, hideLabel: true }}
+                            fieldMapper={fieldMapper}
                             orientation={compositeField.orientation}
                             actionContext={actionContext}
                             customValueChange={customValueChange}

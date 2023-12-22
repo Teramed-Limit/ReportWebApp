@@ -12,14 +12,13 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import { observer } from 'mobx-react';
-import { map } from 'rxjs/operators';
 
 import classes from './CodeListTab.module.scss';
-import { deleteCodeListByCodeName, fetchCodeList } from '../../../axios/api';
+import { deleteCodeListByCodeName } from '../../../axios/api';
 import { define } from '../../../constant/setting-define';
 import { ModalContext } from '../../../context/modal-context';
 import { NotificationContext } from '../../../context/notification-context';
-import { CodeList, CodeListMap } from '../../../interface/code-list';
+import { CodeList } from '../../../interface/code-list';
 import { MessageType } from '../../../interface/notification';
 import GridTableEditor from '../../../layout/GridTableEditor/GridTableEditor';
 import { useOptionStore } from '../../../models/useStore';
@@ -27,29 +26,38 @@ import AddCodeNameModal from '../../Modals/AddCodeNameModal/AddCodeNameModal';
 import MessageModal from '../../Modals/MessageModal/MessageModal';
 
 const CodeListTab = () => {
+    // Context
     const { openNotification: setNotification } = useContext(NotificationContext);
     const setModal = useContext(ModalContext);
-    const { setCodeListMap: setReportCodeListMap } = useOptionStore();
-    const [codeListMap, setCodeListMap] = React.useState({});
+
+    // Store
+    const { getExcludeCodeListMap, fetchCodeList, deleteCodeList } = useOptionStore();
+
+    // State
     const [selectCodeName, setSelectCodeName] = useState<string>('');
     const [selectCodeList, setSelectCodeList] = useState<CodeList[]>([]);
 
-    const initCodeListMap = useCallback(() => {
-        fetchCodeList(['UserAccount'])
-            .pipe(map((x) => x.data))
-            .subscribe((data) => {
-                setCodeListMap(data);
-                if (data[selectCodeName]) {
-                    setSelectCodeList(data[selectCodeName]);
-                    setReportCodeListMap(data);
-                } else {
-                    const firstKey = Object.keys(data)[0];
-                    setSelectCodeName(firstKey);
-                    setSelectCodeList(data[firstKey]);
-                }
-            });
-    }, [selectCodeName, setReportCodeListMap]);
+    // Effect
+    // 初始化時取得第一個CodeName的CodeList
+    useEffect(() => {
+        const excludeCodeListMap = getExcludeCodeListMap(['UserAccount']);
 
+        const firstCodeName = Object.keys(excludeCodeListMap)[0];
+        const firstCodeList = Object.values(excludeCodeListMap)[0];
+
+        if (!firstCodeName || !firstCodeList) return;
+
+        onCodeNameClick(firstCodeName, firstCodeList);
+    }, [getExcludeCodeListMap]);
+
+    // Function
+    // 選擇CodeName時，取得該CodeName的CodeList
+    const onCodeNameClick = (codeName: string, codeList: CodeList[]) => {
+        setSelectCodeName(codeName);
+        setSelectCodeList(codeList);
+    };
+
+    // 刪除整個CodeList
     const onDeleteCodeListByCodeName = () => {
         setModal(
             <MessageModal
@@ -58,7 +66,6 @@ const CodeListTab = () => {
                 onConfirmCallback={() =>
                     deleteCodeListByCodeName(selectCodeName).subscribe({
                         next: () => {
-                            initCodeListMap();
                             setSelectCodeName('');
                             setSelectCodeList([]);
                         },
@@ -74,23 +81,25 @@ const CodeListTab = () => {
         );
     };
 
+    // 刪除整個CodeList
+    const handleDelete = () => {
+        setModal(
+            <MessageModal
+                headerTitle="Message"
+                bodyContent="Are you sure to delete whole code list?"
+                onConfirmCallback={() => {
+                    deleteCodeList(selectCodeName);
+                    setSelectCodeName('');
+                    setSelectCodeList([]);
+                }}
+            />,
+        );
+    };
+
+    // 開啟新增CodeName的Modal
     const openCategoryModel = useCallback(() => {
-        setModal(<AddCodeNameModal initCodeListMap={() => initCodeListMap()} />);
-    }, [initCodeListMap, setModal]);
-
-    useEffect(() => {
-        const subscription = fetchCodeList(['UserAccount']).subscribe((res) => {
-            const data = res.data as CodeListMap;
-            setCodeListMap(data);
-
-            if (Object.keys(data).length === 0) return;
-
-            const firstKey = Object.keys(data)[0];
-            setSelectCodeName(firstKey);
-            setSelectCodeList(data[firstKey]);
-        });
-        return () => subscription.unsubscribe();
-    }, []);
+        setModal(<AddCodeNameModal initCodeListMap={() => fetchCodeList()} />);
+    }, [fetchCodeList, setModal]);
 
     return (
         <Stack direction="row" className={classes.container}>
@@ -115,20 +124,19 @@ const CodeListTab = () => {
                     </ListSubheader>
                 }
             >
-                {Object.keys(codeListMap).map((codeName) => {
-                    return (
-                        <ListItemButton
-                            key={codeName}
-                            selected={codeName === selectCodeName}
-                            onClick={() => {
-                                setSelectCodeName(codeName);
-                                setSelectCodeList(codeListMap[codeName]);
-                            }}
-                        >
-                            <ListItemText primary={codeName} />
-                        </ListItemButton>
-                    );
-                })}
+                {Object.entries(getExcludeCodeListMap(['UserAccount'])).map(
+                    ([codeName, codeList]) => {
+                        return (
+                            <ListItemButton
+                                key={codeName}
+                                selected={codeName === selectCodeName}
+                                onClick={onCodeNameClick.bind(null, codeName, codeList)}
+                            >
+                                <ListItemText primary={codeName} />
+                            </ListItemButton>
+                        );
+                    },
+                )}
             </List>
 
             <Card
@@ -143,7 +151,7 @@ const CodeListTab = () => {
                     sx={{ p: 1 }}
                     title={selectCodeName}
                     action={
-                        <IconButton onClick={onDeleteCodeListByCodeName}>
+                        <IconButton onClick={handleDelete}>
                             <Cancel />
                         </IconButton>
                     }
@@ -155,9 +163,9 @@ const CodeListTab = () => {
                         identityId="Id"
                         colDef={define.codeList.colDef}
                         formDef={define.codeList.formDef}
-                        deleteCallBack={initCodeListMap}
-                        addCallBack={initCodeListMap}
-                        updateCallBack={initCodeListMap}
+                        deleteCallBack={fetchCodeList}
+                        addCallBack={fetchCodeList}
+                        updateCallBack={fetchCodeList}
                         initFormData={{ CodeName: selectCodeName }}
                     />
                 </CardContent>

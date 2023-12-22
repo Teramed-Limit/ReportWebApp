@@ -17,7 +17,7 @@
 
 .side-container {
     max-width: 35%;
-    display: block;
+    display: flex;
     flex: 1;
     flex-direction: column;
     margin-left: 10px;

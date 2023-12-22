@@ -18,6 +18,8 @@ import { NumberFieldAttribute } from './Field/ReportNumberAttribute/NumberFieldA
 import ReportNumberAttribute from './Field/ReportNumberAttribute/ReportNumberAttribute';
 import { RadioFieldAttribute } from './Field/ReportRadioAttribute/RadioFieldAttribute';
 import ReportRadioAttribute from './Field/ReportRadioAttribute/ReportRadioAttribute';
+import ReportSRTextAttribute from './Field/ReportSRTextAttribute/ReportSRTextAttribute';
+import { SRTextFieldAttribute } from './Field/ReportSRTextAttribute/SRTextFieldAttribute';
 import ReportTextAreaAttribute from './Field/ReportTextAreaAttribute/ReportTextAreaAttribute';
 import { TextAreaFieldAttribute } from './Field/ReportTextAreaAttribute/TextAreaFieldAttribute';
 import ReportTextAttribute from './Field/ReportTextAttribute/ReportTextAttribute';
@@ -43,6 +45,7 @@ export const FieldAttributeMapper = {
     [FormFieldType.TimePicker]: (field) => new TimePickerFieldAttribute(field),
     [FormFieldType.Array]: (field) => new ArrayFieldAttribute(field),
     [FormFieldType.Composite]: (field) => new CompositeFieldAttribute(field),
+    [FormFieldType.SRText]: (field) => new SRTextFieldAttribute(field),
 };
 
 type ComponentTypeMap = {
@@ -64,4 +67,5 @@ export const ReportDefineAttributesMapper: ComponentTypeMap = {
     [FormFieldType.DatePicker]: ReportDatePickerAttribute,
     [FormFieldType.TimePicker]: ReportTimePickerAttribute,
     [FormFieldType.ReportDiagram]: ReportDiagramAttribute,
+    [FormFieldType.SRText]: ReportSRTextAttribute,
 };

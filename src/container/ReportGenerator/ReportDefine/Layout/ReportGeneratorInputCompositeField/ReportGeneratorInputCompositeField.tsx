@@ -14,7 +14,8 @@ import { usePopupState } from '../../../../../hooks/usePopupState';
 import { useReportField } from '../../../../../hooks/useReportField';
 import { CompositeField } from '../../../../../interface/report-field/composite-field';
 import { fieldGutter, fieldSectionContainer } from '../../../../../styles/report/style';
-import FormSectionCompositeField from '../../../../Report/Layout/InputCompositeField/InputCompositeField';
+import { ReportGeneratorFieldMapper } from '../../../../Report/FieldComponent/field-mapper';
+import InputCompositeField from '../../../../Report/Layout/InputCompositeField/InputCompositeField';
 import FieldsetTemplate from '../FieldsetTemplate/FieldsetTemplate';
 
 interface Props {
@@ -84,10 +85,11 @@ const ReportGeneratorInputCompositeField = ({
             }
             onClick={onSetAttributePath}
         >
-            <FormSectionCompositeField
+            <InputCompositeField
                 key={compositeField.id}
                 orientation={compositeField.orientation}
                 field={compositeField}
+                fieldMapper={ReportGeneratorFieldMapper}
                 actionContext={actionContext}
                 customValueChange={customValueChange}
                 customValueGetter={customValueGetter}

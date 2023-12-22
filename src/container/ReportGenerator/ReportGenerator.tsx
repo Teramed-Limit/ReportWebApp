@@ -268,17 +268,17 @@ const ReportGenerator: React.FC = () => {
         <>
             <ReportActionProvider>
                 <Stack spacing={1} direction="row" className={classes.header}>
-                    <Tooltip title="add a empty report template">
+                    <Tooltip title="New Report Template">
                         <IconButton onClick={addNewReportTemplateDefine}>
                             <AddCircleIcon sx={{ color: 'white !important' }} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="copy current report template">
+                    <Tooltip title="Copy Current Report Template">
                         <IconButton onClick={copyReportTemplateDefine}>
                             <FileCopyIcon sx={{ color: 'white !important' }} />
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="delete current report template">
+                    <Tooltip title="Delete Current Report Template">
                         <IconButton onClick={deleteReportTemplateDefine}>
                             <DeleteIcon sx={{ color: 'white !important' }} />
                         </IconButton>

@@ -4,8 +4,6 @@ import { Box, Drawer, Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
 import { Prompt, useHistory, useParams } from 'react-router-dom';
-import { interval } from 'rxjs';
-import { filter, tap } from 'rxjs/operators';
 
 import ReportEditActionBar from './ActionBar/ReportEditActionBar/ReportEditActionBar';
 import ReportViewActionBar from './ActionBar/ReportViewActionBar/ReportViewActionBar';
@@ -16,7 +14,6 @@ import Icon from '../../components/UI/Icon/Icon';
 import { NotificationContext } from '../../context/notification-context';
 import { useModal } from '../../hooks/useModal';
 import { Section } from '../../interface/define';
-import { MessageType } from '../../interface/notification';
 import {
     useOptionStore,
     useReportDataStore,
@@ -24,22 +21,19 @@ import {
     useReportImageStore,
 } from '../../models/useStore';
 import { reportPage } from '../../styles/report/style';
-import { isEmptyOrNil } from '../../utils/general';
 import Photo from '../Photo/Photo';
 
 const Report = () => {
     const history = useHistory();
-    const { showNotifyMsg, setWarningNotification } = useContext(NotificationContext);
+    const { showNotifyMsg } = useContext(NotificationContext);
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
     const {
+        fetchReport,
         reportHasChanged,
         modifiable,
-        fetchReport,
-        fetchReportLockStatus,
         formValidation,
         unlockReport,
-        cleanupAllReportState,
         saveTempReportData,
     } = useReportDataStore();
     const { loading: fetchDefineLoading } = useReportDefineStore();
@@ -48,8 +42,6 @@ const Report = () => {
     const [setModalName] = useModal();
 
     const [photoDrawerOpen, setPhotoDrawerOpen] = useState(false);
-    const [fetchError, setFetchError] = useState(false);
-
     const toggleImageDrawer = () => {
         setPhotoDrawerOpen((pre) => {
             // 關閉時記錄Report Diagram
@@ -58,7 +50,7 @@ const Report = () => {
         });
     };
 
-    // open modal when field is in modal
+    // 若有藏在Modal的錯誤訊息，則打開Modal
     useEffect(() => {
         if (!formValidation.isValid) setModalName(formValidation.openModalName);
     }, [formValidation, setModalName]);
@@ -67,66 +59,42 @@ const Report = () => {
     useEffect(() => {
         // wait ready
         if (fetchOptionsLoading || fetchDefineLoading) return;
-
-        // check report lock state
-        fetchReportLockStatus(studyInstanceUID, (lockSignal$) =>
-            lockSignal$.pipe(
-                tap(
-                    (userId) =>
-                        !isEmptyOrNil(userId) &&
-                        setWarningNotification(`Report is lock by ${userId}`),
-                ),
-                filter((userId) => isEmptyOrNil(userId)),
-                tap(() =>
-                    // fetching report
-                    fetchReport(studyInstanceUID, (signal$) =>
-                        signal$.pipe(
-                            tap(({ notification }) => {
-                                showNotifyMsg(notification);
-                                if (notification.messageType === MessageType.Error) {
-                                    setFetchError(true);
-                                    history.push('/');
-                                }
-                            }),
-                        ),
-                    ),
-                ),
-            ),
-        );
-    }, [
-        fetchDefineLoading,
-        fetchOptionsLoading,
-        fetchReport,
-        fetchReportLockStatus,
-        history,
-        setWarningNotification,
-        showNotifyMsg,
-        studyInstanceUID,
-    ]);
-
-    // 每5秒儲存一次暫存資料
-    useEffect(() => {
-        const observable = interval(5000)
-            .pipe(filter(() => modifiable))
-            .subscribe(() => saveTempReportData());
-        return () => observable.unsubscribe();
-    }, [modifiable, saveTempReportData]);
+        fetchReport(studyInstanceUID)
+            .then((notify) => {
+                showNotifyMsg(notify);
+            })
+            .catch((error) => {
+                // 處理錯誤的情況
+                console.error('Error occurs:', error.message);
+            });
+    }, [fetchReport, fetchDefineLoading, fetchOptionsLoading, studyInstanceUID, showNotifyMsg]);
 
     // 離開時解鎖
     useEffect(() => {
-        const unlockReportReq = () => unlockReport(studyInstanceUID);
-        window.addEventListener('beforeunload', unlockReportReq);
-        return () => {
-            window.removeEventListener('beforeunload', unlockReportReq);
-            unlockReportReq();
-            cleanupAllReportState();
+        // 直接頁面事件觸發
+        const handleBeforeUnload = (event) => {
+            // 在用戶嘗試離開頁面時觸發
+            event.preventDefault(); // 防止預設的處理方式（例如表單的自動提交）
+            event.returnValue = ''; // 顯示給用戶的確認訊息
+            saveTempReportData();
+            // 不能控制離開頁面時，使用者按下"取消"/"確定"，所以暫時不清理狀態
+            // 反正關閉頁面時，所有狀態都不會保留
+            unlockReport(studyInstanceUID, false);
         };
-    }, [cleanupAllReportState, studyInstanceUID, unlockReport]);
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            saveTempReportData();
+            // 這是做給離開頁面時的事件處理，會被react-router-dom觸發，但是關閉直接頁面不會觸發
+            unlockReport(studyInstanceUID, true);
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [saveTempReportData, studyInstanceUID, unlockReport]);
 
     return (
         <>
             <Prompt
-                when={!fetchError && reportHasChanged && modifiable}
+                when={reportHasChanged}
                 message="The report was not saved, are you sure to leave?"
             />
             <ReportActionProvider>

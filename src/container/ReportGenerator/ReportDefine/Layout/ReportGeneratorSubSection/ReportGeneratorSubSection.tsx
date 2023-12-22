@@ -17,9 +17,9 @@ import { reportSubsection } from '../../../../../styles/report/style';
 import { FormFieldType, LayoutType } from '../../../../Report/FieldComponent/field-type';
 import { SubSectionAttribute } from '../../Attribute/Layout/ReportSubSectionAttribute/ReportSubSectionAttribute';
 import FieldsetTemplate from '../FieldsetTemplate/FieldsetTemplate';
-import ReportGeneratorFormSectionArrayField from '../ReportGeneratorInputArrayField/ReportGeneratorInputArrayField';
-import ReportGeneratorFormSectionCompositeField from '../ReportGeneratorInputCompositeField/ReportGeneratorInputCompositeField';
-import ReportGeneratorFormSectionFieldContainer from '../ReportGeneratorInputFieldContainer/ReportGeneratorInputFieldContainer';
+import ReportGeneratorInputArrayField from '../ReportGeneratorInputArrayField/ReportGeneratorInputArrayField';
+import ReportGeneratorInputCompositeField from '../ReportGeneratorInputCompositeField/ReportGeneratorInputCompositeField';
+import ReportGeneratorInputFieldContainer from '../ReportGeneratorInputFieldContainer/ReportGeneratorInputFieldContainer';
 
 interface Props {
     subSection: SubSection;
@@ -78,7 +78,7 @@ const ReportGeneratorSubSection = ({ subSection, path, showGuideLine, actionCont
                     switch (field.type) {
                         case FormFieldType.Composite:
                             return (
-                                <ReportGeneratorFormSectionCompositeField
+                                <ReportGeneratorInputCompositeField
                                     path={[...path, 'fields', idx]}
                                     showGuideLine={showGuideLine}
                                     key={field.id}
@@ -88,7 +88,7 @@ const ReportGeneratorSubSection = ({ subSection, path, showGuideLine, actionCont
                             );
                         case FormFieldType.Array:
                             return (
-                                <ReportGeneratorFormSectionArrayField
+                                <ReportGeneratorInputArrayField
                                     key={field.id}
                                     showGuideLine={showGuideLine}
                                     path={[...path, 'fields', idx]}
@@ -98,7 +98,7 @@ const ReportGeneratorSubSection = ({ subSection, path, showGuideLine, actionCont
                             );
                         default:
                             return (
-                                <ReportGeneratorFormSectionFieldContainer
+                                <ReportGeneratorInputFieldContainer
                                     key={field.id}
                                     showGuideLine={showGuideLine}
                                     path={[...path, 'fields', idx]}

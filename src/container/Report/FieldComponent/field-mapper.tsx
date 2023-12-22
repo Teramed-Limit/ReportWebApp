@@ -7,6 +7,8 @@ import { FormFieldType } from './field-type';
 import NumberInput from './NumberInput/NumberInput';
 import Radio from './Radio/Radio';
 import ReportDiagram from './ReportDiagram/ReportDiagram';
+import SRConfigTextInput from './SRConfigTextInput/SRConfigTextInput';
+import SRTextInput from './SRTextInput/SRTextInput';
 import TextArea from './TextArea/TextArea';
 import TextInput from './TextInput/TextInput';
 import TimePicker from './TimePicker/TimePicker';
@@ -25,4 +27,10 @@ export const FieldMapper = {
     [FormFieldType.ReportDiagram]: ReportDiagram,
     [FormFieldType.DatePicker]: DatePicker,
     [FormFieldType.TimePicker]: TimePicker,
+    [FormFieldType.SRText]: SRTextInput,
+};
+
+export const ReportGeneratorFieldMapper = {
+    ...FieldMapper,
+    [FormFieldType.SRText]: SRConfigTextInput,
 };

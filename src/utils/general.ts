@@ -40,6 +40,20 @@ export const isEmptyOrNil = (value: any) => {
     return R.isEmpty(value) || R.isNil(value);
 };
 
+export const isNotEmptyOrNil = (value: any) => {
+    return !R.isEmpty(value) && !R.isNil(value);
+};
+
+export const isEmptyList = (value: any[] | undefined) => {
+    if (!value) return false;
+    return value?.length === 0;
+};
+
+export const isNotEmptyList = (value: any[] | undefined) => {
+    if (!value) return false;
+    return value?.length > 0;
+};
+
 export function uniqBy(list: any[], key) {
     const seen = {};
     return list.filter((item) => {

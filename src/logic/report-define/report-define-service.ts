@@ -17,8 +17,9 @@ export const initRepPage = (name): RepPage => ({
 });
 
 export const normalizeFields = (sections: any[] | undefined, modalName: string | undefined) => {
-    if (sections === undefined) return;
+    if (sections === undefined) return { entities: {}, structureReportEntities: {} };
     const entities = {};
+    const structureReportEntities = {};
     sections.forEach((section: Section) => {
         section.subSections.forEach((subSection) => {
             subSection.fields.forEach((field) => {
@@ -28,6 +29,8 @@ export const normalizeFields = (sections: any[] | undefined, modalName: string |
                             ...innerCompositeField,
                             fromModal: modalName,
                         };
+                        if (innerCompositeField.type === FormFieldType.SRText)
+                            structureReportEntities[field.id] = { ...field, fromModal: modalName };
                     });
                 } else if (field.type === FormFieldType.Array) {
                     const arrayField = field as ArrayField;
@@ -38,18 +41,27 @@ export const normalizeFields = (sections: any[] | undefined, modalName: string |
                                     ...innerCompositeField,
                                     fromModal: modalName,
                                 };
+                                if (innerCompositeField.type === FormFieldType.SRText)
+                                    structureReportEntities[field.id] = {
+                                        ...field,
+                                        fromModal: modalName,
+                                    };
                             },
                         );
                     } else {
                         entities[arrayField.id] = { ...field, fromModal: modalName };
+                        if (arrayField.type === FormFieldType.SRText)
+                            structureReportEntities[field.id] = { ...field, fromModal: modalName };
                     }
                 } else {
                     entities[field.id] = { ...field, fromModal: modalName };
+                    if (field.type === FormFieldType.SRText)
+                        structureReportEntities[field.id] = { ...field, fromModal: modalName };
                 }
             });
         });
     });
-    return entities;
+    return { entities, structureReportEntities };
 };
 
 export interface RegisterReportDefine {
@@ -58,6 +70,7 @@ export interface RegisterReportDefine {
     footerDefine: RepPage;
     imageDefine: Field[];
     fields: { [props: string]: Field };
+    structureReportFields: { [props: string]: Field };
 }
 
 export const RegisterReportDefineMap: { [props: string]: RegisterReportDefine } = {};
@@ -68,20 +81,26 @@ export class ReportDefineService {
     registerFormDefine = (defineMap: FormDefineMap) => {
         Object.entries(defineMap).forEach(([k, v]) => {
             if (RegisterReportDefineMap[k]) return;
+
             // register
             const formDefine = JSON.parse(v.FormDefine) as FormDefine;
             const imageDefine = JSON.parse(v.ImageDefine) as Field[];
             const headerDefine = JSON.parse(v.Header) as RepPage;
             const footerDefine = JSON.parse(v.Footer) as RepPage;
+
+            const { entities, structureReportEntities } = normalizeFields(formDefine.sections, '');
+            const { entities: modalEntities } = normalizeFields(
+                formDefine?.modal?.sections,
+                formDefine?.modal?.modalName,
+            );
+
             RegisterReportDefineMap[k] = {
                 formDefine,
                 headerDefine,
                 footerDefine,
                 imageDefine,
-                fields: {
-                    ...normalizeFields(formDefine.sections, ''),
-                    ...normalizeFields(formDefine?.modal?.sections, formDefine?.modal?.modalName),
-                },
+                fields: { ...entities, ...modalEntities },
+                structureReportFields: structureReportEntities,
             };
         });
     };
@@ -97,6 +116,7 @@ export class ReportDefineService {
             console.error('Blank not found');
             return {
                 fields: {},
+                structureReportFields: {},
                 formDefine: { sections: [] },
                 footerDefine: initRepPage('footer'),
                 headerDefine: initRepPage('header'),
@@ -109,6 +129,11 @@ export class ReportDefineService {
     };
 
     getField = (id: string): Field | undefined => {
+        if (!this.currentFields) return undefined;
+        return this.currentFields[id];
+    };
+
+    getSRField = (id: string): Field | undefined => {
         if (!this.currentFields) return undefined;
         return this.currentFields[id];
     };

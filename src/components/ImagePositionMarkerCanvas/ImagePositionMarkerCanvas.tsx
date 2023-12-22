@@ -1,8 +1,6 @@
 import React, { forwardRef } from 'react';
 
-import { Menu, MenuItem } from '@mui/material';
 import Konva from 'konva';
-import { KonvaEventObject } from 'konva/lib/Node';
 import { Group, Image, Layer, Rect, Stage, Text } from 'react-konva';
 
 import { useImageScaleToFit } from '../../hooks/useImageScaleToFit';
@@ -25,15 +23,9 @@ interface Props {
     onMarkerDelete: (marker: ReportMark) => void;
 }
 
-const offsetMap = {
-    1: -10,
-    2: -5,
-};
-
-const initialMenuState = {
-    mouseX: null,
-    mouseY: null,
-};
+const markerScale = 25;
+const fontSizeScale = 31.25;
+const strokeWidthScale = 500;
 
 const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
     (
@@ -43,30 +35,17 @@ const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
             containerWidth,
             containerHeight,
             canvasMarkers,
-            disabled,
             onMarkerPlace,
-            onMarkerDelete,
         },
         ref,
     ) => {
-        const [activeMarker, setActiveMarker] = React.useState<ReportMark | undefined>(undefined);
-        const [menuPos, setMenuPos] = React.useState<{
-            mouseX: null | number;
-            mouseY: null | number;
-        }>(initialMenuState);
-
         const { stageRef, imageRef } = useKonva(ref);
-        const { image, scale, canvasWidth, canvasHeight } = useImageScaleToFit(
-            src,
-            containerWidth,
-            containerHeight,
-        );
+        const { image, scale, canvasWidth, canvasHeight, originalWidth, originalHeight } =
+            useImageScaleToFit(src, containerWidth, containerHeight);
 
-        const onDeleteMark = () => {
-            if (!activeMarker) return;
-            onMarkerDelete(activeMarker);
-            closeContextMenu();
-        };
+        let referenceSize = 0;
+        if (originalWidth > originalHeight) referenceSize = originalWidth;
+        else referenceSize = originalHeight;
 
         const onDropMarker = (e) => {
             e.preventDefault();
@@ -84,22 +63,6 @@ const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
                 },
                 e.dataTransfer.getData('sopInsUid'),
             );
-        };
-
-        const openContextMenu = (event: KonvaEventObject<PointerEvent>, marker: ReportMark) => {
-            if (disabled) return;
-            event.evt.stopPropagation();
-            event.evt.preventDefault();
-            setActiveMarker(marker);
-            setMenuPos({
-                mouseX: event.evt.clientX + 8,
-                mouseY: event.evt.clientY + 8,
-            });
-        };
-
-        const closeContextMenu = () => {
-            setActiveMarker(undefined);
-            setMenuPos(initialMenuState);
         };
 
         return (
@@ -132,47 +95,32 @@ const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
                             return (
                                 <Group
                                     key={marker.SOPInstanceUID}
-                                    offsetX={20}
-                                    offsetY={20}
-                                    onContextMenu={(e) => openContextMenu(e, marker)}
+                                    offsetX={referenceSize / markerScale / 2}
+                                    offsetY={referenceSize / markerScale / 2}
                                 >
                                     <Rect
                                         x={marker.PointInImageX}
                                         y={marker.PointInImageY}
                                         fill="red"
-                                        width={40}
-                                        height={40}
+                                        width={referenceSize / markerScale}
+                                        height={referenceSize / markerScale}
                                         stroke="black"
-                                        strokeWidth={2}
+                                        strokeWidth={referenceSize / strokeWidthScale}
                                     />
                                     <Text
                                         x={marker.PointInImageX}
                                         y={marker.PointInImageY}
                                         text={marker.MappingNumber.toString()}
-                                        fontSize={32}
+                                        fontSize={referenceSize / fontSizeScale}
                                         fill="white"
-                                        offsetX={offsetMap[marker.MappingNumber.toString().length]}
-                                        offsetY={-6}
+                                        offsetX={-(referenceSize / markerScale / 2 / 2)}
+                                        offsetY={-(referenceSize / markerScale / 2 / 2) + 2}
                                     />
                                 </Group>
                             );
                         })}
                     </Layer>
                 </Stage>
-                <Menu
-                    classes={{ paper: classes.menu }}
-                    open={menuPos.mouseY !== null}
-                    onClose={closeContextMenu}
-                    transitionDuration={0}
-                    anchorReference="anchorPosition"
-                    anchorPosition={
-                        menuPos.mouseY !== null && menuPos.mouseX !== null
-                            ? { top: menuPos.mouseY, left: menuPos.mouseX }
-                            : undefined
-                    }
-                >
-                    <MenuItem onClick={() => onDeleteMark()}>Delete</MenuItem>
-                </Menu>
             </div>
         );
     },

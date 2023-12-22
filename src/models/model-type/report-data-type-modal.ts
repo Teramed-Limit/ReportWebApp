@@ -12,7 +12,7 @@ import { Observable } from 'rxjs';
 
 import { DocumentData, ReportImageData, ReportStatus } from '../../interface/document-data';
 import { FormControl, FormState } from '../../interface/form-state';
-import { ReportResponseNotification } from '../../interface/notification';
+import { Notification, ReportResponseNotification } from '../../interface/notification';
 import { ReportValidation } from '../../interface/report-validation';
 
 interface ReportDataTypeOfModal extends ModelProperties {
@@ -49,12 +49,11 @@ interface ReportDataTypeOfActions {
         targetValue: any, // template field value
     ) => void;
     validate: (id: string, value: any) => FormControl;
-    initReportData: () => void;
+    applyInitMappingReportData: () => void;
     initialFormControl: () => void;
-    cleanupAllReportState: () => void;
     resetFormData: (formData: DocumentData) => any;
     resetFormState: (state: FormState) => any;
-    unlockReport: (payload: string) => void;
+    unlockReport: (payload: string, cleanAll?: boolean) => void;
     lockReport: (payload: string) => void;
     signOffReport: <T = ReportResponseNotification>(
         payload: null,
@@ -69,10 +68,7 @@ interface ReportDataTypeOfActions {
         handler?: (result$: Observable<string>) => Observable<T>,
     ) => Promise<T | undefined>;
     saveTempReportData: () => void;
-    fetchReport: <T = ReportResponseNotification>(
-        payload: string,
-        handler?: (result$: Observable<ReportResponseNotification>) => Observable<T>,
-    ) => Promise<T | undefined>;
+    fetchReport: (studyInstanceUID: string) => Promise<Notification>;
     fetchHistoryReport: <T = ReportResponseNotification>(
         payload: {
             studyInstanceUID: string;

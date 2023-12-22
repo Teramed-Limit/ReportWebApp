@@ -84,7 +84,9 @@ const CodeListSelection = React.forwardRef(
                 {field?.fetchLatest && (
                     <IconButton
                         sx={{ minHeight: '20px', minWidth: '20px', padding: 0 }}
-                        onClick={() => optionStore.getLatestCodeList(optionSource, filterCondition)}
+                        onClick={() =>
+                            optionStore.fetchLatestCodeList(optionSource, filterCondition)
+                        }
                     >
                         <SyncIcon sx={{ fontSize: '20px' }} />
                     </IconButton>

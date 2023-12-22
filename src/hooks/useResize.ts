@@ -1,21 +1,20 @@
-import { useMemo } from 'react';
+import { useEffect } from 'react';
 
-import { debounce } from '@mui/material';
+import { fromEvent } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
-import { useEventListener } from './useEventListener';
+export const useResize = (callback: () => void, delay = 250): void => {
+    useEffect(() => {
+        const resizeObservable = fromEvent(window, 'resize')
+            .pipe(
+                debounceTime(delay), // 加上 debounceTime 以減少事件觸發次數
+            )
+            .subscribe(() => {
+                callback();
+            });
 
-export const useResize = (callback: (event: Event) => void, wait = 250): void => {
-    const handleResize = useMemo(
-        () =>
-            wait !== 0
-                ? debounce((event: Event) => callback(event), wait)
-                : (event: Event) => callback(event),
-        [wait, callback],
-    );
-
-    useEventListener({
-        type: 'resize',
-        listener: handleResize,
-        options: { passive: true },
-    });
+        return () => {
+            resizeObservable.unsubscribe(); // 清除 RxJS 的訂閱
+        };
+    }, [callback, delay]);
 };

@@ -1,29 +1,32 @@
 import { AxiosError, AxiosResponse } from 'axios';
-import { action, dollEffect, effect, getEnv, getRoot, IAnyModelType, types } from 'mst-effect';
-import { iif, Observable, of, throwError } from 'rxjs';
+import { flow } from 'mobx-state-tree';
+import { action, dollEffect, getEnv, getRoot, IAnyModelType, types } from 'mst-effect';
+import { forkJoin, iif, Observable, of, throwError } from 'rxjs';
 import { catchError, map, startWith, switchMap } from 'rxjs/operators';
 
+import { AuthModal } from './model-type/auth-type-modal';
 import { ImageTypeOfModel } from './model-type/image-type-modal';
 import { ReportDataModal } from './model-type/report-data-type-modal';
 import { ReportDefineTypeOfModel } from './model-type/report-define-type-modal';
 import {
     fetchHistoryReport,
     fetchReport,
+    fetchSRReport,
     getReportLockStatus,
     lockReport,
     saveReport,
     unlockReport,
 } from '../axios/api';
-import { LoginResult } from '../interface/auth';
 import { DocumentData, ReportStatus } from '../interface/document-data';
 import { FormControl, FormState } from '../interface/form-state';
 import { MessageType, ReportResponseNotification } from '../interface/notification';
 import { ReportValidation } from '../interface/report-validation';
 import { RootService } from '../interface/root-service';
+import { SRTreeNode } from '../interface/sr-tree';
 import LocalStorageService from '../service/local-storage-service';
 import { isEmptyOrNil } from '../utils/general';
 
-const dateModel = types.union(types.frozen<DocumentData>());
+const dataModel = types.union(types.frozen<DocumentData>());
 const formState = types.union(types.frozen<FormState>());
 
 const formInvalidError = {
@@ -37,7 +40,8 @@ export const DataModel: ReportDataModal = types
         // report data is latest, no edit
         reportHasChanged: types.optional(types.boolean, false),
         loading: types.optional(types.boolean, false),
-        formData: types.map(dateModel),
+        formData: types.map(dataModel),
+        formSRData: types.frozen<SRTreeNode>(),
         formState: types.map(formState),
         formValidation: types.optional(types.frozen<ReportValidation>(), {
             isValid: true,
@@ -85,6 +89,7 @@ export const DataModel: ReportDataModal = types
             targetId: string,
             targetValue: any,
             staticState: Partial<FormControl> = {},
+            hasChanged = true,
         ) => {
             const {
                 defineStore,
@@ -92,7 +97,7 @@ export const DataModel: ReportDataModal = types
                 defineStore: ReportDefineTypeOfModel;
             } = getRoot<IAnyModelType>(self);
 
-            self.reportHasChanged = true;
+            self.reportHasChanged = hasChanged;
             self.formData.set(targetId, targetValue);
             self.formState.set(targetId, {
                 ...self.formState.get(targetId),
@@ -101,8 +106,13 @@ export const DataModel: ReportDataModal = types
             });
 
             if (targetId === 'ReportTemplate') {
+                // 重新設定表單定義
                 defineStore.setFormDefine(self.formData.toJSON());
-                initReportData();
+                // 套用預設的資料
+                applyInitMappingReportData();
+                // 套用SR資料
+                applySRReportData(self.formSRData);
+                // 初始化表單驗證
                 initialFormControl();
             }
         };
@@ -197,16 +207,7 @@ export const DataModel: ReportDataModal = types
             );
         };
 
-        const cleanupAllReportState = () => {
-            self.loading = false;
-            self.formData.clear();
-            self.formState.replace({});
-            self.formValidation = { isValid: true, openModalName: '' };
-            const { imageStore }: { imageStore: ImageTypeOfModel } = getRoot<IAnyModelType>(self);
-            imageStore.initImages([]);
-        };
-
-        const initReportData = () => {
+        const applyInitMappingReportData = () => {
             const {
                 defineStore,
             }: {
@@ -221,6 +222,49 @@ export const DataModel: ReportDataModal = types
                     }
                 });
             }
+        };
+
+        const applySRReportData = (treeNode: SRTreeNode) => {
+            const {
+                defineStore,
+            }: {
+                defineStore: ReportDefineTypeOfModel;
+            } = getRoot<IAnyModelType>(self);
+            const reportSRData = defineStore.parseSR(treeNode);
+            Object.entries(reportSRData).forEach(([key, value]) => {
+                self.formData.set(key, value);
+            });
+        };
+
+        // 如果ReportStatus是New，並要在每次進來報告時套用
+        const applyLastSaveReportData = (reportData: DocumentData): DocumentData => {
+            const { imageStore }: { imageStore: ImageTypeOfModel } = getRoot<IAnyModelType>(self);
+            if (reportData.ReportStatus === ReportStatus.New) {
+                const studyInstanceUID = reportData.StudyInstanceUID as string;
+                // apply local storage data, when newly report
+                if (LocalStorageService.getFromLocalStorage(studyInstanceUID)) {
+                    const tempData: DocumentData = JSON.parse(
+                        <string>window.localStorage.getItem(studyInstanceUID),
+                    );
+
+                    reportData = { ...reportData, ...tempData };
+                    delete reportData.ReportStatus;
+                    delete reportData.Author;
+                    delete reportData.UserId;
+
+                    // 從資料庫獲取的影像資料可能也別於暫存資料，所以要合併，並把暫存資料上存在在的資料用SopInstanceUID做比對，然後套用
+                    const reportImageData = reportData.ReportImageData || [];
+                    const combinedArray = reportImageData.map((item1) => {
+                        const matchingItem = (tempData?.ReportImageData || []).find(
+                            (item2) => item2.SOPInstanceUID === item1.SOPInstanceUID,
+                        );
+                        return matchingItem || item1;
+                    });
+                    imageStore.initImages([...combinedArray]);
+                }
+            }
+
+            return reportData;
         };
 
         const initialFormControl = () => {
@@ -264,9 +308,10 @@ export const DataModel: ReportDataModal = types
             valueChanged,
             arrayValueChanged,
             validate,
-            initReportData,
+            applyInitMappingReportData,
+            applySRReportData,
+            applyLastSaveReportData,
             initialFormControl,
-            cleanupAllReportState,
             resetFormData: (formData: DocumentData) => self.formData.replace(formData),
             resetFormState: (state: FormState) => self.formState.replace(state),
         };
@@ -341,9 +386,9 @@ export const DataModel: ReportDataModal = types
         };
 
         const fetchSuccess = (response: AxiosResponse, callback?: () => void) => {
+            callback?.();
             self.loading = false;
             self.reportHasChanged = false;
-            callback?.();
         };
 
         return {
@@ -390,110 +435,118 @@ export const DataModel: ReportDataModal = types
                     ),
                 );
             }),
-            lockReport: effect<string>(self, (payload$) => {
-                return payload$.pipe(
-                    switchMap((studyInstanceUID) =>
-                        lockReport(studyInstanceUID).pipe(map(() => action(() => {}))),
-                    ),
-                );
+            lockReport: flow(function* (studyInstanceUID: string) {
+                yield lockReport(studyInstanceUID).toPromise();
             }),
-            unlockReport: effect<string>(self, (payload$) => {
-                return payload$.pipe(
-                    switchMap((studyInstanceUID) =>
-                        unlockReport(studyInstanceUID).pipe(map(() => action(() => {}))),
-                    ),
-                );
+            unlockReport: flow(function* (studyInstanceUID: string, cleanAll = true) {
+                yield unlockReport(studyInstanceUID).toPromise();
+                if (cleanAll) {
+                    self.loading = false;
+                    self.modifiable = true;
+                    self.formData.clear();
+                    self.formState.replace({});
+                    self.formValidation = { isValid: true, openModalName: '' };
+                    const { imageStore }: { imageStore: ImageTypeOfModel } =
+                        getRoot<IAnyModelType>(self);
+                    imageStore.initImages([]);
+                }
             }),
         };
     })
     // Report
     .actions((self) => {
-        const beforeFetch = () => (self.loading = true);
-
-        const fetchError = () => (self.loading = false);
-
-        const fetchSuccess = (response: AxiosResponse<DocumentData>) => {
-            const {
-                defineStore,
-                imageStore,
-            }: {
-                defineStore: ReportDefineTypeOfModel;
-                imageStore: ImageTypeOfModel;
-            } = getRoot<IAnyModelType>(self);
-
-            const userId = LocalStorageService.getFromLocalStorage<LoginResult>('user')?.UserId;
-
-            // set initialize data
-            self.formData.replace(response.data);
-            imageStore.initImages(response.data?.ReportImageData || []);
-
-            // 如果ReportStatus不是Signed，並要在每次進來報告時套用
-            let isApplyReportTempData = false;
-            if (self.formData.get('ReportStatus') === ReportStatus.New) {
-                if (!response?.data?.StudyInstanceUID) return;
-                // apply local storage data, when newly report
-                if (LocalStorageService.getFromLocalStorage(response.data.StudyInstanceUID)) {
-                    const tempData: DocumentData = JSON.parse(
-                        <string>window.localStorage.getItem(response.data.StudyInstanceUID),
-                    );
-                    delete tempData.ReportStatus;
-                    delete tempData.Author;
-                    delete tempData.UserId;
-                    self.formData.replace(tempData);
-                    // 從資料庫獲取的影像資料可能也別於暫存資料，所以要合併，並把暫存資料上存在在的資料用SopInstanceUID做比對，然後套用
-                    const combinedArray = (response.data?.ReportImageData || []).map((item1) => {
-                        const matchingItem = (tempData?.ReportImageData || []).find(
-                            (item2) => item2.SOPInstanceUID === item1.SOPInstanceUID,
-                        );
-                        return matchingItem || item1;
-                    });
-                    imageStore.initImages([...combinedArray]);
-                    isApplyReportTempData = true;
-                }
-            }
-
-            // initialize form control
-            self.formData.set('UserId', userId);
-            defineStore.setFormDefine(self.formData.toJSON());
-            self.initReportData();
-            self.initialFormControl();
-
-            self.reportHasChanged = isApplyReportTempData;
-            self.modifiable = response.data.ReportStatus !== ReportStatus.Signed;
-            self.loading = false;
-        };
-
         return {
-            fetchReport: dollEffect<string, ReportResponseNotification>(
-                self,
-                (payload$, dollSignal) => {
-                    return payload$.pipe(
-                        switchMap((studyInstanceUID) =>
-                            fetchReport(studyInstanceUID).pipe(
-                                map((response) => [
-                                    action(fetchSuccess, response),
-                                    action(dollSignal, {
-                                        notification: {
-                                            message: 'Fetch report success',
-                                            messageType: MessageType.Success,
-                                        },
-                                    }),
-                                ]),
-                                startWith(action(beforeFetch)),
-                                catchError((error: AxiosError<{ Message: string }>) => [
-                                    action(fetchError),
-                                    action(dollSignal, {
-                                        notification: {
-                                            message: error.response?.data.Message || error.message,
-                                            messageType: MessageType.Error,
-                                        },
-                                    }),
-                                ]),
-                            ),
-                        ),
+            fetchReport: flow(function* (studyInstanceUID: string) {
+                try {
+                    // 資料流
+                    // 1. 取得報告鎖定狀態
+                    const reportLockStatus$ = getReportLockStatus(studyInstanceUID);
+                    // 2. 取得報告資料
+                    const reportData$ = fetchReport(studyInstanceUID);
+                    // 3. 取得報告SR資料
+                    const reportSRData$ = fetchSRReport(studyInstanceUID);
+
+                    const dataFlow$ = reportLockStatus$.pipe(
+                        switchMap((lockByUser) => {
+                            if (!isEmptyOrNil(lockByUser.data)) {
+                                return forkJoin([of({}), of(''), of(lockByUser.data)]);
+                            }
+                            return forkJoin([
+                                reportData$.pipe(map((x) => x.data)),
+                                reportSRData$.pipe(map((x) => x.data)),
+                                of(lockByUser).pipe(map((x) => x.data)),
+                            ]);
+                        }),
                     );
-                },
-            ),
+
+                    self.loading = true;
+
+                    // 等待資料流完成
+                    const response: AxiosResponse<[DocumentData, SRTreeNode] | string> =
+                        yield dataFlow$.toPromise();
+
+                    // Store資料
+                    const {
+                        defineStore,
+                        imageStore,
+                        authStore,
+                    }: {
+                        defineStore: ReportDefineTypeOfModel;
+                        imageStore: ImageTypeOfModel;
+                        authStore: AuthModal;
+                    } = getRoot<IAnyModelType>(self);
+
+                    let reportData = response[0] as DocumentData;
+                    const reportSRTreeNode = response[1] as SRTreeNode;
+                    const lockByUser = response[2] as string;
+
+                    // 如果ReportStatus是New，並要在每次進來報告時套用
+                    reportData = self.applyLastSaveReportData(reportData);
+
+                    // 初始化資料
+                    defineStore.setFormDefine(reportData);
+                    self.formData.replace(reportData);
+                    self.formSRData = reportSRTreeNode;
+                    imageStore.initImages(reportData.ReportImageData || []);
+
+                    // 套用預設的資料
+                    self.applyInitMappingReportData();
+                    // 套用SR資料
+                    self.applySRReportData(reportSRTreeNode);
+                    // 初始化表單驗證
+                    self.initialFormControl();
+
+                    // 套用作者
+                    self.formData.set('UserId', authStore.userId);
+
+                    self.modifiable = reportData.ReportStatus !== ReportStatus.Signed;
+                    self.loading = false;
+                    self.reportHasChanged = false;
+
+                    // 如果 response.data 為字串，則為報告鎖定狀態，字串內容為UserId
+                    if (lockByUser) {
+                        self.lockByUser = lockByUser;
+                        self.modifiable = false;
+                        return {
+                            messageType: MessageType.Error,
+                            message: `Report is editing by ${self.lockByUser}`,
+                        };
+                    } else {
+                        return {
+                            messageType: MessageType.Success,
+                            message: 'Report fetch success',
+                        };
+                    }
+                } catch (error: any | AxiosError<{ message: string }>) {
+                    // 處理錯誤
+                    console.error(error);
+                    self.loading = false;
+                    return {
+                        messageType: MessageType.Error,
+                        message: 'Report fetch failed',
+                    };
+                }
+            }),
         };
     })
     // History Report

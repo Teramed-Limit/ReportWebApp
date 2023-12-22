@@ -14,6 +14,7 @@ import { usePopupState } from '../../../../../hooks/usePopupState';
 import { useReportField } from '../../../../../hooks/useReportField';
 import { Field } from '../../../../../interface/report-field/field';
 import { fieldGutter, fieldSectionContainer } from '../../../../../styles/report/style';
+import { ReportGeneratorFieldMapper } from '../../../../Report/FieldComponent/field-mapper';
 import InputFieldContainer from '../../../../Report/Layout/InputFieldContainer/InputFieldContainer';
 import FieldsetTemplate from '../FieldsetTemplate/FieldsetTemplate';
 
@@ -87,6 +88,7 @@ const ReportGeneratorInputFieldContainer = ({
             <InputFieldContainer
                 key={field.id}
                 field={field}
+                fieldMapper={ReportGeneratorFieldMapper}
                 orientation={field.orientation}
                 actionContext={actionContext}
                 customValueChange={customValueChange}

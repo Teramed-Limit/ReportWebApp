@@ -8,6 +8,7 @@ import { ValidateType } from '../../../../interface/validate';
 import { useReportDataStore } from '../../../../models/useStore';
 import { fieldGutter, fieldSectionContainer } from '../../../../styles/report/style';
 import ButtonBar from '../../ButtonBar/ButtonBar';
+import { FieldMapper } from '../../FieldComponent/field-mapper';
 import { noBorderField, noLabelField } from '../../FieldComponent/field-type';
 import ReportDynamicField from '../../ReportDynamicField/ReportDynamicField';
 import InputField from '../InputField/InputField';
@@ -15,6 +16,7 @@ import InputFieldLabel from '../InputFieldLabel/InputFieldLabel';
 
 interface Props {
     field: Field;
+    fieldMapper?: { [key: string]: React.ComponentType<any> };
     orientation: 'row' | 'column';
     customValue?: any;
     customValueChange?: (id: string, text: string) => void;
@@ -26,6 +28,7 @@ interface Props {
 
 const InputFieldContainer = ({
     field,
+    fieldMapper = FieldMapper,
     customValue,
     orientation,
     customValueChange,
@@ -109,6 +112,7 @@ const InputFieldContainer = ({
                 fieldComponent={
                     <ReportDynamicField
                         field={field}
+                        fieldMapper={fieldMapper}
                         value={value}
                         modifiable={modifiable}
                         onValueChange={onValueChange}
