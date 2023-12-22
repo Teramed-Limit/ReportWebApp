@@ -12,5 +12,5 @@ export const ValidationMapper: IValidationMapper = {
 };
 
 export const ValidationMessage = {
-    Required: 'field is required.',
+    [ValidateType.Required]: 'field is required.',
 };
