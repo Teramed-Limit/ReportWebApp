@@ -14,6 +14,7 @@ export enum FormFieldType {
     TimePicker = 'TimePicker',
     Array = 'Array',
     SRText = 'SRText',
+    OBGYNChart = 'OBGYNChart',
 }
 
 export enum LayoutType {
@@ -26,6 +27,7 @@ export const noBorderField = {
     [FormFieldType.Radio]: true,
     [FormFieldType.Checkbox]: true,
     [FormFieldType.QualityBowelScore]: true,
+    [FormFieldType.OBGYNChart]: true,
 };
 
 export const noLabelField = {

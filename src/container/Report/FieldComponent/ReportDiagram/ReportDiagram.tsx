@@ -4,11 +4,11 @@ import cx from 'classnames';
 import { observer } from 'mobx-react';
 
 import classes from './ReportDiagram.module.scss';
-import { Field } from '../../../../interface/report-field/field';
+import { DiagramField } from '../../../../interface/report-field/diagram-field';
 import { useReportImageStore } from '../../../../models/useStore';
 
 interface Props {
-    field: Field;
+    field: DiagramField;
     value: string;
 }
 
@@ -29,7 +29,7 @@ const ReportDiagram = React.forwardRef(({ field, value }: Props, ref) => {
 
     return (
         <>
-            <div className={cx(classes.imageContainer)}>
+            <div style={{ height: field.height }} className={cx(classes.imageContainer)}>
                 <img src={imageUrl} alt="None" />
             </div>
         </>

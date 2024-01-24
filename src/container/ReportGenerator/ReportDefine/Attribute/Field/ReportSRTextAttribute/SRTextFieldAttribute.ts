@@ -7,6 +7,8 @@ export class SRTextFieldAttribute extends FieldAttribute implements SRTextField 
     suffix?: string;
     prefix?: string;
     structureReportPath?: string;
+    daysToWeeks?: boolean;
+    formula?: string;
     type = FormFieldType.SRText;
 
     constructor(field: SRTextField) {
@@ -15,6 +17,8 @@ export class SRTextFieldAttribute extends FieldAttribute implements SRTextField 
         this.suffix = field.suffix || '';
         this.prefix = field.prefix || '';
         this.structureReportPath = field.structureReportPath || '';
+        this.daysToWeeks = field.daysToWeeks || false;
+        this.formula = field.formula || '';
         this.placeholder = field.placeholder || '';
     }
 }

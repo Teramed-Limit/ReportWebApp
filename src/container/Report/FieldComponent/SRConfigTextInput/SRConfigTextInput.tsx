@@ -89,6 +89,7 @@ const SRConfigTextInput = React.forwardRef(
         };
 
         const onFocusHandler = (event) => {
+            setExpanded(['root']);
             setAnchorEl(event.currentTarget);
         };
 
@@ -257,8 +258,15 @@ const SRConfigTextInput = React.forwardRef(
                         matchFilter(child, searchType),
                     );
 
+                    // 如果當前節點的父節點有Value，則要顯示此節點
+                    const isParentNodeHasValue = isNotEmptyOrNil(currentNode?.Parent?.Value?.Value);
+
                     // 不顯示當前節點
-                    if (!isSomeChildNodeMatching && !isCurrentNodeMatching) {
+                    if (
+                        !isSomeChildNodeMatching &&
+                        !isCurrentNodeMatching &&
+                        !isParentNodeHasValue
+                    ) {
                         return null;
                     }
                 }

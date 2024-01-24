@@ -27,17 +27,17 @@ export const SRTreeItem = (props: Props) => {
                     >
                         Apply Value
                     </Button>
-                    {props.node.Value.Unit && (
-                        <Button
-                            sx={{ height: '20px', ml: '8px', mb: '8px' }}
-                            size="small"
-                            variant="contained"
-                            color="secondary"
-                            onClick={() => props.getSRNodePath(props.node.NodeId, 'ValueWithUnit')}
-                        >
-                            Apply Value Unit
-                        </Button>
-                    )}
+                    {/*{props.node.Value.Unit && (*/}
+                    {/*    <Button*/}
+                    {/*        sx={{ height: '20px', ml: '8px', mb: '8px' }}*/}
+                    {/*        size="small"*/}
+                    {/*        variant="contained"*/}
+                    {/*        color="secondary"*/}
+                    {/*        onClick={() => props.getSRNodePath(props.node.NodeId, 'ValueWithUnit')}*/}
+                    {/*    >*/}
+                    {/*        Apply Value Unit*/}
+                    {/*    </Button>*/}
+                    {/*)}*/}
                     {/*{props.node.Value.UnitMeaning && (*/}
                     {/*    <Button*/}
                     {/*        sx={{ height: '20px', ml: '8px' }}*/}

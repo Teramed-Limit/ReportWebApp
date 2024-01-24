@@ -10,6 +10,8 @@ import { CodeListSelectionAttribute } from './Field/ReportCodeListSelectionAttri
 import ReportCodeListSelectionAttribute from './Field/ReportCodeListSelectionAttribute/ReportCodeListSelectionAttribute';
 import { CompositeFieldAttribute } from './Field/ReportCompositeAttribute/CompositeFieldAttribute';
 import ReportCompositeAttribute from './Field/ReportCompositeAttribute/ReportCompositeAttribute';
+import { CurveChartAttribute } from './Field/ReportCurveChartAttribute/CurveChartAttribute';
+import ReportCurveChartAttribute from './Field/ReportCurveChartAttribute/ReportCurveChartAttribute';
 import { DatePickerFieldAttribute } from './Field/ReportDatePickerAttribute/DatePickerFieldAttribute';
 import ReportDatePickerAttribute from './Field/ReportDatePickerAttribute/ReportDatePickerAttribute';
 import ReportDiagramAttribute from './Field/ReportDigramAttribute/ReportDiagramAttribute';
@@ -46,6 +48,7 @@ export const FieldAttributeMapper = {
     [FormFieldType.Array]: (field) => new ArrayFieldAttribute(field),
     [FormFieldType.Composite]: (field) => new CompositeFieldAttribute(field),
     [FormFieldType.SRText]: (field) => new SRTextFieldAttribute(field),
+    [FormFieldType.OBGYNChart]: (field) => new CurveChartAttribute(field),
 };
 
 type ComponentTypeMap = {
@@ -68,4 +71,5 @@ export const ReportDefineAttributesMapper: ComponentTypeMap = {
     [FormFieldType.TimePicker]: ReportTimePickerAttribute,
     [FormFieldType.ReportDiagram]: ReportDiagramAttribute,
     [FormFieldType.SRText]: ReportSRTextAttribute,
+    [FormFieldType.OBGYNChart]: ReportCurveChartAttribute,
 };

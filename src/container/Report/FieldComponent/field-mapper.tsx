@@ -3,6 +3,7 @@ import Checkbox from './Checkbox/Checkbox';
 import CodeListLexiconInput from './CodeListLexiconInput/CodeListLexiconInput';
 import CodeListSelection from './CodeListSelection/CodeListSelection';
 import DatePicker from './DatePicker/DatePicker';
+import FetalGrowthChart from './FetalGrowthChart/FetalGrowthChart/FetalGrowthChart';
 import { FormFieldType } from './field-type';
 import NumberInput from './NumberInput/NumberInput';
 import Radio from './Radio/Radio';
@@ -28,6 +29,7 @@ export const FieldMapper = {
     [FormFieldType.DatePicker]: DatePicker,
     [FormFieldType.TimePicker]: TimePicker,
     [FormFieldType.SRText]: SRTextInput,
+    [FormFieldType.OBGYNChart]: FetalGrowthChart,
 };
 
 export const ReportGeneratorFieldMapper = {

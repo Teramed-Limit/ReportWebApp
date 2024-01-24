@@ -16,7 +16,14 @@ const ReportSRTextAttribute = ({
                 attribute={new SRTextFieldAttribute(attribute)}
                 setAttribute={onSetAttribute}
                 filterType={'include'}
-                includeAttribute={['structureReportPath', 'suffix', 'prefix', 'placeholder']}
+                includeAttribute={[
+                    'structureReportPath',
+                    'suffix',
+                    'prefix',
+                    'placeholder',
+                    'daysToWeeks',
+                    'formula',
+                ]}
             />
         </>
     );
