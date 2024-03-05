@@ -79,6 +79,9 @@ export const DataModel: ReportDataModal = types
             get imageData() {
                 return self.formData.get('ReportImageData') || [];
             },
+            get attachmentData() {
+                return self.formData.get('ReportAttachmentData') || [];
+            },
         };
     })
     .actions((self) => {

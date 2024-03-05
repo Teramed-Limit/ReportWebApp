@@ -51,3 +51,9 @@ export interface ReportMark {
     PointInImageX: number;
     PointInImageY: number;
 }
+
+export interface AttachmentData {
+    Id: number;
+    AttachmentType: string;
+    FilePath: string;
+}

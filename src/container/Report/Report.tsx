@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Box, Drawer, Stack } from '@mui/material';
 import cx from 'classnames';
 import { observer } from 'mobx-react';
-import { Prompt, useHistory, useParams } from 'react-router-dom';
+import { Prompt, useParams } from 'react-router-dom';
 
 import ReportEditActionBar from './ActionBar/ReportEditActionBar/ReportEditActionBar';
 import ReportViewActionBar from './ActionBar/ReportViewActionBar/ReportViewActionBar';
@@ -24,7 +24,6 @@ import { reportPage } from '../../styles/report/style';
 import Photo from '../Photo/Photo';
 
 const Report = () => {
-    const history = useHistory();
     const { showNotifyMsg } = useContext(NotificationContext);
     const { studyInstanceUID } = useParams<any>();
     const { formDefine } = useReportDefineStore();
@@ -103,19 +102,24 @@ const Report = () => {
                         {modifiable ? <ReportEditActionBar /> : <ReportViewActionBar />}
                     </Stack>
                 </div>
-                <Box className={classes.reportLayout} sx={reportPage}>
-                    <Box className={classes.page}>
-                        {formDefine.sections
-                            .filter((section: Section) => !section.hide)
-                            .map((section: Section) => (
-                                <ReportSection
-                                    key={section.id}
-                                    section={section}
-                                    actionContext={ReportActionContext}
-                                />
-                            ))}
+                <Stack direction="row">
+                    <Box className={classes.reportLayout} sx={reportPage}>
+                        <Box className={classes.page}>
+                            {formDefine.sections
+                                .filter((section: Section) => !section.hide)
+                                .map((section: Section) => (
+                                    <ReportSection
+                                        key={section.id}
+                                        section={section}
+                                        actionContext={ReportActionContext}
+                                    />
+                                ))}
+                        </Box>
                     </Box>
-                </Box>
+                    {/*<Box flex="0 0 300px" sx={{ minWidth: '500px', border: '1px red solid' }}>*/}
+                    {/*    <Attachment />*/}
+                    {/*</Box>*/}
+                </Stack>
             </ReportActionProvider>
             {/* Photo Drawer */}
             <button
@@ -136,6 +140,15 @@ const Report = () => {
             >
                 <Photo />
             </Drawer>
+            {/* Attachment Drawer */}
+            {/*<button*/}
+            {/*    style={{ top: '335px' }}*/}
+            {/*    className={cx(classes.drawerBtn)}*/}
+            {/*    type="button"*/}
+            {/*    onClick={toggleImageDrawer}*/}
+            {/*>*/}
+            {/*    <Icon type="photos" size={40} />*/}
+            {/*</button>*/}
         </>
     );
 };
