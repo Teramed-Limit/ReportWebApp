@@ -6,6 +6,9 @@ import { Line } from 'react-konva';
 interface Props {
     id: number;
     attribute: Konva.LineConfig;
+    // isSelected: boolean;
+    // onSelect: (id: number) => void;
+    // onUpdateAttr: (id: number, attr: Konva.ShapeConfig) => void;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

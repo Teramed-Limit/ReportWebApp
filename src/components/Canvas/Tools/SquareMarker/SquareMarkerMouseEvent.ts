@@ -1,13 +1,13 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
-import LocalStorageService from '../../../../service/local-storage-service';
 import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent, reverse } from '../../canvas-utils';
+import { MarkerEvent } from '../../MarkerEvent/MarkerEvent';
 
 const markerType = MarkerType.Square;
 
-const SquareMarkerMouseEvent = () => {
+const SquareMarkerMouseEvent = (): MarkerEvent => {
     const onMouseDown = (
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
@@ -15,23 +15,16 @@ const SquareMarkerMouseEvent = () => {
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
-        const konvaAttribute = LocalStorageService.getFromLocalStorage<{
-            fill: string;
-            stroke: string;
-            radius: number;
-            strokeWidth: number;
-        }>('konvaAttribute');
-
         const point = getRelativePointerPosition(e.target.getStage());
         const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.RectConfig> = {
             id: uuid,
-            name: `${markerType}_${uuid}`,
+            name: `${markerType}`,
             type: markerType,
             attribute: {
-                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
-                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
-                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
+                fill: subColor,
+                stroke: mainColor,
+                strokeWidth: 10,
                 x: point.x,
                 y: point.y,
                 width: 0,
@@ -51,13 +44,6 @@ const SquareMarkerMouseEvent = () => {
         canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
         setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
     ) => {
-        const konvaAttribute = LocalStorageService.getFromLocalStorage<{
-            fill: string;
-            stroke: string;
-            radius: number;
-            strokeWidth: number;
-        }>('konvaAttribute');
-
         const lastMarker = { ...canvasMarkers[canvasMarkers.length - 1] };
         const beginPoint = { x: lastMarker.attribute.x, y: lastMarker.attribute.y };
         const movePoint = getRelativePointerPosition(e.target.getStage());
@@ -66,12 +52,12 @@ const SquareMarkerMouseEvent = () => {
         const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.RectConfig> = {
             id: uuid,
-            name: `${markerType}_${uuid}`,
+            name: `${markerType}`,
             type: markerType,
             attribute: {
-                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
-                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
-                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
+                fill: subColor,
+                stroke: mainColor,
+                strokeWidth: 10,
                 x: posRect.x1,
                 y: posRect.y1,
                 width: Math.floor(posRect.x2 - posRect.x1),
@@ -99,7 +85,12 @@ const SquareMarkerMouseEvent = () => {
         }
     };
 
-    return { onClick: nullMouseEvent, onMouseDown, onMouseMove, onMouseUp };
+    return {
+        onClick: nullMouseEvent,
+        onMouseDown,
+        onMouseMove,
+        onMouseUp,
+    };
 };
 
 export default SquareMarkerMouseEvent;

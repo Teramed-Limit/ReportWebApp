@@ -1,50 +1,14 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
-import LocalStorageService from '../../../../service/local-storage-service';
 import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent } from '../../canvas-utils';
+import { MarkerEvent } from '../../MarkerEvent/MarkerEvent';
 
 const markerType = MarkerType.Circle;
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-const CircleMarkerMouseEvent = (): {
-    onClick: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseDown: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseMove: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseUp: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-} => {
-    const konvaAttribute = LocalStorageService.getFromLocalStorage<{
-        fill: string;
-        stroke: string;
-        radius: number;
-        strokeWidth: number;
-    }>('konvaAttribute');
-
+const CircleMarkerMouseEvent = (): MarkerEvent => {
     const onClick = (
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
@@ -57,15 +21,15 @@ const CircleMarkerMouseEvent = (): {
         const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.CircleConfig> = {
             id: uuid,
-            name: `${markerType}_${uuid}`,
+            name: `${markerType}`,
             type: markerType,
             attribute: {
-                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
-                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
-                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
+                fill: subColor,
+                stroke: mainColor,
+                strokeWidth: 10,
                 x: point.x,
                 y: point.y,
-                radius: konvaAttribute?.radius ? konvaAttribute.radius : 50,
+                radius: 50,
                 rotation: 0,
                 scaleX: 1,
                 scaleY: 1,

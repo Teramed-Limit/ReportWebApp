@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 
 import AutorenewIcon from '@mui/icons-material/Autorenew';
 import FormatPaintIcon from '@mui/icons-material/FormatPaint';
 import { Badge, Checkbox, IconButton } from '@mui/material';
+import Konva from 'konva';
 import { FaMapMarkerAlt } from 'react-icons/fa';
 
 import classes from './ImageSelector.module.scss';
@@ -11,8 +12,11 @@ import MessageModal from '../../container/Modals/MessageModal/MessageModal';
 import { ReportActionContext } from '../../container/Report/Context/reportActionProvider';
 import InputFieldContainer from '../../container/Report/Layout/InputFieldContainer/InputFieldContainer';
 import { ModalContext } from '../../context/modal-context';
+import { useElementSize } from '../../hooks/useElementSize';
+import { CanvasMarker } from '../../interface/canvas-maker-attribute';
 import { ReportImageData } from '../../interface/document-data';
 import { Field } from '../../interface/report-field/field';
+import ImagePositionMarkerCanvas from '../ImagePositionMarkerCanvas/ImagePositionMarkerCanvas';
 
 interface ImageSelectorProps {
     id: string;
@@ -24,7 +28,11 @@ interface ImageSelectorProps {
     disabled: boolean;
     lockReorder: boolean;
     onImageCheck: (sopInsUid: string, check: boolean) => void;
-    onImageMark: (sopInsUid: string, base64: string) => void;
+    onAddImageMark: (
+        sopInsUid: string,
+        base64: string,
+        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
+    ) => void;
     onClearImageMark: (sopInsUid: string) => void;
     onValueChanged: (sopInsUid: string, id: string, value: any) => void;
     onValueGetter: (sopInsUid: string, id: string) => string;
@@ -38,7 +46,7 @@ const ImageSelector = ({
     size,
     src,
     onImageCheck,
-    onImageMark,
+    onAddImageMark,
     onClearImageMark,
     disabled,
     lockReorder,
@@ -46,13 +54,18 @@ const ImageSelector = ({
     onValueChanged,
 }: ImageSelectorProps) => {
     const setModal = useContext(ModalContext);
+
+    const containerRef = useRef<HTMLDivElement>(null);
+    const { width: containerHeight, height: containerWidth } = useElementSize(containerRef);
+
     const onEditDiagram = () => {
+        if (disabled) return;
         setModal(
             <ImageCanvasModal
-                imageSrc={src}
-                initMarkers={[]}
+                imageSrc={imageData.thumbnailImageSrc}
+                initMarkers={imageData?.ImageMarkers || []}
                 onExportCanvas={(canvasMarkers, base64) => {
-                    onImageMark(id, base64);
+                    onAddImageMark(id, base64, canvasMarkers);
                 }}
             />,
         );
@@ -99,33 +112,50 @@ const ImageSelector = ({
                 )}
             </div>
             <div className={classes.floatWrapperTopRight}>
-                <IconButton
-                    style={{ display: disabled ? 'none' : 'unset' }}
-                    onClick={onEditDiagram}
-                >
-                    <FormatPaintIcon color="primary" />
-                </IconButton>
-                <IconButton
-                    style={{ display: disabled ? 'none' : 'unset' }}
-                    onClick={() => onClearImage()}
-                >
-                    <AutorenewIcon color="warning" />
-                </IconButton>
+                {!disabled && (
+                    <>
+                        <IconButton
+                            style={{ display: disabled ? 'none' : 'unset' }}
+                            onClick={onEditDiagram}
+                        >
+                            <FormatPaintIcon color="primary" />
+                        </IconButton>
+                        <IconButton
+                            style={{ display: disabled ? 'none' : 'unset' }}
+                            onClick={() => onClearImage()}
+                        >
+                            <AutorenewIcon color="warning" />
+                        </IconButton>
+                    </>
+                )}
             </div>
-            <img
-                style={{ maxHeight: `calc(100% - 36px * ${fields.length})` }}
-                className={classes.image}
+            <div
+                ref={containerRef}
                 id={id}
-                loading="lazy"
-                src={src}
-                alt=""
+                style={{
+                    flex: '1 1 auto',
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}
                 draggable={!disabled}
                 onClick={onEditDiagram}
                 onDragStart={(event) => {
                     event.dataTransfer.setData('sopInsUid', id);
                     event.dataTransfer.setData('index', index.toString());
                 }}
-            />
+            >
+                <ImagePositionMarkerCanvas
+                    src={src}
+                    canvasMarkers={imageData.ImageMarkers || []}
+                    imagePositionMarkers={[]}
+                    containerWidth={containerWidth}
+                    containerHeight={containerHeight}
+                    onMarkerPlace={() => {}}
+                    onMarkerDelete={() => {}}
+                    disabled
+                />
+            </div>
             {fields.map((field) => {
                 return (
                     <InputFieldContainer

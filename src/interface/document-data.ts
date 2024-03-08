@@ -1,3 +1,7 @@
+import Konva from 'konva';
+
+import { CanvasMarker } from './canvas-maker-attribute';
+
 export interface DocumentData {
     StudyInstanceUID?: string;
     StudyDate?: string;
@@ -33,7 +37,9 @@ export interface ReportImageData {
     EditedImageSrc: string;
     IsAttachInReport: boolean;
     MappingNumber: number;
+    // mapping on Diagram mark
     ReportMark?: ReportMark;
+    ImageMarkers?: CanvasMarker<Konva.ShapeConfig>[];
     [prop: string]: any;
 }
 
@@ -44,6 +50,4 @@ export interface ReportMark {
     PointY: number;
     PointInImageX: number;
     PointInImageY: number;
-    // OriImgObjActWidth: number;
-    // OriImgObjActHeight: number;
 }

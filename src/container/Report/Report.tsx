@@ -128,7 +128,7 @@ const Report = () => {
             </button>
             <Drawer
                 disableEnforceFocus
-                PaperProps={{ sx: { maxWidth: '90%' } }}
+                PaperProps={{ sx: { width: '90%' } }}
                 ModalProps={{ keepMounted: true }}
                 anchor="left"
                 open={photoDrawerOpen}

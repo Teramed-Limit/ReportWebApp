@@ -36,6 +36,7 @@ const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
             containerHeight,
             canvasMarkers,
             onMarkerPlace,
+            disabled,
         },
         ref,
     ) => {
@@ -75,6 +76,7 @@ const ImagePositionMarkerCanvas = forwardRef<CanvasHandle, Props>(
                     width={canvasWidth || 0}
                     height={canvasHeight || 0}
                     scale={{ x: scale, y: scale }}
+                    style={{ pointerEvents: disabled ? 'none' : 'auto' }}
                 >
                     <Layer>
                         <Image ref={imageRef} image={image} />

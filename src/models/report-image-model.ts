@@ -1,8 +1,10 @@
+import Konva from 'konva';
 import { getRoot, types } from 'mobx-state-tree';
 import * as R from 'ramda';
 
 import { ImagesModal } from './model-type/image-type-modal';
 import { DataStore } from './model-type/report-data-type-modal';
+import { CanvasMarker } from '../interface/canvas-maker-attribute';
 import { ReportImageData, ReportMark } from '../interface/document-data';
 import { CanvasHandle } from '../interface/konva-stage-event';
 import { MarkerPoint } from '../interface/marker';
@@ -206,13 +208,37 @@ export const ImageModel: ImagesModal = types
             setReportImage(R.move(fromIdx, toIdx, self.images));
         };
 
-        const onImageMark = (sopInsUid: string, base64: string) => {
+        const onImageMark = (
+            sopInsUid: string,
+            base64: string,
+            canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
+        ) => {
             setReportImage(
                 self.images.map((image) => {
                     if (image.SOPInstanceUID === sopInsUid) {
                         return {
                             ...image,
                             EditedImageSrc: base64,
+                            ImageMarkers: canvasMarkers,
+                        };
+                    }
+                    return image;
+                }),
+            );
+        };
+
+        const onAddImageMark = (
+            sopInsUid: string,
+            base64: string,
+            canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
+        ) => {
+            setReportImage(
+                self.images.map((image) => {
+                    if (image.SOPInstanceUID === sopInsUid) {
+                        return {
+                            ...image,
+                            EditedImageSrc: base64,
+                            ImageMarkers: canvasMarkers,
                         };
                     }
                     return image;
@@ -227,6 +253,7 @@ export const ImageModel: ImagesModal = types
                         return {
                             ...image,
                             EditedImageSrc: '',
+                            ImageMarkers: [],
                         };
                     }
                     return image;
@@ -257,6 +284,7 @@ export const ImageModel: ImagesModal = types
             onMarkerDelete,
             onMarkerPlace,
             onImageCheck,
+            onAddImageMark,
             onImageMark,
             onClearImageMark,
             onValueChanged,

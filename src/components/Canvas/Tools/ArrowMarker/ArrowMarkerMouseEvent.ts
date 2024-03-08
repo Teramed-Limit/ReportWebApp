@@ -1,49 +1,13 @@
 import Konva from 'konva';
 
 import { CanvasMarker, MarkerType } from '../../../../interface/canvas-maker-attribute';
-import LocalStorageService from '../../../../service/local-storage-service';
 import { generateUUID } from '../../../../utils/general';
 import { getRelativePointerPosition, nullMouseEvent } from '../../canvas-utils';
+import { MarkerEvent } from '../../MarkerEvent/MarkerEvent';
 
 const markerType = MarkerType.Arrow;
 
-const ArrowMarkerMouseEvent = (): {
-    onClick: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseDown: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseMove: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-    onMouseUp: (
-        e: Konva.KonvaEventObject<MouseEvent>,
-        mainColor: string,
-        subColor: string,
-        canvasMarkers: CanvasMarker<Konva.ShapeConfig>[],
-        setCanvasMarkers: (value: CanvasMarker<Konva.ShapeConfig>[]) => void,
-    ) => void;
-} => {
-    const konvaAttribute = LocalStorageService.getFromLocalStorage<{
-        fill: string;
-        stroke: string;
-        radius: number;
-        strokeWidth: number;
-    }>('konvaAttribute');
-
+const ArrowMarkerMouseEvent = (): MarkerEvent => {
     const onMouseDown = (
         e: Konva.KonvaEventObject<MouseEvent>,
         mainColor: string,
@@ -55,12 +19,12 @@ const ArrowMarkerMouseEvent = (): {
         const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.ShapeConfig> = {
             id: uuid,
-            name: `${markerType}_${uuid}`,
+            name: `${markerType}`,
             type: markerType,
             attribute: {
-                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
-                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
-                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
+                fill: subColor,
+                stroke: mainColor,
+                strokeWidth: 4,
                 x: point.x,
                 y: point.y,
                 points: [0, 0, 0, 0],
@@ -93,14 +57,14 @@ const ArrowMarkerMouseEvent = (): {
         const uuid = generateUUID();
         const newMarker: CanvasMarker<Konva.ShapeConfig> = {
             id: uuid,
-            name: `${markerType}_${uuid}`,
+            name: `${markerType}`,
             type: markerType,
             attribute: {
-                fill: konvaAttribute?.fill ? konvaAttribute.fill : subColor,
-                stroke: konvaAttribute?.stroke ? konvaAttribute.stroke : mainColor,
-                strokeWidth: konvaAttribute?.strokeWidth ? konvaAttribute.strokeWidth : 10,
+                fill: subColor,
+                stroke: mainColor,
                 x: beginPoint.x,
                 y: beginPoint.y,
+                strokeWidth: 4,
                 points: [0, 0, movePoint.x - beginPoint.x, movePoint.y - beginPoint.y],
                 pointerLength: 20,
                 pointerWidth: 20,
@@ -135,7 +99,12 @@ const ArrowMarkerMouseEvent = (): {
         }
     };
 
-    return { onClick: nullMouseEvent, onMouseDown, onMouseMove, onMouseUp };
+    return {
+        onClick: nullMouseEvent,
+        onMouseDown,
+        onMouseMove,
+        onMouseUp,
+    };
 };
 
 export default ArrowMarkerMouseEvent;

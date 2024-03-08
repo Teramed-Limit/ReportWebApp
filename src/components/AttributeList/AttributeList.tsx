@@ -76,10 +76,14 @@ const AttributeList = ({
 
     // 渲染物件
     const renderObject = (obj: any, parentPath: (string | number)[] = []) => {
+        if (!obj) return null;
+
         return Object.keys(obj).map((key) => {
             const currentPath: (string | number)[] = Number.isNaN(+key)
                 ? [...parentPath, key]
                 : [...parentPath, +key];
+
+            if (!obj[key]) return null;
 
             // 如果值是物件或陣列，則遞迴渲染
             if (typeof obj[key] === 'object' || Array.isArray(obj[key])) {

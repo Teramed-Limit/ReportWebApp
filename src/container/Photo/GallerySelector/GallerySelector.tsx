@@ -30,7 +30,7 @@ const GallerySelector = () => {
         imageSelectCount,
         onImageCheck,
         onClearImageMark,
-        onImageMark,
+        onAddImageMark,
         onValueChanged,
         onValueGetter,
         selectAllImage,
@@ -84,7 +84,7 @@ const GallerySelector = () => {
                             }
                             onImageCheck={onImageCheck}
                             onClearImageMark={onClearImageMark}
-                            onImageMark={onImageMark}
+                            onAddImageMark={onAddImageMark}
                             onValueChanged={onValueChanged}
                             onValueGetter={onValueGetter}
                             onImageReorder={onImageReorder}

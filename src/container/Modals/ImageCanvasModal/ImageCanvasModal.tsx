@@ -12,6 +12,8 @@ import ColorPickerButton from '../../../components/ColorPickerButton/ColorPicker
 import Modal from '../../../components/Modal/Modal';
 import Button from '../../../components/UI/Button/Button';
 import { ModalContext } from '../../../context/modal-context';
+import { useElementSize } from '../../../hooks/useElementSize';
+import useLocalStorage from '../../../hooks/useLocalStorage';
 import { CanvasMarker, MarkerType } from '../../../interface/canvas-maker-attribute';
 import { generateUUID, isEmptyOrNil } from '../../../utils/general';
 
@@ -24,16 +26,17 @@ interface Props {
 const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
     type CanvasHandle = React.ElementRef<typeof Canvas>;
     const canvasRef = React.useRef<CanvasHandle>(null);
-    const containerRef = useRef<HTMLDivElement>(null);
 
-    const [containerHeight, setContainerHeight] = useState(0);
-    const [containerWidth, setContainerWidth] = useState(0);
+    const targetRef = useRef(null);
+    // Use custom hook to get the size of the element
+    const { width, height } = useElementSize(targetRef);
+
     const [markerType, setMarkerType] = React.useState<MarkerType>(MarkerType.None);
-    const [selectMarkerId, setSelectMarkerId] = useState<string>('');
+    const [selectMarkerId, setSelectMarkerId] = useState('');
     const [canvasMarkers, setCanvasMarkers] =
         React.useState<CanvasMarker<Konva.ShapeConfig>[]>(initMarkers);
-    const [mainColor, setMainColor] = useState('red');
-    const [subColor, setSubColor] = useState('rgba(0, 0, 0, 0.1)');
+    const [mainColor, setMainColor] = useLocalStorage('canvas_mainColor', 'rgba(0, 0, 0, 1)');
+    const [subColor, setSubColor] = useLocalStorage('canvas_subColor', 'rgba(0, 0, 0, 0)');
 
     const [selectMarkerAttrs, setSelectMarkerAttrs] = useState<Konva.ShapeConfig | undefined>(
         undefined,
@@ -52,12 +55,10 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
     };
 
     useEffect(() => {
-        if (containerRef === null || containerRef.current === null) {
-            return;
-        }
-        setContainerWidth(containerRef.current.offsetWidth - 4);
-        setContainerHeight(containerRef.current.offsetHeight - 4);
-    }, []);
+        setSelectMarkerAttrs(
+            canvasMarkers.find((marker) => marker.id === selectMarkerId)?.attribute,
+        );
+    }, [canvasMarkers, selectMarkerId]);
 
     const handleCanvasTool = (event: React.MouseEvent<HTMLElement>, newFormat: string) => {
         if (!MarkerType[newFormat]) {
@@ -80,7 +81,7 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
             const uuid = generateUUID();
             value.push({
                 ...copyMarker,
-                name: `${markerType}_${uuid}`,
+                name: `${markerType}`,
                 id: uuid,
             });
             return value.slice();
@@ -99,74 +100,74 @@ const ImageCanvasModal = ({ imageSrc, initMarkers, onExportCanvas }: Props) => {
         });
     };
 
-    useEffect(() => {
-        setSelectMarkerAttrs(
-            canvasMarkers.find((marker) => marker.id === selectMarkerId)?.attribute,
-        );
-    }, [canvasMarkers, selectMarkerId]);
-
     const body = (
-        <div ref={containerRef} className={classes.canvasContainer}>
-            <CanvasToolbar
-                markerType={markerType}
-                setCanvasTool={handleCanvasTool}
-                mainColor={mainColor}
-                setMainColor={setMainColor}
-                subColor={subColor}
-                setSubColor={setSubColor}
-            />
-            {selectMarkerAttrs ? (
-                <div className={classes.attributeContainer}>
-                    <AttributeList
-                        attribute={selectMarkerAttrs}
-                        attributeComponentMapper={{
-                            fill: ColorPickerButton,
-                            stroke: ColorPickerButton,
-                        }}
-                        filterType="include"
-                        includeAttribute={[
-                            'width',
-                            'height',
-                            'text',
-                            'fill',
-                            'stroke',
-                            'fontSize',
-                            'radius',
-                            'strokeWidth',
-                            'pointerLength',
-                            'pointerWidth',
-                            'scaleX',
-                            'scaleY',
-                            'rotation',
-                            'x',
-                            'y',
-                            'dashEnabled',
-                        ]}
-                        setAttribute={setAttribute}
-                    />
-                </div>
-            ) : null}
-            <CanvasOverlay
-                canvasMarkers={canvasMarkers}
-                selectMarkerId={selectMarkerId}
-                setCanvasMarkers={setCanvasMarkers}
-                setSelectMarkerId={setSelectMarkerId}
-                deleteMarker={onMarkerDelete}
-                copyMarker={onMarkerCopy}
-            />
-            <Canvas
-                ref={canvasRef}
-                mainColor={mainColor}
-                subColor={subColor}
-                markerType={markerType}
-                canvasMarkers={canvasMarkers}
-                setCanvasMarkers={setCanvasMarkers}
-                selectMarkerId={selectMarkerId}
-                setSelectMarkerId={setSelectMarkerId}
-                containerWidth={containerWidth}
-                containerHeight={containerHeight}
-                imageSrc={imageSrc}
-            />
+        <div className={classes.container}>
+            <div className={classes.leftPanel}>
+                <CanvasToolbar
+                    markerType={markerType}
+                    setCanvasTool={handleCanvasTool}
+                    mainColor={mainColor}
+                    setMainColor={setMainColor}
+                    subColor={subColor}
+                    setSubColor={setSubColor}
+                />
+                <CanvasOverlay
+                    canvasMarkers={canvasMarkers}
+                    selectMarkerId={selectMarkerId}
+                    setCanvasMarkers={setCanvasMarkers}
+                    setSelectMarkerId={setSelectMarkerId}
+                    deleteMarker={onMarkerDelete}
+                    copyMarker={onMarkerCopy}
+                />
+            </div>
+            <div ref={targetRef} className={classes.middlePanel}>
+                <Canvas
+                    ref={canvasRef}
+                    mainColor={mainColor}
+                    subColor={subColor}
+                    markerType={markerType}
+                    canvasMarkers={canvasMarkers}
+                    setCanvasMarkers={setCanvasMarkers}
+                    selectMarkerId={selectMarkerId}
+                    setSelectMarkerId={setSelectMarkerId}
+                    containerWidth={width}
+                    containerHeight={height}
+                    imageSrc={imageSrc}
+                />
+            </div>
+            <div className={classes.rightPanel}>
+                {selectMarkerAttrs ? (
+                    <div className={classes.attributeContainer}>
+                        <AttributeList
+                            attribute={selectMarkerAttrs}
+                            attributeComponentMapper={{
+                                fill: ColorPickerButton,
+                                stroke: ColorPickerButton,
+                            }}
+                            filterType="include"
+                            includeAttribute={[
+                                'width',
+                                'height',
+                                'text',
+                                'fill',
+                                'stroke',
+                                'fontSize',
+                                'radius',
+                                'strokeWidth',
+                                'pointerLength',
+                                'pointerWidth',
+                                'scaleX',
+                                'scaleY',
+                                'rotation',
+                                'x',
+                                'y',
+                                'dashEnabled',
+                            ]}
+                            setAttribute={setAttribute}
+                        />
+                    </div>
+                ) : null}
+            </div>
         </div>
     );
     const footer = (
